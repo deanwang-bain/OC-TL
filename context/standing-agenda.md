@@ -91,7 +91,22 @@ lists it in the frontend table anyway.
 fit, rubric, reversibility and operability, but never records the licence, which is what
 a third-party approval actually turns on.**
 
----
+### 6. Two topology questions from StatusNeo, both needing a ruling
+
+Asked directly: which services are separate versus one monorepo at MVP, and whether to
+run a proper pipeline on Container Apps or deploy to a VM to protect GLS focus.
+
+Recommendations in `decisions/001` and `decisions/002`, both **proposed, pending
+sign-off**. In short: one repository with three to six deployables, keeping the
+calculation engine separate from day one because §10.2 calls it the one component Bain
+reuses; and Container Apps with a thin pipeline rather than a VM, cutting CD scope rather
+than the platform, because Container Apps was chosen for dynamic sessions and the whole
+security posture assumes managed infrastructure.
+
+**Repository structure is documented nowhere in the space** — no page mentions it.
+
+**Ask: confirm both, and settle whether GLS is a throwaway demo or a version people
+will use. That distinction changes the deployment answer and is currently unwritten.**
 
 ## Watch list
 
