@@ -19,6 +19,7 @@ import subprocess
 import sys
 
 MIRROR = "confluence"
+AGENDA = os.path.join("context", "standing-agenda.md")
 
 # Phrases that mean a page is unsettled. Matched case-insensitively against page
 # titles and body text; each is something a Tech Lead would want to look at
@@ -189,6 +190,26 @@ def third_party_changes(paths: list[str]) -> list[str]:
     return lines
 
 
+def standing_agenda() -> list[str]:
+    """The curated 'what to raise' section, printed above the mechanical detail.
+
+    Change detection is mechanical; deciding what matters is not. This file is
+    maintained by hand and leads the update because it is what gets acted on.
+    """
+    try:
+        with open(AGENDA, encoding="utf-8") as handle:
+            raw = handle.read()
+    except OSError:
+        return []
+    # Drop the file's own title and maintenance preamble; keep from the first
+    # numbered item onward so the email reads as a briefing, not a document.
+    marker = raw.find("\n### ")
+    if marker == -1:
+        return []
+    body = raw[marker:].strip()
+    return ["## What to raise with the team", "", body, ""]
+
+
 def all_pages() -> list[str]:
     found = []
     for root, dirs, files in os.walk(MIRROR):
@@ -255,13 +276,18 @@ def main() -> int:
     total = len(added) + len(modified) + len(deleted)
 
     out: list[str] = []
+    out.extend(standing_agenda())
     if not total:
-        out.append("No Confluence pages changed since the last update.")
+        out.append("## Since the last update")
+        out.append("")
+        out.append("No Confluence pages changed.")
         out.append("")
         out.extend(mirror_status())
         print("\n".join(out).rstrip())
         return 0
 
+    out.append("## Since the last update")
+    out.append("")
     out.append(
         f"**{total} page{'s' if total != 1 else ''} changed** — "
         f"{len(added)} added, {len(modified)} updated, {len(deleted)} removed."
