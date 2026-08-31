@@ -1,0 +1,268 @@
+{
+  "tools": {
+    "#": {
+      "concern": "",
+      "position": "Build"
+    },
+    "A2A over HTTPS": {
+      "concern": "Agent delegation",
+      "position": "Adopt"
+    },
+    "AG-Grid Enterprise": {
+      "concern": "Tabular inspection and export",
+      "position": "Buy, existing Bain licence"
+    },
+    "AG-UI protocol, CopilotKit": {
+      "concern": "Assistant surface",
+      "position": "Buy, licence"
+    },
+    "API Management": {
+      "concern": "Gateway",
+      "position": "Adopt"
+    },
+    "API Management GenAI gateway": {
+      "concern": "Model gateway",
+      "position": "Adopt"
+    },
+    "Agent Framework native spans": {
+      "concern": "Agent and model tracing",
+      "position": "Adopt"
+    },
+    "At the model gateway": {
+      "concern": "Token and cost accounting",
+      "position": "Adopt"
+    },
+    "Azure AI Content Safety": {
+      "concern": "Content safety and PII",
+      "position": "Adopt"
+    },
+    "Azure AI Document Intelligence": {
+      "concern": "Document parsing",
+      "position": "Adopt"
+    },
+    "Azure AI Foundry": {
+      "concern": "Models",
+      "position": "Adopt"
+    },
+    "Azure Cache for Redis": {
+      "concern": "Session and cache",
+      "position": "Adopt"
+    },
+    "Azure Container Apps": {
+      "concern": "Service hosting",
+      "position": "Adopt"
+    },
+    "Azure Durable Functions": {
+      "concern": "Deterministic long-running work",
+      "position": "Adopt"
+    },
+    "Azure Key Vault references": {
+      "concern": "Secrets",
+      "position": "Adopt"
+    },
+    "Azure Logic Apps": {
+      "concern": "Scheduled connector glue",
+      "position": "Adopt"
+    },
+    "Azure Monitor with Application Insights": {
+      "concern": "Traces, metrics, logs",
+      "position": "Adopt"
+    },
+    "Azure SQL Database": {
+      "concern": "Application state",
+      "position": "Adopt"
+    },
+    "Azure SQL ledger tables": {
+      "concern": "Audit trail",
+      "position": "Adopt"
+    },
+    "Azure Service Bus": {
+      "concern": "Command and event transport",
+      "position": "Adopt"
+    },
+    "Container Apps dynamic sessions": {
+      "concern": "Sandboxed execution",
+      "position": "Adopt"
+    },
+    "Custom component": {
+      "concern": "External source rate limiting",
+      "position": "Build"
+    },
+    "Custom harness": {
+      "concern": "Offline regression",
+      "position": "Build"
+    },
+    "Datadog": {
+      "concern": "Alternative APM",
+      "position": "Buy, optional"
+    },
+    "DuckDB, embedded in process": {
+      "concern": "Query engine",
+      "position": "Adopt OSS"
+    },
+    "Entra external OAuth to Snowflake": {
+      "concern": "Warehouse identity",
+      "position": "Adopt"
+    },
+    "Entra managed identities": {
+      "concern": "Service to service",
+      "position": "Adopt"
+    },
+    "Foundry evaluations": {
+      "concern": "Runtime evaluation",
+      "position": "Adopt"
+    },
+    "Front Door Premium with WAF": {
+      "concern": "Perimeter",
+      "position": "Adopt"
+    },
+    "Headless Chromium for HTML and PDF, OOXML writer for presentation": {
+      "concern": "Deck rendering",
+      "position": "Build"
+    },
+    "Immutable blob with a legal hold policy": {
+      "concern": "Audit immutability",
+      "position": "Adopt"
+    },
+    "Key Vault references": {
+      "concern": "Source credentials",
+      "position": "Adopt"
+    },
+    "MCP over streamable HTTP": {
+      "concern": "Tool contract",
+      "position": "Adopt protocol, Build servers"
+    },
+    "Microsoft Agent Framework": {
+      "concern": "Agent orchestration",
+      "position": "Adopt"
+    },
+    "Microsoft Defender for Cloud": {
+      "concern": "Posture management",
+      "position": "Adopt"
+    },
+    "Microsoft Entra ID": {
+      "concern": "Authorisation and tokens",
+      "position": "Buy, existing"
+    },
+    "Microsoft Graph, Outlook": {
+      "concern": "Notification",
+      "position": "Buy, existing"
+    },
+    "NAT Gateway with a static IP": {
+      "concern": "Controlled egress",
+      "position": "Adopt"
+    },
+    "Node with TypeScript": {
+      "concern": "IO-bound services",
+      "position": "Build"
+    },
+    "OAuth2 client credentials, separate audience": {
+      "concern": "Platform consumer identity",
+      "position": "Adopt"
+    },
+    "Okta": {
+      "concern": "Single sign-on",
+      "position": "Buy, existing"
+    },
+    "OpenTelemetry": {
+      "concern": "Instrumentation standard",
+      "position": "Adopt"
+    },
+    "Parquet": {
+      "concern": "Per-run analytical files",
+      "position": "Adopt format"
+    },
+    "Pendo": {
+      "concern": "Product analytics",
+      "position": "Buy, existing"
+    },
+    "Private endpoints, Private DNS, public access disabled": {
+      "concern": "Network",
+      "position": "Adopt"
+    },
+    "Python": {
+      "concern": "Compute and AI services",
+      "position": "Build"
+    },
+    "REST with JSON, OpenAPI first": {
+      "concern": "Default API style",
+      "position": "Build"
+    },
+    "Radix with a Bain-token theme layer": {
+      "concern": "Component primitives",
+      "position": "Build"
+    },
+    "React with TypeScript, built with Vite": {
+      "concern": "Framework and language",
+      "position": "Build"
+    },
+    "Redis pub/sub to SSE": {
+      "concern": "Progress fan-out",
+      "position": "Adopt"
+    },
+    "Redis semantic cache": {
+      "concern": "Semantic cache",
+      "position": "Adopt"
+    },
+    "Server-sent events": {
+      "concern": "Streaming",
+      "position": "Adopt"
+    },
+    "SharePoint": {
+      "concern": "Documents",
+      "position": "Buy, existing"
+    },
+    "SharePoint, Entra-backed": {
+      "concern": "Document-level access",
+      "position": "Buy, existing"
+    },
+    "Snowflake": {
+      "concern": "Warehouse",
+      "position": "Buy"
+    },
+    "Snowflake access history": {
+      "concern": "Warehouse access lineage",
+      "position": "Buy"
+    },
+    "Static assets from Azure Front Door CDN": {
+      "concern": "Hosting",
+      "position": "Adopt"
+    },
+    "TanStack Query": {
+      "concern": "Server state",
+      "position": "Build on OSS"
+    },
+    "The calculation engine": {
+      "concern": "Silver to gold",
+      "position": "Build"
+    },
+    "Vega-Lite, Apache ECharts": {
+      "concern": "Exhibit rendering",
+      "position": "Build on OSS"
+    },
+    "WCAG 2.2 AA": {
+      "concern": "Accessibility",
+      "position": "Build"
+    },
+    "Zustand": {
+      "concern": "Client state",
+      "position": "Build on OSS"
+    },
+    "Zvec, in-memory, run-scoped": {
+      "concern": "In-process vector similarity",
+      "position": "Adopt OSS"
+    },
+    "dbt": {
+      "concern": "Bronze to silver transformation",
+      "position": "Build on OSS"
+    },
+    "gRPC with protobuf": {
+      "concern": "Calculation hop",
+      "position": "Build"
+    },
+    "i18next, English only at MVP": {
+      "concern": "Internationalisation",
+      "position": "Build"
+    }
+  }
+}

@@ -50,10 +50,17 @@ Key characteristics that shape technical decisions:
 - **Primary persona:** "the accountable partner", who owns what goes in front of a
   client.
 
-Stack is a cloud-native headless architecture: React 18 / TypeScript / Vite frontend,
-FastAPI for deterministic REST interfaces, with business rules and calculations
-deliberately kept out of the client. See
-[Technical Stack](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md).
+Stack is a cloud-native headless architecture on **Azure**: React / TypeScript / Vite
+frontend, FastAPI for deterministic REST and FastMCP for agent-driven access, with
+business rules and calculations deliberately kept out of the client. The authoritative
+and most decision-dense source is
+[Technology Choices](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md)
+— prefer it over the older
+[Technical Stack](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md)
+page where they disagree.
+
+Third-party and open-source positions are tracked in `tools/known_tools.json`; the daily
+digest flags anything new or repositioned as needing a ruling.
 
 Delivery runs in **two-week Scrum cycles**.
 

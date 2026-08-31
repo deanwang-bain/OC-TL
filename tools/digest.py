@@ -12,6 +12,7 @@ is empty, so the caller decides whether that is worth sending.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -114,6 +115,80 @@ def classify(path: str) -> str:
     return "diagram-only" if has_media else "empty"
 
 
+REGISTER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "known_tools.json")
+POSITION = re.compile(
+    r"(Build on OSS|Adopt OSS|Adopt protocol.*|Adopt format|Adopt|Build|Buy.*)$"
+)
+# A position that commits the programme to someone else's code or licence terms,
+# which is what needs a Tech Lead ruling. Plain "Build" is our own code.
+NEEDS_RULING = ("OSS", "Buy", "licence", "license", "Adopt")
+
+
+def load_register() -> dict:
+    try:
+        with open(REGISTER, encoding="utf-8") as handle:
+            return json.load(handle).get("tools", {})
+    except (OSError, ValueError):
+        return {}
+
+
+def tools_in(path: str) -> dict[str, dict]:
+    """Extract declared technology choices from a page's tables.
+
+    The source states each choice as a table row ending in a position — Build,
+    Adopt, Adopt OSS, Buy — so matching the row is far less noisy than trying to
+    spot product names in prose.
+    """
+    found: dict[str, dict] = {}
+    try:
+        lines = open(path, encoding="utf-8").readlines()
+    except OSError:
+        return found
+    for line in lines:
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if len(cells) < 3:
+            continue
+        position = next((c for c in cells if POSITION.fullmatch(c)), None)
+        if not position:
+            continue
+        index = cells.index(position)
+        if index < 1:
+            continue
+        name = cells[index - 1]
+        if not name or len(name) > 90 or name.lower() in ("choice", "value"):
+            continue
+        found[name] = {"position": position, "concern": cells[0] if index > 1 else ""}
+    return found
+
+
+def third_party_changes(paths: list[str]) -> list[str]:
+    """New or repositioned third-party dependencies in the changed pages."""
+    register = load_register()
+    lines: list[str] = []
+    for path in sorted(paths):
+        if not os.path.exists(path):
+            continue
+        for name, entry in sorted(tools_in(path).items()):
+            position = entry["position"]
+            if not any(token in position for token in NEEDS_RULING):
+                continue
+            known = register.get(name)
+            if known is None:
+                lines.append(
+                    f"- **{name}** — {position}"
+                    f"{' · ' + entry['concern'] if entry['concern'] else ''} "
+                    f"→ new, in {link(path)}"
+                )
+            elif known.get("position") != position:
+                lines.append(
+                    f"- **{name}** — position changed from *{known['position']}* "
+                    f"to *{position}* in {link(path)}"
+                )
+    return lines
+
+
 def all_pages() -> list[str]:
     found = []
     for root, dirs, files in os.walk(MIRROR):
@@ -208,6 +283,13 @@ def main() -> int:
         flags = attention_flags(path)
         if flags:
             flagged.append((path, flags))
+
+    dependencies = third_party_changes(added + modified)
+    if dependencies:
+        out.append("## Third-party dependencies to rule on")
+        out.append("")
+        out.extend(dependencies)
+        out.append("")
 
     if flagged or empty or deleted:
         out.append("## Needs attention")
