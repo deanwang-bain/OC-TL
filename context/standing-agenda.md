@@ -105,8 +105,36 @@ security posture assumes managed infrastructure.
 
 **Repository structure is documented nowhere in the space** — no page mentions it.
 
-**Ask: confirm both, and settle whether GLS is a throwaway demo or a version people
-will use. That distinction changes the deployment answer and is currently unwritten.**
+**Ask: confirm both rulings.**
+
+### 7. GLS is roughly seven weeks out and the date is not in the documentation
+
+GLS is the **Global Leadership Summit, mid-to-late October**, where OI 3.0 is
+demonstrated to Bain's most senior internal audience. The
+[GLS Feature Set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19761725586) page is
+empty, [Sprint 1 stories](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19763003424)
+is empty, and the MVP is still "to be signed off" — so the hardest date in the programme
+is the one thing the space does not record.
+
+Five things now have a deadline attached rather than an open question mark:
+
+1. **The 30-minute claim gets its first public test.** The NFR page is empty, so there is
+   no latency budget to build against. Time a full end-to-end run well before October.
+2. **CapIQ latency** (open item 2, unresolved) bites hardest in a live demo, because MVP
+   fetches in real time per run.
+3. **Demo target must be a public company.** A real Bain client brings MNPI, and the test
+   plan forbids production documents in non-production environments. Nike is already used
+   throughout the screen specs.
+4. **Cold start** — set Container Apps minimum replicas to 1 for the demo window.
+5. **Live versus pre-baked** needs a deliberate decision, with a recorded fallback either
+   way.
+
+The unresolved gRPC-versus-REST contradiction (item 1) and the orchestration ambiguity
+(item 2) are also more urgent than they looked yesterday: seven weeks is not long enough
+to build the wrong contract and recover.
+
+**Ask: put the GLS date and demo scope on the GLS Feature Set page, and name an owner
+for demo readiness as distinct from MVP delivery.**
 
 ## Watch list
 

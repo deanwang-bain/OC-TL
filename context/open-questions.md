@@ -52,7 +52,7 @@ source for a decision, confirm the reading before relying on it.
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
-| **What GLS actually is** — throwaway demo or a delivered version | [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) is empty; MVP sign-off calls it a "strategic decision on GLS presentation". Changes the deployment answer — see `decisions/002` |
+| ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page is still empty and should carry this, plus what is in demo scope |
 
 ## Conflicts to resolve
 
