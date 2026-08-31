@@ -47,6 +47,15 @@ Content exists but carries no prose, so it is not greppable. Open the linked ima
 A diagram cannot state a threshold or a rule precisely. Where one of these is the sole
 source for a decision, confirm the reading before relying on it.
 
+## Conflicts to resolve
+
+| Conflict | Detail |
+| -------- | ------ |
+| **Two different architectures** | The Technical Stack page describes a React + FastAPI headless web app; the architecture diagrams describe a chat-first Claude SDK agent swarm with SSE, an eval gate, and an event-sourced DOM. Not obviously the same system |
+| **Two different AI SDKs** | Technical Stack names **AI SDK (ai-sdk.dev)**; the technical architecture diagram names the **Claude SDK**. Both cannot be the orchestrator |
+| **Hosting undecided** | The diagram lists Bedrock / Vertex / MS Foundry as options, with no decision recorded. Affects data residency, which the pre-flight router depends on |
+| **Security split exists only in a diagram** | The app-level (StatusNeo) vs infra-level (Bain) RACI is drawn in the technical architecture SVG but written on no page, including the empty Security Design page |
+
 ## Product and scope
 
 | Question | Why it matters |

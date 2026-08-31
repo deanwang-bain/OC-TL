@@ -36,7 +36,59 @@ that erodes one as significant, not cosmetic.
 Known friction being designed against: existing tools are too linear, offer no
 reasoning visibility, and leave a trust gap on numbers.
 
-## Architecture
+## Architecture as drawn
+
+The three architecture diagrams carry far more detail than any text page, and some of
+it does not match the written pages. They are the most authoritative statement of the
+design that currently exists. Read them directly — they are SVGs, so their labels are
+searchable:
+
+- `confluence/_attachments/19619479668/OI_3_0_Technical_Architecture_v2.svg`
+- `confluence/_attachments/19619840013/OI_3_0_Data_Architecture.svg`
+- `confluence/_attachments/19619840005/OI_3_0_Technical_Architecture.svg` (the *logical*
+  view, despite the filename)
+
+What they establish:
+
+**The system is an agent swarm, not a conventional web app.** A Claude SDK orchestrator
+plans agent calls and streams SSE to a chat-first UI. Named agents: Research,
+IP-Retrieval, Benchmark, SoP Composer, Skeptic, Persona, Slide Composer, VoiceApply,
+3-Takeaway Optimizer. A sector micro-swarm router lazy-loads a different agent stack per
+sector — the diagram notes *"shallow-across-all-sectors is impossible"*.
+
+**The security RACI is a band split in the diagram.** StatusNeo owns **app-level**
+security (authN/Z at the boundary, guardrails, provenance hooks, secure SDLC); Bain owns
+**infra-level** security (VPC, IAM/KMS, IdP, SIEM, retention), validated via TRA →
+Archie. This is the only place that division is written down.
+
+**Three-tier knowledge isolation.** Public → Partner-Private → Firm-Shared, with
+one-way reads and a KM-controlled Curation Gate for opt-in promotion. Partner-Private is
+session-scoped, *"evaporates on close"*, and carries *"no training w/o opt-in"*.
+Per-Partner LoRA adapters have *"no cross-Partner flow"*.
+
+**VCC is a hard dependency with a hard rule.** The VCC deterministic data plane is
+Umbrage-owned and *"consumed at runtime for canonical calc only — never re-derived"*.
+The diagram marks the VCC runtime API/MCP a *"critical-path dependency"* and notes
+*"runtime vs batch determines dynamism"*. Mitigations shown: a thin swappable adapter, a
+contract-first data-package schema, and permanent CI stubs plus outage-resilience tests.
+
+**Gates are services, not UI.** A pre-flight gate service (conflict-of-interest engine,
+blocked-target list, data-residency router) runs before agents; an Eval Gate service
+runs pre-render with an explicit fail→loop back to the agents.
+
+**State is an append-only event log.** A typed DOM store holds
+Deck → Section → Slide → Block → Claim (with `confidence` and `provenance_class`) →
+Evidence; *"deck = projection over events"*, which is what makes time-travel, restore,
+branch, and promote possible. The diagram calls the DOM *"Bain's IP in
+machine-readable form"*.
+
+**A learning pipeline is in scope.** SFT on golden cases, RLVR, and implicit RLHF from
+partner edits, reading the event store and writing the per-Partner adapter store.
+
+Hosting is listed as *Bedrock / Vertex / MS Foundry* — three options, so read this as
+undecided rather than settled.
+
+## Architecture as written
 
 Cloud-native, **headless** architecture. Technology choices map to distinct capability
 layers: client experience, interfaces, deterministic processing, data management,
@@ -60,6 +112,17 @@ Decisions ADR-001 to ADR-009 are **Accepted, pending Bain architect review** (da
 2026-08-21), covering application decomposition, orchestration substrate, and
 persistence topology.
 ([ADRs](../confluence/oi30/architecture/oi-30-architecture-decision-records-19751960620.md))
+
+### Where the written stack and the diagrams disagree
+
+The Technical Stack page describes a conventional headless web application: React SPA,
+FastAPI REST, **AI SDK (ai-sdk.dev)**. The architecture diagrams describe a chat-first
+agent swarm orchestrated by the **Claude SDK**, with SSE streaming, an eval gate, and an
+event-sourced DOM.
+
+These are not obviously the same system, and they name different SDKs. Until someone
+reconciles them, **do not cite either as settled** when reviewing. Flag the conflict
+instead — see `open-questions.md`.
 
 ## Data
 
