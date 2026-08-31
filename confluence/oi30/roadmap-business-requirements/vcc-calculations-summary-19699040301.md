@@ -18,25 +18,11 @@ updated: 2026-08-05T13:50:39.795Z
 
 The VCC calculation framework follows five core principles:
 
-1.
-
-**Use source-reported financial data whenever available.**
-
-1.
-
-**Use fallback hierarchies instead of derived plug values.**
-
-1.
-
-**Maintain consistency between historical and forecast methodologies.**
-
-1.
-
-**Prefer NULL over misleading or fabricated values.**
-
-1.
-
-**Design for extensibility through configurable taxonomies and calculation frameworks.** [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785785923519?context=%7B%22contextType%22:%22chat%22%7D)
+1. **Use source-reported financial data whenever available.**
+1. **Use fallback hierarchies instead of derived plug values.**
+1. **Maintain consistency between historical and forecast methodologies.**
+1. **Prefer NULL over misleading or fabricated values.**
+1. **Design for extensibility through configurable taxonomies and calculation frameworks.** [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785785923519?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Section 1: Revenue Growth & Size of Prize
 
@@ -48,17 +34,9 @@ Projected CAGR = (Future Revenue ÷ Current Revenue)^(1/Years) - 1
 
 Assumptions:
 
--
-
-Current revenue is the latest actual revenue.
-
--
-
-Future revenue comes from analyst consensus forecasts.
-
--
-
-Growth period is the elapsed time between current and future revenue dates. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D)
+- Current revenue is the latest actual revenue.
+- Future revenue comes from analyst consensus forecasts.
+- Growth period is the elapsed time between current and future revenue dates. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D)
 
 ## Revenue Size of Prize
 
@@ -70,27 +48,14 @@ Expected Revenue at Benchmark Growth − Current Analyst Forecast Revenue
 
 Benchmarks used:
 
--
-
-Peer Median Growth
-
--
-
-Top Quartile Growth
+- Peer Median Growth
+- Top Quartile Growth
 
 Assumptions:
 
--
-
-Opportunity is measured versus analyst forecast.
-
--
-
-Peer growth rates come from peer-set benchmarks.
-
--
-
-Future growth is compounded over the analysis period. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781036436165?context=%7B%22contextType%22:%22chat%22%7D)
+- Opportunity is measured versus analyst forecast.
+- Peer growth rates come from peer-set benchmarks.
+- Future growth is compounded over the analysis period. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781036436165?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Section 2: EBIT & EBITDA Margin Opportunity
 
@@ -110,27 +75,14 @@ Size of Prize =
 
 Used for:
 
--
-
-EBIT Margin
-
--
-
-EBITDA Margin
+- EBIT Margin
+- EBITDA Margin
 
 Assumptions:
 
--
-
-Revenue remains constant.
-
--
-
-Margin improvement is the sole driver of opportunity.
-
--
-
-Benchmarks come from peer median or top quartile values. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778519770811?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778515676949?context=%7B%22contextType%22:%22chat%22%7D)
+- Revenue remains constant.
+- Margin improvement is the sole driver of opportunity.
+- Benchmarks come from peer median or top quartile values. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778519770811?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778515676949?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Section 3: Revenue Stack Bar Logic
 
@@ -252,21 +204,15 @@ Only.
 
 1
 
-1.
-
-Combined SG&A (IQ_SGA)
+1. Combined SG&A (IQ_SGA)
 
 2
 
-1.
-
-S&M + G&A
+1. S&M + G&A
 
 3
 
-1.
-
-NULL
+1. NULL
 
 Not acceptable:
 
@@ -276,17 +222,9 @@ SG&A = 0
 
 Assumptions:
 
--
-
-Reported SG&A is more reliable.
-
--
-
-S&M values vary greatly across companies.
-
--
-
-Derived plug values should be avoided. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783526844713?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783352774895?context=%7B%22contextType%22:%22chat%22%7D)
+- Reported SG&A is more reliable.
+- S&M values vary greatly across companies.
+- Derived plug values should be avoided. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783526844713?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783352774895?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Section 5: EV / EBITDA Multiple Logic
 
@@ -328,17 +266,9 @@ Future Enterprise Value
 
 Assumptions:
 
--
-
-EBITDA is future consensus EBITDA.
-
--
-
-Net debt is future consensus net debt.
-
--
-
-Target price represents approximately 12 months forward value. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741656776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D)
+- EBITDA is future consensus EBITDA.
+- Net debt is future consensus net debt.
+- Target price represents approximately 12 months forward value. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741656776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D)
 
 ## Multiple Assumption Scenarios
 
@@ -466,13 +396,8 @@ Example shared:
 
 Assumptions:
 
--
-
-Multiple movement is isolated into a separate factor.
-
--
-
-Dividends contribute after operating and valuation drivers. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785506968589?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785351993183?context=%7B%22contextType%22:%22chat%22%7D)
+- Multiple movement is isolated into a separate factor.
+- Dividends contribute after operating and valuation drivers. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785506968589?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785351993183?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Section 7: Economic Profit Logic
 
@@ -630,15 +555,11 @@ Priority:
 
 1
 
-1.
-
-Line-item R&D
+1. Line-item R&D
 
 2
 
-1.
-
-Footnote R&D
+1. Footnote R&D
 
 Coverage analysis showed this maximizes company coverage while maintaining source precedence. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -648,19 +569,12 @@ Coverage analysis showed this maximizes company coverage while maintaining sourc
 
 Include:
 
--
-
-Latest available company value.
-
--
-
-Values within approximately one year of the latest reporting period.
+- Latest available company value.
+- Values within approximately one year of the latest reporting period.
 
 Exclude:
 
--
-
-Significantly older observations.
+- Significantly older observations.
 
 Important clarification:
 
@@ -672,17 +586,9 @@ Target company should be included in peer median calculations. [[VCC - Data/Calc
 
 Industry mappings should support:
 
--
-
-Bain taxonomy
-
--
-
-PEG taxonomy
-
--
-
-Client taxonomy
+- Bain taxonomy
+- PEG taxonomy
+- Client taxonomy
 
 Implementation:
 
@@ -740,13 +646,8 @@ Blank / NULL
 
 Threshold discussed:
 
--
-
-Initial = 10 years
-
--
-
-Recommended ≈ 1000 days
+- Initial = 10 years
+- Recommended ≈ 1000 days
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781807975749?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781810177592?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -808,75 +709,34 @@ NULL > Incorrect Value
 
 If financial components cannot be sourced reliably:
 
--
-
-Leave metric blank.
-
--
-
-Do not fabricate values.
-
--
-
-Consider excluding company from benchmark calculations. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D)
+- Leave metric blank.
+- Do not fabricate values.
+- Consider excluding company from benchmark calculations. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D)
 
 ## Rule 7: Historical / Forecast Consistency
 
 All methodologies should operate consistently across:
 
--
-
-Historical data
-
--
-
-Forecast data
+- Historical data
+- Forecast data
 
 Applied to:
 
--
-
-Economic Profit
-
--
-
-EV Multiples
-
--
-
-TSR
-
--
-
-NWC Metrics
+- Economic Profit
+- EV Multiples
+- TSR
+- NWC Metrics
 
 This is one of the strongest recurring design rules across the discussion. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778176327885?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785775805202?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Key Open Backlog / Enhancement Ideas
 
-1.
-
-Multiple assumption toggle (constant vs changing multiple). [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741702071?context=%7B%22contextType%22:%22chat%22%7D)
-
-1.
-
-Same-date peer comparison capability. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783975840451?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783974598537?context=%7B%22contextType%22:%22chat%22%7D)
-
-1.
-
-Local-currency storage model instead of USD-only storage. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783611124589?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783612095440?context=%7B%22contextType%22:%22chat%22%7D)
-
-1.
-
-Company-level refresh timestamps. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778106264799?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778105011350?context=%7B%22contextType%22:%22chat%22%7D)
-
-1.
-
-Improved metric lineage and source transparency. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322597503?context=%7B%22contextType%22:%22chat%22%7D)
-
-1.
-
-Multiple taxonomy support (Bain/PEG/client-specific). [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779176180245?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779292643059?context=%7B%22contextType%22:%22chat%22%7D)
+1. Multiple assumption toggle (constant vs changing multiple). [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741702071?context=%7B%22contextType%22:%22chat%22%7D)
+1. Same-date peer comparison capability. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783975840451?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783974598537?context=%7B%22contextType%22:%22chat%22%7D)
+1. Local-currency storage model instead of USD-only storage. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783611124589?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783612095440?context=%7B%22contextType%22:%22chat%22%7D)
+1. Company-level refresh timestamps. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778106264799?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778105011350?context=%7B%22contextType%22:%22chat%22%7D)
+1. Improved metric lineage and source transparency. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322597503?context=%7B%22contextType%22:%22chat%22%7D)
+1. Multiple taxonomy support (Bain/PEG/client-specific). [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779176180245?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779292643059?context=%7B%22contextType%22:%22chat%22%7D)
 
 **Overall conclusion:** The VCC methodology consistently prioritizes source-reported data, explicit fallback hierarchies, reconciliation to financial statements, and conservative handling of incomplete data through NULLs rather than assumptions
 
@@ -888,79 +748,27 @@ I've prepared a comprehensive document-style analysis of the conversation, conso
 
 The conversation primarily focuses on the design, validation, implementation, and quality assurance of calculation methodologies within the Value Creation Center (VCC) platform. The discussions span:
 
--
-
-TSR decomposition methodology
-
--
-
-Revenue growth and Size of Prize calculations
-
--
-
-EBIT and EBITDA calculations
-
--
-
-EV / EBITDA multiple logic
-
--
-
-Economic Profit calculations
-
--
-
-Working Capital metrics (DIO, DPO, DSO, CCC)
-
--
-
-R&D calculations
-
--
-
-Industry mapping and adjustment methodologies
-
--
-
-Capital IQ data sourcing decisions
-
--
-
-Forecast versus historical metric treatment
-
--
-
-Data quality validation rules
-
--
-
-Stakeholder model calculations
-
--
-
-Currency handling and enterprise value processing
+- TSR decomposition methodology
+- Revenue growth and Size of Prize calculations
+- EBIT and EBITDA calculations
+- EV / EBITDA multiple logic
+- Economic Profit calculations
+- Working Capital metrics (DIO, DPO, DSO, CCC)
+- R&D calculations
+- Industry mapping and adjustment methodologies
+- Capital IQ data sourcing decisions
+- Forecast versus historical metric treatment
+- Data quality validation rules
+- Stakeholder model calculations
+- Currency handling and enterprise value processing
 
 The overall direction of the discussions consistently emphasizes:
 
-1.
-
-Alignment with Bain methodologies.
-
-1.
-
-Preference for sourced financial metrics over derived plug values where possible.
-
-1.
-
-Transparent handling of missing data.
-
-1.
-
-Preservation of analytical explainability.
-
-1.
-
-Future flexibility through configurable taxonomies and calculation frameworks.
+1. Alignment with Bain methodologies.
+1. Preference for sourced financial metrics over derived plug values where possible.
+1. Transparent handling of missing data.
+1. Preservation of analytical explainability.
+1. Future flexibility through configurable taxonomies and calculation frameworks.
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785785923519?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1128,13 +936,8 @@ Size of Prize =
 
 Applicable to:
 
--
-
-EBIT Margin
-
--
-
-EBITDA Margin
+- EBIT Margin
+- EBITDA Margin
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778519770811?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778515676949?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1284,13 +1087,8 @@ Do not derive SG&A through EBIT plugs when a directly reported SG&A number exist
 
 Reason:
 
--
-
-Reported SG&A is more reliable.
-
--
-
-S&M definitions vary significantly across companies.
+- Reported SG&A is more reliable.
+- S&M definitions vary significantly across companies.
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783526844713?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1326,17 +1124,9 @@ EV / EBITDA =
 
 Where:
 
--
-
-Target price = future value
-
--
-
-Net debt = future consensus value
-
--
-
-EBITDA = future consensus EBITDA
+- Target price = future value
+- Net debt = future consensus value
+- EBITDA = future consensus EBITDA
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741656776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1362,13 +1152,8 @@ A future toggle was proposed to allow users to select the assumption.
 
 An implementation concern arose because:
 
--
-
-Lever walk calculations used EBIT.
-
--
-
-Final multiple was proposed using EBITDA.
+- Lever walk calculations used EBIT.
+- Final multiple was proposed using EBITDA.
 
 Concern:
 
@@ -1632,17 +1417,9 @@ IQ_RD_EXP_FN
 
 Coverage study:
 
--
-
-Line item only: ~33%
-
--
-
-Footnote only: ~30%
-
--
-
-Both: ~37%
+- Line item only: ~33%
+- Footnote only: ~30%
+- Both: ~37%
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1674,13 +1451,8 @@ IQ_RD_EXP_FN
 
 Priority:
 
-1.
-
-Line item
-
-1.
-
-Footnote
+1. Line item
+1. Footnote
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322597503?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1732,17 +1504,9 @@ Support multiple classifications.
 
 Examples:
 
--
-
-Bain taxonomy
-
--
-
-PEG taxonomy
-
--
-
-Client-specific taxonomy
+- Bain taxonomy
+- PEG taxonomy
+- Client-specific taxonomy
 
 Implementation:
 
@@ -1786,69 +1550,30 @@ Confirmed hierarchy:
 
 ### Customer
 
--
-
-Do #1
-
--
-
-Do #2
+- Do #1
+- Do #2
 
 ### Employee
 
 Contains third-level metrics:
 
--
-
-Engagement
-
--
-
-CEO Approval
-
--
-
-Culture & Values
-
--
-
-Pay & Policies
-
--
-
-Career Opportunities
-
--
-
-Community
-
--
-
-Environmental
-
--
-
-Social
-
--
-
-Governance
+- Engagement
+- CEO Approval
+- Culture & Values
+- Pay & Policies
+- Career Opportunities
+- Community
+- Environmental
+- Social
+- Governance
 
 etc.
 
 ### Investor
 
--
-
-EVA Return
-
--
-
-EVA Growth
-
--
-
-EVA Return Delta
+- EVA Return
+- EVA Growth
+- EVA Return Delta
 
 ### Supplier
 
@@ -1884,25 +1609,11 @@ rather than "Levers".
 
 ### Future Backlog Items
 
--
-
-Multiple-assumption toggle.
-
--
-
-Same-date peer comparison capability.
-
--
-
-Local-currency storage evaluation.
-
--
-
-Company-level refresh timestamps.
-
--
-
-Improved transparency around metric lineage and assumptions.
+- Multiple-assumption toggle.
+- Same-date peer comparison capability.
+- Local-currency storage evaluation.
+- Company-level refresh timestamps.
+- Improved transparency around metric lineage and assumptions.
 
 All conclusions above are derived from discussions contained within VCC - Data/Calc Q&A. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785785923519?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -1912,13 +1623,8 @@ All conclusions above are derived from discussions contained within VCC - Data/C
 
 **Projected Revenue Growth**
 
--
-
-Revenue growth is calculated using CAGR between current revenue and forecast revenue over the forecast period.
-
--
-
-Future opportunity is measured relative to analyst forecast revenue, not current revenue. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D)
+- Revenue growth is calculated using CAGR between current revenue and forecast revenue over the forecast period.
+- Future opportunity is measured relative to analyst forecast revenue, not current revenue. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D)
 
 **Size of Prize Formula**
 
@@ -1934,13 +1640,8 @@ Expected Revenue at Target Growth
 
 Where target growth may be:
 
--
-
-Peer Median Growth
-
--
-
-Top Quartile Growth [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781036436165?context=%7B%22contextType%22:%22chat%22%7D)
+- Peer Median Growth
+- Top Quartile Growth [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781082634095?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781036436165?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### 2. EBIT / EBITDA Margin Opportunity
 
@@ -1952,13 +1653,8 @@ Top Quartile Growth [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/
 
 Applied to both:
 
--
-
-EBIT Margin
-
--
-
-EBITDA Margin [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778519770811?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778515676949?context=%7B%22contextType%22:%22chat%22%7D)
+- EBIT Margin
+- EBITDA Margin [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778519770811?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778515676949?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### 3. Revenue Stack Bar
 
@@ -1986,35 +1682,21 @@ Preferred hierarchy:
 
 1
 
-1.
-
-Reported Combined SG&A (IQ_SGA)
+1. Reported Combined SG&A (IQ_SGA)
 
 2
 
-1.
-
-S&M + G&A
+1. S&M + G&A
 
 3
 
-1.
-
-NULL
+1. NULL
 
 Key assumption:
 
--
-
-Never treat missing SG&A as zero.
-
--
-
-Prefer reported SG&A over derived plugs.
-
--
-
-S&M definitions are inconsistent across companies. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783526844713?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783352774895?context=%7B%22contextType%22:%22chat%22%7D)
+- Never treat missing SG&A as zero.
+- Prefer reported SG&A over derived plugs.
+- S&M definitions are inconsistent across companies. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783526844713?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783352774895?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### 5. EV / EBITDA Multiple
 
@@ -2036,21 +1718,10 @@ EV/EBITDA =
 
 Key assumptions:
 
--
-
-Use future consensus EBITDA.
-
--
-
-Use future consensus net debt.
-
--
-
-Multiple expansion/contraction should be captured separately.
-
--
-
-Avoid mixing EBIT-based and EBITDA-based methodologies in the same calculation chain. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741656776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785775805202?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785780346902?context=%7B%22contextType%22:%22chat%22%7D)
+- Use future consensus EBITDA.
+- Use future consensus net debt.
+- Multiple expansion/contraction should be captured separately.
+- Avoid mixing EBIT-based and EBITDA-based methodologies in the same calculation chain. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741656776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785775805202?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785780346902?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### 6. TSR Decomposition
 
@@ -2180,13 +1851,8 @@ IQ_RD_EXP_FN
 
 Priority:
 
-1.
-
-R&D line item
-
-1.
-
-R&D footnote report
+1. R&D line item
+1. R&D footnote report
 
 [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777322010857?context=%7B%22contextType%22:%22chat%22%7D)
 
@@ -2194,21 +1860,10 @@ R&D footnote report
 
 Key assumptions:
 
--
-
-Use each peer's latest available value.
-
--
-
-Include values up to roughly one year different from the latest peer set period.
-
--
-
-Include target company in median calculations.
-
--
-
-Exclude stale values significantly older than the rest of the peer set. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777931159019?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778086081658?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778084771686?context=%7B%22contextType%22:%22chat%22%7D)
+- Use each peer's latest available value.
+- Include values up to roughly one year different from the latest peer set period.
+- Include target company in median calculations.
+- Exclude stale values significantly older than the rest of the peer set. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1777931159019?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778086081658?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778084771686?context=%7B%22contextType%22:%22chat%22%7D)
 
 # Data Quality Rules Applied
 
@@ -2256,17 +1911,9 @@ can become hundreds of thousands of days.
 
 Rule:
 
--
-
-Blank extreme values above threshold.
-
--
-
-Initial threshold: 10 years.
-
--
-
-Recommendation: reduce toward ~1000 days. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781807975749?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781810177592?context=%7B%22contextType%22:%22chat%22%7D)
+- Blank extreme values above threshold.
+- Initial threshold: 10 years.
+- Recommendation: reduce toward ~1000 days. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781807975749?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1781810177592?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### Missing SG&A Handling
 
@@ -2296,13 +1943,8 @@ Do not default to zero. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.
 
 When key financial components are unavailable:
 
--
-
-Leave metric blank.
-
--
-
-Consider excluding company from comparative analysis if supporting financial data is unreliable. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D)
+- Leave metric blank.
+- Consider excluding company from comparative analysis if supporting financial data is unreliable. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1783447401346?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### R&D Quality Rule
 
@@ -2316,13 +1958,8 @@ to maximize coverage while retaining source hierarchy. [[VCC - Data/Calc Q&A | T
 
 ### Industry Mapping Quality Controls
 
--
-
-Companies with missing industry classifications are excluded until mappings are available.
-
--
-
-Unmapped industries require explicit classification before inclusion. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779694521776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779292843089?context=%7B%22contextType%22:%22chat%22%7D)
+- Companies with missing industry classifications are excluded until mappings are available.
+- Unmapped industries require explicit classification before inclusion. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779694521776?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1779292843089?context=%7B%22contextType%22:%22chat%22%7D)
 
 ### Forecast / Historical Consistency
 
@@ -2332,21 +1969,10 @@ A recurring design principle throughout the conversation:
 
 Examples:
 
--
-
-Economic Profit
-
--
-
-EV/EBITDA Multiples
-
--
-
-TSR decomposition
-
--
-
-Working Capital calculations
+- Economic Profit
+- EV/EBITDA Multiples
+- TSR decomposition
+- Working Capital calculations
 
 This was repeatedly raised to avoid calculation distortions between historical and projected views. [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1778176327885?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785775805202?context=%7B%22contextType%22:%22chat%22%7D), [[VCC - Data/Calc Q&A | Teams]](https://teams.microsoft.com/l/message/19:bd624102235240c0956b930994553624@thread.v2/1785741554557?context=%7B%22contextType%22:%22chat%22%7D)
 

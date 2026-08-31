@@ -12,73 +12,23 @@ updated: 2026-07-12T21:31:14.621Z
 
 To add here data source overview, example (to be modified as this is VERY OLD):
 
--
-
-Data Source Overview
-
--
-
-Sources of Input
-
--
-
-Accessing XpressFeed Loader
-
-  -
-
-Requirements
-
-  -
-
-Instructions
-
--
-
-DB Endpoints
-
-  -
-
-Full List
-
--
-
-ETL Process
-
-  -
-
-Ingestion Process
-
-  -
-
-Cleaning Process
-
--
-
-Storage of Results
-
-  -
-
-Table 1 – raw companies
-
-  -
-
-Table 2 – raw financials
-
-  -
-
-Table 3 – clean companies
-
-  -
-
-Table 4 – time series financials full
-
-  -
-
-Table 5 – time series financials latest
-
--
-
-Attachments
+- [CapIQ XpressFeed (v2.0)]Data Source Overview
+- [CapIQ XpressFeed (v2.0)]Sources of Input
+- [CapIQ XpressFeed (v2.0)]Accessing XpressFeed Loader
+  - [CapIQ XpressFeed (v2.0)]Requirements
+  - [CapIQ XpressFeed (v2.0)]Instructions
+- [CapIQ XpressFeed (v2.0)]DB Endpoints
+  - [CapIQ XpressFeed (v2.0)]Full List
+- [CapIQ XpressFeed (v2.0)]ETL Process
+  - [CapIQ XpressFeed (v2.0)]Ingestion Process
+  - [CapIQ XpressFeed (v2.0)]Cleaning Process
+- [CapIQ XpressFeed (v2.0)]Storage of Results
+  - [CapIQ XpressFeed (v2.0)]Table 1 – raw companies
+  - [CapIQ XpressFeed (v2.0)]Table 2 – raw financials
+  - [CapIQ XpressFeed (v2.0)]Table 3 – clean companies
+  - [CapIQ XpressFeed (v2.0)]Table 4 – time series financials full
+  - [CapIQ XpressFeed (v2.0)]Table 5 – time series financials latest
+- [CapIQ XpressFeed (v2.0)]Attachments
 
 ## **Data Source Overview**
 
@@ -88,102 +38,24 @@ The processed financials are all separate paths by currency.
 
 ## **Sources of Input**
 
-|
-
-**Data Source**
-
- |
-
-**Type of Source**
-
- |
-
-**Type of Data**
-
- |
-
-**Magnitude of Total Rows**
-
- |
-
-**Pull Frequency**
-
- |
+| **Data Source**  | **Type of Source**  | **Type of Data**  | **Magnitude of Total Rows**  | **Pull Frequency**  |
 |---|---|---|---|---|
-|
-
-CapIQ
-
- |
-
-XpressFeed
-
- |
-
-Company Information
-
- |
-
-10s of millions
-
- |
-
-Monthly
-
- |
-|
-
-CapIQ
-
- |
-
-XpressFeed
-
- |
-
-Company Financials
-
-Company Financial History
-
- |
-
-2 billion
-
- |
-
-Daily
-
- |
+| CapIQ  | XpressFeed  | Company Information  | 10s of millions  | Monthly  |
+| CapIQ  | XpressFeed  | Company Financials Company Financial History  | 2 billion  | Daily  |
 
 ## **Accessing XpressFeed Loader**
 
 ### Requirements
 
-1.
-
-Some sort of remote desktop tool (example uses Microsoft Remote Desktop)
+1. Some sort of remote desktop tool (example uses Microsoft Remote Desktop)
 
 ### Instructions
 
-1.
-
-Navigate to the AWS EC2 page and locate the instance named `xpressfeed-client-ec2`
-
-1.
-
-In the remote desktop tool, add a connection (add a PC) with the following information:
-
-  1.
-
-PC Name: `{private IP of the EC2 Instance above}`
-
-  1.
-
-User account: `Administrator`
-
-1.
-
-Launch the connection and the application will be open.
+1. Navigate to the AWS EC2 page and locate the instance named `xpressfeed-client-ec2`
+1. In the remote desktop tool, add a connection (add a PC) with the following information:
+  1. PC Name: `{private IP of the EC2 Instance above}`
+  1. User account: `Administrator`
+1. Launch the connection and the application will be open.
 
 ## **DB Endpoints**
 
@@ -215,23 +87,13 @@ All scripts for the CapIQ ETL process are located in [this repo](https://github.
 
 **Companies Pipeline (Run monthly)**
 
-1.
-
-`capiq_companies_unload.py`
-
-1.
-
-`capiq_cleaning.py`
+1. `capiq_companies_unload.py`
+1. `capiq_cleaning.py`
 
 **Financials Pipeline (Run daily)**
 
-1.
-
-`capiq_financials_unload.py`
-
-1.
-
-`capiq_timeseries_incremental.py`
+1. `capiq_financials_unload.py`
+1. `capiq_timeseries_incremental.py`
 
 ### **Ingestion Process**
 
@@ -259,13 +121,8 @@ Contains companies that are uniquely identified by a `companyid` or `duns_number
 
 **Locations:**
 
--
-
-`??`
-
--
-
-`??`
+- `??`
+- `??`
 
 Contains financial line items that are uniquely identified by a `finperiodid`. Each row refers to a `companyid` and contains information for a specific metric (revenue, ebitda, etc.). Metrics are captured in many different time periods and currencies.
 

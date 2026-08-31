@@ -32,41 +32,15 @@ It provides the canonical representation of companies and the identifiers requir
 
 Responsibilities include:
 
--
-
-Company search and discovery
-
--
-
-Company profiles and reference information
-
--
-
-Ticker and external identifier management
-
--
-
-Sector, industry, geography, and classification mappings
-
--
-
-Company hierarchy and entity relationships
-
--
-
-Currency and reporting metadata
-
--
-
-Company eligibility and coverage
-
--
-
-Company-to-dataset/entity resolution
-
--
-
-Retrieval of company-level analytical context
+- Company search and discovery
+- Company profiles and reference information
+- Ticker and external identifier management
+- Sector, industry, geography, and classification mappings
+- Company hierarchy and entity relationships
+- Currency and reporting metadata
+- Company eligibility and coverage
+- Company-to-dataset/entity resolution
+- Retrieval of company-level analytical context
 
 The domain provides the common company identity used by all downstream financial, indicator, peer, intelligence, and opportunity capabilities.
 
@@ -78,45 +52,16 @@ It provides governed access to historical and current financial, valuation, oper
 
 Responsibilities include:
 
--
-
-Financial statements and reported metrics
-
--
-
-Historical company performance
-
--
-
-Market and share-price information
-
--
-
-Valuation metrics
-
--
-
-Growth and profitability measures
-
--
-
-Sector and market benchmarks
-
--
-
-Currency normalization
-
--
-
-Period and fiscal-calendar alignment
-
--
-
-Financial-data quality and reconciliation
-
--
-
-Derived financial measures
+- Financial statements and reported metrics
+- Historical company performance
+- Market and share-price information
+- Valuation metrics
+- Growth and profitability measures
+- Sector and market benchmarks
+- Currency normalization
+- Period and fiscal-calendar alignment
+- Financial-data quality and reconciliation
+- Derived financial measures
 
 Financial transformations and calculations within this domain are deterministic, version-controlled, reproducible, and traceable to their underlying source data.
 
@@ -130,49 +75,17 @@ It encapsulates the methodologies developed by analysts for converting underlyin
 
 Responsibilities include:
 
--
-
-Indicator definitions and metadata
-
--
-
-Financial indicator calculations
-
--
-
-Sentiment indicator calculations
-
--
-
-Derived analytical measures
-
--
-
-Threshold and scoring logic
-
--
-
-Normalization methodologies
-
--
-
-Indicator weighting and aggregation
-
--
-
-Historical indicator calculation
-
--
-
-Calculation versioning
-
--
-
-Methodology configuration
-
--
-
-Indicator explainability and provenance
+- Indicator definitions and metadata
+- Financial indicator calculations
+- Sentiment indicator calculations
+- Derived analytical measures
+- Threshold and scoring logic
+- Normalization methodologies
+- Indicator weighting and aggregation
+- Historical indicator calculation
+- Calculation versioning
+- Methodology configuration
+- Indicator explainability and provenance
 
 Indicator definitions should be **configuration-driven wherever practical**, allowing methodologies, thresholds, weights, and other parameters to evolve without requiring structural changes to the platform.
 
@@ -190,53 +103,18 @@ AI is particularly relevant within this domain because the underlying informatio
 
 Responsibilities include:
 
--
-
-Targeted information gathering
-
--
-
-Unstructured document processing
-
--
-
-Information extraction
-
--
-
-Company and entity association
-
--
-
-Strategic-event identification
-
--
-
-Sentiment evidence
-
--
-
-Evidence classification
-
--
-
-Source attribution
-
--
-
-Temporal relevance
-
--
-
-Evidence deduplication
-
--
-
-Semantic retrieval
-
--
-
-Evidence confidence and quality metadata
+- Targeted information gathering
+- Unstructured document processing
+- Information extraction
+- Company and entity association
+- Strategic-event identification
+- Sentiment evidence
+- Evidence classification
+- Source attribution
+- Temporal relevance
+- Evidence deduplication
+- Semantic retrieval
+- Evidence confidence and quality metadata
 
 AI may be used to extract, classify, summarize, and interpret external information. However, the underlying evidence and its provenance should be retained wherever possible so that users can understand the basis for an AI-assisted conclusion.
 
@@ -248,45 +126,16 @@ The **Peer & Benchmarking Domain** provides the comparative context required to 
 
 Responsibilities include:
 
--
-
-Standard peer groups
-
--
-
-User-defined peer sets
-
--
-
-Peer-set membership
-
--
-
-Peer-set maintenance
-
--
-
-Sector and industry benchmarks
-
--
-
-Company-to-peer comparison
-
--
-
-Relative financial performance
-
--
-
-Relative indicator positioning
-
--
-
-Ranking and percentile calculations
-
--
-
-Benchmark selection
+- Standard peer groups
+- User-defined peer sets
+- Peer-set membership
+- Peer-set maintenance
+- Sector and industry benchmarks
+- Company-to-peer comparison
+- Relative financial performance
+- Relative indicator positioning
+- Ranking and percentile calculations
+- Benchmark selection
 
 Peer sets are treated as reusable analytical objects rather than simply UI configuration.
 
@@ -300,81 +149,29 @@ This is the principal business domain of the platform.
 
 It combines relevant:
 
--
-
-Financial indicators
-
--
-
-Market indicators
-
--
-
-Sentiment indicators
-
--
-
-Strategic events
-
--
-
-External evidence
-
--
-
-Peer positioning
-
--
-
-Historical trends
-
--
-
-Analyst-defined methodologies
+- Financial indicators
+- Market indicators
+- Sentiment indicators
+- Strategic events
+- External evidence
+- Peer positioning
+- Historical trends
+- Analyst-defined methodologies
 
 to support identification and prioritization of companies that warrant further investigation.
 
 Responsibilities include:
 
--
-
-Opportunity signal aggregation
-
--
-
-Company-level opportunity assessment
-
--
-
-Opportunity scoring or prioritization
-
--
-
-Signal materiality
-
--
-
-Indicator convergence/divergence
-
--
-
-Opportunity rationale
-
--
-
-Historical opportunity evolution
-
--
-
-Identification of supporting and conflicting evidence
-
--
-
-Opportunity status and lifecycle
-
--
-
-Explainability of assessment results
+- Opportunity signal aggregation
+- Company-level opportunity assessment
+- Opportunity scoring or prioritization
+- Signal materiality
+- Indicator convergence/divergence
+- Opportunity rationale
+- Historical opportunity evolution
+- Identification of supporting and conflicting evidence
+- Opportunity status and lifecycle
+- Explainability of assessment results
 
 The Opportunity Assessment Domain should maintain a clear distinction between **deterministic evidence** and **AI-generated interpretation**.
 
@@ -388,45 +185,16 @@ The **Insight & Synthesis Domain** transforms governed platform evidence into co
 
 Typical outputs may include:
 
--
-
-Company summaries
-
--
-
-Opportunity summaries
-
--
-
-Insight cards
-
--
-
-Strategic events
-
--
-
-Business segments
-
--
-
-Opportunity levers
-
--
-
-Supporting evidence
-
--
-
-Financial observations
-
--
-
-Peer observations
-
--
-
-Key changes and developments
+- Company summaries
+- Opportunity summaries
+- Insight cards
+- Strategic events
+- Business segments
+- Opportunity levers
+- Supporting evidence
+- Financial observations
+- Peer observations
+- Key changes and developments
 
 The domain orchestrates AI capabilities but remains responsible for the business contract of the resulting insight.
 
@@ -442,49 +210,17 @@ The **Research & Collaboration Domain** supports the user journey from initial c
 
 Responsibilities include:
 
--
-
-Company watchlists
-
--
-
-Recently viewed companies
-
--
-
-Saved companies
-
--
-
-Saved peer groups
-
--
-
-User preferences
-
--
-
-Research workspaces
-
--
-
-Shared projects
-
--
-
-Saved analyses
-
--
-
-Analyst notes and annotations
-
--
-
-Collaboration around opportunity assessments
-
--
-
-Persisted investigation context
+- Company watchlists
+- Recently viewed companies
+- Saved companies
+- Saved peer groups
+- User preferences
+- Research workspaces
+- Shared projects
+- Saved analyses
+- Analyst notes and annotations
+- Collaboration around opportunity assessments
+- Persisted investigation context
 
 A shared project can aggregate companies, peer sets, indicators, insights, evidence, and user-generated analysis into a persistent workspace.
 
@@ -496,41 +232,15 @@ The **Reporting & Export Domain** converts OI analysis into reusable outputs for
 
 Responsibilities include:
 
--
-
-Export request orchestration
-
--
-
-Selection of companies and analysis
-
--
-
-Data and insight assembly
-
--
-
-Template management
-
--
-
-Financial-data transformation
-
--
-
-Chart and table generation
-
--
-
-PowerPoint generation
-
--
-
-ThinkCell integration
-
--
-
-Export validation and formatting
+- Export request orchestration
+- Selection of companies and analysis
+- Data and insight assembly
+- Template management
+- Financial-data transformation
+- Chart and table generation
+- PowerPoint generation
+- ThinkCell integration
+- Export validation and formatting
 
 The export domain consumes existing platform capabilities rather than independently recreating financial calculations or AI insights.
 
@@ -542,45 +252,16 @@ Identity and access are implemented as cross-cutting platform capabilities.
 
 Responsibilities include:
 
--
-
-Okta integration
-
--
-
-User authentication
-
--
-
-JWT validation
-
--
-
-User identity resolution
-
--
-
-Request-level security context
-
--
-
-Role and entitlement management
-
--
-
-Role-Based Data Access (RBDA)
-
--
-
-Service and agent identity
-
--
-
-Authorization policy enforcement
-
--
-
-Audit information
+- Okta integration
+- User authentication
+- JWT validation
+- User identity resolution
+- Request-level security context
+- Role and entitlement management
+- Role-Based Data Access (RBDA)
+- Service and agent identity
+- Authorization policy enforcement
+- Audit information
 
 Authorization is enforced at appropriate application, service, and data boundaries rather than relying solely on frontend controls.
 
@@ -596,41 +277,15 @@ CQRS is applied within the relevant business domains rather than implemented as 
 
 Queries represent read-oriented interactions such as:
 
--
-
-Searching the company universe
-
--
-
-Retrieving company profiles
-
--
-
-Retrieving financial history
-
--
-
-Retrieving calculated indicators
-
--
-
-Comparing a company with its peers
-
--
-
-Retrieving opportunity assessments
-
--
-
-Retrieving source evidence
-
--
-
-Retrieving generated insights
-
--
-
-Reading watchlists and projects
+- Searching the company universe
+- Retrieving company profiles
+- Retrieving financial history
+- Retrieving calculated indicators
+- Comparing a company with its peers
+- Retrieving opportunity assessments
+- Retrieving source evidence
+- Retrieving generated insights
+- Reading watchlists and projects
 
 The query path can be optimized for analytical workloads and may consume curated data products, materialized views, caches, or other read-optimized representations.
 
@@ -638,37 +293,14 @@ The query path can be optimized for analytical workloads and may consume curated
 
 Commands represent operations that create or change platform state, including:
 
--
-
-Creating or modifying peer sets
-
--
-
-Adding or removing companies from watchlists
-
--
-
-Creating or modifying research projects
-
--
-
-Saving analysis
-
--
-
-Initiating an indicator calculation
-
--
-
-Requesting generation or refresh of an insight
-
--
-
-Initiating an export
-
--
-
-Recording relevant user activity
+- Creating or modifying peer sets
+- Adding or removing companies from watchlists
+- Creating or modifying research projects
+- Saving analysis
+- Initiating an indicator calculation
+- Requesting generation or refresh of an insight
+- Initiating an export
+- Recording relevant user activity
 
 Commands are routed to domain-specific handlers that perform validation, authorization, business-rule enforcement, persistence, and appropriate downstream processing.
 
@@ -678,37 +310,14 @@ The OI workload is inherently **read and analytics intensive**, while write oper
 
 Separating the two paths provides:
 
--
-
-Explicit business intent
-
--
-
-Independent optimization of analytical queries
-
--
-
-Clearer domain boundaries
-
--
-
-Improved testability
-
--
-
-Controlled state mutation
-
--
-
-Better auditability
-
--
-
-Independent scaling of read and write workloads
-
--
-
-Flexibility to introduce caching and materialized analytical representations
+- Explicit business intent
+- Independent optimization of analytical queries
+- Clearer domain boundaries
+- Improved testability
+- Controlled state mutation
+- Better auditability
+- Independent scaling of read and write workloads
+- Flexibility to introduce caching and materialized analytical representations
 
 # OI Data Architecture
 
@@ -734,29 +343,12 @@ The curated layer provides business-ready datasets for company analysis, financi
 
 Existing entities such as:
 
--
-
-`COMPANY`
-
--
-
-`COMPANY_TICKERS`
-
--
-
-`FIRM_METRICS`
-
--
-
-`FIRM_FINANCIALS`
-
--
-
-`FIRM_PRICES_DAILY`
-
--
-
-`SECTOR_METRICS`
+- `COMPANY`
+- `COMPANY_TICKERS`
+- `FIRM_METRICS`
+- `FIRM_FINANCIALS`
+- `FIRM_PRICES_DAILY`
+- `SECTOR_METRICS`
 
 would logically form part of this governed company and financial data landscape.
 
@@ -766,41 +358,15 @@ A dedicated analytical layer should represent the outputs of OI methodologies ra
 
 Conceptually, this includes data products for:
 
--
-
-Indicator definitions
-
--
-
-Indicator values
-
--
-
-Calculation versions
-
--
-
-Indicator history
-
--
-
-Company signals
-
--
-
-Peer benchmarks
-
--
-
-Opportunity assessments
-
--
-
-Opportunity history
-
--
-
-Supporting evidence
+- Indicator definitions
+- Indicator values
+- Calculation versions
+- Indicator history
+- Company signals
+- Peer benchmarks
+- Opportunity assessments
+- Opportunity history
+- Supporting evidence
 
 This layer becomes the governed analytical foundation of the Opportunity Indicator product.
 
@@ -810,37 +376,14 @@ An additional AI-serving layer prepares governed information for semantic retrie
 
 It may contain:
 
--
-
-Embeddings
-
--
-
-Vector representations
-
--
-
-Document chunks
-
--
-
-Semantic metadata
-
--
-
-Company context
-
--
-
-Evidence indexes
-
--
-
-Retrieval structures
-
--
-
-AI context packages
+- Embeddings
+- Vector representations
+- Document chunks
+- Semantic metadata
+- Company context
+- Evidence indexes
+- Retrieval structures
+- AI context packages
 
 This layer prevents AI-specific representations from being mixed unnecessarily with authoritative business data.
 
@@ -848,29 +391,12 @@ This layer prevents AI-specific representations from being mixed unnecessarily w
 
 Generated outputs such as:
 
--
-
-`AI_COMPANY_SUMMARY`
-
--
-
-`AI_COMPANY_CARDS`
-
--
-
-`AI_COMPANY_SEGMENTS`
-
--
-
-`AI_COMPANY_EVENTS`
-
--
-
-`AI_COMPANY_LEVERS`
-
--
-
-`COMPANY_INSIGHTS`
+- `AI_COMPANY_SUMMARY`
+- `AI_COMPANY_CARDS`
+- `AI_COMPANY_SEGMENTS`
+- `AI_COMPANY_EVENTS`
+- `AI_COMPANY_LEVERS`
+- `COMPANY_INSIGHTS`
 
 should be treated as **derived AI products**, with appropriate metadata covering generation time, model/configuration version, source context, provenance, and lifecycle.
 
@@ -882,37 +408,14 @@ User-specific data remains logically separated from authoritative company and an
 
 This includes:
 
--
-
-`USER_COMPANY_WATCHLIST`
-
--
-
-`USER_RECENTLY_VIEWED_COMPANY`
-
--
-
-`USER_PEER_SETS`
-
--
-
-`USER_PEER_SET_MEMBERS`
-
--
-
-Shared projects
-
--
-
-Saved analyses
-
--
-
-Workspace configuration
-
--
-
-User preferences
+- `USER_COMPANY_WATCHLIST`
+- `USER_RECENTLY_VIEWED_COMPANY`
+- `USER_PEER_SETS`
+- `USER_PEER_SET_MEMBERS`
+- Shared projects
+- Saved analyses
+- Workspace configuration
+- User preferences
 
 # Domain Architecture Principle
 

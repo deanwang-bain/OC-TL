@@ -16,24 +16,13 @@ This document translates each OI 3.0 product screen into structured requirements
 
 Columns:
 
--
+- Data Displayed — what the Partner sees on screen
 
-Data Displayed — what the Partner sees on screen
+- Source — where the data comes from (CapIQ, LSEG, Sage, User input, Agent/derived)
 
--
+- Calculation / Logic — how the value is produced
 
-Source — where the data comes from (CapIQ, LSEG, Sage, User input, Agent/derived)
-
--
-
-Calculation / Logic — how the value is produced
-
--
-
-Functional Requirements (UX / Interaction  ) - UX and interaction rules; what the user sees and does
-
--
-
-Functional Requirements (Agent / System Behaviour ) - what the agent and system does behind the scenes
+- Functional Requirements (UX / Interaction  ) - UX and interaction rules; what the user sees and does
+- Functional Requirements (Agent / System Behaviour ) - what the agent and system does behind the scenes
 
  to review both functional columns

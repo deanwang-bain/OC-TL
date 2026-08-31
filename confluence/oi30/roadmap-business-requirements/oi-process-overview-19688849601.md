@@ -20,6 +20,8 @@ Walkthrough recordings:
 
 The dashboard:
 
+_[image: image-20260804-201432.png — not downloaded]_
+
 [https://us-east-1.online.tableau.com/#/site/casepracticeproduct/views/AnswerFirstOI/2_1EBITGMSGATrendSizing?:iid=1](https://us-east-1.online.tableau.com/#/site/casepracticeproduct/views/AnswerFirstOI/2_1EBITGMSGATrendSizing?:iid=1)
 
 Decks - Example slides (please do not share, do not download etc, contains sensitive information):

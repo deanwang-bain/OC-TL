@@ -18,13 +18,8 @@ The React-based frontend is responsible for navigation, workflow orchestration, 
 
 Client applications interact with platform capabilities through two primary patterns:
 
--
-
-**Deterministic interactions through APIs**, providing strongly defined contracts for structured workflows, queries, commands, calculations, and data retrieval.
-
--
-
-**Open-ended interactions through MCP**, enabling natural-language, agent-driven, and exploratory interactions with governed platform capabilities.
+- **Deterministic interactions through APIs**, providing strongly defined contracts for structured workflows, queries, commands, calculations, and data retrieval.
+- **Open-ended interactions through MCP**, enabling natural-language, agent-driven, and exploratory interactions with governed platform capabilities.
 
 This separation allows alternative client experiences and channels to consume the same underlying business and intelligence capabilities without introducing dependencies on the React application.
 
@@ -54,45 +49,16 @@ The **Data and Computation Layer** provides the authoritative foundation for str
 
 Traditional enterprise data architecture principles are applied to capabilities including:
 
--
-
-Data ingestion and integration
-
--
-
-Data quality and reconciliation
-
--
-
-Structured data management
-
--
-
-Deterministic calculation and computation
-
--
-
-Reference and master data
-
--
-
-Metadata and lineage
-
--
-
-Role-Based Data Access (RBDA)
-
--
-
-Data security and classification
-
--
-
-Data contracts and schema governance
-
--
-
-Operational monitoring and auditability
+- Data ingestion and integration
+- Data quality and reconciliation
+- Structured data management
+- Deterministic calculation and computation
+- Reference and master data
+- Metadata and lineage
+- Role-Based Data Access (RBDA)
+- Data security and classification
+- Data contracts and schema governance
+- Operational monitoring and auditability
 
 **Snowflake** provides the primary enterprise analytical data platform, complemented by technologies such as **DuckDB and Svec** where appropriate for workload-specific processing, local analytics, vector retrieval, or AI-oriented access patterns.
 

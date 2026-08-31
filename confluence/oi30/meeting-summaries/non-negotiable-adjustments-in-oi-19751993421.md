@@ -26,23 +26,13 @@ Michelle led a meeting with Sharma and Nikolozi to identify non-negotiable adjus
 
 ### Michelle
 
--
-
-Schedule a follow-up session with Sharma, to discuss peer benchmarking versus Bain experience, focusing on streamlining that process and identifying the minimum viable steps required.
+- Schedule a follow-up session with Sharma, to discuss peer benchmarking versus Bain experience, focusing on streamlining that process and identifying the minimum viable steps required.
 
 ### Sharma,
 
--
-
-Share the Claude skill (LLM tool for pulling non-GAAP adjustments) on the Teams channel for Michelle and the team to review its prompting and background code.
-
--
-
-Loop in the colleague who built the Claude skill so he can receive guidance on improvements and share which sectors the skill handles most effectively.
-
--
-
-Ask the colleague who built the Claude skill to identify and share which sectors (beyond healthcare and software) are most easily analyzed by the tool.
+- Share the Claude skill (LLM tool for pulling non-GAAP adjustments) on the Teams channel for Michelle and the team to review its prompting and background code.
+- Loop in the colleague who built the Claude skill so he can receive guidance on improvements and share which sectors the skill handles most effectively.
+- Ask the colleague who built the Claude skill to identify and share which sectors (beyond healthcare and software) are most easily analyzed by the tool.
 
 ## Summary
 

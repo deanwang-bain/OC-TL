@@ -12,19 +12,13 @@ updated: 2026-08-26T04:55:22.628Z
 
 **A. Industry Watch-Outs**
 
+_[image: image-20260814-114716.png — not downloaded]_
+
 **B. These 3 files are:**
 
-1.
-
-**Past OI peer excel which has the target OI’s and their peers covered**
-
-1.
-
-**Industry/Sector Map they use in A1 OI**
-
-1.
-
-** Levers Library which is a compendium of various Bain experience profiles across different target companies under different sectors**
+1. **Past OI peer excel which has the target OI’s and their peers covered**
+1. **Industry/Sector Map they use in A1 OI**
+1. ** Levers Library which is a compendium of various Bain experience profiles across different target companies under different sectors**
 
 **C. Claude skill **that builds a Bain-formatted Excel workbook that walks a company's official GAAP profit figures to its adjusted EBIT/EBITDA, line by line, sourced from official filings. It directly supports the peer benchmarking logic in OI 3.0 — specifically the adjustment methodology in Screen 02 and Screen 04, where reported peer financials need to be normalised before comparison. Ensures the adjusted baseline is traceable, tied out to published figures, and defensible to Partners**:**
 

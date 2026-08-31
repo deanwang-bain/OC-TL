@@ -28,59 +28,27 @@ The meeting focused on discussing the OI (Operating Income) calculation methodol
 
 ### Noah
 
--
-
-Collaborate with Sharma, to review the analysis repository and identify what has not yet been captured from VCC, and build out the same spreadsheet format of metric calculations to pass to the development team.
-
--
-
-Plan a future session to go into more depth on metric calculation methodology, size of prize calculations, and triangulation with cost bar breakdown.
-
--
-
-Confirm availability and timing for the next day's session, targeting a morning slot (around 10am Singapore time) for topics requiring his input.
+- Collaborate with Sharma, to review the analysis repository and identify what has not yet been captured from VCC, and build out the same spreadsheet format of metric calculations to pass to the development team.
+- Plan a future session to go into more depth on metric calculation methodology, size of prize calculations, and triangulation with cost bar breakdown.
+- Confirm availability and timing for the next day's session, targeting a morning slot (around 10am Singapore time) for topics requiring his input.
 
 ### SNG
 
--
-
-Gather the development team (Giorgi, Nico, Sandeep, Michelle) to assess complexity estimates for the calculations discussed and report back to Noah.
-
--
-
-Obtain the VCC codebase and share it with the development team as a reference before they begin writing the calculation engine.
-
--
-
-Check with Fritz to quickly revalidate the designs during the afternoon session.
-
--
-
-Organize a session for the next day focusing on refining the MVP plan, laser-focusing on calculations (what is in vs. out), and adding an adjustments stream to the MVP plan.
+- Gather the development team (Giorgi, Nico, Sandeep, Michelle) to assess complexity estimates for the calculations discussed and report back to Noah.
+- Obtain the VCC codebase and share it with the development team as a reference before they begin writing the calculation engine.
+- Check with Fritz to quickly revalidate the designs during the afternoon session.
+- Organize a session for the next day focusing on refining the MVP plan, laser-focusing on calculations (what is in vs. out), and adding an adjustments stream to the MVP plan.
 
 ### Sharma,
 
--
-
-Share the Aptiv and Coca-Cola adjustment summary Excel workbooks with the development team (ensuring no confidential data is included).
-
--
-
-Share additional adjustment summary Excel workbooks if the team can easily digest the initial ones shared.
-
--
-
-Share the Claude-based peer comparability skill file directly with the team.
-
--
-
-Set up a separate session to walk through the A1OI methodology and how CapIQ numbers are manipulated to create comparable COGS and SG&A.
+- Share the Aptiv and Coca-Cola adjustment summary Excel workbooks with the development team (ensuring no confidential data is included).
+- Share additional adjustment summary Excel workbooks if the team can easily digest the initial ones shared.
+- Share the Claude-based peer comparability skill file directly with the team.
+- Set up a separate session to walk through the A1OI methodology and how CapIQ numbers are manipulated to create comparable COGS and SG&A.
 
 ### Collaboration
 
--
-
-Joanna and Ramba (referenced by SNG): Send the latest visuals/designs to the team ahead of the next day's session.
+- Joanna and Ramba (referenced by SNG): Send the latest visuals/designs to the team ahead of the next day's session.
 
 ## Summary
 

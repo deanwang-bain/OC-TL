@@ -12,225 +12,23 @@ updated: 2026-07-20T05:24:57.267Z
 
 Discovery one off
 
-|
-
-**Meeting**
-
- |
-
-**Goal**
-
- |
-
-**Attendees**
-
- |
-
-**Duration **
-
- |
-
-**Agenda owner**
-
- |
+| **Meeting**  | **Goal**  | **Attendees**  | **Duration **  | **Agenda owner**  |
 |---|---|---|---|---|
-|
-
-Kick off
-
- |
-
-Vision overview
-
- |
-
-Stakeholders Bain
-
-Bain Tech LT
-
-SN team
-
- |
-
-1h
-
- |
-
-Kasia
-
- |
-|
-
-UX discovery review
-
- |
-
-Review of findings of UX discovery and user interviews
-
- |
-
-Stakeholders
-
-Bain Tech LT
-
-SN representatives
-
-Keep the group up to 7 people to keep it efficient
-
- |
-
-1h
-
- |
-
-Joanna
-
- |
-|
-
-Data overview
-
- |
-
-What we know about data so far
-
- |
-
-Bain Tech LT
-
-SN representatives
-
- |
-
-1h
-
- |
-
-Michelle
-
- |
+| Kick off  | Vision overview  | Stakeholders Bain Bain Tech LT SN team  | 1h  | Kasia  |
+| UX discovery review  | Review of findings of UX discovery and user interviews  | Stakeholders Bain Tech LT SN representatives Keep the group up to 7 people to keep it efficient  | 1h  | Joanna  |
+| Data overview  | What we know about data so far  | Bain Tech LT SN representatives  | 1h  | Michelle  |
 
 Re-occuring Scrum Meetings
 
-|
-
-**Meeting**
-
- |
-
-**Attendees**
-
- |
-
-**Cadence**
-
- |
-
-**Agenda owner**
-
- |
+| **Meeting**  | **Attendees**  | **Cadence**  | **Agenda owner**  |
 |---|---|---|---|
-|
-
-Daily stand up
-
- |
-
-SN + Bain
-
- |
-
-Alternating morning APAC +9am UK
-
- |
-
-Scrum Master from SN
-
- |
-|
-
-Planning
-
- |
-
-SN + Bain
-
- |
-
-every two weeks 1h
-
- |
-
-Scrum Master
-
- |
-|
-
-Grooming
-
- |
-
-SN + Bain
-
- |
-
-every two weeks 1h
-
- |
-
-Scrum Master
-
- |
-|
-
-Prioritisation
-
- |
-
-SN + Bain
-
- |
-
-every two weeks 1h
-
- |
-
-Scrum Master
-
- |
-|
-
-Retro
-
- |
-
-SN + Bain
-
- |
-
-every two weeks 1h
-
- |
-
-Scrum Master
-
- |
-|
-
-Jira tickets review
-
- |
-
-PM + Scrum Master + Architect
-
- |
-
-once a week
-
- |
-
-Scrum Master
-
- |
+| Daily stand up  | SN + Bain  | Alternating morning APAC +9am UK  | Scrum Master from SN  |
+| Planning  | SN + Bain  | every two weeks 1h  | Scrum Master  |
+| Grooming  | SN + Bain  | every two weeks 1h  | Scrum Master  |
+| Prioritisation  | SN + Bain  | every two weeks 1h  | Scrum Master  |
+| Retro  | SN + Bain  | every two weeks 1h  | Scrum Master  |
+| Jira tickets review  | PM + Scrum Master + Architect  | once a week  | Scrum Master  |
 
 For discussion:
+
+_[image: image-20260712-213656.png — not downloaded]__[image: image-20260712-213706.png — not downloaded]__[image: image-20260712-213717.png — not downloaded]_

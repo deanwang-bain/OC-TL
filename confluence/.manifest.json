@@ -1,357 +1,360 @@
 {
-  "19588546617": {
-    "path": "oi30/roadmap-business-requirements-19588546617.md",
-    "title": "Roadmap / Business Requirements",
-    "version": 2
-  },
-  "19588612195": {
-    "path": "oi30/ways-of-working-19588612195.md",
-    "title": "Ways of Working",
-    "version": 2
-  },
-  "19588841975": {
-    "path": "oi30-19588841975.md",
-    "title": "OI3.0",
-    "version": 8
-  },
-  "19589234692": {
-    "path": "oi30/architecture-19589234692.md",
-    "title": "Architecture",
-    "version": 2
-  },
-  "19611680776": {
-    "path": "oi30/data-requirements-19611680776.md",
-    "title": "Data Requirements",
-    "version": 2
-  },
-  "19617939629": {
-    "path": "oi30/overview/vision-19617939629.md",
-    "title": "Vision",
-    "version": 2
-  },
-  "19618758834": {
-    "path": "oi30/overview-19618758834.md",
-    "title": "Overview",
-    "version": 1
-  },
-  "19618758842": {
-    "path": "oi30/overview/persona-19618758842.md",
-    "title": "Persona",
-    "version": 3
-  },
-  "19618758856": {
-    "path": "oi30/overview/success-metrics-19618758856.md",
-    "title": "Success metrics",
-    "version": 1
-  },
-  "19618889872": {
-    "path": "oi30/data-requirements/data-sources-summary/lseg-19618889872.md",
-    "title": "LSEG",
-    "version": 1
-  },
-  "19618889880": {
-    "path": "oi30/ways-of-working/meetings-overview-19618889880.md",
-    "title": "Meetings overview",
-    "version": 5
-  },
-  "19619381356": {
-    "path": "oi30/data-requirements/data-sources-summary/capiq-overview-19619381356.md",
-    "title": "CapIQ overview",
-    "version": 1
-  },
-  "19619414096": {
-    "path": "oi30/data-requirements/data-dictionary-19619414096.md",
-    "title": "Data Dictionary",
-    "version": 6
-  },
-  "19619479668": {
-    "path": "oi30/architecture/technical-architecture-19619479668.md",
-    "title": "Technical Architecture",
-    "version": 1
-  },
-  "19619577898": {
-    "path": "oi30/overview/jobs-to-be-done-19619577898.md",
-    "title": "Jobs to be done",
-    "version": 1
-  },
-  "19619577930": {
-    "path": "oi30/data-requirements/bain-taxonomy-mapping-19619577930.md",
-    "title": "Bain Taxonomy Mapping",
-    "version": 1
-  },
-  "19619676163": {
-    "path": "oi30/data-requirements/data-sources-summary-19619676163.md",
-    "title": "Data Sources summary",
-    "version": 6
-  },
-  "19619676190": {
-    "path": "oi30/roadmap-business-requirements/mvp-to-be-signed-off-19619676190.md",
-    "title": "MVP - to be signed off",
-    "version": 1
-  },
-  "19619840005": {
-    "path": "oi30/architecture/logic-architecture-19619840005.md",
-    "title": "Logic Architecture",
-    "version": 2
-  },
-  "19619840013": {
-    "path": "oi30/architecture/data-architecture-19619840013.md",
-    "title": "Data Architecture",
-    "version": 1
-  },
-  "19623641173": {
-    "path": "oi30/data-requirements/data-sources-summary/expert-search-integration-19623641173.md",
-    "title": "Expert search integration (?)",
-    "version": 1
-  },
-  "19623706710": {
-    "path": "oi30/ways-of-working/workshops-plan-19623706710.md",
-    "title": "Workshops plan",
-    "version": 23
-  },
-  "19623805016": {
-    "path": "oi30/data-requirements/data-sources-summary/iris-integration-19623805016.md",
-    "title": "IRIS integration",
-    "version": 1
-  },
-  "19627835552": {
-    "path": "oi30/overview/design-requirements-components-19627835552.md",
-    "title": "Design requirements & components",
-    "version": 5
-  },
-  "19628884086": {
-    "path": "oi30/overview/design-principles-19628884086.md",
-    "title": "Design Principles",
-    "version": 4
-  },
-  "19640975400": {
-    "path": "oi30/ways-of-working/onboarding-statusneo-19640975400.md",
-    "title": "Onboarding - StatusNeo",
-    "version": 8
-  },
-  "19665354783": {
-    "path": "oi30/roadmap-business-requirements/requirements-the-high-level-principles-19665354783.md",
-    "title": "Requirements - the high level principles",
-    "version": 1
-  },
-  "19666239771": {
-    "path": "oi30/data-requirements/data-sources-summary/vcc-overview-19666239771.md",
-    "title": "VCC overview",
-    "version": 1
-  },
-  "19676725261": {
-    "path": "oi30/ways-of-working/knowledge-transfer-week-1-sessions-19676725261.md",
-    "title": "Knowledge transfer - week 1 sessions",
-    "version": 3
-  },
-  "19677053214": {
-    "path": "oi30/architecture/important-technology-contacts-19677053214.md",
-    "title": "Important Technology Contacts",
-    "version": 1
-  },
-  "19688849601": {
-    "path": "oi30/roadmap-business-requirements/oi-process-overview-19688849601.md",
-    "title": "OI Process overview",
-    "version": 4
-  },
-  "19689340995": {
-    "path": "oi30/roadmap-business-requirements/confidential-data-19689340995.md",
-    "title": "Confidential data",
-    "version": 1
-  },
-  "19691733117": {
-    "path": "oi30/ways-of-working/onboarding-statusneo/andromeda-bains-agentic-ai-platform-19691733117.md",
-    "title": "Andromeda - Bain's Agentic AI Platform",
-    "version": 1
-  },
-  "19693240474": {
-    "path": "oi30/roadmap-business-requirements/requirements-the-high-level-principles/high-level-requirements-19693240474.md",
-    "title": "High Level Requirements",
-    "version": 3
-  },
-  "19696746543": {
-    "path": "oi30/meeting-summaries-19696746543.md",
-    "title": "Meeting Summaries",
-    "version": 1
-  },
-  "19696746551": {
-    "path": "oi30/meeting-summaries/vcc-overview-meeting-19696746551.md",
-    "title": "VCC Overview meeting",
-    "version": 4
-  },
-  "19699040301": {
-    "path": "oi30/roadmap-business-requirements/vcc-calculations-summary-19699040301.md",
-    "title": "VCC Calculations summary",
-    "version": 2
-  },
-  "19704512648": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md",
-    "title": "Technical Stack",
-    "version": 1
-  },
-  "19704905798": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/nfr-non-functional-design-choices-19704905798.md",
-    "title": "NFR (Non-Functional) Design Choices",
-    "version": 1
-  },
-  "19704938600": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md",
-    "title": "Endpoints & Interfaces Design",
-    "version": 1
-  },
-  "19705004106": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/architecture-layers-19705004106.md",
-    "title": "Architecture Layers",
-    "version": 1
-  },
-  "19705004114": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/domain-architecture-19705004114.md",
-    "title": "Domain Architecture",
-    "version": 1
-  },
-  "19705069661": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/data-management-layer-19705069661.md",
-    "title": "Data Management Layer",
-    "version": 1
-  },
-  "19705135241": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/logical-application-flows-19705135241.md",
-    "title": "Logical Application Flows",
-    "version": 2
-  },
-  "19705167996": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/security-design-processing-ai-and-data-19705167996.md",
-    "title": "Security Design (Processing, AI and Data)",
-    "version": 1
-  },
-  "19705233507": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md",
-    "title": "Deployment Design (AI, Compute, Data, Components - CI/CD)",
-    "version": 1
-  },
-  "19705397258": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level-19705397258.md",
-    "title": "Opportunity-Indicator Architecture (high Level)",
-    "version": 9
-  },
-  "19705430028": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md",
-    "title": "Observability, Logging, Notification & Monitoring Design",
-    "version": 1
-  },
-  "19705593880": {
-    "path": "oi30/ways-of-working/onboarding-statusneo/onboarding-tracker-19705593880.md",
-    "title": "Onboarding tracker",
-    "version": 1
-  },
-  "19710279791": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-02-peer-review-19710279791.md",
-    "title": "Screen 02: Peer Review",
-    "version": 23
-  },
-  "19710705690": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-04-analysis-update-in-progress-19710705690.md",
-    "title": "Screen 04: Analysis (update in progress)",
-    "version": 10
-  },
-  "19710705698": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-05-output-deck-builder-update-in-progress-19710705698.md",
-    "title": "Screen 05: Output & Deck Builder (update in progress)",
-    "version": 10
-  },
-  "19710738476": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-00-dashboard-19710738476.md",
-    "title": "Screen 00: Dashboard",
-    "version": 18
-  },
-  "19710771207": {
-    "path": "oi30/data-requirements/data-requirements-per-screen-19710771207.md",
-    "title": "Data Requirements per Screen",
-    "version": 6
-  },
-  "19710771226": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-03-case-for-change-update-in-progress-19710771226.md",
-    "title": "Screen 03: Case for Change (update in progress)",
-    "version": 8
-  },
-  "19710967811": {
-    "path": "oi30/data-requirements/data-requirements-per-screen/screen-01-target-setup-19710967811.md",
-    "title": "Screen 01: Target Setup",
-    "version": 21
-  },
-  "19714244769": {
-    "path": "oi30/roadmap-business-requirements/ux-workshops-open-questions-from-dev-team-19714244769.md",
-    "title": "UX workshops - open questions from dev team",
-    "version": 8
-  },
-  "19714834434": {
-    "path": "oi30/roadmap-business-requirements/methodology-questions-19714834434.md",
-    "title": "Methodology questions",
-    "version": 5
-  },
-  "19727286292": {
-    "path": "oi30/feature-list-19727286292.md",
-    "title": "Feature List",
-    "version": 1
-  },
-  "19727351814": {
-    "path": "oi30/mvp-sprint-map-19727351814.md",
-    "title": "MVP Sprint Map",
-    "version": 1
-  },
-  "19727482890": {
-    "path": "oi30/data-requirements/data-sources-from-current-oi-19727482890.md",
-    "title": "Data sources from Current OI",
-    "version": 3
-  },
-  "19735543865": {
-    "path": "oi30/meeting-summaries/workshop-data-calculations-19735543865.md",
-    "title": "Workshop: Data calculations",
-    "version": 2
-  },
-  "19751338017": {
-    "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md",
-    "title": "Technology Choices",
-    "version": 1
-  },
-  "19751501861": {
-    "path": "oi30/meeting-summaries/workshop-architecture-discussion-uxui-discussion-joined-into-one-block-19751501861.md",
-    "title": "Workshop: Architecture discussion & UX/UI discussion (joined into one block)",
-    "version": 2
-  },
-  "19751862300": {
-    "path": "oi30/meeting-summaries/workshop-trade-offs-discussion-followed-by-feedback-with-fritz-19751862300.md",
-    "title": "Workshop: Trade offs discussion followed by feedback with Fritz",
-    "version": 2
-  },
-  "19751960620": {
-    "path": "oi30/architecture/oi-30-architecture-decision-records-19751960620.md",
-    "title": "OI 3.0 Architecture Decision Records",
-    "version": 1
-  },
-  "19751993421": {
-    "path": "oi30/meeting-summaries/non-negotiable-adjustments-in-oi-19751993421.md",
-    "title": "Non-negotiable adjustments in OI",
-    "version": 2
-  },
-  "19752779777": {
-    "path": "oi30/meeting-summaries/oi-data-sync-19752779777.md",
-    "title": "OI data_sync",
-    "version": 1
-  },
-  "19761725586": {
-    "path": "oi30/gls-feature-set-19761725586.md",
-    "title": "GLS Feature Set",
-    "version": 1
-  },
-  "19763003424": {
-    "path": "oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md",
-    "title": "Sprint 1 stories, dependencies and decisions",
-    "version": 1
-  },
-  "19765133323": {
-    "path": "oi30/architecture/agent-validation-test-plan-19765133323.md",
-    "title": "Agent_Validation_Test_Plan",
-    "version": 1
+  "converter_version": 3,
+  "pages": {
+    "19588546617": {
+      "path": "oi30/roadmap-business-requirements-19588546617.md",
+      "title": "Roadmap / Business Requirements",
+      "version": 2
+    },
+    "19588612195": {
+      "path": "oi30/ways-of-working-19588612195.md",
+      "title": "Ways of Working",
+      "version": 2
+    },
+    "19588841975": {
+      "path": "oi30-19588841975.md",
+      "title": "OI3.0",
+      "version": 8
+    },
+    "19589234692": {
+      "path": "oi30/architecture-19589234692.md",
+      "title": "Architecture",
+      "version": 2
+    },
+    "19611680776": {
+      "path": "oi30/data-requirements-19611680776.md",
+      "title": "Data Requirements",
+      "version": 2
+    },
+    "19617939629": {
+      "path": "oi30/overview/vision-19617939629.md",
+      "title": "Vision",
+      "version": 2
+    },
+    "19618758834": {
+      "path": "oi30/overview-19618758834.md",
+      "title": "Overview",
+      "version": 1
+    },
+    "19618758842": {
+      "path": "oi30/overview/persona-19618758842.md",
+      "title": "Persona",
+      "version": 3
+    },
+    "19618758856": {
+      "path": "oi30/overview/success-metrics-19618758856.md",
+      "title": "Success metrics",
+      "version": 1
+    },
+    "19618889872": {
+      "path": "oi30/data-requirements/data-sources-summary/lseg-19618889872.md",
+      "title": "LSEG",
+      "version": 1
+    },
+    "19618889880": {
+      "path": "oi30/ways-of-working/meetings-overview-19618889880.md",
+      "title": "Meetings overview",
+      "version": 5
+    },
+    "19619381356": {
+      "path": "oi30/data-requirements/data-sources-summary/capiq-overview-19619381356.md",
+      "title": "CapIQ overview",
+      "version": 1
+    },
+    "19619414096": {
+      "path": "oi30/data-requirements/data-dictionary-19619414096.md",
+      "title": "Data Dictionary",
+      "version": 6
+    },
+    "19619479668": {
+      "path": "oi30/architecture/technical-architecture-19619479668.md",
+      "title": "Technical Architecture",
+      "version": 1
+    },
+    "19619577898": {
+      "path": "oi30/overview/jobs-to-be-done-19619577898.md",
+      "title": "Jobs to be done",
+      "version": 1
+    },
+    "19619577930": {
+      "path": "oi30/data-requirements/bain-taxonomy-mapping-19619577930.md",
+      "title": "Bain Taxonomy Mapping",
+      "version": 1
+    },
+    "19619676163": {
+      "path": "oi30/data-requirements/data-sources-summary-19619676163.md",
+      "title": "Data Sources summary",
+      "version": 6
+    },
+    "19619676190": {
+      "path": "oi30/roadmap-business-requirements/mvp-to-be-signed-off-19619676190.md",
+      "title": "MVP - to be signed off",
+      "version": 1
+    },
+    "19619840005": {
+      "path": "oi30/architecture/logic-architecture-19619840005.md",
+      "title": "Logic Architecture",
+      "version": 2
+    },
+    "19619840013": {
+      "path": "oi30/architecture/data-architecture-19619840013.md",
+      "title": "Data Architecture",
+      "version": 1
+    },
+    "19623641173": {
+      "path": "oi30/data-requirements/data-sources-summary/expert-search-integration-19623641173.md",
+      "title": "Expert search integration (?)",
+      "version": 1
+    },
+    "19623706710": {
+      "path": "oi30/ways-of-working/workshops-plan-19623706710.md",
+      "title": "Workshops plan",
+      "version": 23
+    },
+    "19623805016": {
+      "path": "oi30/data-requirements/data-sources-summary/iris-integration-19623805016.md",
+      "title": "IRIS integration",
+      "version": 1
+    },
+    "19627835552": {
+      "path": "oi30/overview/design-requirements-components-19627835552.md",
+      "title": "Design requirements & components",
+      "version": 5
+    },
+    "19628884086": {
+      "path": "oi30/overview/design-principles-19628884086.md",
+      "title": "Design Principles",
+      "version": 4
+    },
+    "19640975400": {
+      "path": "oi30/ways-of-working/onboarding-statusneo-19640975400.md",
+      "title": "Onboarding - StatusNeo",
+      "version": 8
+    },
+    "19665354783": {
+      "path": "oi30/roadmap-business-requirements/requirements-the-high-level-principles-19665354783.md",
+      "title": "Requirements - the high level principles",
+      "version": 1
+    },
+    "19666239771": {
+      "path": "oi30/data-requirements/data-sources-summary/vcc-overview-19666239771.md",
+      "title": "VCC overview",
+      "version": 1
+    },
+    "19676725261": {
+      "path": "oi30/ways-of-working/knowledge-transfer-week-1-sessions-19676725261.md",
+      "title": "Knowledge transfer - week 1 sessions",
+      "version": 3
+    },
+    "19677053214": {
+      "path": "oi30/architecture/important-technology-contacts-19677053214.md",
+      "title": "Important Technology Contacts",
+      "version": 1
+    },
+    "19688849601": {
+      "path": "oi30/roadmap-business-requirements/oi-process-overview-19688849601.md",
+      "title": "OI Process overview",
+      "version": 4
+    },
+    "19689340995": {
+      "path": "oi30/roadmap-business-requirements/confidential-data-19689340995.md",
+      "title": "Confidential data",
+      "version": 1
+    },
+    "19691733117": {
+      "path": "oi30/ways-of-working/onboarding-statusneo/andromeda-bains-agentic-ai-platform-19691733117.md",
+      "title": "Andromeda - Bain's Agentic AI Platform",
+      "version": 1
+    },
+    "19693240474": {
+      "path": "oi30/roadmap-business-requirements/requirements-the-high-level-principles/high-level-requirements-19693240474.md",
+      "title": "High Level Requirements",
+      "version": 3
+    },
+    "19696746543": {
+      "path": "oi30/meeting-summaries-19696746543.md",
+      "title": "Meeting Summaries",
+      "version": 1
+    },
+    "19696746551": {
+      "path": "oi30/meeting-summaries/vcc-overview-meeting-19696746551.md",
+      "title": "VCC Overview meeting",
+      "version": 4
+    },
+    "19699040301": {
+      "path": "oi30/roadmap-business-requirements/vcc-calculations-summary-19699040301.md",
+      "title": "VCC Calculations summary",
+      "version": 2
+    },
+    "19704512648": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md",
+      "title": "Technical Stack",
+      "version": 1
+    },
+    "19704905798": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/nfr-non-functional-design-choices-19704905798.md",
+      "title": "NFR (Non-Functional) Design Choices",
+      "version": 1
+    },
+    "19704938600": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md",
+      "title": "Endpoints & Interfaces Design",
+      "version": 1
+    },
+    "19705004106": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/architecture-layers-19705004106.md",
+      "title": "Architecture Layers",
+      "version": 1
+    },
+    "19705004114": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/domain-architecture-19705004114.md",
+      "title": "Domain Architecture",
+      "version": 1
+    },
+    "19705069661": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/data-management-layer-19705069661.md",
+      "title": "Data Management Layer",
+      "version": 1
+    },
+    "19705135241": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/logical-application-flows-19705135241.md",
+      "title": "Logical Application Flows",
+      "version": 2
+    },
+    "19705167996": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/security-design-processing-ai-and-data-19705167996.md",
+      "title": "Security Design (Processing, AI and Data)",
+      "version": 1
+    },
+    "19705233507": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md",
+      "title": "Deployment Design (AI, Compute, Data, Components - CI/CD)",
+      "version": 1
+    },
+    "19705397258": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level-19705397258.md",
+      "title": "Opportunity-Indicator Architecture (high Level)",
+      "version": 9
+    },
+    "19705430028": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md",
+      "title": "Observability, Logging, Notification & Monitoring Design",
+      "version": 1
+    },
+    "19705593880": {
+      "path": "oi30/ways-of-working/onboarding-statusneo/onboarding-tracker-19705593880.md",
+      "title": "Onboarding tracker",
+      "version": 1
+    },
+    "19710279791": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-02-peer-review-19710279791.md",
+      "title": "Screen 02: Peer Review",
+      "version": 23
+    },
+    "19710705690": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-04-analysis-update-in-progress-19710705690.md",
+      "title": "Screen 04: Analysis (update in progress)",
+      "version": 10
+    },
+    "19710705698": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-05-output-deck-builder-update-in-progress-19710705698.md",
+      "title": "Screen 05: Output & Deck Builder (update in progress)",
+      "version": 10
+    },
+    "19710738476": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-00-dashboard-19710738476.md",
+      "title": "Screen 00: Dashboard",
+      "version": 18
+    },
+    "19710771207": {
+      "path": "oi30/data-requirements/data-requirements-per-screen-19710771207.md",
+      "title": "Data Requirements per Screen",
+      "version": 6
+    },
+    "19710771226": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-03-case-for-change-update-in-progress-19710771226.md",
+      "title": "Screen 03: Case for Change (update in progress)",
+      "version": 8
+    },
+    "19710967811": {
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-01-target-setup-19710967811.md",
+      "title": "Screen 01: Target Setup",
+      "version": 21
+    },
+    "19714244769": {
+      "path": "oi30/roadmap-business-requirements/ux-workshops-open-questions-from-dev-team-19714244769.md",
+      "title": "UX workshops - open questions from dev team",
+      "version": 8
+    },
+    "19714834434": {
+      "path": "oi30/roadmap-business-requirements/methodology-questions-19714834434.md",
+      "title": "Methodology questions",
+      "version": 5
+    },
+    "19727286292": {
+      "path": "oi30/feature-list-19727286292.md",
+      "title": "Feature List",
+      "version": 1
+    },
+    "19727351814": {
+      "path": "oi30/mvp-sprint-map-19727351814.md",
+      "title": "MVP Sprint Map",
+      "version": 1
+    },
+    "19727482890": {
+      "path": "oi30/data-requirements/data-sources-from-current-oi-19727482890.md",
+      "title": "Data sources from Current OI",
+      "version": 3
+    },
+    "19735543865": {
+      "path": "oi30/meeting-summaries/workshop-data-calculations-19735543865.md",
+      "title": "Workshop: Data calculations",
+      "version": 2
+    },
+    "19751338017": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md",
+      "title": "Technology Choices",
+      "version": 1
+    },
+    "19751501861": {
+      "path": "oi30/meeting-summaries/workshop-architecture-discussion-uxui-discussion-joined-into-one-block-19751501861.md",
+      "title": "Workshop: Architecture discussion & UX/UI discussion (joined into one block)",
+      "version": 2
+    },
+    "19751862300": {
+      "path": "oi30/meeting-summaries/workshop-trade-offs-discussion-followed-by-feedback-with-fritz-19751862300.md",
+      "title": "Workshop: Trade offs discussion followed by feedback with Fritz",
+      "version": 2
+    },
+    "19751960620": {
+      "path": "oi30/architecture/oi-30-architecture-decision-records-19751960620.md",
+      "title": "OI 3.0 Architecture Decision Records",
+      "version": 1
+    },
+    "19751993421": {
+      "path": "oi30/meeting-summaries/non-negotiable-adjustments-in-oi-19751993421.md",
+      "title": "Non-negotiable adjustments in OI",
+      "version": 2
+    },
+    "19752779777": {
+      "path": "oi30/meeting-summaries/oi-data-sync-19752779777.md",
+      "title": "OI data_sync",
+      "version": 1
+    },
+    "19761725586": {
+      "path": "oi30/gls-feature-set-19761725586.md",
+      "title": "GLS Feature Set",
+      "version": 1
+    },
+    "19763003424": {
+      "path": "oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md",
+      "title": "Sprint 1 stories, dependencies and decisions",
+      "version": 1
+    },
+    "19765133323": {
+      "path": "oi30/architecture/agent-validation-test-plan-19765133323.md",
+      "title": "Agent_Validation_Test_Plan",
+      "version": 1
+    }
   }
 }

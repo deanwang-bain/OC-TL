@@ -16,49 +16,17 @@ updated: 2026-08-05T07:21:28.625Z
 
 **Key Decisions**
 
-1.
-
-Batch processing only — no real-time data in OI 3.0 under any circumstances. The PE business lifecycle does not require it.
-
-1.
-
-CapIQ is the single source of truth for all financial data. No other source provides financials.
-
-1.
-
-CapIQ ID is the master company identifier — all data sources map back to it.
-
-1.
-
-Each data source has a defined, non-overlapping data type — conflict is minimised by design.
-
-1.
-
-OI 3.0 will have its own calculation engine regardless of what VCC provides, giving the project autonomy from VCC's roadmap.
-
-1.
-
-Data structure is the highest-priority foundational work — Siva leads from day one. VCC's experience of rushing this is the cautionary reference point.
-
-1.
-
-All Partner uploads are treated as red (confidential) data by default — the system must enforce isolation by design, not by policy.
-
-1.
-
-Microsoft Foundry is the preferred agent orchestration platform.
-
-1.
-
-OI 3.0 must expose its own MCP Server — it will be a data provider to other Bain systems in future, not only a consumer.
-
-1.
-
-Architecture must accommodate new data sources and agents without requiring a rewrite — scalability by design is a firm stakeholder requirement.
-
-1.
-
-All architecture decisions will be confirmed in the upcoming workshops once business and non-functional requirements are locked — no decisions are being made prematurely.
+1. Batch processing only — no real-time data in OI 3.0 under any circumstances. The PE business lifecycle does not require it.
+1. CapIQ is the single source of truth for all financial data. No other source provides financials.
+1. CapIQ ID is the master company identifier — all data sources map back to it.
+1. Each data source has a defined, non-overlapping data type — conflict is minimised by design.
+1. OI 3.0 will have its own calculation engine regardless of what VCC provides, giving the project autonomy from VCC's roadmap.
+1. Data structure is the highest-priority foundational work — Siva leads from day one. VCC's experience of rushing this is the cautionary reference point.
+1. All Partner uploads are treated as red (confidential) data by default — the system must enforce isolation by design, not by policy.
+1. Microsoft Foundry is the preferred agent orchestration platform.
+1. OI 3.0 must expose its own MCP Server — it will be a data provider to other Bain systems in future, not only a consumer.
+1. Architecture must accommodate new data sources and agents without requiring a rewrite — scalability by design is a firm stakeholder requirement.
+1. All architecture decisions will be confirmed in the upcoming workshops once business and non-functional requirements are locked — no decisions are being made prematurely.
 
 **Summary**
 
@@ -102,259 +70,31 @@ The system cannot control what Partners upload. The working assumption is to tre
 
 **Next Steps and Owners**
 
-|
-
-Action
-
- |
-
-Owner
-
- |
-
-When
-
- |
+| Action  | Owner  | When  |
 |---|---|---|
-|
-
-Complete business and non-functional requirements document
-
- |
-
-Kasia
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Confirm data freshness/tolerance with Partners
-
- |
-
-Kasia
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Confirm whether sentiment analysis is in MVP scope
-
- |
-
-Kasia
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Document data classification framework — red/orange/green
-
- |
-
-Kasia
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Align on data history decision — store versions or latest only
-
- |
-
-Noah + Kasia
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Locate September Excel and bring to Akhil session for validation
-
- |
-
-Kasia
-
- |
-
-Before Akhil session
-
- |
-|
-
-Run Akhil session — calculations walkthrough, Size of Prize, data tolerance
-
- |
-
-Kasia + Sandeep
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Extract VCC calculation details from team chat and share with SN team
-
- |
-
-Sandeep
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Confirm with Glean/IRIS whether they can fetch LSEG analyst reports
-
- |
-
-Sandeep
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Confirm VCC database access method — API or Snowflake data share
-
- |
-
-Sandeep
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Confirm whether OI 3.0 needs its own Snowflake instance — provision via CloudLaunch if so
-
- |
-
-Sandeep + infra
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Invite Joanna or Raema to next technical session to align output format with pipeline design
-
- |
-
-Michelle
-
- |
-
-Before architecture workshop
-
- |
-|
-
-Validate Microsoft Foundry against Bain's approved platform list and Andromeda scope
-
- |
-
-Sandeep + Siva
-
- |
-
-Architecture workshop Day 2
-
- |
-|
-
-Confirm ThinkCell licence ownership and whether VCC's integration is shareable with OI 3.0
-
- |
-
-Sandeep
-
- |
-
-Architecture workshop Day 3
-
- |
-|
-
-Produce explicit mapping — which calculations live in VCC vs. OI 3.0's engine
-
- |
-
-Sandeep + Kasia
-
- |
-
-Architecture workshop Day 3
-
- |
-|
-
-Design data isolation enforcement — prevent red data from leaking or being used for training
-
- |
-
-Siva + StatusNeo
-
- |
-
-Architecture workshop Day 2
-
- |
-|
-
-Design audit log — inputs, outputs, and metadata captured per deck generated
-
- |
-
-Siva + StatusNeo
-
- |
-
-Architecture workshop Day 2
-
- |
+| Complete business and non-functional requirements document  | Kasia  | Before architecture workshop  |
+| Confirm data freshness/tolerance with Partners  | Kasia  | Before architecture workshop  |
+| Confirm whether sentiment analysis is in MVP scope  | Kasia  | Before architecture workshop  |
+| Document data classification framework — red/orange/green  | Kasia  | Before architecture workshop  |
+| Align on data history decision — store versions or latest only  | Noah + Kasia  | Before architecture workshop  |
+| Locate September Excel and bring to Akhil session for validation  | Kasia  | Before Akhil session  |
+| Run Akhil session — calculations walkthrough, Size of Prize, data tolerance  | Kasia + Sandeep  | Before architecture workshop  |
+| Extract VCC calculation details from team chat and share with SN team  | Sandeep  | Before architecture workshop  |
+| Confirm with Glean/IRIS whether they can fetch LSEG analyst reports  | Sandeep  | Before architecture workshop  |
+| Confirm VCC database access method — API or Snowflake data share  | Sandeep  | Before architecture workshop  |
+| Confirm whether OI 3.0 needs its own Snowflake instance — provision via CloudLaunch if so  | Sandeep + infra  | Before architecture workshop  |
+| Invite Joanna or Raema to next technical session to align output format with pipeline design  | Michelle  | Before architecture workshop  |
+| Validate Microsoft Foundry against Bain's approved platform list and Andromeda scope  | Sandeep + Siva  | Architecture workshop Day 2  |
+| Confirm ThinkCell licence ownership and whether VCC's integration is shareable with OI 3.0  | Sandeep  | Architecture workshop Day 3  |
+| Produce explicit mapping — which calculations live in VCC vs. OI 3.0's engine  | Sandeep + Kasia  | Architecture workshop Day 3  |
+| Design data isolation enforcement — prevent red data from leaking or being used for training  | Siva + StatusNeo  | Architecture workshop Day 2  |
+| Design audit log — inputs, outputs, and metadata captured per deck generated  | Siva + StatusNeo  | Architecture workshop Day 2  |
 
 Here’s the transcript and zoom recording from Zoom:
 
 **Recording**
 
-|
-
- |
-
-Duration: 00:40:53
-
-Shareable link: [https://bain.zoom.us/rec/share/_zEx_VagGrlk6E2n50iAaaxhCy1OUQKyOxBQnUIfmK2MCAV1OsMk5c6Qs3UnlY7p.eEQ_YRNRDT8LyK-w](https://urldefense.com/v3/__https:/bain.zoom.us/rec/share/_zEx_VagGrlk6E2n50iAaaxhCy1OUQKyOxBQnUIfmK2MCAV1OsMk5c6Qs3UnlY7p.eEQ_YRNRDT8LyK-w__;!!AbgBjg!xw4r7Pn2fHNdKYn4FuwqasMCN23PkPvIhQ6VOwQphFLGf2D1OAllsO2fF4w-e3-jOwvPpLeKfTvcvQZ0P0A$)
-
-Passcode: %76U=y49
-
-[View in Zoom](https://urldefense.com/v3/__https:/bain.zoom.us/launch/hub?type=recording&mid=lvvSzPQvQ*2F6l0WS7J1*2BAeA*3D*3D&origin=https*3A*2F*2Fbain.zoom.us*2Frecording*2Fdetail*3Fmeeting_id*3DlvvSzPQvQ*252F6l0WS7J1*252BAeA*253D*253D__;JSUlJSUlJSUlJSUlJSUl!!AbgBjg!xw4r7Pn2fHNdKYn4FuwqasMCN23PkPvIhQ6VOwQphFLGf2D1OAllsO2fF4w-e3-jOwvPpLeKfTvcVcfMTSs$)
-
- |
+|  | Duration: 00:40:53 Shareable link: [https://bain.zoom.us/rec/share/_zEx_VagGrlk6E2n50iAaaxhCy1OUQKyOxBQnUIfmK2MCAV1OsMk5c6Qs3UnlY7p.eEQ_YRNRDT8LyK-w](https://urldefense.com/v3/__https:/bain.zoom.us/rec/share/_zEx_VagGrlk6E2n50iAaaxhCy1OUQKyOxBQnUIfmK2MCAV1OsMk5c6Qs3UnlY7p.eEQ_YRNRDT8LyK-w__;!!AbgBjg!xw4r7Pn2fHNdKYn4FuwqasMCN23PkPvIhQ6VOwQphFLGf2D1OAllsO2fF4w-e3-jOwvPpLeKfTvcvQZ0P0A$) Passcode: %76U=y49 [View in Zoom](https://urldefense.com/v3/__https:/bain.zoom.us/launch/hub?type=recording&mid=lvvSzPQvQ*2F6l0WS7J1*2BAeA*3D*3D&origin=https*3A*2F*2Fbain.zoom.us*2Frecording*2Fdetail*3Fmeeting_id*3DlvvSzPQvQ*252F6l0WS7J1*252BAeA*253D*253D__;JSUlJSUlJSUlJSUlJSUl!!AbgBjg!xw4r7Pn2fHNdKYn4FuwqasMCN23PkPvIhQ6VOwQphFLGf2D1OAllsO2fF4w-e3-jOwvPpLeKfTvcVcfMTSs$)  |
 
 **Meeting summary**
 
@@ -366,59 +106,27 @@ This meeting focused on discussing the VC-C project architecture and technical a
 
 ### Kasia
 
--
-
-Schedule a follow-up session with Jason to review the calculations from the VC\C site.
-
--
-
-Organize sessions to show the current Tableau dashboard and Excel used for opportunity indicators.
-
--
-
-Add bullets to Confluence regarding data handling framework and data classification.
-
--
-
-Ensure team receives access instructions by email by the end of the day.
+- Schedule a follow-up session with Jason to review the calculations from the VC\C site.
+- Organize sessions to show the current Tableau dashboard and Excel used for opportunity indicators.
+- Add bullets to Confluence regarding data handling framework and data classification.
+- Ensure team receives access instructions by email by the end of the day.
 
 ### Sandeep
 
--
-
-Get access to the VC\C database for the team and explore sharing the database in Snowflake.
-
--
-
-Run an agent on the VC\C team chat to extract calculation details and share with the team.
-
--
-
-Confirm today whether Glean is handling the fetching of LSEG analyst reports.
+- Get access to the VC\C database for the team and explore sharing the database in Snowflake.
+- Run an agent on the VC\C team chat to extract calculation details and share with the team.
+- Confirm today whether Glean is handling the fetching of LSEG analyst reports.
 
 ### Siva
 
--
-
-Design the data structure to handle industry taxonomy matching between CapIQ and Bain.
-
--
-
-Think through and design the data refresh schedule and data recency/availability handling.
+- Design the data structure to handle industry taxonomy matching between CapIQ and Bain.
+- Think through and design the data refresh schedule and data recency/availability handling.
 
 ### Collaboration
 
--
-
-Team (led by Kasia/Sandeep): Have a session with Akhil (BCN team) to discuss current process, calculations, and data refresh tolerance.
-
--
-
-Team: Start thinking through and identifying libraries/tools for the data pipeline and AI agents.
-
--
-
-Team: Prepare for architectural workshops to design the system for scalability beyond MVP.
+- Team (led by Kasia/Sandeep): Have a session with Akhil (BCN team) to discuss current process, calculations, and data refresh tolerance.
+- Team: Start thinking through and identifying libraries/tools for the data pipeline and AI agents.
+- Team: Prepare for architectural workshops to design the system for scalability beyond MVP.
 
 ## Summary
 

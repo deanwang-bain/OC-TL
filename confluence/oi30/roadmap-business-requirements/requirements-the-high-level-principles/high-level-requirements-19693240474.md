@@ -56,13 +56,8 @@ OI 3.0 will evolve the current 48-72 hour, expert-intensive Opportunity Indicato
 
 **Cost efficient industry scaling:**
 
--
-
-Design architecture of OI 3.0 **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
-
--
-
-Build a common core with industry-specific adaptations where needed (e.g., FS specific vs. Manufacturing/Energy close enough for model to learn)
+- Design architecture of OI 3.0 **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
+- Build a common core with industry-specific adaptations where needed (e.g., FS specific vs. Manufacturing/Energy close enough for model to learn)
 
 **Natural-language investigation: **Allow users to ask questions, inspect evidence, refine assumptions, change benchmarks and customise the storyline through chat.
 

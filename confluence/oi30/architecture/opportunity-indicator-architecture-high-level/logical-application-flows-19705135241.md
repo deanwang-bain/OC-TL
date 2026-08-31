@@ -28,33 +28,13 @@ The OI journey begins from the **Opportunity Indicators dashboard**, which acts 
 
 A typical flow is:
 
-1.
-
-The user opens the OI dashboard.
-
-1.
-
-Existing OIs are retrieved based on the user's access rights.
-
-1.
-
-Each OI displays its target company, current workflow stage, status, estimated size of prize where available, recent activity, and collaborators.
-
-1.
-
-The user either resumes an existing OI or creates a new OI.
-
-1.
-
-A new persistent OI workspace is created and associated with the user and appropriate access controls.
-
-1.
-
-Subsequent target, peer, evidence, analysis, and output decisions are persisted against this OI.
-
-1.
-
-The user can leave and subsequently resume the analysis from its current state.
+1. The user opens the OI dashboard.
+1. Existing OIs are retrieved based on the user's access rights.
+1. Each OI displays its target company, current workflow stage, status, estimated size of prize where available, recent activity, and collaborators.
+1. The user either resumes an existing OI or creates a new OI.
+1. A new persistent OI workspace is created and associated with the user and appropriate access controls.
+1. Subsequent target, peer, evidence, analysis, and output decisions are persisted against this OI.
+1. The user can leave and subsequently resume the analysis from its current state.
 
 The OI therefore acts as the **aggregate business object for the analytical workflow**, rather than the application being treated as a collection of independent company screens.
 
@@ -66,65 +46,21 @@ The application supports both a **Quick Answer** path for rapid initial assessme
 
 A typical full setup flow is:
 
-1.
-
-The user enters a company name or ticker.
-
-1.
-
-The Company & Entity capability resolves the input to the canonical company record and relevant external identifiers.
-
-1.
-
-Available public financial and reference data is identified.
-
-1.
-
-The platform determines relevant company metadata such as sector, industry, reporting currency, and market classification.
-
-1.
-
-Existing Bain relationship context and relevant prior knowledge may be surfaced where the user is authorized to access it.
-
-1.
-
-The user optionally provides additional analytical context, such as:
-
-  -
-
-intended audience;
-
-  -
-
-opportunity hypothesis or framing;
-
-  -
-
-financial ambition;
-
-  -
-
-relevant business context;
-
-  -
-
-desired peer-set breadth and comparability criteria.
-
-1.
-
-The user may upload supporting material such as financial information, P&L extracts, reports, presentations, emails, or other company documentation.
-
-1.
-
-Uploaded information is processed and incorporated into the governed evidence set.
-
-1.
-
-The platform assesses the available evidence and communicates an analysis-confidence position to the user.
-
-1.
-
-Once sufficient context exists, the user proceeds to peer construction.
+1. The user enters a company name or ticker.
+1. The Company & Entity capability resolves the input to the canonical company record and relevant external identifiers.
+1. Available public financial and reference data is identified.
+1. The platform determines relevant company metadata such as sector, industry, reporting currency, and market classification.
+1. Existing Bain relationship context and relevant prior knowledge may be surfaced where the user is authorized to access it.
+1. The user optionally provides additional analytical context, such as:
+  - intended audience;
+  - opportunity hypothesis or framing;
+  - financial ambition;
+  - relevant business context;
+  - desired peer-set breadth and comparability criteria.
+1. The user may upload supporting material such as financial information, P&L extracts, reports, presentations, emails, or other company documentation.
+1. Uploaded information is processed and incorporated into the governed evidence set.
+1. The platform assesses the available evidence and communicates an analysis-confidence position to the user.
+1. Once sufficient context exists, the user proceeds to peer construction.
 
 For a **Quick Answer**, the platform can use the resolved target, available governed data, default peer methodology, and existing OI analytical frameworks to generate a preliminary assessment. The result remains explicitly distinguishable from a fully configured analysis and can subsequently be refined.
 
@@ -134,71 +70,25 @@ Source acquisition operates as a **cross-cutting workflow** throughout OI rather
 
 The evidence set for an OI may include:
 
--
-
-Company filings and annual reports
-
--
-
-Financial and market datasets
-
--
-
-Earnings-call transcripts
-
--
-
-Investor presentations
-
--
-
-Analyst research
-
--
-
-Relevant external market information
-
--
-
-Bain knowledge and prior experience
-
--
-
-User-uploaded documents
-
--
-
-User-provided context
+- Company filings and annual reports
+- Financial and market datasets
+- Earnings-call transcripts
+- Investor presentations
+- Analyst research
+- Relevant external market information
+- Bain knowledge and prior experience
+- User-uploaded documents
+- User-provided context
 
 When additional evidence is required:
 
-1.
-
-The relevant domain or agent requests information through an approved platform capability.
-
-1.
-
-The platform determines whether the information already exists in governed data or an existing OI evidence set.
-
-1.
-
-Where required, additional structured or unstructured information is retrieved.
-
-1.
-
-Documents and unstructured information are processed through the AI intelligence layer for extraction, classification, entity association, and semantic indexing.
-
-1.
-
-Extracted information is linked back to its originating source.
-
-1.
-
-Data-quality and confidence metadata are applied where appropriate.
-
-1.
-
-The resulting evidence becomes available to downstream indicator, peer, opportunity, and synthesis capabilities.
+1. The relevant domain or agent requests information through an approved platform capability.
+1. The platform determines whether the information already exists in governed data or an existing OI evidence set.
+1. Where required, additional structured or unstructured information is retrieved.
+1. Documents and unstructured information are processed through the AI intelligence layer for extraction, classification, entity association, and semantic indexing.
+1. Extracted information is linked back to its originating source.
+1. Data-quality and confidence metadata are applied where appropriate.
+1. The resulting evidence becomes available to downstream indicator, peer, opportunity, and synthesis capabilities.
 
 The user can inspect the **Sources** associated with the analysis and, where supported, refresh information or drill into the evidence underlying an analytical conclusion.
 
@@ -215,97 +105,29 @@ Once the target has been established, OI constructs a proposed peer set using co
 The attached design explicitly allows the user to inspect why a peer was included, its selection criteria, analyst view, business units, source data, key metrics, and confidence. It also provides a source-audit path for examining the underlying data.
 The flow is:
 
-1.
-
-The platform retrieves candidate companies from the governed company universe.
-
-1.
-
-Peer-selection logic evaluates candidates against configured criteria such as:
-
-  -
-
-business model;
-
-  -
-
-revenue scale;
-
-  -
-
-regional exposure;
-
-  -
-
-end market;
-
-  -
-
-product mix;
-
-  -
-
-growth profile.
-
-1.
-
-Relevant financial and operational data is retrieved for each candidate.
-
-1.
-
-Required normalization and comparability adjustments are performed deterministically.
-
-1.
-
-AI-assisted research may supplement the deterministic screening with analyst views, company disclosures, business-model information, and relevant qualitative evidence.
-
-1.
-
-The platform proposes an initial peer set.
-
-1.
-
-Each proposed peer includes:
-
-  -
-
-rationale for inclusion;
-
-  -
-
-comparability criteria;
-
-  -
-
-key metrics;
-
-  -
-
-source evidence;
-
-  -
-
-required adjustments;
-
-  -
-
-confidence assessment.
-
-1.
-
-Potential comparability issues are surfaced to the user rather than silently ignored.
-
-1.
-
-The user can inspect, add, remove, or constrain peers and, where appropriate, isolate relevant business units or segments.
-
-1.
-
-The confirmed peer set is persisted as a governed analytical object associated with the OI.
-
-1.
-
-The peer set becomes an input to downstream benchmarking, indicator calculation, and opportunity sizing.
+1. The platform retrieves candidate companies from the governed company universe.
+1. Peer-selection logic evaluates candidates against configured criteria such as:
+  - business model;
+  - revenue scale;
+  - regional exposure;
+  - end market;
+  - product mix;
+  - growth profile.
+1. Relevant financial and operational data is retrieved for each candidate.
+1. Required normalization and comparability adjustments are performed deterministically.
+1. AI-assisted research may supplement the deterministic screening with analyst views, company disclosures, business-model information, and relevant qualitative evidence.
+1. The platform proposes an initial peer set.
+1. Each proposed peer includes:
+  - rationale for inclusion;
+  - comparability criteria;
+  - key metrics;
+  - source evidence;
+  - required adjustments;
+  - confidence assessment.
+1. Potential comparability issues are surfaced to the user rather than silently ignored.
+1. The user can inspect, add, remove, or constrain peers and, where appropriate, isolate relevant business units or segments.
+1. The confirmed peer set is persisted as a governed analytical object associated with the OI.
+1. The peer set becomes an input to downstream benchmarking, indicator calculation, and opportunity sizing.
 
 This makes peer construction a **human-in-the-loop analytical process**, with the platform proposing and explaining the set while the user retains control over the final analytical population.
 
@@ -318,53 +140,18 @@ This stage moves beyond identifying numerical gaps and begins establishing **why
 The prototype shows agent-proposed narratives built from quantitative evidence, company disclosures, analyst information, leadership signals, and other sources—for example benchmarking, trend, growth, and defensive narratives.
 The flow is:
 
-1.
-
-The platform retrieves relevant target-company indicators, historical trends, peer benchmarks, market evidence, and strategic signals.
-
-1.
-
-Deterministic calculations identify material financial or operational gaps.
-
-1.
-
-AI capabilities analyze relevant unstructured evidence, including management commentary, filings, analyst research, and other permitted sources.
-
-1.
-
-The intelligence layer identifies potential **Case for Change narratives** supported by the available evidence.
-
-1.
-
-Each narrative is associated with:
-
-  -
-
-supporting metrics;
-
-  -
-
-source evidence;
-
-  -
-
-relevant management or market signals;
-
-  -
-
-confidence or materiality information.
-
-1.
-
-The user reviews the proposed narratives.
-
-1.
-
-The user may select one or multiple narratives, challenge the recommendation through natural-language interaction, or request alternative framing.
-
-1.
-
-The selected Case for Change becomes part of the analytical context for subsequent opportunity prioritization and output generation.
+1. The platform retrieves relevant target-company indicators, historical trends, peer benchmarks, market evidence, and strategic signals.
+1. Deterministic calculations identify material financial or operational gaps.
+1. AI capabilities analyze relevant unstructured evidence, including management commentary, filings, analyst research, and other permitted sources.
+1. The intelligence layer identifies potential **Case for Change narratives** supported by the available evidence.
+1. Each narrative is associated with:
+  - supporting metrics;
+  - source evidence;
+  - relevant management or market signals;
+  - confidence or materiality information.
+1. The user reviews the proposed narratives.
+1. The user may select one or multiple narratives, challenge the recommendation through natural-language interaction, or request alternative framing.
+1. The selected Case for Change becomes part of the analytical context for subsequent opportunity prioritization and output generation.
 
 The Case for Change is therefore not simply an AI-generated summary. It is a **business object derived from governed evidence, quantitative signals, and AI-assisted synthesis**.
 
@@ -376,141 +163,40 @@ The current prototype explicitly presents ranked opportunities, a cost bar, sect
 
 The flow is:
 
-1.
-
-The platform loads the confirmed:
-
-  -
-
-target company;
-
-  -
-
-analytical context;
-
-  -
-
-peer set;
-
-  -
-
-financial data;
-
-  -
-
-indicators;
-
-  -
-
-Case for Change;
-
-  -
-
-supporting evidence.
-
-1.
-
-Deterministic computation services calculate financial gaps, benchmarks, ratios, ranges, and relevant opportunity-sizing measures.
-
-1.
-
-Sector-specific analytical frameworks determine which additional KPIs and benchmarks should be evaluated.
-
-1.
-
-Relevant Bain methodologies and benchmarks may be applied where permitted.
-
-1.
-
-AI capabilities identify and synthesize additional potential levers that may not be directly represented by conventional benchmarking.
-
-1.
-
-Candidate opportunities are assembled and ranked based on factors such as:
-
-  -
-
-financial materiality;
-
-  -
-
-benchmark gap;
-
-  -
-
-evidence strength;
-
-  -
-
-analytical confidence;
-
-  -
-
-relevance to the Case for Change;
-
-  -
-
-applicability of known transformation levers.
-
-1.
-
-The platform produces an initial **opportunity shortlist**.
-
-1.
-
-For each opportunity, the user can inspect:
-
-  -
-
-estimated value;
-
-  -
-
-sizing range;
-
-  -
-
-calculation methodology;
-
-  -
-
-peer benchmark;
-
-  -
-
-underlying assumptions;
-
-  -
-
-source evidence;
-
-  -
-
-confidence;
-
-  -
-
-potential value levers;
-
-  -
-
-relevant Bain experience;
-
-  -
-
-exploratory AI-generated opportunities where applicable.
-
-1.
-
-The user can promote, demote, remove, or reintroduce opportunities.
-
-1.
-
-Changes to the shortlist trigger recalculation of the overall opportunity view and associated narrative.
-
-1.
-
-The resulting shortlist and Size of Prize become governed outputs of the OI analysis.
+1. The platform loads the confirmed:
+  - target company;
+  - analytical context;
+  - peer set;
+  - financial data;
+  - indicators;
+  - Case for Change;
+  - supporting evidence.
+1. Deterministic computation services calculate financial gaps, benchmarks, ratios, ranges, and relevant opportunity-sizing measures.
+1. Sector-specific analytical frameworks determine which additional KPIs and benchmarks should be evaluated.
+1. Relevant Bain methodologies and benchmarks may be applied where permitted.
+1. AI capabilities identify and synthesize additional potential levers that may not be directly represented by conventional benchmarking.
+1. Candidate opportunities are assembled and ranked based on factors such as:
+  - financial materiality;
+  - benchmark gap;
+  - evidence strength;
+  - analytical confidence;
+  - relevance to the Case for Change;
+  - applicability of known transformation levers.
+1. The platform produces an initial **opportunity shortlist**.
+1. For each opportunity, the user can inspect:
+  - estimated value;
+  - sizing range;
+  - calculation methodology;
+  - peer benchmark;
+  - underlying assumptions;
+  - source evidence;
+  - confidence;
+  - potential value levers;
+  - relevant Bain experience;
+  - exploratory AI-generated opportunities where applicable.
+1. The user can promote, demote, remove, or reintroduce opportunities.
+1. Changes to the shortlist trigger recalculation of the overall opportunity view and associated narrative.
+1. The resulting shortlist and Size of Prize become governed outputs of the OI analysis.
 
 The analysis therefore remains **interactive rather than one-shot**. The user can challenge assumptions and modify the opportunity set while retaining visibility into the data and reasoning behind the resulting numbers.
 
@@ -522,45 +208,16 @@ The Analysis prototype, for example, provides Chat, Log, and Sources alongside t
 
 A typical agent interaction is:
 
-1.
-
-The user submits a natural-language request from the client.
-
-1.
-
-The request is passed through the governed MCP/agent interface.
-
-1.
-
-The agent receives the user's identity, OI context, current workflow stage, and permitted capabilities.
-
-1.
-
-The agent determines which tools or domain capabilities are required.
-
-1.
-
-Where deterministic information is required, the agent invokes the appropriate platform API/MCP tool rather than independently calculating the answer.
-
-1.
-
-Where evidence is required, the agent invokes governed retrieval capabilities.
-
-1.
-
-Relevant structured data, calculations, and source evidence are assembled into context.
-
-1.
-
-The AI model performs the required reasoning or synthesis.
-
-1.
-
-The resulting response is returned with appropriate source attribution and analytical context.
-
-1.
-
-Material agent actions are captured in the OI activity/audit trail where appropriate.
+1. The user submits a natural-language request from the client.
+1. The request is passed through the governed MCP/agent interface.
+1. The agent receives the user's identity, OI context, current workflow stage, and permitted capabilities.
+1. The agent determines which tools or domain capabilities are required.
+1. Where deterministic information is required, the agent invokes the appropriate platform API/MCP tool rather than independently calculating the answer.
+1. Where evidence is required, the agent invokes governed retrieval capabilities.
+1. Relevant structured data, calculations, and source evidence are assembled into context.
+1. The AI model performs the required reasoning or synthesis.
+1. The resulting response is returned with appropriate source attribution and analytical context.
+1. Material agent actions are captured in the OI activity/audit trail where appropriate.
 
 For example:
 
@@ -574,45 +231,16 @@ OI deliberately introduces user decision points at material stages of the analys
 
 Examples include:
 
--
-
-Confirming the target
-
--
-
-Selecting analytical context
-
--
-
-Adding supporting documents
-
--
-
-Confirming or modifying the peer set
-
--
-
-Selecting the Case for Change
-
--
-
-Challenging source quality
-
--
-
-Promoting or removing opportunities
-
--
-
-Adjusting analytical assumptions
-
--
-
-Confirming the final shortlist
-
--
-
-Selecting material for output
+- Confirming the target
+- Selecting analytical context
+- Adding supporting documents
+- Confirming or modifying the peer set
+- Selecting the Case for Change
+- Challenging source quality
+- Promoting or removing opportunities
+- Adjusting analytical assumptions
+- Confirming the final shortlist
+- Selecting material for output
 
 User decisions are persisted against the OI and can cause affected downstream capabilities to be recalculated.
 
@@ -637,33 +265,13 @@ and, for AI-derived information:
 
 This enables users to distinguish between:
 
--
-
-reported facts;
-
--
-
-calculated values;
-
--
-
-adjusted values;
-
--
-
-estimates;
-
--
-
-Bain benchmarks;
-
--
-
-AI-derived observations;
-
--
-
-exploratory hypotheses.
+- reported facts;
+- calculated values;
+- adjusted values;
+- estimates;
+- Bain benchmarks;
+- AI-derived observations;
+- exploratory hypotheses.
 
 The provenance model is carried through into downstream reporting wherever practical.
 
@@ -675,37 +283,14 @@ The prototypes include sharing, contributor/viewer permissions, collaborators, a
 
 A typical collaboration flow is:
 
-1.
-
-An authorized user shares an OI with another user.
-
-1.
-
-Appropriate contributor or viewer permissions are assigned.
-
-1.
-
-Access is enforced through the platform identity and entitlement layer.
-
-1.
-
-Collaborators access the same persisted OI state.
-
-1.
-
-Relevant user and agent actions are captured in the activity log.
-
-1.
-
-Changes to peer sets, narratives, opportunity selections, sources, and other material analytical decisions are persisted.
-
-1.
-
-The latest state becomes available to other authorized collaborators.
-
-1.
-
-The OI can subsequently be resumed from the latest saved state.
+1. An authorized user shares an OI with another user.
+1. Appropriate contributor or viewer permissions are assigned.
+1. Access is enforced through the platform identity and entitlement layer.
+1. Collaborators access the same persisted OI state.
+1. Relevant user and agent actions are captured in the activity log.
+1. Changes to peer sets, narratives, opportunity selections, sources, and other material analytical decisions are persisted.
+1. The latest state becomes available to other authorized collaborators.
+1. The OI can subsequently be resumed from the latest saved state.
 
 ## 11. Authentication and Authorization Flow
 
@@ -713,41 +298,15 @@ Authentication and authorization operate across every OI interaction rather than
 
 The high-level flow is:
 
-1.
-
-The user accesses the OI client.
-
-1.
-
-Authentication is initiated through the approved Bain identity provider.
-
-1.
-
-The user receives an authenticated application session/token.
-
-1.
-
-The client includes the security context with requests.
-
-1.
-
-The platform validates the identity at the service boundary.
-
-1.
-
-The user's roles, entitlements, and OI-level permissions are resolved.
-
-1.
-
-RBDA and other applicable authorization policies are enforced against requested capabilities and data.
-
-1.
-
-Downstream service, data, AI, and agent calls operate using governed workload identities and delegated security context where required.
-
-1.
-
-Unauthorized data or tools are excluded before information is made available to the user or agent.
+1. The user accesses the OI client.
+1. Authentication is initiated through the approved Bain identity provider.
+1. The user receives an authenticated application session/token.
+1. The client includes the security context with requests.
+1. The platform validates the identity at the service boundary.
+1. The user's roles, entitlements, and OI-level permissions are resolved.
+1. RBDA and other applicable authorization policies are enforced against requested capabilities and data.
+1. Downstream service, data, AI, and agent calls operate using governed workload identities and delegated security context where required.
+1. Unauthorized data or tools are excluded before information is made available to the user or agent.
 
 The same authorization model applies whether the request originates from the structured UI, an API, an MCP interaction, or an AI agent.
 
@@ -759,69 +318,22 @@ The workflow itself explicitly terminates in an **Output** stage associated with
 
 The flow is:
 
-1.
-
-The user confirms the analytical content to be included.
-
-1.
-
-The Reporting & Export capability retrieves the current governed OI state.
-
-1.
-
-Required information is assembled from the existing domain capabilities, including:
-
-  -
-
-target information;
-
-  -
-
-peer benchmarks;
-
-  -
-
-Case for Change;
-
-  -
-
-opportunity shortlist;
-
-  -
-
-Size of Prize;
-
-  -
-
-financial calculations;
-
-  -
-
-supporting evidence and citations.
-
-1.
-
-Export-specific transformation logic maps the analytical objects into the selected output structure.
-
-1.
-
-Charts, tables, narratives, and supporting content are generated from the same underlying data products used by the application.
-
-1.
-
-Where PowerPoint is required, the appropriate presentation template and ThinkCell integration are applied.
-
-1.
-
-The generated output is validated.
-
-1.
-
-The resulting artifact is made available to the user.
-
-1.
-
-Export activity and relevant version metadata are recorded against the OI.
+1. The user confirms the analytical content to be included.
+1. The Reporting & Export capability retrieves the current governed OI state.
+1. Required information is assembled from the existing domain capabilities, including:
+  - target information;
+  - peer benchmarks;
+  - Case for Change;
+  - opportunity shortlist;
+  - Size of Prize;
+  - financial calculations;
+  - supporting evidence and citations.
+1. Export-specific transformation logic maps the analytical objects into the selected output structure.
+1. Charts, tables, narratives, and supporting content are generated from the same underlying data products used by the application.
+1. Where PowerPoint is required, the appropriate presentation template and ThinkCell integration are applied.
+1. The generated output is validated.
+1. The resulting artifact is made available to the user.
+1. Export activity and relevant version metadata are recorded against the OI.
 
 The export layer does **not independently recalculate financial results or regenerate analytical conclusions**. It consumes the governed outputs of the underlying OI domains, ensuring consistency between what the user sees in the application and what is ultimately communicated externally.
 
@@ -847,3 +359,5 @@ Across every stage:
 operate as cross-cutting capabilities.
 
 The key architectural characteristic is that OI is not a linear AI-generation pipeline. It is a **persistent, evidence-backed, human-in-the-loop analytical system** in which deterministic financial analysis and AI-assisted intelligence operate together through governed interfaces.
+
+_[image: image-20260807-102546.png — not downloaded]_
