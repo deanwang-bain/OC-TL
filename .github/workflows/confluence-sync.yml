@@ -10,6 +10,11 @@ on:
     # so this holds year-round.
     - cron: "0 0 * * *"
   workflow_dispatch: # allow a manual run from the Actions tab
+    inputs:
+      force_update:
+        description: "Send the daily update even if no pages changed (for testing)"
+        type: boolean
+        default: false
 
 concurrency:
   group: confluence-sync
@@ -80,7 +85,9 @@ jobs:
           exit 1
 
       - name: Send daily update
-        if: env.CHANGED == '1'
+        # force_update lets a manual run exercise the email path on a day when
+        # nothing changed, which is otherwise untestable.
+        if: env.CHANGED == '1' || inputs.force_update
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -93,7 +100,11 @@ jobs:
           {
             echo "Daily Confluence update for the OI30 space, $today (Singapore time)."
             echo
-            python3 tools/digest.py HEAD~1 HEAD
+            # On a forced run with nothing changed there is no sync commit to
+            # diff, so compare HEAD with itself and let the digest fall back to
+            # reporting standing state.
+            if [ "${CHANGED:-0}" = "1" ]; then base="HEAD~1"; else base="HEAD"; fi
+            python3 tools/digest.py "$base" HEAD
             echo
             echo "---"
             echo

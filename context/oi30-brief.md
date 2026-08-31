@@ -113,16 +113,136 @@ Decisions ADR-001 to ADR-009 are **Accepted, pending Bain architect review** (da
 persistence topology.
 ([ADRs](../confluence/oi30/architecture/oi-30-architecture-decision-records-19751960620.md))
 
-### Where the written stack and the diagrams disagree
+### The two interface patterns, and how the views reconcile
 
-The Technical Stack page describes a conventional headless web application: React SPA,
-FastAPI REST, **AI SDK (ai-sdk.dev)**. The architecture diagrams describe a chat-first
-agent swarm orchestrated by the **Claude SDK**, with SSE streaming, an eval gate, and an
-event-sourced DOM.
+[Architecture Layers](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/architecture-layers-19705004106.md)
+resolves most of what looked like a contradiction between the written stack and the
+diagrams. The client reaches the platform two ways, by design:
 
-These are not obviously the same system, and they name different SDKs. Until someone
-reconciles them, **do not cite either as settled** when reviewing. Flag the conflict
-instead — see `open-questions.md`.
+- **Deterministic interactions through APIs** (FastAPI) — structured workflows, queries,
+  commands, calculations, retrieval.
+- **Open-ended interactions through MCP** (FastMCP / MCP servers) — natural-language,
+  agent-driven, exploratory.
+
+So the React app and the agent swarm are not competing designs; they are the two
+consumption patterns over one headless capability layer. The assistant surface is a
+bought component — **AG-UI protocol with CopilotKit** — which is what makes the
+"chat-first" framing concrete.
+
+The backend follows **CQRS** with bounded domains, each owning its rules, contracts,
+commands, queries and services. Business-critical operations — financial calculations,
+transformations, scoring, analytical rules — are **deterministic, version-controlled,
+testable services**; agents invoke them through governed interfaces rather than
+reproducing calculation logic in the AI layer.
+
+**Still genuinely unreconciled:** the Technical Stack page names **AI SDK (ai-sdk.dev)**
+while the technical architecture diagram names the **Claude SDK** as orchestrator. Both
+cannot be right. Flag it rather than assuming either.
+
+## Technology choices
+
+[Technology Choices](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md)
+is the most decision-dense page in the space. Status: **Draft for review**.
+
+The governing rubric is **Azure managed services first, custom build only where
+genuinely warranted**, resolved into three positions: **Build** (StatusNeo writes and
+operates), **Adopt** (Azure managed service plus integration code), **Buy** (existing
+Bain or third-party system under licence).
+
+Every choice must survive four tests: **fit, rubric, reversibility, operability.** The
+page states the principle worth quoting back in any review — *"A choice with no rejected
+alternative is usually a choice that was never made."*
+
+Frontend selections: React + TypeScript + Vite; **Azure Front Door CDN** for static
+assets; TanStack Query for server state; **Zustand** for client state; **AG-UI /
+CopilotKit** for the assistant surface; **AG-Grid Enterprise** on Bain's existing
+licence; **Vega-Lite and Apache ECharts** for exhibits; **Radix** with a Bain-token theme
+layer; SSE for streaming; **WCAG 2.2 AA**; i18next, English only at MVP.
+
+Two things to carry into reviews:
+
+- **Hosting is Azure**, not the open Bedrock / Vertex / MS Foundry list in the diagram.
+  Where they disagree, this page is newer and more specific.
+- **WCAG 2.2 AA is the one hard non-functional target written anywhere.** The NFR page
+  is empty, so this is the only NFR with a citable source.
+
+## Testing and release governance
+
+[Agent_Validation_Test_Plan](../confluence/oi30/architecture/agent-validation-test-plan-19765133323.md)
+is the most mature governance artefact in the space — an explicit release-governing
+reference. Status: **Updated draft for architecture/test-strategy review.**
+
+It runs **two tracks**, because the architecture deliberately mixes deterministic and
+probabilistic components: deterministic boundaries get exact assertions; probabilistic
+behaviour gets structural invariants, quality metrics, distributions, regression
+baselines and human judgement — so model variation does not become false failures.
+
+Objectives OBJ-01 to OBJ-05: structural integrity (every claim has evidence, every
+figure has traceability), agent correctness (no fabricated success), groundedness and
+faithfulness, regression safety against golden baselines, and deterministic
+defensibility (pinned inputs reproduce figures exactly).
+
+Constraints that bind reviews directly:
+
+- **Production documents must never be copied into test environments** — uploads may
+  contain MNPI or PII. Synthetic companies for functional tests, recorded responses for
+  integration, a pinned snapshot for golden evaluation, masked subsets for warehouse
+  validation.
+- **MVP protocol boundary:** plain REST over HTTP. gRPC/Protobuf and buf are excluded.
+- **IaC validation is out of QA scope** — Terraform, Bicep, PSRule, Checkov belong to the
+  deployment/platform team.
+- Coverage is explicitly multi-dimensional; code coverage counts only for deterministic
+  unit logic.
+
+Its governance note is a good model for this workspace: where the architecture prescribes
+no threshold or owner, it defines the measurement method and marks the threshold for
+approval **rather than silently inventing policy.**
+
+## Domain model
+
+The backend is organised around the **lifecycle of an opportunity assessment**, not
+around screens or technical components
+([Domain Architecture](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/domain-architecture-19705004114.md)):
+
+**Company Universe → Financial & Market Evidence → Indicators & Signals → Peer Context →
+Opportunity Assessment → Research & Collaboration → Outputs**
+
+Each domain owns its business rules, data contracts, commands, queries and service
+interfaces. Authentication, data access, AI, observability and infrastructure are
+platform services consumed through defined interfaces. AI augments domains through
+extraction, retrieval, synthesis and reasoning, while authoritative data, financial
+calculations, indicator methodologies and access controls stay deterministic and
+governed.
+
+A PR that organises backend code by screen rather than by domain runs against this.
+
+## The methodology that makes OI defensible
+
+[Non-negotiable adjustments in OI](../confluence/oi30/meeting-summaries/non-negotiable-adjustments-in-oi-19751993421.md)
+(21 August, Michelle / Sharma / Nikolozi) captures what actually differentiates an OI
+report from a generic financial comparison — and therefore what the calculation layer
+must implement faithfully:
+
+- Removing **non-recurring items**, typically **5–25% of total**.
+- Excluding other operating income/expense outside core operations, and
+  transaction-related expenses.
+- **Standardising cost line items** — freight, SBC, COGS and SG&A categories — across
+  peer companies.
+- Judgement calls on recurring-but-extraordinary costs, decided on whether the expense
+  is part of the normal operating model and how peers treat it.
+
+Sector difficulty is uneven: healthcare and software in North America are cleanest thanks
+to standardised non-GAAP disclosure; oil and gas needs substantial manual work. This is
+the concrete reason the architecture uses **sector micro-swarms** rather than one
+general-purpose agent.
+
+An existing **Claude skill** already extracts non-GAAP adjustments at roughly **70–80%
+accuracy**, degrading as sector-specific conditions accumulate in the prompt. Not yet
+deployed. It is prior art for the Research and Benchmark agents and worth pulling in
+rather than rebuilding.
+
+Note the **GLS** variant: a distinct version alongside MVP and post-MVP, with its own
+acceptance bar. Its feature set page is empty.
 
 ## Data
 

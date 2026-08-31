@@ -114,6 +114,61 @@ def classify(path: str) -> str:
     return "diagram-only" if has_media else "empty"
 
 
+def all_pages() -> list[str]:
+    found = []
+    for root, dirs, files in os.walk(MIRROR):
+        dirs[:] = [d for d in dirs if d != "_attachments"]
+        for name in files:
+            if name.endswith(".md") and name != "INDEX.md":
+                found.append(os.path.join(root, name))
+    return sorted(found)
+
+
+def mirror_status(limit: int = 10) -> list[str]:
+    """Standing state of the mirror, so a quiet day still says something useful."""
+    pages = all_pages()
+    if not pages:
+        return []
+    kinds = {"text": 0, "diagram-only": 0, "empty": 0}
+    empty_pages: list[str] = []
+    flagged: list[tuple[str, list[str]]] = []
+    for path in pages:
+        kind = classify(path)
+        kinds[kind] += 1
+        if kind == "empty":
+            empty_pages.append(path)
+        flags = attention_flags(path)
+        if flags:
+            flagged.append((path, flags))
+
+    lines = ["## Mirror status", ""]
+    lines.append(
+        f"{len(pages)} pages — {kinds['text']} with text, "
+        f"{kinds['diagram-only']} diagram only, {kinds['empty']} empty."
+    )
+    lines.append("")
+
+    if empty_pages:
+        lines.append(f"**Empty pages ({len(empty_pages)})** — written nowhere:")
+        lines.append("")
+        for path in empty_pages[:limit]:
+            lines.append(f"- {link(path)}")
+        if len(empty_pages) > limit:
+            lines.append(f"- …and {len(empty_pages) - limit} more")
+        lines.append("")
+
+    if flagged:
+        lines.append(f"**Open markers ({len(flagged)})**:")
+        lines.append("")
+        for path, flags in flagged[:limit]:
+            lines.append(f"- {link(path)} — {', '.join(flags)}")
+        if len(flagged) > limit:
+            lines.append(f"- …and {len(flagged) - limit} more")
+        lines.append("")
+
+    return lines
+
+
 def main() -> int:
     if len(sys.argv) < 2:
         print(__doc__, file=sys.stderr)
@@ -127,7 +182,9 @@ def main() -> int:
     out: list[str] = []
     if not total:
         out.append("No Confluence pages changed since the last update.")
-        print("\n".join(out))
+        out.append("")
+        out.extend(mirror_status())
+        print("\n".join(out).rstrip())
         return 0
 
     out.append(
