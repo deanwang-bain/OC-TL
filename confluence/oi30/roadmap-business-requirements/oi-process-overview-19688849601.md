@@ -20,7 +20,7 @@ Walkthrough recordings:
 
 The dashboard:
 
-_[image: image-20260804-201432.png — not downloaded]_
+![image-20260804-201432.png](../../_attachments/19688849601/image-20260804-201432.png)
 
 [https://us-east-1.online.tableau.com/#/site/casepracticeproduct/views/AnswerFirstOI/2_1EBITGMSGATrendSizing?:iid=1](https://us-east-1.online.tableau.com/#/site/casepracticeproduct/views/AnswerFirstOI/2_1EBITGMSGATrendSizing?:iid=1)
 

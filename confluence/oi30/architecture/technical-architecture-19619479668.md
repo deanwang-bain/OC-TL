@@ -10,4 +10,4 @@ updated: 2026-07-13T02:25:02.743Z
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619479668)
 
-_[image: OI_3_0_Technical_Architecture_v2.svg — not downloaded]_
+![OI_3_0_Technical_Architecture_v2.svg](../../_attachments/19619479668/OI_3_0_Technical_Architecture_v2.svg)

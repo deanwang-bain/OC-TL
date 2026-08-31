@@ -77,7 +77,7 @@ MVP protocol and deployment boundary: The calculation engine uses plain REST ove
 
 The supplied architecture explicitly states that a conventional single test pyramid is not sufficient. The probabilistic layer sits inside the product rather than only at the top of the test stack, so model/agent behavior requires a different assertion model. The calculation engine remains deterministic on purpose and is therefore expected to receive exhaustive exact testing.
 
-_[image: att_0_for_19765133323.png — not downloaded]_
+![att_0_for_19765133323.png](../../_attachments/19765133323/att_0_for_19765133323.png)
 
 Figure 1 — Supplied Opportunity Indicator 3.0 testing architecture used as the source for this plan.
 

@@ -16,9 +16,9 @@ updated: 2026-08-07T10:13:45.853Z
 
 # Solution Architecture
 
-_[image: image-20260807-101304.png — not downloaded]_
+![image-20260807-101304.png](../../_attachments/19705397258/image-20260807-101304.png)
 
-_[image: Screenshot 2026-08-07 at 10.22.56.png — not downloaded]_
+![Screenshot 2026-08-07 at 10.22.56.png](../../_attachments/19705397258/Screenshot_2026-08-07_at_10.22.56.png)
 
 ### High-Level Platform Architecture
 
@@ -91,4 +91,4 @@ This approach ensures that **AI augments the established data and analytical arc
 
 # Detailed Architecture
 
-_[image: image-20260807-101334.png — not downloaded]_
+![image-20260807-101334.png](../../_attachments/19705397258/image-20260807-101334.png)

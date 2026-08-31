@@ -12,7 +12,7 @@ updated: 2026-08-25T04:47:40.251Z
 
 Core analysis screen. Shows the EBIT bridge (SoP waterfall), cost bar breakdown, and ranked opportunity levers. Partners want to see the assumption behind every number and be able to adjust it. This is where the total Size of Prize is calculated.
 
-_[image: image-20260824-055716.png — not downloaded]__[image: image-20260824-055752.png — not downloaded]_
+![image-20260824-055716.png](../../../_attachments/19710705690/image-20260824-055716.png)![image-20260824-055752.png](../../../_attachments/19710705690/image-20260824-055752.png)
 
 | **Data Displayed**  | **Source**  | **Calculation / Logic**  | **UX / Interaction (Raema)**  | **Agent / System Behaviour (Nikolozi)**  |
 | *⚠ OPEN: EBIT vs EBITDA consistency — must use one basis consistently across all lever calculations and the final multiple. Align with Akhil.*  |

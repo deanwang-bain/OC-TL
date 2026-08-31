@@ -10,4 +10,4 @@ updated: 2026-07-12T21:38:07.921Z
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19618758856)
 
-_[image: image-20260712-213758.png — not downloaded]_
+![image-20260712-213758.png](../../_attachments/19618758856/image-20260712-213758.png)

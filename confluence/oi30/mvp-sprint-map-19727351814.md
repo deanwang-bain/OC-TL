@@ -10,6 +10,6 @@ updated: 2026-08-14T11:34:39.732Z
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19727351814)
 
-_[image: Screenshot 2026-08-14 163522.png — not downloaded]_
+![Screenshot 2026-08-14 163522.png](../_attachments/19727351814/Screenshot_2026-08-14_163522.png)
 
 Draft of MVP sprint map based on initial scope assumptions.

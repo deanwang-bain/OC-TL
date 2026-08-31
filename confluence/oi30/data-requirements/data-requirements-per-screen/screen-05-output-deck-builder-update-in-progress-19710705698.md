@@ -12,7 +12,7 @@ updated: 2026-08-25T04:47:53.775Z
 
 Final screen. Agent assembles a CEO-ready PowerPoint. Three ways to add slides: pre-created Bain slides, Bain slides from Sage, and direct search. Partner can also ask agent in chat to build specific slides. Sticky notes is a preferred feature.
 
-_[image: image-20260824-055933.png — not downloaded]_
+![image-20260824-055933.png](../../../_attachments/19710705698/image-20260824-055933.png)
 
 | **Data Displayed**  | **Source**  | **Calculation / Logic**  | **UX / Interaction (Raema)**  | **Agent / System Behaviour (Nikolozi)**  |
 | *⚠ OPEN DECISION: ThinkCell vs python-pptx — current OI process uses ThinkCell (Noah confirmed). *  |

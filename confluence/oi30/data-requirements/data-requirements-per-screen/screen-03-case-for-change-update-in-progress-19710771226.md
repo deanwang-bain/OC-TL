@@ -12,7 +12,7 @@ updated: 2026-08-25T04:47:21.509Z
 
 Agent proposes 2–4 narrative angles for the CEO discussion. Partners want co-collaboration to shape framing — not a pre-determined answer. Each angle is backed by quantitative metrics and qualitative signals.
 
-_[image: image-20260824-014521.png — not downloaded]_
+![image-20260824-014521.png](../../../_attachments/19710771226/image-20260824-014521.png)
 
 | **Data Displayed**  | **Source**  | **Calculation / Logic**  | **UX / Interaction (Raema)**  | **Agent / System Behaviour (Nikolozi)**  |
 | ⚠ *NOTE (Noah/Kasia meeting, Aug 11): TSR and some top-level, top-down data (Black/White/Grey) from VCC are reliable and can be used. Other financial metrics for Case for Change angles must come from raw CapIQ / OI 3.0 own calculations, not VCC-computed metrics*  |

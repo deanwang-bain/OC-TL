@@ -12,7 +12,7 @@ updated: 2026-08-26T04:55:22.628Z
 
 **A. Industry Watch-Outs**
 
-_[image: image-20260814-114716.png — not downloaded]_
+![image-20260814-114716.png](../../_attachments/19727482890/image-20260814-114716.png)
 
 **B. These 3 files are:**
 

@@ -12,7 +12,7 @@ updated: 2026-08-26T13:08:18.246Z
 
 Home screen. The partner's project list — every OI they have created or collaborated on. OI 3.0 inverts the old model: instead of the partner receiving a finished deck at the end of a 48-hour handoff chain (Account team → OI COE → BCN India → LT → partner), the partner now governs from the front and agents execute beneath. The dashboard is where that governance begins — each OI card is a live project the partner can re-enter at any stage, not a static deliverable. For core APT partners, 20+ OIs per year is expected.
 
-_[image: image-20260824-013435.png — not downloaded]_
+![image-20260824-013435.png](../../../_attachments/19710738476/image-20260824-013435.png)
 
 HTML file:
 

@@ -1,0 +1,329 @@
+<svg viewBox="0 0 1480 1860" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#c0202e"/>
+    </marker>
+    <marker id="arrowDash" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#7a5aa8"/>
+    </marker>
+    <style>
+      .band { rx:10; ry:10; stroke-width:1.5; }
+      .box  { fill:#ffffff; stroke:#666; stroke-width:1; rx:6; ry:6; }
+      .btitle { font-size:15px; font-weight:bold; fill:#111; }
+      .bsub { font-size:10.5px; fill:#333; }
+      .lname { font-size:16px; font-weight:bold; letter-spacing:0.5px; }
+      .lnote { font-size:11px; font-style:italic; }
+      .flow  { stroke:#444; stroke-width:1.6; fill:none; }
+      .flowlbl { font-size:10px; fill:#444; }
+      .dash  { stroke:#7a5aa8; stroke-width:1.4; fill:none; stroke-dasharray:5 4; }
+      .dashlbl { font-size:10px; fill:#7a5aa8; font-style:italic; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="40" y="42" font-size="26" font-weight="bold" fill="#111">OI 3.0 — Logical Technical Architecture</text>
+  <text x="40" y="66" font-size="13" fill="#555">Bands read top→bottom as the runtime flow. Solid = data/control at request time · dashed = learning / async hooks. Infra not shown.</text>
+
+  <!-- ============ LAYER 1: PARTNER EXPERIENCE ============ -->
+  <rect class="band" x="40" y="90" width="1400" height="200" fill="#eaf1fb" stroke="#8fb2e0"/>
+  <text class="lname" x="58" y="114" fill="#2b5fa8">PARTNER EXPERIENCE</text>
+  <text class="lnote" x="270" y="114" fill="#2b5fa8">chat-first · &lt;30 min to a CEO-ready, defensible pack</text>
+
+  <rect class="box" x="60" y="128" width="330" height="146"/>
+  <text class="btitle" x="74" y="150">Composition surface</text>
+  <text class="bsub" x="74" y="169">Value Tree editor · SoP waterfall · lever library</text>
+  <text class="bsub" x="74" y="185">Live Disagreement box → re-runs SoP w/ constraint</text>
+  <text class="bsub" x="74" y="201">Generate input: target · sector hint</text>
+  <text class="bsub" x="74" y="217">Voice Profile switcher: hedging · density · jargon</text>
+  <text class="bsub" x="74" y="233">              · don't-say · section order</text>
+  <text class="bsub" x="74" y="256" font-style="italic" fill="#666">[ Bain-framework refinement · voice as axes ]</text>
+
+  <rect class="box" x="415" y="128" width="360" height="146"/>
+  <text class="btitle" x="429" y="150">Defensibility surface</text>
+  <text class="bsub" x="429" y="169">Eval-gate badge per slide</text>
+  <text class="bsub" x="429" y="185">Confidence chips (green / yellow / red) per claim</text>
+  <text class="bsub" x="429" y="201">Inline evidence chain (click claim → source quote)</text>
+  <text class="bsub" x="429" y="217">Skeptic dissent panel per slide</text>
+  <text class="bsub" x="429" y="256" font-style="italic" fill="#666">[ defend every number in front of a CEO ]</text>
+
+  <rect class="box" x="800" y="128" width="300" height="146"/>
+  <text class="btitle" x="814" y="150">Time-travel surface</text>
+  <text class="bsub" x="814" y="169">Figma-style scrubber</text>
+  <text class="bsub" x="814" y="185">restore · branch · promote</text>
+  <text class="bsub" x="814" y="256" font-style="italic" fill="#666">[ versioned event log ]</text>
+
+  <rect class="box" x="1120" y="128" width="300" height="146" fill="#f5f0fb" stroke="#9a7cc0"/>
+  <text class="btitle" x="1134" y="150" fill="#5a3d8a">Replay / Projection API</text>
+  <text class="bsub" x="1134" y="169">&lt;bridge&gt; projects DOM state to the</text>
+  <text class="bsub" x="1134" y="185">surfaces; applies restore/branch/promote</text>
+  <text class="bsub" x="1134" y="256" font-style="italic" fill="#666">deck = projection over events</text>
+
+  <!-- ============ LAYER 2: ORCHESTRATION + AGENT SWARM ============ -->
+  <rect class="band" x="40" y="330" width="1400" height="560" fill="#fef8e6" stroke="#e0c060"/>
+  <text class="lname" x="58" y="354" fill="#9a7410">ORCHESTRATION + AGENT SWARM</text>
+  <text class="lnote" x="420" y="354" fill="#9a7410">many specialized agents · sector depth · parallel where independent</text>
+
+  <!-- Orchestrator -->
+  <rect class="box" x="60" y="368" width="250" height="118" fill="#fdf3c9" stroke="#d9b843"/>
+  <text class="btitle" x="74" y="390">Orchestrator</text>
+  <text class="bsub" x="74" y="409">plans agent calls · streams SSE</text>
+  <text class="bsub" x="74" y="425">holds sector context</text>
+  <text class="bsub" x="74" y="441">routes counter-thesis re-runs</text>
+  <text class="bsub" x="74" y="466" font-style="italic" fill="#777">entry point for every request</text>
+
+  <!-- Pre-flight gates -->
+  <rect class="box" x="335" y="368" width="270" height="118" fill="#fbe0dc" stroke="#d98a7f"/>
+  <text class="btitle" x="349" y="390">Pre-flight gates</text>
+  <text class="bsub" x="349" y="409">Conflict-of-interest engine (active client?)</text>
+  <text class="bsub" x="349" y="425">Blocked-target list (firm/legal-managed)</text>
+  <text class="bsub" x="349" y="441">Data-residency router (EU target → EU)</text>
+  <text class="bsub" x="349" y="466" font-style="italic" fill="#777">[ refusal / graceful degradation ]</text>
+
+  <!-- Sector micro-swarm router -->
+  <rect class="box" x="630" y="368" width="300" height="118" fill="#fdf3c9" stroke="#d9b843"/>
+  <text class="btitle" x="644" y="390">Sector micro-swarm router</text>
+  <text class="bsub" x="644" y="409">CPG · FS · Telco · Auto · Bldg Products …</text>
+  <text class="bsub" x="644" y="425">lazy-loaded per request, namespace-isolated</text>
+  <text class="bsub" x="644" y="441">sector switch = a different agent stack</text>
+  <text class="bsub" x="644" y="466" font-style="italic" fill="#777">"shallow-across-all-sectors is impossible"</text>
+
+  <!-- Reasoning agents group -->
+  <rect x="60" y="510" width="545" height="200" rx="8" fill="#eef7ee" stroke="#7fb37f" stroke-width="1.5"/>
+  <text x="74" y="532" font-size="13" font-weight="bold" fill="#3a7d3a">Reasoning agents  (parallel where independent)</text>
+
+  <rect class="box" x="74" y="546" width="160" height="66"/>
+  <text class="btitle" x="86" y="567" font-size="13">Research</text>
+  <text class="bsub" x="86" y="585">LLM + RAG over</text>
+  <text class="bsub" x="86" y="600">qualitative corpus</text>
+
+  <rect class="box" x="246" y="546" width="160" height="66"/>
+  <text class="btitle" x="258" y="567" font-size="13">IP-Retrieval</text>
+  <text class="bsub" x="258" y="585">structured Iris / ARC /</text>
+  <text class="bsub" x="258" y="600">case-cloud reads</text>
+
+  <rect class="box" x="418" y="546" width="170" height="66"/>
+  <text class="btitle" x="430" y="567" font-size="13">Benchmark</text>
+  <text class="bsub" x="430" y="585">peer set · KPI deltas</text>
+  <text class="bsub" x="430" y="600">calls VCC for calc</text>
+
+  <rect class="box" x="74" y="626" width="250" height="66"/>
+  <text class="btitle" x="86" y="647" font-size="13">SoP Composer</text>
+  <text class="bsub" x="86" y="665">bucket-aware · accepts counter-thesis</text>
+  <text class="bsub" x="86" y="680">param → enables Live Disagreement</text>
+
+  <rect class="box" x="336" y="626" width="252" height="66"/>
+  <text class="btitle" x="348" y="647" font-size="13">3-Takeaway Optimizer</text>
+  <text class="bsub" x="348" y="665">brutal focus on the headline slide</text>
+  <text class="bsub" x="348" y="680">(so-what discipline)</text>
+
+  <!-- Adversarial layer -->
+  <rect x="630" y="510" width="300" height="200" rx="8" fill="#fbeadf" stroke="#e0a060" stroke-width="1.5"/>
+  <text x="644" y="532" font-size="13" font-weight="bold" fill="#b06a20">Adversarial layer  (always on)</text>
+  <rect class="box" x="644" y="546" width="272" height="70"/>
+  <text class="btitle" x="656" y="567" font-size="13">Skeptic Agent</text>
+  <text class="bsub" x="656" y="585">stress-tests every output · auto-writes a</text>
+  <text class="bsub" x="656" y="600">dissent record per slide · structural, not optional</text>
+  <rect class="box" x="644" y="626" width="272" height="66"/>
+  <text class="btitle" x="656" y="647" font-size="13">Multi-Persona Theatre</text>
+  <text class="bsub" x="656" y="665">CEO · CFO · COO · Activist · GC</text>
+  <text class="bsub" x="656" y="680">seeded from Bain-alumni signal on target</text>
+
+  <!-- Composition + Output -->
+  <rect x="955" y="510" width="290" height="200" rx="8" fill="#e9ecfa" stroke="#7f8fd0" stroke-width="1.5"/>
+  <text x="969" y="532" font-size="13" font-weight="bold" fill="#4a55a8">Composition + Output</text>
+  <rect class="box" x="969" y="546" width="262" height="70"/>
+  <text class="btitle" x="981" y="567" font-size="13">Slide Composer</text>
+  <text class="bsub" x="981" y="585">writes Section · Slide · Block · Claim</text>
+  <text class="bsub" x="981" y="600">(confidence, provenance_class) → DOM</text>
+  <rect class="box" x="969" y="626" width="262" height="66"/>
+  <text class="btitle" x="981" y="647" font-size="13">Voice-Apply Agent</text>
+  <text class="bsub" x="981" y="665">rewrites block content only</text>
+  <text class="bsub" x="981" y="680">NO upstream re-run (edit ≠ reason)</text>
+
+  <!-- Eval Gate -->
+  <rect class="box" x="1265" y="510" width="155" height="360" fill="#f9d6db" stroke="#c0202e" stroke-width="1.6"/>
+  <text x="1275" y="534" font-size="14" font-weight="bold" fill="#c0202e">EVAL GATE</text>
+  <text class="bsub" x="1275" y="551" font-style="italic" fill="#c0202e">pre-render · every slide</text>
+  <text class="bsub" x="1275" y="578">• cite-coverage ≥ 70%</text>
+  <text class="bsub" x="1275" y="596">• no orphan claims</text>
+  <text class="bsub" x="1275" y="611">  (≥1 evidence_ref each)</text>
+  <text class="bsub" x="1275" y="629">• peer list whitelist</text>
+  <text class="bsub" x="1275" y="647">  match check</text>
+  <text class="bsub" x="1275" y="665">• SoP balances to</text>
+  <text class="bsub" x="1275" y="680">  source EBITDA</text>
+  <text class="bsub" x="1275" y="698">• defamation guardrail</text>
+  <text class="bsub" x="1275" y="713">  (named + negative →</text>
+  <text class="bsub" x="1275" y="728">  spawn verify sub-agent)</text>
+  <text class="bsub" x="1275" y="756" font-style="italic" fill="#c0202e">fail → loop back to</text>
+  <text class="bsub" x="1275" y="771" font-style="italic" fill="#c0202e">agents · else refuse</text>
+  <text class="bsub" x="1275" y="799" font-weight="bold" fill="#c0202e">pass → render DOM</text>
+
+  <!-- Structural note in swarm band -->
+  <text x="60" y="740" font-size="11" fill="#9a7410" font-style="italic">Flow: Orchestrator → gates → sector router → reasoning agents (∥) → adversarial → composition → EVAL GATE → render</text>
+
+  <!-- ============ LAYER 3: TWO-TIER ENGINE / VCC ============ -->
+  <rect class="band" x="40" y="770" width="1200" height="98" fill="#eef0f2" stroke="#9aa4ac"/>
+  <text class="lname" x="58" y="794" fill="#4a5560" font-size="15">TWO-TIER ENGINE — deterministic substrate</text>
+  <rect class="box" x="60" y="806" width="1160" height="50" fill="#dde3e8" stroke="#8a95a0"/>
+  <text class="btitle" x="74" y="828" font-size="14">VCC Deterministic Substrate</text>
+  <text class="bsub" x="74" y="846">CapIQ pipe · structured calculations · adjustment engine · predefined flags · ARC structured lookups · canonical numbers. OI 3.0 calls VCC for calc — never duplicates the math. VCC is the kernel; OI 3.0 runs in user-space above it.</text>
+  <text class="bsub" x="820" y="828" font-weight="bold" fill="#c0202e" text-anchor="end">CRITICAL PATH →</text>
+
+  <!-- ============ LAYER 4: DATA ISOLATION / KNOWLEDGE ============ -->
+  <rect class="band" x="40" y="905" width="1400" height="215" fill="#eaf6ec" stroke="#7fb37f"/>
+  <text class="lname" x="58" y="929" fill="#3a7d3a">DATA ISOLATION &amp; KNOWLEDGE</text>
+  <text class="lnote" x="360" y="929" fill="#3a7d3a">three layers · one-way reads · curated promotion · per-Partner isolation that holds</text>
+
+  <rect class="box" x="60" y="944" width="250" height="150"/>
+  <text class="btitle" x="74" y="966" font-size="13">Public</text>
+  <text class="bsub" x="74" y="985">CapIQ · SEC EDGAR</text>
+  <text class="bsub" x="74" y="1001">analyst notes</text>
+  <text class="bsub" x="74" y="1017">earnings transcripts</text>
+  <text class="bsub" x="74" y="1033">public leadership data</text>
+
+  <rect class="box" x="330" y="944" width="260" height="150" fill="#fbe4ea" stroke="#d078a0"/>
+  <text class="btitle" x="344" y="966" font-size="13">Partner-Private</text>
+  <text class="bsub" x="344" y="985">voice profile · edits · flags</text>
+  <text class="bsub" x="344" y="1001">session-scoped context</text>
+  <text class="bsub" x="344" y="1017">evaporates on close</text>
+  <text class="bsub" x="344" y="1033">never trained on without</text>
+  <text class="bsub" x="344" y="1049">explicit opt-in</text>
+
+  <rect class="box" x="610" y="944" width="250" height="150" fill="#fdf3c9" stroke="#d9b843"/>
+  <text class="btitle" x="624" y="966" font-size="13">Curation Gate</text>
+  <text class="bsub" x="624" y="985">KM-controlled</text>
+  <text class="bsub" x="624" y="1001">explicit consent · batch review</text>
+  <text class="bsub" x="624" y="1017">approved patterns only</text>
+  <text class="bsub" x="624" y="1033">NO continuous unsupervised</text>
+  <text class="bsub" x="624" y="1049">cross-Partner learning</text>
+
+  <rect class="box" x="880" y="944" width="260" height="150" fill="#eef7ee" stroke="#7fb37f"/>
+  <text class="btitle" x="894" y="966" font-size="13">Firm-Shared</text>
+  <text class="bsub" x="894" y="985">Iris content library</text>
+  <text class="bsub" x="894" y="1001">ARC · case archives</text>
+  <text class="bsub" x="894" y="1017">expert network</text>
+  <text class="bsub" x="894" y="1033">Bain-alumni signal corpus</text>
+
+  <rect class="box" x="1160" y="944" width="260" height="150"/>
+  <text class="btitle" x="1174" y="966" font-size="13">Per-sector RAG indexes</text>
+  <text class="bsub" x="1174" y="985">CPG · FS · Telco · Auto …</text>
+  <text class="bsub" x="1174" y="1001">namespace-isolated</text>
+  <text class="bsub" x="1174" y="1017">shared embeddings + prompts</text>
+  <text class="bsub" x="1174" y="1033">+ eval suites per sector</text>
+  <text class="bsub" x="1174" y="1049">switch loads only that stack</text>
+
+  <text class="dashlbl" x="330" y="1082">Partner-Private → Curation Gate → Firm-Shared  (opt-in promotion only)</text>
+
+  <!-- ============ LAYER 5: STATE + LEARNING SUBSTRATE ============ -->
+  <rect class="band" x="40" y="1135" width="1400" height="330" fill="#f3edfa" stroke="#9a7cc0"/>
+  <text class="lname" x="58" y="1159" fill="#5a3d8a">STATE + LEARNING SUBSTRATE</text>
+  <text class="lnote" x="360" y="1159" fill="#5a3d8a">versioned event log · per-Partner adapter · "the DOM is Bain's IP in machine-readable form"</text>
+
+  <rect class="box" x="60" y="1174" width="330" height="270" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="74" y="1196">DOM Store  (typed, structured)</text>
+  <text class="bsub" x="74" y="1216">Deck → Section → Slide → Block →</text>
+  <text class="bsub" x="74" y="1232">Claim (confidence, provenance_class)</text>
+  <text class="bsub" x="74" y="1248">→ Evidence</text>
+  <text class="bsub" x="74" y="1268">also: SoPNode · Peer · Lever ·</text>
+  <text class="bsub" x="74" y="1284">VoiceProfile · ClusterPack · PersonaSet</text>
+  <text class="bsub" x="74" y="1312" font-style="italic" fill="#666">Layout is a renderer concern;</text>
+  <text class="bsub" x="74" y="1328" font-style="italic" fill="#666">the DOM carries content + structure only.</text>
+  <line x1="74" y1="1348" x2="376" y2="1348" stroke="#c9b8e0"/>
+  <text class="bsub" x="74" y="1368" font-weight="bold">Shadow-IT Amnesty Ingester</text>
+  <text class="bsub" x="74" y="1385">(one-time, on onboarding)</text>
+  <text class="bsub" x="74" y="1401">Partner's wiki-coded prompt →</text>
+  <text class="bsub" x="74" y="1417">seed VoiceProfile + don't-say +</text>
+  <text class="bsub" x="74" y="1433">section order</text>
+
+  <rect class="box" x="415" y="1174" width="470" height="270" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="429" y="1196">Append-only Event Log  (per deck)</text>
+  <text class="bsub" x="429" y="1218">DeckGenerated · BlockEdited · BlockLocked · BlockRegenerated</text>
+  <text class="bsub" x="429" y="1236">PeerSetChanged · SoPNodeRevised · SkepticAcknowledged</text>
+  <text class="bsub" x="429" y="1254">DisagreementSubmitted · VoiceProfileUpdated · ClusterPackChanged</text>
+  <text class="bsub" x="429" y="1272">Frozen · RolledBackFromFrozen · Branched · BranchPromoted</text>
+  <text class="bsub" x="429" y="1290">EvalGatePassed / Failed · SkepticDissentLogged · RLSignalEmitted</text>
+  <line x1="429" y1="1308" x2="871" y2="1308" stroke="#c9b8e0"/>
+  <text class="bsub" x="429" y="1330" font-weight="bold">deck = projection over events</text>
+  <text class="bsub" x="429" y="1352">one artifact, three jobs:  history · audit · training corpus</text>
+  <text class="bsub" x="429" y="1382" font-style="italic" fill="#666">RLSignal = { thumbs · edit_flag · edit_derived }</text>
+  <text class="bsub" x="429" y="1400" font-style="italic" fill="#666">feeds restore/branch/promote (Time-travel surface)</text>
+  <text class="bsub" x="429" y="1418" font-style="italic" fill="#666">and the per-Partner adapter (learning)</text>
+
+  <rect class="box" x="910" y="1174" width="510" height="270" fill="#e6d3f5" stroke="#7a5aa8"/>
+  <text class="btitle" x="924" y="1196">Per-Partner Adapter</text>
+  <text class="bsub" x="924" y="1218">LoRA / prefix-tuning over a shared base model</text>
+  <text class="bsub" x="924" y="1236">trains from RLSignalEmitted events:</text>
+  <text class="bsub" x="924" y="1256">   BlockEdited → reward signal</text>
+  <text class="bsub" x="924" y="1274">   PeerSetChanged → negative reward on prior peer pick</text>
+  <text class="bsub" x="924" y="1296" font-weight="bold" fill="#7a5aa8">strictly per-Partner — no cross-Partner gradient flow</text>
+  <line x1="924" y1="1316" x2="1406" y2="1316" stroke="#c9b8e0"/>
+  <text class="bsub" x="924" y="1338">3-signal training path (per vision):</text>
+  <text class="bsub" x="924" y="1358">   SFT on golden cases  +  RLVR  +  implicit RLHF from edits</text>
+  <text class="bsub" x="924" y="1378">   Eval Gate provides the continuous quality signal</text>
+  <text class="bsub" x="924" y="1400" font-style="italic" fill="#666">graduate to model adapters only once event-log</text>
+  <text class="bsub" x="924" y="1416" font-style="italic" fill="#666">signal is sufficient (structured voice controls first)</text>
+
+  <!-- ============ LAYER 6: PLATFORM FOOTHOLD ============ -->
+  <rect class="band" x="40" y="1480" width="1400" height="150" fill="#fdf6ea" stroke="#e0a860"/>
+  <text class="lname" x="58" y="1504" fill="#a06810" font-size="15">PLATFORM FOOTHOLD — same DOM, new renderers</text>
+  <text class="lnote" x="560" y="1504" fill="#a06810">"OI 3.0 is the first app, not the only app" (future / post-GLS)</text>
+
+  <rect class="box" x="60" y="1524" width="300" height="86" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="74" y="1546" font-size="13">Live SoP Refresh</text>
+  <text class="bsub" x="74" y="1565">in-engagement</text>
+  <text class="bsub" x="74" y="1581">this-week's data feed</text>
+
+  <rect class="box" x="390" y="1524" width="300" height="86" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="404" y="1546" font-size="13">Expert-Network Matcher</text>
+  <text class="bsub" x="404" y="1565">+ draft outreach</text>
+
+  <rect class="box" x="720" y="1524" width="300" height="86" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="734" y="1546" font-size="13">Proposal Generator</text>
+  <text class="bsub" x="734" y="1565">reuse DOM into pitch material</text>
+
+  <rect class="box" x="1050" y="1524" width="370" height="86" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="1064" y="1546" font-size="13">Cross-Partner Pattern Intel</text>
+  <text class="bsub" x="1064" y="1565">anonymized · opt-in</text>
+
+  <!-- ===== cross-cutting arrows ===== -->
+  <!-- Partner experience <-> replay bridge -->
+  <path class="flow" d="M 1180,290 L 1180,128" marker-end="url(#arrow)"/>
+  <!-- Composition surface -> Orchestrator -->
+  <path class="flow" d="M 185,274 L 185,368" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="192" y="330">generate / counter-thesis</text>
+
+  <!-- Eval gate -> render up to defensibility surface -->
+  <path class="flow" d="M 1342,510 L 1342,300 L 595,300 L 595,274" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="900" y="294">pass → render DOM to surfaces</text>
+
+  <!-- Benchmark -> VCC -->
+  <path class="flow" d="M 503,612 L 503,760 L 640,760 L 640,806" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="510" y="740">canonical calc</text>
+
+  <!-- Reasoning agents read from data isolation (up) -->
+  <path class="flow" d="M 165,712 L 165,760 M 300,760 L 300,905" marker-end="url(#arrow)" opacity="0"/>
+  <path class="flow" d="M 150,905 L 150,880 L 165,880 L 165,712" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="120" y="898">read (RAG / IP)</text>
+
+  <!-- Slide composer -> DOM store (dashed learning/state write) -->
+  <path class="dash" d="M 1100,692 L 1100,1150 L 225,1150 L 225,1174" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="600" y="1145">Slide Composer writes Blocks/Claims → DOM · append event</text>
+
+  <!-- Event log -> per partner adapter -->
+  <path class="dash" d="M 885,1300 L 910,1300" marker-end="url(#arrowDash)"/>
+
+  <!-- DOM store -> replay bridge (project state) -->
+  <path class="dash" d="M 225,1174 L 225,304 L 1270,304 L 1270,274" marker-end="url(#arrowDash)" opacity="0"/>
+
+  <!-- DOM -> platform foothold -->
+  <path class="dash" d="M 210,1444 L 210,1524" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="216" y="1500">same DOM →</text>
+
+  <!-- Adapter biases orchestrator/agents (dashed up) -->
+  <path class="dash" d="M 1165,1174 L 1165,900 L 250,900 L 250,486" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="300" y="895">per-Partner adapter biases the swarm (voice / peer priors)</text>
+
+</svg>

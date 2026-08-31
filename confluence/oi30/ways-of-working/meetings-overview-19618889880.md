@@ -31,4 +31,4 @@ Re-occuring Scrum Meetings
 
 For discussion:
 
-_[image: image-20260712-213656.png — not downloaded]__[image: image-20260712-213706.png — not downloaded]__[image: image-20260712-213717.png — not downloaded]_
+![image-20260712-213656.png](../../_attachments/19618889880/image-20260712-213656.png)![image-20260712-213706.png](../../_attachments/19618889880/image-20260712-213706.png)![image-20260712-213717.png](../../_attachments/19618889880/image-20260712-213717.png)

@@ -360,4 +360,4 @@ operate as cross-cutting capabilities.
 
 The key architectural characteristic is that OI is not a linear AI-generation pipeline. It is a **persistent, evidence-backed, human-in-the-loop analytical system** in which deterministic financial analysis and AI-assisted intelligence operate together through governed interfaces.
 
-_[image: image-20260807-102546.png — not downloaded]_
+![image-20260807-102546.png](../../../_attachments/19705135241/image-20260807-102546.png)

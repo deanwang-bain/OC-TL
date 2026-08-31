@@ -1,0 +1,181 @@
+<svg viewBox="0 0 1480 1500" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowDash" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#7a5aa8"/>
+    </marker>
+    <style>
+      .box  { fill:#ffffff; stroke:#666; stroke-width:1; rx:6; ry:6; }
+      .btitle { font-size:14px; font-weight:bold; fill:#111; }
+      .bsub { font-size:10.5px; fill:#333; }
+      .lname { font-size:16px; font-weight:bold; letter-spacing:0.5px; }
+      .lnote { font-size:11px; font-style:italic; }
+      .slabel { font-size:12px; font-weight:bold; fill:#333; }
+      .flow  { stroke:#444; stroke-width:1.6; fill:none; }
+      .flowlbl { font-size:10px; fill:#444; }
+      .dash  { stroke:#7a5aa8; stroke-width:1.4; fill:none; stroke-dasharray:5 4; }
+      .dashlbl { font-size:10px; fill:#7a5aa8; font-style:italic; }
+    </style>
+  </defs>
+
+  <text x="40" y="42" font-size="26" font-weight="bold" fill="#111">OI 3.0 — Data Architecture</text>
+  <text x="40" y="66" font-size="13" fill="#555">Same layered view as the logical diagram. Top→bottom = sources → knowledge → runtime → state → learning. Solid = data flow · dashed = learning / promotion.</text>
+
+  <!-- ===== BAND 1: DATA SOURCES ===== -->
+  <rect x="40" y="90" width="1400" height="272" rx="10" fill="#eaf1fb" stroke="#8fb2e0" stroke-width="1.5"/>
+  <text class="lname" x="58" y="114" fill="#2b5fa8">1 · DATA SOURCES</text>
+  <text class="lnote" x="270" y="114" fill="#2b5fa8">outside-in public data + Bain proprietary IP (via Glean / Sage)</text>
+
+  <text class="slabel" x="60" y="140">Public / outside-in</text>
+  <rect class="box" x="60" y="148" width="250" height="60"/><text class="btitle" x="74" y="183">CapIQ</text>
+  <rect class="box" x="330" y="148" width="250" height="60"/><text class="btitle" x="344" y="183">SEC EDGAR</text>
+  <rect class="box" x="600" y="148" width="250" height="60"/><text class="btitle" x="614" y="176">LSEG analyst</text><text class="btitle" x="614" y="193">reports</text>
+  <rect class="box" x="870" y="148" width="250" height="60"/><text class="btitle" x="884" y="176">Earnings</text><text class="btitle" x="884" y="193">transcripts</text>
+  <rect class="box" x="1140" y="148" width="280" height="60"/><text class="btitle" x="1154" y="176">Public leadership</text><text class="btitle" x="1154" y="193">data</text>
+
+  <text class="slabel" x="60" y="238">Bain IP — via Glean / Sage API</text>
+  <rect class="box" x="60" y="246" width="250" height="60"/><text class="btitle" x="74" y="274">Iris content library</text>
+  <rect class="box" x="330" y="246" width="250" height="60"/><text class="btitle" x="344" y="281">ARC</text>
+  <rect class="box" x="600" y="246" width="250" height="60"/><text class="btitle" x="614" y="281">Case archives</text>
+  <rect class="box" x="870" y="246" width="250" height="60"/><text class="btitle" x="884" y="281">Expert network</text>
+  <rect class="box" x="1140" y="246" width="280" height="60"/><text class="btitle" x="1154" y="281">Bain-alumni signal</text>
+
+  <!-- ===== BAND 2: VCC DATA PLANE ===== -->
+  <rect x="40" y="385" width="1400" height="118" rx="10" fill="#eef0f2" stroke="#9aa4ac" stroke-width="1.5"/>
+  <text class="lname" x="58" y="409" fill="#4a5560">2 · VCC DETERMINISTIC DATA PLANE</text>
+  <text class="lnote" x="450" y="409" fill="#4a5560">Umbrage-owned · consumed at runtime for canonical calc only — never re-derived</text>
+  <rect class="box" x="60" y="420" width="330" height="66" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="74" y="448">VCC Snowflake layer</text><text class="bsub" x="74" y="466">CapIQ + LSEG pipeline feed</text>
+  <rect class="box" x="470" y="420" width="380" height="66" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="484" y="448">Calc + adjustment engine</text><text class="bsub" x="484" y="466">structured calculations · canonical numbers</text>
+  <rect class="box" x="930" y="420" width="380" height="66" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="944" y="448">VCC data-package</text><text class="bsub" x="944" y="466">agreed schema (contract-first)</text>
+  <path class="flow" d="M 390,453 L 470,453" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 850,453 L 930,453" marker-end="url(#arrow)"/>
+
+  <!-- ===== BAND 3: INGESTION & INDEXING ===== -->
+  <rect x="40" y="525" width="1400" height="128" rx="10" fill="#fef8e6" stroke="#e0c060" stroke-width="1.5"/>
+  <text class="lname" x="58" y="549" fill="#9a7410">3 · INGESTION &amp; INDEXING</text>
+  <rect class="box" x="60" y="562" width="330" height="74" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="74" y="590">RAG indexing + embeddings</text><text class="bsub" x="74" y="608">per sector · from unstructured sources</text>
+  <rect class="box" x="470" y="562" width="380" height="74" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="484" y="590">Vector store</text><text class="bsub" x="484" y="608">namespace-isolated per sector (CPG · FS · Auto …)</text>
+  <rect class="box" x="930" y="562" width="380" height="74"/><text class="btitle" x="944" y="590">Structured lookups</text><text class="bsub" x="944" y="608">IP-retrieval over Iris / ARC / cases</text>
+  <path class="flow" d="M 390,599 L 470,599" marker-end="url(#arrow)"/>
+
+  <!-- ===== BAND 4: KNOWLEDGE LAYERS ===== -->
+  <rect x="40" y="675" width="1400" height="228" rx="10" fill="#eaf6ec" stroke="#7fb37f" stroke-width="1.5"/>
+  <text class="lname" x="58" y="699" fill="#3a7d3a">4 · KNOWLEDGE LAYERS</text>
+  <text class="lnote" x="330" y="699" fill="#3a7d3a">3-tier isolation · one-way reads · curated promotion · per-Partner isolation that holds</text>
+
+  <rect class="box" x="60" y="714" width="250" height="150" fill="#eef4fb" stroke="#5f8fc9"/>
+  <text class="btitle" x="74" y="736">Public layer</text>
+  <text class="bsub" x="74" y="756">CapIQ · SEC EDGAR</text>
+  <text class="bsub" x="74" y="772">analyst notes</text>
+  <text class="bsub" x="74" y="788">earnings transcripts</text>
+
+  <rect class="box" x="330" y="714" width="260" height="150" fill="#fbe4ea" stroke="#d078a0"/>
+  <text class="btitle" x="344" y="736">Partner-Private</text>
+  <text class="bsub" x="344" y="756">voice profile · edits · flags</text>
+  <text class="bsub" x="344" y="772">session-scoped context</text>
+  <text class="bsub" x="344" y="788">evaporates on close</text>
+  <text class="bsub" x="344" y="804">no training w/o opt-in</text>
+
+  <rect class="box" x="610" y="714" width="250" height="150" fill="#fdf3c9" stroke="#d9b843"/>
+  <text class="btitle" x="624" y="736">Curation Gate</text>
+  <text class="bsub" x="624" y="756">KM-controlled</text>
+  <text class="bsub" x="624" y="772">explicit consent</text>
+  <text class="bsub" x="624" y="788">batch review</text>
+  <text class="bsub" x="624" y="804">approved patterns only</text>
+
+  <rect class="box" x="880" y="714" width="260" height="150" fill="#eef7ee" stroke="#7fb37f"/>
+  <text class="btitle" x="894" y="736">Firm-Shared</text>
+  <text class="bsub" x="894" y="756">Iris content library</text>
+  <text class="bsub" x="894" y="772">ARC · case archives</text>
+  <text class="bsub" x="894" y="788">expert network</text>
+  <text class="bsub" x="894" y="804">Bain-alumni signal</text>
+
+  <rect class="box" x="1160" y="714" width="260" height="150"/>
+  <text class="btitle" x="1174" y="736">Per-sector RAG</text>
+  <text class="bsub" x="1174" y="756">CPG · FS · Telco · Auto …</text>
+  <text class="bsub" x="1174" y="772">namespace-isolated</text>
+  <text class="bsub" x="1174" y="788">shared embeddings + prompts</text>
+  <text class="bsub" x="1174" y="804">+ eval suites</text>
+
+  <path class="dash" d="M 460,864 L 460,884 L 735,884 L 735,864" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="470" y="898">Partner-Private → Curation Gate → Firm-Shared (opt-in promotion only)</text>
+
+  <!-- feed from ingestion into layers -->
+  <path class="flow" d="M 225,636 L 225,714" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 660,636 L 660,690 L 990,690 L 990,714" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 1120,636 L 1120,690 L 1290,690 L 1290,714" marker-end="url(#arrow)"/>
+
+  <!-- ===== BAND 5: AGENT RUNTIME ===== -->
+  <rect x="40" y="925" width="1400" height="84" rx="10" fill="#fdf8ec" stroke="#e0c060" stroke-width="1.5"/>
+  <text class="lname" x="58" y="949" fill="#9a7410">5 · AGENT RUNTIME</text>
+  <rect class="box" x="360" y="936" width="740" height="62" fill="#fdf3c9" stroke="#d9b843"/>
+  <text class="btitle" x="374" y="962">Research · IP-Retrieval · Benchmark · SoP · Skeptic · Persona · Composer</text>
+  <text class="bsub" x="374" y="981">reads knowledge layers · calls VCC for canonical calc · writes claims with provenance</text>
+
+  <path class="flow" d="M 185,864 L 185,970 L 360,970" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="120" y="945">layers read</text>
+  <path class="flow" d="M 1120,486 L 1360,486 L 1360,970 L 1100,970" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="1180" y="945">VCC canonical calc at runtime</text>
+
+  <!-- ===== BAND 6: STATE & PROVENANCE ===== -->
+  <rect x="40" y="1030" width="1400" height="176" rx="10" fill="#f3edfa" stroke="#9a7cc0" stroke-width="1.5"/>
+  <text class="lname" x="58" y="1054" fill="#5a3d8a">6 · STATE &amp; PROVENANCE</text>
+  <text class="lnote" x="360" y="1054" fill="#5a3d8a">the DOM is Bain's IP in machine-readable form</text>
+
+  <rect class="box" x="60" y="1068" width="620" height="122" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="74" y="1092">Typed DOM Store</text>
+  <text class="bsub" x="74" y="1112">Deck → Section → Slide → Block → Claim (confidence, provenance_class) → Evidence</text>
+  <text class="bsub" x="74" y="1130">also: SoPNode · Peer · Lever · VoiceProfile · ClusterPack · PersonaSet</text>
+  <text class="bsub" x="74" y="1156" font-style="italic" fill="#666">Provenance: every Claim carries ≥1 evidence_ref → source quote;</text>
+  <text class="bsub" x="74" y="1172" font-style="italic" fill="#666">confidence + provenance_class drive the Defensibility surface.</text>
+
+  <rect class="box" x="700" y="1068" width="720" height="122" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="714" y="1092">Append-only Event Log</text>
+  <text class="bsub" x="714" y="1112">DeckGenerated · BlockEdited · PeerSetChanged · SoPNodeRevised · EvalGatePassed/Failed …</text>
+  <text class="bsub" x="714" y="1130">RLSignalEmitted { thumbs · edit_flag · edit_derived }</text>
+  <text class="bsub" x="714" y="1156" font-style="italic" fill="#666">one artifact, three jobs: history · audit · training corpus</text>
+  <text class="bsub" x="714" y="1172" font-style="italic" fill="#666">deck = projection over events (feeds replay / time-travel)</text>
+
+  <path class="flow" d="M 730,1009 L 730,1068" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="738" y="1045">runtime writes DOM</text>
+  <path class="flow" d="M 680,1129 L 700,1129" marker-end="url(#arrow)"/>
+
+  <!-- ===== BAND 7: LEARNING CORPUS ===== -->
+  <rect x="40" y="1226" width="1400" height="222" rx="10" fill="#f3edfa" stroke="#9a7cc0" stroke-width="1.5"/>
+  <text class="lname" x="58" y="1250" fill="#5a3d8a">7 · LEARNING CORPUS</text>
+  <text class="lnote" x="330" y="1250" fill="#5a3d8a">per-Partner · no cross-Partner gradient flow · Eval Gate provides the continuous quality signal</text>
+
+  <rect class="box" x="60" y="1266" width="300" height="76" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="74" y="1290">RL signals</text>
+  <text class="bsub" x="74" y="1310">edits · thumbs · peer changes</text>
+  <text class="bsub" x="74" y="1326">(implicit RLHF + RLVR)</text>
+
+  <rect class="box" x="60" y="1354" width="300" height="76" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="74" y="1378">Golden cases</text>
+  <text class="bsub" x="74" y="1398">SFT training set</text>
+
+  <rect class="box" x="400" y="1266" width="300" height="76" fill="#efe6fa" stroke="#9a7cc0"/>
+  <text class="btitle" x="414" y="1290">Eval suites</text>
+  <text class="bsub" x="414" y="1310">per sector · known-answer pairs</text>
+  <text class="bsub" x="414" y="1326">canonical Bain questions</text>
+
+  <rect class="box" x="820" y="1300" width="600" height="96" fill="#e6d3f5" stroke="#7a5aa8"/>
+  <text class="btitle" x="834" y="1326">Per-Partner Adapter (LoRA / prefix-tuning over shared base)</text>
+  <text class="bsub" x="834" y="1348">3-signal path: SFT on golden cases + RLVR + implicit RLHF from edits</text>
+  <text class="bsub" x="834" y="1366" font-weight="bold" fill="#7a5aa8">strictly per-Partner — no cross-Partner gradient flow</text>
+  <text class="bsub" x="834" y="1384" font-style="italic" fill="#666">structured voice controls first; graduate to adapters once signal is sufficient</text>
+
+  <path class="flow" d="M 970,1190 L 970,1266 L 360,1266 L 360,1304 L 400,1304" marker-end="url(#arrow)" opacity="0"/>
+  <path class="flow" d="M 1000,1190 L 1000,1240 L 360,1240 L 360,1300" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="500" y="1235">event log → RL signals / golden cases</text>
+  <path class="flow" d="M 360,1304 L 820,1330" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 700,1304 L 820,1330" marker-end="url(#arrow)"/>
+  <path class="dash" d="M 1130,1300 L 1130,910 L 460,910 L 460,864" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="600" y="925">adapter biases retrieval + voice (per-Partner)</text>
+
+  <!-- legend -->
+  <rect x="1150" y="66" width="290" height="14" fill="none"/>
+  <text x="1440" y="42" text-anchor="end" font-size="11" fill="#777">solid = data flow · dashed = learning / promotion</text>
+</svg>

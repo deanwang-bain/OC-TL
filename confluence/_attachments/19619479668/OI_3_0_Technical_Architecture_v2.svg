@@ -1,0 +1,137 @@
+<svg viewBox="0 0 1480 1560" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#c0202e"/>
+    </marker>
+    <marker id="arrowDash" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#7a5aa8"/>
+    </marker>
+    <style>
+      .box  { fill:#ffffff; stroke:#666; stroke-width:1; rx:6; ry:6; }
+      .btitle { font-size:14px; font-weight:bold; fill:#111; }
+      .bsub { font-size:10.5px; fill:#333; }
+      .lname { font-size:16px; font-weight:bold; letter-spacing:0.5px; }
+      .lnote { font-size:11px; font-style:italic; }
+      .flow  { stroke:#444; stroke-width:1.6; fill:none; }
+      .flowlbl { font-size:10px; fill:#444; }
+      .dash  { stroke:#7a5aa8; stroke-width:1.4; fill:none; stroke-dasharray:5 4; }
+      .dashlbl { font-size:10px; fill:#7a5aa8; font-style:italic; }
+    </style>
+  </defs>
+
+  <text x="40" y="42" font-size="26" font-weight="bold" fill="#111">OI 3.0 — Technical Architecture</text>
+  <text x="40" y="66" font-size="13" fill="#555">Same layered view as the logical diagram. Yellow = StatusNeo-built app (app-level security) · green = Bain-owned infra (infra-level security). The band split = the security RACI line.</text>
+
+  <!-- BAND 1: CLIENT -->
+  <rect x="40" y="90" width="1400" height="110" rx="10" fill="#eaf1fb" stroke="#8fb2e0" stroke-width="1.5"/>
+  <text class="lname" x="58" y="114" fill="#2b5fa8">1 · PRESENTATION / CLIENT</text>
+  <rect class="box" x="60" y="126" width="420" height="62" fill="#eef4fb" stroke="#5f8fc9"/><text class="btitle" x="74" y="152">Web app — chat-first UI</text><text class="bsub" x="74" y="171">Partner surfaces: composition · defensibility · time-travel</text>
+  <rect class="box" x="510" y="126" width="420" height="62" fill="#eef4fb" stroke="#5f8fc9"/><text class="btitle" x="524" y="152">SSE streaming channel</text><text class="bsub" x="524" y="171">token / block streaming during generation</text>
+  <rect class="box" x="960" y="126" width="460" height="62" fill="#eef4fb" stroke="#5f8fc9"/><text class="btitle" x="974" y="152">PPTX export / render service</text><text class="bsub" x="974" y="171">DOM → deck; layout is a renderer concern</text>
+
+  <!-- BAND 2: APPLICATION SERVICES -->
+  <rect x="40" y="220" width="1400" height="190" rx="10" fill="#fef8e6" stroke="#e0c060" stroke-width="1.5"/>
+  <text class="lname" x="58" y="244" fill="#9a7410">2 · APPLICATION SERVICES</text>
+  <text class="lnote" x="330" y="244" fill="#9a7410">StatusNeo build · APP-LEVEL security (authN/Z at boundary, guardrails, provenance hooks, secure SDLC)</text>
+  <rect class="box" x="60" y="258" width="250" height="66" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="74" y="284">Orchestrator</text><text class="bsub" x="74" y="302">Claude SDK · plans calls · streams SSE</text>
+  <rect class="box" x="330" y="258" width="250" height="66" fill="#fbe0dc" stroke="#d98a7f"/><text class="btitle" x="344" y="284">Pre-flight gate svc</text><text class="bsub" x="344" y="302">CoI · blocked-target · residency router</text>
+  <rect class="box" x="600" y="258" width="340" height="66" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="614" y="284">Bounded agent runtime</text><text class="bsub" x="614" y="302">Research · IP · Benchmark · SoP · Skeptic · Persona · Composer · VoiceApply</text>
+  <rect class="box" x="960" y="258" width="220" height="66" fill="#f9d6db" stroke="#c0202e"/><text class="btitle" x="974" y="284" fill="#c0202e">Eval Gate service</text><text class="bsub" x="974" y="302">pre-render gate · fail→loop</text>
+  <rect class="box" x="1200" y="258" width="220" height="66" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="1214" y="284">Replay / Projection</text><text class="bsub" x="1214" y="302">bridge over event store</text>
+  <text class="bsub" x="60" y="360" fill="#9a7410" font-style="italic">flow: SSE → Orchestrator → gate → agent runtime → Eval Gate → (pass) DOM / render · (fail) loop back to agents</text>
+  <text class="bsub" x="60" y="392" fill="#9a7410" font-style="italic">agents load the per-Partner adapter and call VCC + Bain IP + public connectors through the integration layer below</text>
+
+  <!-- BAND 3: INTEGRATION -->
+  <rect x="40" y="430" width="1400" height="150" rx="10" fill="#fdf6ea" stroke="#e0a860" stroke-width="1.5"/>
+  <text class="lname" x="58" y="454" fill="#a06810">3 · INTEGRATION &amp; CONNECTORS</text>
+  <rect class="box" x="60" y="468" width="330" height="96" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="74" y="492">VCC adapter</text>
+  <text class="bsub" x="74" y="512">thin · swappable backends</text>
+  <text class="bsub" x="74" y="528">backend switch = config flip</text>
+  <text class="bsub" x="74" y="550" font-style="italic" fill="#777">contract-first VCC data-package schema</text>
+  <rect class="box" x="410" y="468" width="250" height="96" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="424" y="492">VCC stubs + fixtures</text>
+  <text class="bsub" x="424" y="512">permanent in CI</text>
+  <text class="bsub" x="424" y="528">deterministic regression</text>
+  <text class="bsub" x="424" y="544">+ outage resilience tests</text>
+  <rect class="box" x="680" y="468" width="330" height="96" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="694" y="492">Glean / Sage connector</text>
+  <text class="bsub" x="694" y="512">Bain IP retrieval (Iris / ARC / cases)</text>
+  <text class="bsub" x="694" y="528">auth scopes · rate limits</text>
+  <text class="bsub" x="694" y="550" font-style="italic" fill="#777">curation/indexing layer if needed</text>
+  <rect class="box" x="1030" y="468" width="390" height="96" fill="#fdeccb" stroke="#e0a860"/>
+  <text class="btitle" x="1044" y="492">Data-source connectors</text>
+  <text class="bsub" x="1044" y="512">CapIQ · SEC EDGAR · LSEG</text>
+  <text class="bsub" x="1044" y="528">feed public layer + vector store</text>
+
+  <!-- BAND 4: STORES -->
+  <rect x="40" y="600" width="1400" height="150" rx="10" fill="#f3edfa" stroke="#9a7cc0" stroke-width="1.5"/>
+  <text class="lname" x="58" y="624" fill="#5a3d8a">4 · DATA &amp; MODEL STORES</text>
+  <rect class="box" x="60" y="638" width="320" height="96" fill="#efe6fa" stroke="#9a7cc0"/><text class="btitle" x="74" y="662">Typed DOM store</text><text class="bsub" x="74" y="682">Deck → … → Claim → Evidence</text><text class="bsub" x="74" y="698">content + structure only</text>
+  <rect class="box" x="400" y="638" width="320" height="96" fill="#efe6fa" stroke="#9a7cc0"/><text class="btitle" x="414" y="662">Append-only event store</text><text class="bsub" x="414" y="682">history · audit · training corpus</text><text class="bsub" x="414" y="698">deck = projection over events</text>
+  <rect class="box" x="740" y="638" width="330" height="96" fill="#efe6fa" stroke="#9a7cc0"/><text class="btitle" x="754" y="662">Vector store / per-sector RAG</text><text class="bsub" x="754" y="682">namespace-isolated indexes</text><text class="bsub" x="754" y="698">embeddings + eval suites</text>
+  <rect class="box" x="1090" y="638" width="330" height="96" fill="#e6d3f5" stroke="#7a5aa8"/><text class="btitle" x="1104" y="662">Per-Partner adapter store</text><text class="bsub" x="1104" y="682">LoRA weights / prefixes</text><text class="bsub" x="1104" y="698">no cross-Partner flow</text>
+
+  <!-- BAND 5: ML PIPELINE -->
+  <rect x="40" y="770" width="1400" height="130" rx="10" fill="#fdf8ec" stroke="#e0c060" stroke-width="1.5"/>
+  <text class="lname" x="58" y="794" fill="#9a7410">5 · ML / EVAL PIPELINE</text>
+  <rect class="box" x="60" y="808" width="440" height="76" fill="#fdf3c9" stroke="#d9b843"/><text class="btitle" x="74" y="834">Fine-tune pipeline</text><text class="bsub" x="74" y="854">SFT (golden cases) + RLVR + implicit RLHF from edits</text><text class="bsub" x="74" y="872">reads event store → writes adapter store</text>
+  <rect class="box" x="530" y="808" width="440" height="76"/><text class="btitle" x="544" y="834">Eval harness</text><text class="bsub" x="544" y="854">retrieval evals · regression suite · canary decks</text><text class="bsub" x="544" y="872">feeds Eval Gate thresholds</text>
+
+  <!-- BAND 6: EXTERNAL SYSTEMS -->
+  <rect x="40" y="920" width="1400" height="120" rx="10" fill="#eef0f2" stroke="#9aa4ac" stroke-width="1.5"/>
+  <text class="lname" x="58" y="944" fill="#4a5560">6 · EXTERNAL SYSTEMS</text>
+  <rect class="box" x="60" y="956" width="440" height="68" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="74" y="982" fill="#c0202e">VCC runtime API / MCP — Umbrage</text><text class="bsub" x="74" y="1002">critical-path dependency · runtime vs batch determines dynamism</text>
+  <rect class="box" x="530" y="956" width="440" height="68" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="544" y="982">Bain IP — Iris / ARC / case clouds</text><text class="bsub" x="544" y="1002">via Glean/Sage API surface</text>
+  <rect class="box" x="1000" y="956" width="420" height="68" fill="#dde3e8" stroke="#8a95a0"/><text class="btitle" x="1014" y="982">Public data APIs</text><text class="bsub" x="1014" y="1002">CapIQ · SEC EDGAR · LSEG</text>
+
+  <!-- BAND 7: INFRA -->
+  <rect x="40" y="1060" width="1400" height="230" rx="10" fill="#eaf6ec" stroke="#7fb37f" stroke-width="1.5"/>
+  <text class="lname" x="58" y="1084" fill="#3a7d3a">7 · PLATFORM &amp; INFRA</text>
+  <text class="lnote" x="300" y="1084" fill="#3a7d3a">Bain-owned · INFRA-LEVEL security (VPC, IAM/KMS, IdP, SIEM, retention) · validated via TRA → Archie</text>
+  <rect class="box" x="60" y="1098" width="440" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="74" y="1124">Hosting</text><text class="bsub" x="74" y="1144">Bedrock / Vertex / MS Foundry</text><text class="bsub" x="74" y="1160" font-style="italic" fill="#b06a20">TBC — not yet decided</text>
+  <rect class="box" x="530" y="1098" width="430" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="544" y="1124">VPC / network perimeter</text><text class="bsub" x="544" y="1144">network policy · segmentation</text>
+  <rect class="box" x="990" y="1098" width="430" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="1004" y="1124">Cloud IAM / KMS / secret store</text><text class="bsub" x="1004" y="1144">key management · secret provisioning</text>
+  <rect class="box" x="60" y="1186" width="440" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="74" y="1212">Bain SSO / IdP</text><text class="bsub" x="74" y="1232">enterprise auth · per-Partner identity</text>
+  <rect class="box" x="530" y="1186" width="430" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="544" y="1212">SIEM / audit-log retention</text><text class="bsub" x="544" y="1232">ingests app-level audit hooks</text>
+  <rect class="box" x="990" y="1186" width="430" height="72" fill="#eef7ee" stroke="#7fb37f"/><text class="btitle" x="1004" y="1212">Observability / monitoring</text><text class="bsub" x="1004" y="1232">SLOs (deferred to industrialization)</text>
+
+  <!-- ===== cross-cutting flows ===== -->
+  <path class="flow" d="M 270,188 L 270,258" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="278" y="230">request</text>
+  <path class="flow" d="M 310,291 L 330,291" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 580,291 L 600,291" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 940,291 L 960,291" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 1070,324 L 1070,600" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="1078" y="470">pass → write DOM</text>
+  <path class="flow" d="M 690,324 L 690,468" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="698" y="450">agents call connectors</text>
+
+  <!-- integration to external -->
+  <path class="flow" d="M 225,564 L 225,956" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="232" y="700">VCC adapter → API</text>
+  <path class="dash" d="M 500,516 L 535,516" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="410" y="590">stub = test backend</text>
+  <path class="flow" d="M 845,564 L 845,956" marker-end="url(#arrow)"/>
+  <path class="flow" d="M 1220,564 L 1220,956" marker-end="url(#arrow)"/>
+
+  <!-- stores to render / replay -->
+  <path class="flow" d="M 220,638 L 220,200 L 1120,200 L 1120,188" marker-end="url(#arrow)" opacity="0"/>
+  <path class="flow" d="M 1300,324 L 1300,590 L 560,590 L 560,638" marker-end="url(#arrow)"/>
+  <text class="flowlbl" x="600" y="585">replay reads event store</text>
+
+  <!-- event store -> ML -> adapter store -->
+  <path class="flow" d="M 480,734 L 480,808" marker-end="url(#arrow)"/>
+  <path class="dash" d="M 500,808 L 500,762 L 1250,762 L 1250,734" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="820" y="756">fine-tune writes adapter store</text>
+  <path class="dash" d="M 1255,638 L 1255,340 L 760,340 L 760,324" marker-end="url(#arrowDash)"/>
+  <text class="dashlbl" x="820" y="335">agents load per-Partner adapter</text>
+
+  <!-- infra bindings (summarized to keep the canvas clean) -->
+  <text class="dashlbl" x="300" y="1279">binds up-stack:  Bain SSO → client auth   ·   Cloud KMS → app/adapter secrets   ·   app-level audit hooks → SIEM</text>
+
+  <text x="1440" y="42" text-anchor="end" font-size="11" fill="#777">solid = runtime call · dashed = security / learning binding</text>
+</svg>

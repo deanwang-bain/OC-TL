@@ -36,7 +36,7 @@ The agent proposes an editable default peer set — not a recommendation to acce
 
 HTML link:
 
-_[image: image-20260824-014416.png — not downloaded]_
+![image-20260824-014416.png](../../../_attachments/19710279791/image-20260824-014416.png)
 
 | **Data Displayed**  | **Source**  | **Calculation / Logic**  | **UX / Interaction (Raema)**  | **Agent / System Behaviour (Nikolozi)**  |
 | *! MVP/POC Peer set (Noah/Kasia meeting, Aug 11 ): Don’t use CapIQ or VCC peer set. For GLS, we can use table from OI with target and peer set in the “Data sources from Current OI” page*  |

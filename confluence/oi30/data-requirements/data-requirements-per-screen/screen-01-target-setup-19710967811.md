@@ -36,7 +36,7 @@ Stage 1 of 5. The partner arrives here from the Dashboard by clicking 'Create ne
 
 HTML file:
 
-_[image: image-20260824-013600.png — not downloaded]_
+![image-20260824-013600.png](../../../_attachments/19710967811/image-20260824-013600.png)
 
 | **Data Displayed**  | **Source**  | **Calculation / Logic**  | **UX / Interaction (Raema)**  | **Agent / System Behaviour (Nikolozi)**  |
 | *⚠ Entity resolution: assumed via VCC (consistent with core architectural principle — OI 3.0 calls VCC, consumes canonical outputs). VCC resolves company name → canonical entity/ticker using its existing CapIQ connection. Confirm with Siva before build.*  |
