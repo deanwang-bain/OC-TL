@@ -106,12 +106,15 @@ Actions tab. It needs the repository secrets `CONFLUENCE_EMAIL` and
 
 ### Known gaps in the source material
 
-As of the first sync, **18 of 71 pages have no body text**, including several the Tech
-Lead role depends on: Security Design, NFR Design Choices, Observability, Endpoints &
-Interfaces Design, Deployment Design, Technical Architecture, Data Architecture, and
-Logic Architecture. Some are genuinely unwritten; others hold only diagrams, which now
-surface as downloaded attachments. Treat an empty page as **unknown, not as "no
-requirement"** — and flag it when a decision depends on one.
+Of 71 pages, **53 carry text, 5 hold only a diagram, and 13 are genuinely empty**.
+The empty set includes every high-level design page this role reviews against: Security
+Design, NFR Design Choices, Observability, Endpoints & Interfaces Design, and Deployment
+Design (CI/CD). Reviews touching those areas rest on judgment, not written policy — say
+so explicitly rather than presenting a standard that does not exist.
+
+Treat an empty page as **unknown, not as "no requirement"**, and flag it when a decision
+depends on one. The full breakdown is in
+[context/open-questions.md](context/open-questions.md).
 
 ### Permissions
 

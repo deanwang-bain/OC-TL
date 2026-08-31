@@ -42,7 +42,7 @@ MAX_RETRIES = 5
 # Bump when the markdown output changes. Pages are normally skipped while their
 # Confluence version is unchanged, which would otherwise leave the whole mirror
 # frozen at the old rendering; a bump forces one full rewrite.
-CONVERTER_VERSION = 3
+CONVERTER_VERSION = 4
 
 
 class ConfluenceError(RuntimeError):
@@ -105,9 +105,25 @@ class Client:
                 time.sleep(2**attempt)
         raise ConfluenceError(f"exhausted retries for {url}")
 
-    def get_binary(self, path: str) -> bytes:
+    def download_candidates(self, link: str) -> list[str]:
+        """Absolute URLs to try for an attachment download link.
+
+        The v2 API returns `downloadLink` relative to the Confluence context
+        path (`/wiki`), not the site root, so joining it against the bare host
+        yields a 404. Try the context-qualified form first and fall back, since
+        the shape differs between Cloud and Server.
+        """
+        if link.startswith("http"):
+            return [link]
+        path = link if link.startswith("/") else f"/{link}"
+        candidates = []
+        if not path.startswith("/wiki/"):
+            candidates.append(urllib.parse.urljoin(self.base, f"/wiki{path}"))
+        candidates.append(urllib.parse.urljoin(self.base, path))
+        return candidates
+
+    def get_binary(self, url: str) -> bytes:
         """Download an attachment. Download links redirect, which urllib follows."""
-        url = path if path.startswith("http") else urllib.parse.urljoin(self.base, path)
         for attempt in range(MAX_RETRIES):
             request = urllib.request.Request(url, headers=self.headers)
             try:
@@ -478,10 +494,16 @@ def sync_attachments(client: Client, page_id: str, root: str) -> dict[str, str]:
         if os.path.exists(destination):
             downloaded[title] = relative
             continue
-        try:
-            data = client.get_binary(link)
-        except ConfluenceError as exc:
-            print(f"  warning: {title}: {exc}", file=sys.stderr)
+        data = None
+        errors = []
+        for candidate in client.download_candidates(link):
+            try:
+                data = client.get_binary(candidate)
+                break
+            except ConfluenceError as exc:
+                errors.append(str(exc))
+        if data is None:
+            print(f"  warning: could not download {title}: {errors}", file=sys.stderr)
             continue
         os.makedirs(target_dir, exist_ok=True)
         with open(destination, "wb") as handle:
