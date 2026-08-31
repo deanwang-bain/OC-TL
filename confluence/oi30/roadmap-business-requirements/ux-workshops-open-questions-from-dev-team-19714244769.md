@@ -1,0 +1,583 @@
+---
+title: "UX workshops - open questions from dev team"
+confluence_id: 19714244769
+confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19714244769
+version: 8
+updated: 2026-08-12T07:48:22.594Z
+---
+
+# UX workshops - open questions from dev team
+
+[View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19714244769)
+
+|
+
+#
+
+ |
+
+Area
+
+ |
+
+Context
+
+ |
+
+Question / decision required
+
+ |
+
+Answer
+
+ |
+
+**Technical Team’s comments/Questions**
+
+ |
+|---|---|---|---|---|---|
+|
+
+**1**
+
+ |
+
+Quick Answer
+
+ |
+
+The current concept offers both Quick Answer and Full Setup. Engineering believes the full setup may already be relatively fast, potentially reducing the value of a separate journey.
+
+ |
+
+**Do we need Quick Answer for MVP? If yes, what should it provide: only final size-of-prize or the full analysis using default assumptions?**
+
+ |
+
+No; the quick answer should come easy after we have full analysis figured out (it’s more so UX work)
+
+ |
+
+We will start with Full and identify what steps can be eliminated for quick while learning the flow.
+
+ |
+|
+
+**2**
+
+ |
+
+Quick Answer
+
+ |
+
+We need to understand whether the time saved by Quick Answer is meaningful to users.
+
+ |
+
+**What is the acceptable wait time for the standard/full analysis? At what point is it no longer considered “quick”?**
+
+ |
+
+Not 24 hours, but some sort of “come back in 30 min and we’ll email you”
+
+ |
+
+We believe everything can be calculated in quire reasonable time.
+
+ |
+|
+
+**3**
+
+ |
+
+Quick → Full
+
+ |
+
+Users may start with Quick Answer and then decide to investigate further.
+
+ |
+
+**Should users be able to convert a Quick Answer into Full Setup without starting again?**
+
+ |
+
+Yes
+
+ |
+
+No [issues. An](http://issues.An) idea is to give users import and export OI configuration to make it easier to create a new OI based on previously selected options.
+
+ |
+|
+
+**4**
+
+ |
+
+OI lifecycle
+
+ |
+
+Each OI represents analysis against a point-in-time dataset. Automatically refreshing underlying data could change an existing analysis.
+
+ |
+
+**Should an existing OI remain frozen by default, with users explicitly choosing when to refresh the data?**
+
+ |
+
+Yes - they should be able to choose to update with the same assumptions, but it shouldn’t auto update
+
+ |
+
+No issues. User will be able to create a new OI base on previous OI’s configurations on the new dataset, hence giving them an opportunity to compare the two.
+
+ |
+|
+
+**5**
+
+ |
+
+OI lifecycle
+
+ |
+
+Core partners could create 20+ OIs per year, creating dashboard clutter.
+
+ |
+
+**How should inactive OIs be managed: user-controlled archive/hide, automatic archive, or flagged for review?**
+
+ |
+
+**Initial partner feedback suggests an archive/hide capability would be useful.**
+
+ |
+
+No issue.
+
+ |
+|
+
+**6**
+
+ |
+
+Peer selection
+
+ |
+
+Users can choose standard / tight / broad peer sets.
+
+ |
+
+**What should “standard”, “tight” and “broad” mean from a business perspective?**
+
+ |
+
+Let’s discuss - we may want to get more precise on what element we’re allowing the user to flex vs. a “general” broad vs. tight. E.g., flex more on revenue, but keep business + industry same
+
+ |
+
+As long as we decide one datasource to be the source of truth, we are good. To select individual attributes (EBIDA from CapIQ, CashFlow from Analyst report etc) weightage will be an issue. May be something we can do post MVP.
+
+ |
+|
+
+**7**
+
+ |
+
+Manual peers
+
+ |
+
+Users can manually add companies not recommended by the agent.
+
+ |
+
+**Should OI provide a comparability/confidence assessment for manually added peers, or simply accept the user's judgment?**
+
+ |
+
+Yes; we should present the tools assessment to the partner as a another point of reference for the user
+
+ |
+
+No issue. It will be a LLM generated response.
+
+ |
+|
+
+**8**
+
+ |
+
+Data sources
+
+ |
+
+Structured/live sources are better suited to quantitative analysis; IRIS/LSEG analyst reports provide richer qualitative context.
+
+ |
+
+**Should we establish a standard rule: structured/live sources for quantitative metrics and documents/analyst reports primarily for narrative/context?**
+
+ |
+
+Let’s discuss - it should not be a fixed rule, but can be a biased towards those sources. There are quantitative metrics in the qualitative documents that will be important for feature robustness (e.g., breakdown of cost bar). This will likely have to be handled on a data source by data source basis
+
+ |
+
+As long as we decide one datasource to be the source of truth, we are good. To select individual attributes (EBIDA from CapIQ, CashFlow from Analyst report etc) weightage will be an issue. May be something we can do post MVP.
+
+ |
+|
+
+**9**
+
+ |
+
+Conflicting data
+
+ |
+
+CapIQ, LSEG Financials, annual reports, and other sources may provide different values due to timing or methodology.
+
+ |
+
+**When sources disagree, should OI apply a predefined source hierarchy, flag the conflict for user judgment, or use another rule?**
+
+ |
+
+Both (e.g., if a conflict, lean on annual report / 10-K as most trusted) and also flag to the user
+
+ |
+
+We will wait for UI/UX guidance on how to provide this capability. It might be the case that even after all this we have to give users number override functionality. We may provide document summary, number variations across various sources for users to decide tough.
+
+ |
+|
+
+**10**
+
+ |
+
+Source hierarchy
+
+ |
+
+Engineering needs a consistent rule for selecting among available sources.
+
+ |
+
+**What is the preferred source hierarchy across VCC, CapIQ, LSEG Financials, analyst reports, IRIS and user-uploaded materials?**
+
+ |
+
+this will almost certainly vary by agent and by analysis and is not something that can be globally applied to the platform
+
+ |
+
+No issues. As long as we have the requirements agreed, we can give users flexability to decide weightage of the sources.
+
+ |
+|
+
+**11**
+
+ |
+
+Case for Change
+
+ |
+
+Case for Change combines quantitative evidence and qualitative reasoning.
+
+ |
+
+**Which sources should be authoritative for Case for Change, and does every recommendation require source-level traceability?**
+
+ |
+
+See above - and yes, we need to be able to demonstrate that the agent is not hallucinating in its hypothesis
+
+ |
+
+No issue.
+
+ |
+|
+
+**12**
+
+ |
+
+Case for Change
+
+ |
+
+Users can select multiple themes or explore the full potential.
+
+ |
+
+**What should be selected by default: all opportunities, agent-recommended opportunities, or none?**
+
+ |
+
+Let’s start with none until we get agent-recommend up to par with what we would want. Need some ability to combine / adjust narratives. Depends on if it will be too overwhelming to the user
+
+ |
+
+ok
+
+ |
+|
+
+**13**
+
+ |
+
+Benchmarks / KPIs
+
+ |
+
+“Sector KPIs” could mean benchmarks from the selected peer group or the wider sector/industry.
+
+ |
+
+**Should the analysis use selected-peer benchmarks or broader sector/industry benchmarks?**
+
+ |
+
+IDK?
+
+ |
+
+Ok. We will await your decision but hoping to provide industry taxonomy overrides to match with clients taxonomy.
+
+ |
+|
+
+**14**
+
+ |
+
+Taxonomy
+
+ |
+
+Broader sector/industry benchmarking requires a consistent classification.
+
+ |
+
+**Which taxonomy should OI use: Bain taxonomy, external industry taxonomy, or client/use-case taxonomy?**
+
+ |
+
+Bain taxonomy
+
+ |
+
+Ok. Also, hoping to provide industry taxonomy overrides to match with clients taxonomy.
+
+ |
+|
+
+**15**
+
+ |
+
+Collaboration
+
+ |
+
+Multiple users can collaborate on the same OI, but formal approvals are not currently designed.
+
+ |
+
+**Is collaboration sufficient for MVP, or do we need explicit sign-off for peer set, Case for Change and/or final analysis?**
+
+ |
+
+Not for MVP, but would be good to have change-level permissions / access levels in full tool. Having basic read vs. write edits in MVP is good
+
+ |
+
+No issue.
+
+ |
+|
+
+**16**
+
+ |
+
+Versioning
+
+ |
+
+Full version management adds complexity; MVP could retain an audit log without rollback.
+
+ |
+
+**Is an audit log without version rollback sufficient for MVP?**
+
+ |
+
+Audit log is fine for MVP, as long as there’s ways for the user itself to “trace back their steps” and undo with manual actions. Having something like scenario branching would be interesting in the full scale
+
+ |
+
+Can be done to an extent but not fully. For example, at this stage we will go for max last 3 versions history.
+
+More details to discuss with Joanna to understand user journey. ChatLog versioning is an issue, so we might loose chat-log with a new version.
+
+ |
+|
+
+**17**
+
+ |
+
+Uploads
+
+ |
+
+User uploads can fill information gaps, particularly for private companies, but add friction and processing time.
+
+ |
+
+**When should users be asked to upload documents: upfront, for private companies, or only when data/confidence is insufficient?**
+
+ |
+
+Asked at the beginning if there are supporting documents; definitely flagged when company is private (hard gate)
+
+ |
+
+No issue. We are thinking of giving users an option to select hierarchy of data selection. If a document is uploaded, it will have highest weightage by default. UI/UX discussion pending.
+
+ |
+|
+
+**18**
+
+ |
+
+Output
+
+ |
+
+Different user groups have different output needs.
+
+ |
+
+**Which outputs are required for MVP: PPT, HTML, Excel/CSV underlying data, source files—or a subset?**
+
+ |
+
+**Partner feedback supports PPT/HTML for partners; underlying data may be important for analyst/practice-manager users.**
+
+ |
+
+No issue
+
+ |
+|
+
+**19**
+
+ |
+
+Underlying data
+
+ |
+
+“Source files” could refer either to the calculation dataset or original documents.
+
+ |
+
+**What exactly should users be able to download: underlying calculation/fact file, original source documents, or both?**
+
+ |
+
+I think both, you’d want the excel model with the data and value calculations, but there may be some limitations to download the analyst or LSEG data bc of restrictions - as long as you can view and audit that piece, it’s fine
+
+ |
+
+No issue
+
+ |
+|
+
+**20**
+
+ |
+
+Deck generation
+
+ |
+
+Selecting slides before generation may be unnecessary if generating the full deck is sufficiently fast.
+
+ |
+
+**Should MVP automatically generate the standard full deck rather than requiring users to configure it first?**
+
+ |
+
+We should define what the standard full deck means (is it the tight 8-10 slides or the full with appendix?) but the configuring - is that just selecting which ones you want and not about editing the details within them?
+
+ |
+
+The suggestion for the time being is for users to download the final deck and change individually. We can build a documents (ppt etc) based on the initial templates, users will have an option to delete or rearrange the slides but not update from within the portal for MVP. We may expand this functionality going forward.
+
+ |
+|
+
+**21**
+
+ |
+
+Deck content
+
+ |
+
+Predefined templates are significantly simpler for MVP than dynamically finding/adapting Bain/Sage slides.
+
+ |
+
+**Can MVP use predefined standard OI slide templates, with Bain/Sage slide discovery deferred?**
+
+ |
+
+We can templatize some of the slides and build a standard structure for MVP, but there may need to be pieces that are pulled in / filled out from Bain / Sage. Let’s discuss further about what main standard deck vs. appendix looks like (standard deck will need to get approval from PI LT)
+
+ |
+
+No issues
+
+ |
+
+Questions from workshop covered directly by the methodology table:
+
+-
+
+**Peer-selection factors/confidence** → covered by *Peer comparability criteria + Peer confidence/rationale + Target-relative comparison*.
+
+-
+
+**Is BU comparison required?** → covered by *Business-unit comparability*.
+
+-
+
+**Where/how BU selection affects analysis** → covered by *BU impact on analysis*.
+
+-
+
+**Median / average / top quartile benchmark** → covered by *Benchmark methodology*.
