@@ -8,8 +8,9 @@ status: proposed
 
 ## Context
 
-StatusNeo asked whether to stand up a proper CI/CD pipeline on Azure Container Apps, or
-deploy to a VM to keep focus on core functionality for GLS.
+Dipesh Bhardwaj, StatusNeo's architecture counterpart, asked whether to stand up a proper
+CI/CD pipeline on Azure Container Apps, or deploy to a VM to keep focus on core
+functionality for GLS.
 
 The instinct behind the question is sound: GLS has a date, and pipeline work is not
 product work. But the question bundles two things — **which platform** and **how much

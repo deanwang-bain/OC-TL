@@ -8,8 +8,8 @@ status: proposed
 
 ## Context
 
-StatusNeo asked which services are created separately versus in a single monorepo at
-MVP.
+Dipesh Bhardwaj, StatusNeo's architecture counterpart, asked which services are created
+separately versus in a single monorepo at MVP.
 
 **Nothing in the OI30 space addresses repository structure.** A search across all 71
 pages returns no mention of monorepo, repository layout, or repo-per-service. This is
