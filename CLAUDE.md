@@ -7,20 +7,37 @@ are **not** mirrored into the repo — they are read live through the Atlassian
 connector. Treat Confluence as the source of truth; treat anything written here as a
 pointer to it.
 
-## Canonical spaces
+## Canonical space
 
-Only these spaces are in scope. Do not treat other spaces as project context without
+| Space key | Site                   | URL                                                  |
+| --------- | ---------------------- | ---------------------------------------------------- |
+| `OI30`    | `bainco.atlassian.net` | https://bainco.atlassian.net/wiki/spaces/OI30/ |
+
+This is the only space in scope. Do not treat other spaces as project context without
 asking first.
 
-| Space key | Space name | What it covers |
-| --------- | ---------- | -------------- |
-| _TBD_     | _TBD_      | _TBD_          |
+## The mirror in `confluence/`
 
-<!--
-To fill this in: enable the Atlassian connector (see below), then ask Claude to list
-the accessible spaces and record the relevant ones here. Keeping this table accurate
-is what makes the link durable across sessions.
--->
+`OI30` is mirrored into `confluence/` as one markdown file per page, laid out to match
+the Confluence page tree. **Read these files first** — they are the fastest and most
+reliable way to get project context, and they work even when the Atlassian connector
+does not.
+
+- `confluence/INDEX.md` lists every page. Start here.
+- Each file carries front matter with `confluence_id`, `confluence_url`, and `version`,
+  so any claim can be traced back to its source page.
+- `confluence/.manifest.json` tracks page versions for incremental sync.
+
+**The mirror is generated. Never edit files under `confluence/` by hand** — the next
+sync overwrites them. Change the page in Confluence instead.
+
+Refresh is handled by `.github/workflows/confluence-sync.yml`, which runs
+`tools/confluence_sync.py` daily on a GitHub runner and commits any changes. Run it
+manually from the Actions tab after a significant Confluence edit. The workflow needs
+the repository secrets `CONFLUENCE_EMAIL` and `CONFLUENCE_API_TOKEN`.
+
+Because the mirror flattens Confluence's page-level permissions into repo-level access,
+keep the scope to `OI30` and do not widen it without checking first.
 
 ## Accessing Confluence
 
