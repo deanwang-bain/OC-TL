@@ -26,25 +26,42 @@ is what makes the link durable across sessions.
 
 Access is via the **Atlassian connector** (MCP), which is installed at the org level.
 
-The connector is enabled **per chat**, not globally. A new session starts with it off,
-and its tools will be absent from the tool list. To enable it: open the connector
-settings for the chat and toggle **Atlassian** on. Do this at the start of any session
-that needs Confluence.
+There are **two independent switches**, and both must be on:
 
-To confirm it is on, check for Atlassian/Confluence tools in the session. If they are
-absent, the connector is off — say so rather than guessing at page contents or
+1. **Account-level authorization** — done once at
+   [claude.ai/customize/connectors](https://claude.ai/customize/connectors). Atlassian
+   showing as *Connected* here refers only to this switch.
+2. **Per-session enablement** — connectors are selected *per session or per routine*,
+   at session creation. A running session cannot have a connector added to it
+   mid-conversation.
+
+To confirm the connector is live, check for Atlassian/Confluence tools in the tool
+list. If they are absent, it is off — say so rather than guessing at page contents or
 answering from memory.
 
-### Working in Claude Code on the web
+### Known gap: Claude Code on the web
 
-Connector traffic is routed through Anthropic's MCP proxy, so it works normally in
-remote web sessions once enabled.
+Account-level connectors have been unreliable on the interactive Claude Code web
+surface (`claude.ai/code`), where sessions may expose only the repo-scoped GitHub MCP
+server. See [anthropics/claude-code#53489](https://github.com/anthropics/claude-code/issues/53489).
+Claude Chat and Claude Code **routines** are not affected.
 
-Direct network access from the sandbox to `*.atlassian.net` is a separate path and is
-**blocked** by the environment's network policy (the proxy returns `403` on CONNECT).
-So `curl`, the Confluence REST API, and any sync script will not work from inside a
-web session. Anything needing direct API access has to run elsewhere — a local machine
-or a GitHub Actions runner.
+If Atlassian tools are unavailable in a web session, do not treat it as a
+misconfiguration on the user's side — check the tool list, report it plainly, and use
+one of the fallbacks below.
+
+### Direct network access is blocked
+
+Connector traffic travels through Anthropic's servers and bypasses the sandbox network
+allowlist. Direct access is a **separate path and is blocked**: `*.atlassian.net`,
+`api.atlassian.com`, and `mcp.atlassian.com` all fail at the proxy with `403` on
+CONNECT under the environment's current **Trusted** network level.
+
+So `curl`, the Confluence REST API, and any sync script will not run from inside a web
+session as configured today. To change that, set the cloud environment's **Network
+access** to **Custom** and allowlist the Atlassian hosts, then supply a token as an
+environment **API credential**. Otherwise, direct-API work has to run on a local
+machine or a GitHub Actions runner.
 
 ## Conventions
 
