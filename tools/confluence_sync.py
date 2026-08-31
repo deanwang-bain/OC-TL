@@ -39,6 +39,11 @@ TIMEOUT = 60
 PAGE_LIMIT = 100
 MAX_RETRIES = 5
 
+# Bump when the markdown output changes. Pages are normally skipped while their
+# Confluence version is unchanged, which would otherwise leave the whole mirror
+# frozen at the old rendering; a bump forces one full rewrite.
+CONVERTER_VERSION = 3
+
 
 class ConfluenceError(RuntimeError):
     pass
@@ -100,6 +105,26 @@ class Client:
                 time.sleep(2**attempt)
         raise ConfluenceError(f"exhausted retries for {url}")
 
+    def get_binary(self, path: str) -> bytes:
+        """Download an attachment. Download links redirect, which urllib follows."""
+        url = path if path.startswith("http") else urllib.parse.urljoin(self.base, path)
+        for attempt in range(MAX_RETRIES):
+            request = urllib.request.Request(url, headers=self.headers)
+            try:
+                with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+                    return response.read()
+            except urllib.error.HTTPError as exc:
+                if exc.code in (401, 403, 404):
+                    raise ConfluenceError(f"{exc.code} for attachment {url}") from exc
+                if attempt == MAX_RETRIES - 1:
+                    raise ConfluenceError(f"{exc.code} for attachment {url}") from exc
+                time.sleep(_retry_delay(exc, attempt))
+            except urllib.error.URLError as exc:
+                if attempt == MAX_RETRIES - 1:
+                    raise ConfluenceError(f"attachment {url}: {exc.reason}") from exc
+                time.sleep(2**attempt)
+        raise ConfluenceError(f"exhausted retries for {url}")
+
     def paginate(self, path: str, params: dict | None = None):
         """Yield results across every page of a v2 collection endpoint."""
         payload = self.get(path, params)
@@ -130,7 +155,27 @@ BLOCK_TAGS = {"p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "tr"
 HEADINGS = {f"h{n}": "#" * n for n in range(1, 7)}
 # Confluence wraps rich content in ac:-namespaced macro tags. A few carry content
 # worth keeping; the rest are chrome that would only add noise to the mirror.
-SKIP_CONTENT = {"ac:parameter", "ri:attachment", "ri:page", "ri:url", "ac:emoticon"}
+SKIP_CONTENT = {"ac:parameter", "ac:emoticon"}
+
+# Macros that render as a visual or generated block. They carry no text, so
+# without a placeholder the page mirrors as blank and a reader cannot tell an
+# empty page from one whose whole content is a diagram.
+VISUAL_MACROS = {
+    "drawio": "draw.io diagram",
+    "gliffy": "Gliffy diagram",
+    "excalidraw": "Excalidraw diagram",
+    "whiteboard": "whiteboard",
+    "mermaid": "Mermaid diagram",
+    "children": "child page index",
+    "excerpt-include": "excerpt from another page",
+    "include": "included page",
+    "jira": "Jira issue embed",
+    "attachments": "attachment list",
+    "viewpdf": "embedded PDF",
+    "viewxls": "embedded spreadsheet",
+    "widget": "embedded widget",
+    "iframe": "embedded iframe",
+}
 
 
 class StorageConverter(HTMLParser):
@@ -153,12 +198,34 @@ class StorageConverter(HTMLParser):
         self.in_code_macro = False
         self.code_language = ""
         self.capture_language = False
+        # Confluence wraps cell and list-item content in <p>. Treating those as
+        # block elements would break a table row across lines and detach a
+        # bullet from its text, so inside them block tags render inline.
+        self.cell_depth = 0
+        self.li_depth = 0
+        self.in_image = False
 
     # -- helpers ----------------------------------------------------------
 
     def _emit(self, text: str) -> None:
         if self.skip_depth == 0:
             self.out.append(text)
+
+    def _inline_context(self) -> bool:
+        """True where a newline would corrupt the structure (cells, list items)."""
+        return self.cell_depth > 0 or self.li_depth > 0
+
+    def _space(self) -> None:
+        if self.out and not self.out[-1].endswith((" ", "\n", "|")):
+            self._emit(" ")
+
+    def _collapse_cell(self) -> None:
+        """Flatten the current cell's emitted text onto a single line."""
+        for index in range(len(self.out) - 1, -1, -1):
+            if self.out[index].endswith("|"):
+                break
+            if "\n" in self.out[index]:
+                self.out[index] = re.sub(r"\s*\n\s*", " ", self.out[index])
 
     def _newline(self, count: int = 1) -> None:
         if not self.out:
@@ -188,9 +255,12 @@ class StorageConverter(HTMLParser):
             self._newline(2)
             self._emit(f"{HEADINGS[tag]} ")
         elif tag in ("p", "div"):
-            self._newline(2)
+            if self._inline_context():
+                self._space()
+            else:
+                self._newline(2)
         elif tag == "br":
-            self._emit("\n")
+            self._emit(" " if self._inline_context() else "\n")
         elif tag in ("strong", "b"):
             self._emit("**")
         elif tag in ("em", "i"):
@@ -208,6 +278,7 @@ class StorageConverter(HTMLParser):
             depth = max(0, len(self.list_stack) - 1)
             marker = "- " if (self.list_stack or ["ul"])[-1] == "ul" else "1. "
             self._emit("  " * depth + marker)
+            self.li_depth += 1
         elif tag == "a":
             self.pending_link = attrs.get("href")
             self.link_text = []
@@ -221,11 +292,31 @@ class StorageConverter(HTMLParser):
         elif tag in ("td", "th"):
             self.row_is_header = self.row_is_header or tag == "th"
             self.row_cells += 1
+            self.cell_depth += 1
             self._emit(" ")
+        elif tag == "ac:image":
+            self.in_image = True
+        elif tag == "ri:attachment":
+            name = attrs.get("ri:filename", "file")
+            label = "image" if self.in_image else "attachment"
+            self._emit(f"_[{label}: {name}]_")
+        elif tag == "ri:url":
+            if self.in_image:
+                self._emit(f"_[image: {attrs.get('ri:value', 'external')}]_")
+        elif tag == "ri:page":
+            # A cross-reference to another Confluence page.
+            title = attrs.get("ri:content-title")
+            if title:
+                self._emit(f"[{title}]")
         elif tag == "ac:structured-macro":
-            if attrs.get("ac:name", "") == "code":
+            name = attrs.get("ac:name", "")
+            if name == "code":
                 self.in_code_macro = True
                 self.code_language = ""
+            elif name in VISUAL_MACROS:
+                self._newline(2)
+                self._emit(f"_[{VISUAL_MACROS[name]}]_")
+                self._newline(2)
         elif tag == "ac:plain-text-body":
             # The fence opens here, not at the macro tag, because the language
             # parameter is only known once it has been parsed.
@@ -247,8 +338,12 @@ class StorageConverter(HTMLParser):
         if self.skip_depth:
             return
 
-        if tag in HEADINGS or tag in ("p", "div"):
+        if tag in ("p", "div"):
+            self._space() if self._inline_context() else self._newline(2)
+        elif tag in HEADINGS:
             self._newline(2)
+        elif tag == "li":
+            self.li_depth = max(0, self.li_depth - 1)
         elif tag in ("strong", "b"):
             self._emit("**")
         elif tag in ("em", "i"):
@@ -272,6 +367,10 @@ class StorageConverter(HTMLParser):
             elif text:
                 self._emit(text)
         elif tag in ("td", "th"):
+            self.cell_depth = max(0, self.cell_depth - 1)
+            # A newline inside a cell would break the row, so flatten what the
+            # cell produced back onto one line.
+            self._collapse_cell()
             self._emit(" |")
         elif tag == "tr":
             # Markdown tables need a delimiter row after the header row.
@@ -284,6 +383,8 @@ class StorageConverter(HTMLParser):
             self._newline(1)
             self._emit("```")
             self._newline(2)
+        elif tag == "ac:image":
+            self.in_image = False
         elif tag == "ac:structured-macro":
             self.in_code_macro = False
 
@@ -342,6 +443,71 @@ def storage_to_markdown(storage: str) -> str:
 # --------------------------------------------------------------------------
 # Mirror layout
 # --------------------------------------------------------------------------
+
+
+ATTACHMENT_DIR = "_attachments"
+# Formats worth having on disk: images so diagrams can actually be viewed, and
+# drawio/PDF sources so a diagram-only page is still traceable.
+DOWNLOADABLE = ("image/", "application/pdf", "application/vnd.jgraph")
+
+
+def sync_attachments(client: Client, page_id: str, root: str) -> dict[str, str]:
+    """Download a page's attachments; return {filename: path relative to root}."""
+    target_dir = os.path.join(root, ATTACHMENT_DIR, page_id)
+    downloaded: dict[str, str] = {}
+    try:
+        attachments = list(
+            client.paginate(f"/wiki/api/v2/pages/{page_id}/attachments", {"limit": 100})
+        )
+    except ConfluenceError as exc:
+        print(f"  warning: could not list attachments for {page_id}: {exc}", file=sys.stderr)
+        return downloaded
+
+    for attachment in attachments:
+        title = attachment.get("title") or ""
+        media_type = attachment.get("mediaType") or ""
+        link = attachment.get("downloadLink")
+        if not title or not link:
+            continue
+        if not media_type.startswith(DOWNLOADABLE):
+            continue
+
+        safe = re.sub(r"[^\w.\-]+", "_", title)[:120]
+        destination = os.path.join(target_dir, safe)
+        relative = f"{ATTACHMENT_DIR}/{page_id}/{safe}"
+        if os.path.exists(destination):
+            downloaded[title] = relative
+            continue
+        try:
+            data = client.get_binary(link)
+        except ConfluenceError as exc:
+            print(f"  warning: {title}: {exc}", file=sys.stderr)
+            continue
+        os.makedirs(target_dir, exist_ok=True)
+        with open(destination, "wb") as handle:
+            handle.write(data)
+        downloaded[title] = relative
+    return downloaded
+
+
+def link_attachments(markdown: str, attachments: dict[str, str], page_path: str) -> str:
+    """Turn the converter's attachment placeholders into real relative links.
+
+    Placeholders are emitted during conversion, before the attachment list is
+    known, so resolving them is a separate pass.
+    """
+    depth = page_path.count("/")
+    prefix = "../" * depth
+
+    def replace(match: re.Match) -> str:
+        kind, name = match.group(1), match.group(2)
+        relative = attachments.get(name)
+        if not relative:
+            return f"_[{kind}: {name} — not downloaded]_"
+        target = prefix + relative
+        return f"![{name}]({target})" if kind == "image" else f"[{name}]({target})"
+
+    return re.sub(r"_\[(image|attachment): ([^\]]+?)\]_", replace, markdown)
 
 
 def slugify(title: str) -> str:
@@ -416,6 +582,11 @@ def main() -> int:
     site = os.environ.get("CONFLUENCE_SITE", "bainco.atlassian.net").strip()
     space_key = os.environ.get("CONFLUENCE_SPACE", "OI30").strip()
     output_dir = os.environ.get("OUTPUT_DIR", "confluence").strip()
+    sync_media = os.environ.get("SYNC_ATTACHMENTS", "1").strip().lower() not in (
+        "0",
+        "false",
+        "no",
+    )
 
     try:
         email = require_env("CONFLUENCE_EMAIL")
@@ -457,9 +628,18 @@ def main() -> int:
     manifest_path = os.path.join(root, ".manifest.json")
     try:
         with open(manifest_path, encoding="utf-8") as handle:
-            previous = json.load(handle)
+            stored = json.load(handle)
     except (FileNotFoundError, json.JSONDecodeError):
-        previous = {}
+        stored = {}
+
+    # Manifests written before versioning are a bare id -> record mapping.
+    previous = stored.get("pages", stored if "converter_version" not in stored else {})
+    if stored.get("converter_version") != CONVERTER_VERSION:
+        if previous:
+            print(f"  converter v{CONVERTER_VERSION}: rewriting all pages")
+        # Keep the records so stale paths can still be pruned, but drop the
+        # version numbers so every page is re-rendered.
+        previous = {pid: {**rec, "version": None} for pid, rec in previous.items()}
 
     paths = build_paths(pages)
     manifest: dict[str, dict] = {}
@@ -485,7 +665,11 @@ def main() -> int:
             continue
 
         storage = ((page.get("body", {}) or {}).get("storage", {}) or {}).get("value", "")
-        markdown = render(page, site, space_key, storage_to_markdown(storage))
+        body = storage_to_markdown(storage)
+        if sync_media:
+            attachments = sync_attachments(client, page_id, root)
+            body = link_attachments(body, attachments, relative)
+        markdown = render(page, site, space_key, body)
 
         os.makedirs(os.path.dirname(target), exist_ok=True)
         with open(target, "w", encoding="utf-8") as handle:
@@ -511,7 +695,12 @@ def main() -> int:
     _prune_empty_dirs(root)
 
     with open(manifest_path, "w", encoding="utf-8") as handle:
-        json.dump(manifest, handle, indent=2, sort_keys=True)
+        json.dump(
+            {"converter_version": CONVERTER_VERSION, "pages": manifest},
+            handle,
+            indent=2,
+            sort_keys=True,
+        )
 
     _write_index(root, space, space_key, site, manifest)
 
