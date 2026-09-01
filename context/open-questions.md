@@ -23,7 +23,7 @@ reviews against is blank. Reviews in these areas rest on judgment, not policy.
 | [Observability & Monitoring](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md) | No logging or alerting standard | Reviewing instrumentation in SN code |
 | [Endpoints & Interfaces Design](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md) | No API contract standard | Reviewing FastAPI surface changes |
 | [Deployment Design (CI/CD)](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md) | No documented pipeline or environment topology | Release and rollback decisions |
-| [Bain Taxonomy Mapping](../confluence/oi30/data-requirements/bain-taxonomy-mapping-19619577930.md) | Mapping undefined | Reconciling upstream data to Bain taxonomy |
+| [Bain Taxonomy Mapping](../confluence/oi30/data-requirements/bain-taxonomy-mapping-19619577930.md) | Now reads "Here's the industry mapping sent by Akhil:" with nothing beside it. The mapping is an attachment the sync was skipping; next run should retrieve it | Reconciling upstream data to Bain taxonomy |
 | [LSEG](../confluence/oi30/data-requirements/data-sources-summary/lseg-19618889872.md) | Integration undocumented, unlike its sibling sources | LSEG integration review |
 | [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) | Scope undefined | Feature planning |
 | [Sprint 1 stories, dependencies and decisions](../confluence/oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md) | Sprint 1 scope not captured where the team can see it | Sprint execution |
@@ -68,5 +68,5 @@ source for a decision, confirm the reading before relying on it.
 | Question | Why it matters |
 | -------- | -------------- |
 | MVP is still "to be signed off" | Scope may move under active development |
-| Three per-screen data requirement pages are marked *update in progress* | Case for Change, Analysis, and Output & Deck Builder specs are unstable |
+| Two per-screen data requirement pages are still marked *update in progress* | Analysis and Output & Deck Builder. **Screen 03 Case for Change dropped the marker on 2026-09-01** and should now be treated as stable |
 | ADR-001 to ADR-009 are "Accepted, pending Bain architect review" | Rulings may still change under review |

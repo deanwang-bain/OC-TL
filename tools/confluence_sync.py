@@ -42,7 +42,7 @@ MAX_RETRIES = 5
 # Bump when the markdown output changes. Pages are normally skipped while their
 # Confluence version is unchanged, which would otherwise leave the whole mirror
 # frozen at the old rendering; a bump forces one full rewrite.
-CONVERTER_VERSION = 4
+CONVERTER_VERSION = 5
 
 
 class ConfluenceError(RuntimeError):
@@ -462,9 +462,11 @@ def storage_to_markdown(storage: str) -> str:
 
 
 ATTACHMENT_DIR = "_attachments"
-# Formats worth having on disk: images so diagrams can actually be viewed, and
-# drawio/PDF sources so a diagram-only page is still traceable.
-DOWNLOADABLE = ("image/", "application/pdf", "application/vnd.jgraph")
+# Everything is downloaded, subject to a size cap. An allowlist of media types
+# silently dropped whatever it did not anticipate: a page reading "here is the
+# industry mapping" with no mapping beside it looks identical to a page that
+# never had one. Anything skipped is now reported rather than dropped.
+MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024
 
 
 def sync_attachments(client: Client, page_id: str, root: str) -> dict[str, str]:
@@ -481,11 +483,16 @@ def sync_attachments(client: Client, page_id: str, root: str) -> dict[str, str]:
 
     for attachment in attachments:
         title = attachment.get("title") or ""
-        media_type = attachment.get("mediaType") or ""
         link = attachment.get("downloadLink")
         if not title or not link:
             continue
-        if not media_type.startswith(DOWNLOADABLE):
+        size = attachment.get("fileSize")
+        if isinstance(size, int) and size > MAX_ATTACHMENT_BYTES:
+            print(
+                f"  skipping {title}: {size // (1024 * 1024)}MB exceeds the "
+                f"{MAX_ATTACHMENT_BYTES // (1024 * 1024)}MB cap",
+                file=sys.stderr,
+            )
             continue
 
         safe = re.sub(r"[^\w.\-]+", "_", title)[:120]
