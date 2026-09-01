@@ -2,8 +2,8 @@
 title: "Data sources from Current OI"
 confluence_id: 19727482890
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19727482890
-version: 3
-updated: 2026-08-26T04:55:22.628Z
+version: 5
+updated: 2026-08-31T05:20:37.699Z
 ---
 
 # Data sources from Current OI
@@ -25,3 +25,7 @@ updated: 2026-08-26T04:55:22.628Z
 **D. A full universe of companies that Noah wants to be able to use in GLS / MVP milestone**
 
 **E. Files with adjustment formula (used by Akhil in the Data Calculations discussion during workshop)**
+
+**F. Examples of what "look good" for cost bar breakdowns and some of the nuances between industries **
+
+**G. Opportunity Indicator Onboarding Deck**

@@ -79,7 +79,7 @@
     "19619577930": {
       "path": "oi30/data-requirements/bain-taxonomy-mapping-19619577930.md",
       "title": "Bain Taxonomy Mapping",
-      "version": 1
+      "version": 2
     },
     "19619676163": {
       "path": "oi30/data-requirements/data-sources-summary-19619676163.md",
@@ -249,7 +249,7 @@
     "19710279791": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-02-peer-review-19710279791.md",
       "title": "Screen 02: Peer Review",
-      "version": 23
+      "version": 26
     },
     "19710705690": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-04-analysis-update-in-progress-19710705690.md",
@@ -272,9 +272,9 @@
       "version": 6
     },
     "19710771226": {
-      "path": "oi30/data-requirements/data-requirements-per-screen/screen-03-case-for-change-update-in-progress-19710771226.md",
-      "title": "Screen 03: Case for Change (update in progress)",
-      "version": 8
+      "path": "oi30/data-requirements/data-requirements-per-screen/screen-03-case-for-change-19710771226.md",
+      "title": "Screen 03: Case for Change",
+      "version": 11
     },
     "19710967811": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-01-target-setup-19710967811.md",
@@ -304,7 +304,7 @@
     "19727482890": {
       "path": "oi30/data-requirements/data-sources-from-current-oi-19727482890.md",
       "title": "Data sources from Current OI",
-      "version": 3
+      "version": 5
     },
     "19735543865": {
       "path": "oi30/meeting-summaries/workshop-data-calculations-19735543865.md",
