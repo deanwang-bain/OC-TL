@@ -7,12 +7,13 @@ name: Sync Confluence
 on:
   schedule:
     # 08:00 Singapore (UTC+8) = 00:00 UTC. Singapore has no daylight saving,
-    # so this holds year-round.
-    - cron: "0 0 * * *"
+    # so this holds year-round. Seven minutes past, because GitHub queues a
+    # spike of jobs exactly on the hour and delays them under load.
+    - cron: "7 0 * * *"
   workflow_dispatch: # allow a manual run from the Actions tab
     inputs:
-      force_update:
-        description: "Send the daily update even if no pages changed (for testing)"
+      skip_update:
+        description: "Sync only, do not send the daily update"
         type: boolean
         default: false
 
@@ -85,9 +86,10 @@ jobs:
           exit 1
 
       - name: Send daily update
-        # force_update lets a manual run exercise the email path on a day when
-        # nothing changed, which is otherwise untestable.
-        if: env.CHANGED == '1' || inputs.force_update
+        # Sent every day, including days when Confluence did not change. A
+        # silent morning is indistinguishable from a broken workflow, and the
+        # standing agenda is worth reading either way.
+        if: ${{ !inputs.skip_update }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -101,9 +103,8 @@ jobs:
           {
             echo "Daily Confluence update for the OI30 space, $today (Singapore time)."
             echo
-            # On a forced run with nothing changed there is no sync commit to
-            # diff, so compare HEAD with itself and let the digest fall back to
-            # reporting standing state.
+            # With nothing changed there is no sync commit to diff, so compare
+            # HEAD with itself and let the digest fall back to standing state.
             if [ "${CHANGED:-0}" = "1" ]; then base="HEAD~1"; else base="HEAD"; fi
             python3 tools/digest.py "$base" HEAD
             echo
@@ -138,7 +139,7 @@ jobs:
       - name: Post to Teams
         # Optional. Skipped unless a channel webhook is configured, so the
         # workflow stays green without it.
-        if: (env.CHANGED == '1' || inputs.force_update) && env.TEAMS_WEBHOOK != ''
+        if: ${{ !inputs.skip_update && env.TEAMS_WEBHOOK != '' }}
         env:
           TEAMS_WEBHOOK: ${{ secrets.TEAMS_WEBHOOK_URL }}
         run: |
