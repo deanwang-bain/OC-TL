@@ -33,11 +33,13 @@ building or testing against the wrong contract.
 | [Technical Stack](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19704512648) | **AI SDK (ai-sdk.dev)** |
 | Technical Architecture diagram | **Claude SDK** |
 
-Technology Choices is newest and most specific, and argues the position properly — what
-building orchestration would have cost is stated. It should win. But until the other two
-are corrected, StatusNeo can read any of the three and be following documentation.
+**ADR-008 settles this**, and settles it well: Microsoft Agent Framework, with Foundry
+Workflows rejected as retiring 1 December 2026 and Prompt flow as retiring 20 April 2027,
+both cited. Technology Choices agrees. So this is not an open decision — the other two
+sources are simply stale, and StatusNeo can still read either and believe they are
+following documentation.
 
-**Ask: confirm Microsoft Agent Framework, then supersede the other two pages.**
+**Ask: mark Technical Stack and the architecture diagram as superseded by ADR-008.**
 
 ### 3. An open item marked StatusNeo-owned is actually a Bain commitment
 
@@ -135,6 +137,27 @@ to build the wrong contract and recover.
 
 **Ask: put the GLS date and demo scope on the GLS Feature Set page, and name an owner
 for demo readiness as distinct from MVP delivery.**
+
+### 8. ADR-001 to ADR-009 reviewed — two structural findings
+
+Full review in `reviews/2026-09-01-adr-001-to-009.md`. Outcome **approve with comments**:
+the reasoning quality is high and none of the nine decisions looks wrong.
+
+Two findings should be resolved before the set is treated as final:
+
+1. **No ownership rule for the shared operational store.** ADR-001 decomposes by domain;
+   ADR-009 puts claims, evidence bindings, content nodes, deck composition and peer sets
+   into one Azure SQL database. Those belong to different services and nothing says who
+   may write which tables. Left unstated, the ADR-006 and ADR-007 ownership guarantees
+   hold by convention rather than construction.
+2. **ADR-009 contradicts itself on chat turns** — listed in Context as needing
+   transactional read-write, then assigned to Redis, which is explicitly ephemeral.
+
+The highest-leverage open item is **network isolation**, which is Bain-owned and leaves
+both ADR-008 and ADR-009 provisional. Seven weeks from GLS, that is a schedule risk.
+
+**Ask: rule on the store ownership question, fix the chat-turn contradiction, and name an
+owner and date for network isolation.**
 
 ## Watch list
 
