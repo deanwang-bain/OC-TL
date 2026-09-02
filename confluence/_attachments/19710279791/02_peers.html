@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OI 3.0 — Peer Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font:'Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --serif:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --red:#CC0000;--red-h:#A80000;--red-bg:#FDF2F2;--red-br:#F0C8C8;
+  --g950:#111;--g900:#1C1C1E;--g800:#2C2C2E;--g700:#3A3A3C;
+  --g600:#48484A;--g500:#636366;--g400:#8E8E93;--g300:#AEAEB2;
+  --g200:#C7C7CC;--g150:#D1D1D6;--g100:#E5E5EA;--g50:#F2F2F7;--g25:#F9F9FB;
+  --amb-bg:#FDF3E7;--amb-br:#E8B66A;--amb-st:#C47C12;--amb-tx:#8A5A12;
+  --grn-bg:#E7F6EC;--grn-br:#A9DCB6;--grn-st:#2A9E52;--grn-tx:#17703A;
+  --blue-bg:#EAEBF9;--blue-br:#BFDBFE;--blue-tx:#1D4ED8;
+  --sh-card:0 1px 3px rgba(0,0,0,.05),0 2px 10px rgba(0,0,0,.04);
+  --sh-hover:0 4px 20px rgba(0,0,0,.09);
+  --sh-modal:0 24px 80px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.08);
+  --chat-w:50vw;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);background:#F6F7F9;color:var(--g950);height:100%;-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+input{font-family:var(--font)}
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOP BAR */
+.topbar{height:44px;background:var(--g900);border-bottom:1px solid var(--g800);display:flex;align-items:center;padding:0 24px;gap:0;flex:none}
+.tb-brand{display:flex;align-items:center;gap:8px;padding-right:18px;border-right:1px solid var(--g800);margin-right:16px}
+.tb-mark{width:22px;height:22px;background:var(--red);border-radius:5px;display:flex;align-items:center;justify-content:center;flex:none}
+.tb-wm{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.tb-case{font-size:15px;font-weight:600;color:rgba(255,255,255,.85)}
+.tb-sector{display:inline-flex;align-items:center;gap:6px;margin-left:14px;padding:4px 11px;border-radius:9999px;background:rgba(127,178,232,.15);border:1px solid rgba(127,178,232,.35);font-size:13px;font-weight:600;color:#AEC2F0;letter-spacing:.01em}
+.tb-right{margin-left:auto;display:flex;align-items:center}
+.tb-ava{width:26px;height:26px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+
+/* STEPPER */
+.stepper{background:#fff;border-bottom:1px solid var(--g100);padding:15px 40px 0;flex:none}
+.stepper-row{display:flex;align-items:stretch}
+.step-item{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;flex:1}
+.step-item.s-active{border-bottom:2px solid var(--red);margin-bottom:-1px}
+.step-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g300);line-height:1}
+.step-item.s-done .step-num{color:var(--grn-tx)}
+.step-item.s-active .step-num{color:var(--red)}
+.step-item.s-locked .step-num{color:var(--g200)}
+.step-name{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1.1;color:var(--g300)}
+.step-item.s-done .step-name{color:var(--g700)}
+.step-item.s-active .step-name{color:var(--g950)}
+.step-item.s-locked .step-name{color:var(--g200)}
+.step-sub{font-size:11px;color:var(--g400);letter-spacing:-.01em;line-height:1.25}
+.step-item.s-locked .step-sub{color:var(--g200)}
+.step-div{width:1px;height:30px;background:var(--g100);flex:none;margin:2px 20px 0;align-self:flex-start}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden}
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* WS CONTENT */
+.ws-content{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:0}
+/* Peers grid view */
+#peers-view{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:24px 40px 0}
+/* Detail panel — takes over workspace */
+#detail-panel{flex:1;display:none;flex-direction:column;overflow:hidden}
+/* Breadcrumb bar */
+.bc-bar{display:flex;align-items:center;gap:8px;padding:14px 40px;background:#fff;border-bottom:1px solid var(--g100);flex:none}
+.bc-back{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:9999px;border:1px solid var(--g200);background:#fff;font-size:14px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font);transition:all .12s}
+.bc-back:hover{border-color:var(--g400);color:var(--g950)}
+.bc-sep{font-size:14px;color:var(--g200)}
+.bc-crumb{font-size:14px;color:var(--g500)}
+.bc-live{font-size:14px;font-weight:600;color:var(--g950)}
+/* Detail panel scroll body */
+.dp-scroll{flex:1;overflow-y:auto;padding:36px 44px 72px;display:flex;flex-direction:column;gap:28px}
+.dp-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.dp-name{font-size:23px;font-weight:700;color:var(--g950);letter-spacing:-.02em;line-height:1.15}
+.dp-ticker{font-size:16px;color:var(--g500);margin-top:4px}
+.dp-section{}
+.dp-sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:10px}
+.dp-txt{font-size:16px;color:var(--g700);line-height:1.75}
+.dp-txt strong{font-weight:600;color:var(--g950)}
+.ws-h1{font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:-.01em;color:var(--g950);margin-bottom:0;flex:none}
+.ws-sub{font-size:14px;color:var(--g500);margin-bottom:10px;letter-spacing:-.01em;line-height:1.4;flex:none;margin-top:3px}
+.ws-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex:none}
+/* Selection criteria, shown in chat */
+.chat-crit{margin:9px 0;border:1px solid var(--g150);border-radius:9px;overflow:hidden;background:#F6F7F9}
+.chat-crit-r{display:flex;flex-direction:column;gap:1px;padding:8px 11px;border-bottom:1px solid var(--g100)}
+.chat-crit-r:last-child{border-bottom:none}
+.chat-crit-n{font-size:13.5px;font-weight:700;color:var(--g950)}
+.chat-crit-d{font-size:13px;color:var(--g500);line-height:1.4}
+.ws-bar-lbl{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g400)}
+.ws-bar-btn{height:30px;padding:0 13px;border-radius:7px;font-size:14px;font-weight:600;color:var(--g700);border:1px solid var(--g150);background:#fff;display:flex;align-items:center;gap:5px;transition:all .12s}
+.ws-bar-btn:hover{border-color:var(--g500);color:var(--g950)}
+.grid-wrap{flex:1;overflow-y:auto;padding-bottom:80px}
+.peer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;align-items:stretch}
+
+/* PEER TILE */
+.pt{background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-card);cursor:pointer;transition:box-shadow .15s,transform .12s,opacity .15s;border:1px solid var(--g100);position:relative;user-select:none}
+.pt:hover{box-shadow:var(--sh-hover);transform:translateY(-1px)}
+.pt.deselected{opacity:.38;border-color:var(--g100)}
+.pt.deselected:hover{opacity:.6;transform:none}
+.pt.flagged{background:#fff;border-color:var(--g100)}
+.pt.bu-only{background:#FAFBFF;border:1.5px dashed var(--blue-br)}
+.pt-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:2;cursor:pointer;background:var(--grn-bg);border:1.5px solid var(--grn-br)}
+.pt-check svg{width:10px;height:10px}
+.pt.deselected .pt-check{background:transparent;border:1.5px solid var(--g200)}
+.pt.deselected .pt-check svg{display:none}
+.pt-badge{position:absolute;top:9px;left:10px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:9999px;letter-spacing:.04em;text-transform:uppercase;line-height:1.5;z-index:2;pointer-events:none}
+.pt-badge-manual{background:var(--g50);color:var(--g500);border:1px solid var(--g150)}
+.pt-badge-bu{background:var(--blue-bg);color:var(--blue-tx);border:1px solid var(--blue-br)}
+.pt-badge-gate{background:var(--amb-bg);color:var(--amb-tx);border:1px solid var(--amb-br)}
+.pt-inner{padding:14px 14px 10px;flex:1;display:block}
+.pt-facts{display:flex;flex-direction:column;margin-top:10px;padding-top:9px;border-top:1px solid var(--g100)}
+.pt-fact{display:flex;align-items:center;justify-content:space-between;padding:3.5px 0}
+.pt-fact-l{font-size:11.5px;color:var(--g400);font-weight:500}
+.pt-fact-v{font-size:12.5px;font-weight:700;color:var(--g900);letter-spacing:-.01em}
+.pt-top{padding-right:26px}
+.has-badge .pt-top{padding-top:18px}
+.pt-name{font-size:17px;font-weight:700;color:var(--g950);letter-spacing:-.02em;line-height:1.2}
+.pt.deselected .pt-name{color:var(--g400)}
+.pt.flagged .pt-name{color:var(--g950)}
+.pt.bu-only .pt-name{color:var(--blue-tx)}
+.pt-ticker{font-size:13.5px;color:var(--g400);font-family:'SF Mono',monospace;margin-top:2px}
+.pt-reason{font-size:14px;color:var(--g500);line-height:1.55;flex:1}
+.pt-reason strong{font-weight:600;color:var(--g700)}
+.pt.deselected .pt-reason{color:var(--g300)}
+.pt-footer{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;border-top:1px solid var(--g50)}
+.pt-conf{display:flex;align-items:center;gap:4px}
+.pt-cp{width:5px;height:5px;border-radius:50%}
+.conf-high .pt-cp{background:var(--grn-br)}
+.conf-med .pt-cp{background:var(--amb-st)}
+.conf-pending .pt-cp{background:var(--amb-br)}
+.pt-cl{font-size:12px;font-weight:600}
+.conf-high .pt-cl{color:var(--grn-tx)}
+.conf-med .pt-cl{color:var(--amb-tx)}
+.conf-pending .pt-cl{color:var(--amb-tx)}
+.pt-inspect{font-size:13px;color:var(--g300);font-weight:500;transition:color .12s}
+.pt:hover .pt-inspect{color:var(--g600)}
+.pt-fact-v-plain{font-weight:400;color:var(--g700)}
+.pt-fact-date{font-size:9.5px;font-weight:600;color:var(--g300);letter-spacing:.02em;margin-left:3px;vertical-align:.5px}
+.pt-fact-bu{margin-top:4px;padding-top:4px;border-top:1px solid var(--g50)}
+.pt-bu-list{font-size:11px;color:var(--g400);white-space:normal;line-height:1.35;text-align:right;max-width:160px}
+.pt-rflag{display:flex;align-items:center;gap:4px;margin-top:5px;padding:3px 7px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:6px;font-size:10.5px;font-weight:600;color:var(--amb-tx)}
+.pt-rflag svg{flex:none}
+
+/* PROCEED BAR */
+.proceed{position:fixed;bottom:0;left:0;right:var(--chat-w);height:66px;background:#fff;border-top:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:20}
+.proc-l{font-size:15px;color:var(--g500)}
+.proc-l strong{font-weight:700;color:var(--g950)}
+.proc-r{display:flex;gap:10px}
+.proc-ghost{height:40px;padding:0 20px;border-radius:8px;font-size:15px;font-weight:600;color:var(--g700);border:1px solid var(--g150);background:#fff;transition:all .12s}
+.proc-ghost:hover{border-color:var(--g400)}
+.proc-confirm{height:40px;padding:0 24px;border-radius:9999px;font-size:15px;font-weight:600;background:var(--red);color:#fff;display:flex;align-items:center;gap:7px;transition:background .12s}
+.proc-confirm:hover{background:var(--red-h)}
+
+/* CHAT RESIZE HANDLE */
+.chat-resize-handle{width:4px;background:transparent;cursor:col-resize;flex:none;position:relative;z-index:30;transition:background .15s}
+.chat-resize-handle:hover,.chat-resize-handle.dragging{background:var(--g100)}
+.chat-resize-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:28px;border-radius:2px;background:var(--g200)}
+
+/* CHAT */
+.chat-panel{width:var(--chat-w);flex:none;background:#FFFFFF;display:flex;flex-direction:column;border-left:1px solid var(--g100);overflow:hidden}
+.cp-tabs{display:flex;border-bottom:1px solid var(--g100);flex:none;background:#fff;padding:0 4px}
+.cp-tab{height:40px;padding:0 14px;font-size:15px;font-weight:600;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s}
+.cp-tab.on{color:var(--g950);border-bottom-color:var(--g950)}
+.cp-tab:hover:not(.on){color:var(--g700)}
+.cp-msgs-wrap{flex:1;overflow-y:auto;padding:20px 16px 0}
+.cp-msgs{display:flex;flex-direction:column;gap:11px;padding-bottom:14px}
+.c-div{display:flex;align-items:center;gap:8px;margin:2px 0}
+.cd-l{flex:1;height:1px;background:var(--g100)}
+.cd-t{font-size:12px;color:var(--g300);font-weight:600;white-space:nowrap}
+.msg-a{display:flex;flex-direction:column;gap:3px}
+.msg-a-b{background:#F7F7F9;border-radius:2px 12px 12px 12px;padding:12px 14px}
+.msg-a-t{font-size:14px;color:var(--g700);line-height:1.65}
+.msg-a-t strong{font-weight:700;color:var(--g950)}
+.msg-tm{font-size:12px;color:var(--g300);margin-top:2px}
+.msg-p{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.msg-p-b{background:var(--g950);border-radius:10px 2px 10px 10px;padding:9px 12px;max-width:210px}
+.msg-p-t{font-size:14px;color:#fff;line-height:1.55}
+
+/* FLAG MESSAGE */
+.msg-flag-wrap{background:var(--g25);border:1.5px solid var(--g100);border-radius:2px 12px 12px 12px;padding:12px 14px;display:flex;gap:10px}
+.msg-flag-icon{flex:none;margin-top:1px}
+.msg-flag-body{flex:1}
+.msg-flag-title{font-size:15px;font-weight:700;color:var(--amb-tx);margin-bottom:5px}
+.msg-flag-detail{font-size:14px;color:var(--g500);line-height:1.65;margin-bottom:10px}
+.msg-flag-acts{display:flex;gap:8px;flex-wrap:wrap}
+.msg-flag-btn-pri{height:32px;padding:0 14px;border-radius:9999px;border:1px solid var(--g300);color:var(--g700);background:#fff;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .12s}
+.msg-flag-btn-pri:hover{border-color:var(--g600);color:var(--g950)}
+.msg-flag-btn-sec{height:32px;padding:0 14px;border-radius:9999px;border:1px solid var(--g300);color:var(--g700);background:#fff;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .12s}
+.tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:3px;vertical-align:middle}
+.cp-sugs{display:flex;gap:5px;overflow-x:auto;padding:8px 13px 2px;scrollbar-width:none;flex:none}
+.cp-sug{font-size:11.5px;font-weight:600;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;cursor:pointer;transition:all .12s;font-family:var(--font);white-space:nowrap;flex:none}
+.cp-sug:hover{border-color:var(--g400);color:var(--g900)}
+.cp-ft{height:66px;display:flex;flex-direction:column;justify-content:center;gap:7px;padding:0 14px;border-top:1px solid var(--g100);flex:none;background:#fff}
+.cp-row{display:flex;gap:7px}
+.cp-inp{flex:1;height:38px;background:#F6F7F9;border:1px solid var(--g150);border-radius:8px;padding:0 12px;font-size:15px;color:var(--g950);outline:none;transition:border-color .15s}
+.cp-inp:focus{border-color:var(--g500)}
+.cp-inp::placeholder{color:var(--g300)}
+.cp-send{width:38px;height:38px;border-radius:8px;background:var(--g950);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;border:none;transition:all .12s}
+.cp-send:hover{background:var(--g950);color:#fff;border-color:var(--g950)}
+.cp-attach{width:38px;height:38px;border-radius:8px;background:var(--g50);color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--g150);transition:all .12s}
+.cp-attach:hover{background:var(--g100);color:var(--g900);border-color:var(--g300)}
+.collab-panel{background:#F6F7F9;border:1px solid var(--g100);border-radius:12px;padding:12px 13px}
+.collab-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.collab-t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g500)}
+.collab-live{font-size:12px;font-weight:600;color:var(--grn-tx);background:var(--grn-bg);border-radius:9999px;padding:2px 9px}
+.collab-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100)}
+.collab-row:last-of-type{border-bottom:none}
+.collab-av{position:relative;width:30px;height:30px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.collab-on{position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:var(--grn-tx);border:2px solid var(--g25)}
+.collab-main{flex:1;min-width:0}
+.collab-nm{font-size:14.5px;font-weight:600;color:var(--g950)}
+.collab-role{font-size:12.5px;color:var(--g400)}
+.collab-meta{text-align:right;flex:none}
+.collab-last{font-size:12.5px;color:var(--g600)}
+.collab-edits{font-size:11.5px;color:var(--g300);margin-top:1px}
+.collab-foot{font-size:12px;color:var(--g400);line-height:1.5;margin-top:9px;padding-top:9px;border-top:1px solid var(--g100)}
+
+/* LOG */
+.lg-scroll{flex:1;overflow-y:auto;padding:12px}
+.lg-list{display:flex;flex-direction:column}
+.lg-e{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.lg-e:last-child{border-bottom:none}
+.lg-ln{display:flex;flex-direction:column;align-items:center;width:11px;margin-top:3px;flex:none}
+.lg-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.lg-dot.p{background:var(--red)}
+.lg-dot.a{background:var(--g400)}
+.lg-dot.s{background:var(--g200)}
+.lg-con{width:1px;flex:1;background:var(--g100);margin-top:3px}
+.lg-b{flex:1}
+.lg-who{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.lw-p{color:var(--red)}.lw-a{color:var(--g500)}.lw-s{color:var(--g300)}
+.lg-tx{font-size:14px;color:var(--g700);line-height:1.5}
+.lg-tx strong{font-weight:700;color:var(--g950)}
+.lg-tm{font-size:12px;color:var(--g300);margin-top:2px}
+
+/* MODAL BASE */
+.overlay{display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;z-index:500;background:rgba(0,0,0,.32);backdrop-filter:blur(2px)}
+
+/* SHEET L1 */
+.sh-hd{padding:16px 20px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:18px 18px 0 0}
+.sh-name{font-size:21px;font-weight:700;letter-spacing:-.025em;color:var(--g950);margin-bottom:3px}
+.sh-sub{font-size:14px;color:var(--g400);font-family:'SF Mono',monospace}
+.sh-close{width:30px;height:30px;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;color:var(--g600);transition:background .12s;flex:none;margin-top:2px}
+.sh-close:hover{background:var(--g100);color:var(--g950)}
+.sh-body{padding:18px 20px}
+.sh-s{margin-bottom:18px}
+.sh-sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:7px}
+.sh-txt{font-size:14px;color:var(--g700);line-height:1.7}
+.sh-txt strong{font-weight:700;color:var(--g950)}
+
+/* SOURCES in L1 */
+.sh-srcs{display:flex;flex-direction:column;gap:5px}
+.sh-src{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--g100);border-radius:10px;padding:9px 11px;cursor:pointer;transition:border-color .12s,background .12s}
+.sh-src:hover{border-color:var(--g200);background:var(--g25)}
+.sh-src-ic{width:27px;height:27px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:none}
+.sh-src-n{font-size:14px;font-weight:600;color:var(--g950)}
+.sh-src-s{font-size:13px;color:var(--g400)}
+.sh-src-arr{margin-left:auto;font-size:14px;color:var(--g300)}
+
+/* BU TABLE in L1 */
+.bu-table{width:100%;border-collapse:collapse}
+.spider-insight{margin-top:12px;padding:11px 13px;background:#F4F7FE;border:1px solid #DCE6F8;border-radius:10px;font-size:13px;color:#3A5A8C;line-height:1.55;display:flex;gap:9px}
+.spider-insight strong{color:#1D4FA0;font-weight:700}
+.bu-list{display:flex;flex-direction:column;gap:6px}
+.bu-card{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--g150);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .12s,background .12s,opacity .12s}
+.bu-card:hover{border-color:var(--g300)}
+.bu-card.bu-on{border-color:var(--grn-br);background:#F5FBF7}
+.bu-card.bu-off{opacity:.55;background:var(--g25)}
+.bu-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--g200);background:#fff;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;flex:none;transition:all .12s}
+.bu-check svg{width:11px;height:11px;opacity:0;transition:opacity .1s}
+.bu-check.on{background:var(--grn-bg);border-color:var(--grn-st)}
+.bu-check.on svg{opacity:1}
+.bu-check:hover{border-color:var(--grn-st)}
+.bu-card-main{flex:1;min-width:0}
+.bu-card-nm{font-size:14px;font-weight:600;color:var(--g950)}
+.bu-card-sub{font-size:12px;color:var(--g400);margin-top:2px;line-height:1.35}
+.bu-card-arr{color:var(--g300);font-size:16px;flex:none}
+.bu-cb-cell{width:30px;text-align:center}
+.bu-cb{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--g200);background:transparent;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center;transition:all .12s;vertical-align:middle}
+.bu-cb svg{width:10px;height:10px;opacity:0;transition:opacity .1s}
+.bu-cb.on{background:var(--grn-bg);border-color:var(--grn-br)}
+.bu-cb.on svg{opacity:1}
+.bu-cb:hover{border-color:var(--grn-st)}
+.bu-note-sel{font-size:13px;color:var(--g500);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.bu-row.bu-excluded td:not(.bu-cb-cell){opacity:.45}
+.bu-table th{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);padding:5px 0;border-bottom:1px solid var(--g100);text-align:left}
+.bu-table td{font-size:14px;color:var(--g700);padding:8px 0;border-bottom:1px solid var(--g50);vertical-align:top;line-height:1.4}
+.bu-table tr:last-child td{border-bottom:none}
+.bu-comp{font-size:12px;font-weight:700;padding:1px 7px;border-radius:9999px;white-space:nowrap}
+.bu-comp-yes{background:var(--grn-bg);color:var(--grn-tx)}
+.bu-comp-partial{background:var(--amb-bg);color:var(--amb-tx)}
+.bu-comp-no{background:var(--g50);color:var(--g400)}
+.bu-row-click{cursor:pointer}
+.bu-row-click:hover td{background:#F6F7F9}
+.bu-card-wrap{display:flex;flex-direction:column;gap:0}
+.bu-sub-list{margin:0 0 6px 28px;display:flex;flex-direction:column;gap:4px;padding:6px 0 0}
+.bu-sub-item{display:flex;align-items:center;gap:10px;padding:8px 11px;border:1px solid var(--g100);border-radius:8px;background:var(--g25);transition:all .12s}
+.bu-sub-item.bu-on{border-color:var(--grn-br);background:#F5FBF7}
+.bu-sub-item.bu-off{opacity:.55;background:var(--g50)}
+.bu-isolate-row{margin-top:10px;padding:10px 12px;background:var(--blue-bg);border-radius:9px;border:1px solid var(--blue-br);display:flex;align-items:center;justify-content:space-between}
+.bu-isolate-note{font-size:14px;color:var(--blue-tx);line-height:1.5}
+.bu-isolate-btn{height:28px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:700;color:var(--blue-tx);border:1px solid var(--blue-br);background:#fff;cursor:pointer;white-space:nowrap;transition:all .12s;flex:none}
+.bu-isolate-btn:hover{background:var(--blue-bg);border-color:var(--blue-tx)}
+
+/* METRICS in L1 */
+.sh-metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sh-cmp{font-size:11px;color:var(--g500);margin-top:5px;padding-top:5px;border-top:1px solid var(--g100)}
+.sh-excl{color:var(--red);font-weight:700;font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;margin-left:2px}
+.sh-m{background:#fff;border:1px solid var(--g100);border-radius:12px;padding:13px 15px;transition:border-color .12s,box-shadow .12s}
+.sh-m:hover{border-color:var(--g200);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+.sh-mv{font-size:22px;font-weight:700;letter-spacing:-.03em;color:var(--g950);line-height:1}
+.sh-ml{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-top:6px}
+.sh-conf{background:#F6F7F9;border-radius:9px;padding:11px}
+.sh-cr{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.sh-cv{font-size:15px;font-weight:700}
+.sh-cbar{height:3px;background:var(--g100);border-radius:2px;overflow:hidden;margin-bottom:7px}
+.sh-cfill{height:100%;border-radius:2px}
+
+/* DATA GATE in L1 for vfcorp */
+.data-gate-wrap{margin-top:14px;border-radius:11px;overflow:hidden;border:1px solid var(--amb-br);background:#fff}
+.data-gate-hd{padding:10px 14px;background:var(--amb-bg);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--amb-br)}
+.data-gate-title{font-size:14px;font-weight:700;color:var(--amb-tx)}
+.data-gate-body{padding:8px 14px}
+.data-gate-item{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--g50)}
+.data-gate-item:last-child{border-bottom:none}
+.data-gate-circle{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--amb-br);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px;background:#fff}
+.data-gate-lbl{font-size:14px;color:var(--g700);line-height:1.5}
+
+/* AUDIT (L2) */
+.audit-block{display:flex;flex-direction:column;gap:10px;padding:14px 18px 18px}
+.audit-section{display:flex;flex-direction:column;gap:5px}
+.audit-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400)}
+.audit-label.green{color:var(--grn-tx)}
+.audit-val{font-size:14px;color:var(--g700);line-height:1.55;background:var(--g50);border-radius:7px;padding:8px 10px}
+.audit-val.highlight{background:var(--grn-bg);border:1px solid var(--grn-br);color:var(--g950);font-weight:700;font-size:16px}
+
+/* BU DETAIL (L2 bu-mode) */
+.bu-detail-wrap{padding:16px 18px 20px}
+.bu-detail-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:8px}
+.bu-detail-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bu-detail-col{background:#F6F7F9;border-radius:10px;padding:12px}
+.bu-detail-col-hd{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:8px}
+.bu-detail-metric{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px solid var(--g100)}
+.bu-detail-metric:last-child{border-bottom:none}
+.bu-detail-metric-k{color:var(--g600)}
+.bu-detail-metric-v{font-weight:600;color:var(--g950)}
+.bu-detail-warning{background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--amb-tx);line-height:1.6}
+.bu-detail-acts{display:flex;gap:8px;margin-top:12px}
+.bu-detail-btn-pri{height:34px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:700;background:var(--g950);color:#fff;cursor:pointer;transition:opacity .12s;border:none}
+.bu-detail-btn-pri:hover{opacity:.82}
+.bu-detail-btn-sec{height:34px;padding:0 16px;border-radius:8px;font-size:14px;font-weight:600;color:var(--g700);border:1px solid var(--g150);background:#fff;cursor:pointer;transition:all .12s}
+.bu-detail-btn-sec:hover{border-color:var(--g500)}
+
+/* ══ SPOTLIGHT — Apple-style add peer ══════════════════════════════════════ */
+
+/* Backdrop */
+#sheet-add{
+  display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;
+  z-index:600;background:rgba(0,0,0,.18);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  align-items:flex-start;justify-content:center;
+  padding-top:26vh;
+}
+
+/* Panel */
+.add-sheet-inner{
+  width:580px;max-width:88%;
+  background:rgba(255,255,255,.96);
+  border-radius:16px;
+  box-shadow:0 20px 60px rgba(0,0,0,.22),0 4px 16px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.8);
+  overflow:hidden;
+  max-height:440px;
+  display:flex;flex-direction:column;
+}
+
+/* Search bar */
+.add-search-bar{
+  display:flex;align-items:center;gap:11px;
+  padding:16px 18px 14px;
+  border-bottom:1px solid var(--g100);
+  flex:none;
+}
+.add-search-bar input{
+  flex:1;border:none;outline:none;
+  font-size:18px;font-weight:400;
+  color:var(--g950);font-family:var(--font);
+  background:transparent;letter-spacing:-.01em;
+}
+.add-search-bar input::placeholder{color:var(--g300);font-weight:400}
+
+/* Close button — minimal */
+.spl-close{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--g100);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--g500);flex:none;border:none;transition:all .12s;
+}
+.spl-close:hover{background:var(--g200);color:var(--g950)}
+
+/* Results container */
+.add-cands-wrap{flex:1;overflow-y:auto}
+
+/* Section label — very quiet */
+.add-section-hd{
+  font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--g400);padding:10px 18px 5px;
+}
+
+/* Section divider */
+.add-section-div{height:1px;background:var(--g100);margin:4px 0}
+
+/* Result row — slim, scannable */
+.add-cand-card{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 18px;
+  cursor:pointer;transition:background .1s;
+}
+.add-cand-card:hover{background:#F6F7F9}
+
+/* Company initial badge */
+.spl-ic{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--g50);border:1px solid var(--g100);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:var(--g500);
+  flex:none;margin-top:1px;letter-spacing:-.01em;
+}
+
+/* Row body */
+.spl-row-body{flex:1;min-width:0}
+.add-cand-name{font-size:16px;font-weight:600;color:var(--g950);letter-spacing:-.02em;line-height:1.3}
+.add-cand-sub{font-size:13px;color:var(--g400);font-family:monospace;margin-top:1px}
+
+/* Hint — shown on hover only */
+.spl-hint{
+  font-size:13px;color:var(--g500);line-height:1.55;margin-top:4px;
+  display:none;
+}
+.add-cand-card:hover .spl-hint{display:block}
+
+/* Row right side */
+.spl-row-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:none;padding-top:1px}
+
+/* Tags */
+.add-tag{font-size:11px;font-weight:700;padding:2px 7px;border-radius:9999px;letter-spacing:.03em;white-space:nowrap}
+.add-tag-pick{background:var(--grn-bg);color:var(--grn-tx)}
+.add-tag-cand{background:var(--g50);color:var(--g500);border:1px solid var(--g150)}
+
+/* Data-required indicator */
+.spl-gate{font-size:11px;font-weight:600;color:var(--amb-tx);background:var(--amb-bg);padding:2px 7px;border-radius:9999px;white-space:nowrap}
+
+/* Add button — appears on hover */
+.add-cand-btn{
+  height:24px;padding:0 11px;border-radius:7px;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .12s;border:none;
+  opacity:0;transition:opacity .1s;
+}
+.add-cand-card:hover .add-cand-btn{opacity:1}
+.add-cand-btn-confirm{background:var(--g950);color:#fff}
+.add-cand-btn-confirm:hover{opacity:.8}
+.add-cand-btn-gate{background:var(--amb-st);color:#fff}
+.add-cand-btn-gate:hover{opacity:.85}
+
+/* Footer */
+.add-footer{
+  padding:8px 18px;border-top:1px solid var(--g100);
+  display:flex;justify-content:space-between;align-items:center;
+  flex:none;background:rgba(255,255,255,.8);
+}
+
+/* Unused legacy classes — keep for compatibility */
+.add-cand-header,.add-cand-why,.add-cand-not-included,.add-cand-actions{display:none}
+.add-gate-wrap,.add-gate-lbl,.add-gate-item{display:none}
+
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--g150);border-radius:2px}
+
+/* ── LOG FILTER BAR ───────────────────────────────────────── */
+.lg-filter-bar{display:flex;gap:5px;flex-wrap:wrap;padding:10px 13px 8px;border-bottom:1px solid var(--g100);flex:none;background:#fff}
+.lg-fchip{height:26px;padding:0 10px;border-radius:9999px;border:1px solid var(--g150);background:#fff;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;font-family:var(--font);transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.lg-fchip:hover{border-color:var(--g400);color:var(--g700)}
+.lg-fchip.on{background:var(--g950);border-color:var(--g950);color:#fff}
+.lg-fchip .lg-fchip-dot{width:6px;height:6px;border-radius:50%}
+.lg-e{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.lg-e:last-child{border-bottom:none}
+.lg-e.lg-hidden{display:none!important}
+.src-upload-zone{border:1.5px dashed var(--g150);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .14s;margin-bottom:12px;background:var(--g25)}
+.src-upload-zone:hover{border-color:var(--g400);background:var(--g50)}
+.src-file-row2{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--g50)}
+.src-file-row2:last-child{border-bottom:none}
+.src-file-ic2{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex:none}
+.src-file-btn2{width:24px;height:24px;border-radius:6px;border:1px solid var(--g100);background:#fff;color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;transition:all .12s}
+.src-file-btn2:hover{border-color:var(--g400);color:var(--g950)}
+.src-file-btn2.del:hover{border-color:#E03C3C;color:#E03C3C}
+
+</style>
+<style id="scope-css">
+.scope-toggle{display:inline-flex;background:var(--g50);border-radius:9px;padding:3px;gap:2px}
+.scope-opt{font-size:13.5px;font-weight:600;color:var(--g500);background:none;border:none;border-radius:7px;padding:5px 13px;cursor:pointer;transition:all .12s;font-family:var(--font)}
+.scope-opt.on{background:#fff;color:var(--g950);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+</style>
+<style id="share-css">
+.share-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--g100)}
+.share-title{font-size:18px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.share-sub{font-size:13.5px;color:var(--g500);margin-top:3px}
+.share-close{width:28px;height:28px;border-radius:50%;background:var(--g50);color:var(--g500);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-close:hover{background:var(--g100);color:var(--g950)}
+.share-add{display:flex;gap:8px;padding:14px 22px}
+.share-add input{flex:1;height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 12px;font-size:15px;font-family:var(--font);outline:none}
+.share-add input:focus{border-color:var(--g500)}
+.share-add select{height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 8px;font-size:14px;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-add-btn{height:36px;padding:0 16px;border-radius:8px;background:var(--g950);color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:var(--font)}
+.share-list{padding:0 22px;max-height:280px;overflow-y:auto}
+.share-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--g50)}
+.share-av{width:32px;height:32px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.share-main{flex:1;min-width:0}
+.share-nm{font-size:15px;font-weight:600;color:var(--g950)}
+.share-role{font-size:13px;color:var(--g400)}
+.share-permsel{height:30px;border:1px solid var(--g200);border-radius:7px;padding:0 8px;font-size:14px;font-weight:600;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-rm{width:22px;height:22px;border-radius:6px;border:none;background:none;color:var(--g300);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-rm:hover{background:var(--red-bg);color:var(--red)}
+.share-ft{display:flex;align-items:center;justify-content:space-between;padding:14px 22px 18px;border-top:1px solid var(--g100)}
+.share-link{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--g200);background:#fff;font-size:14px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.share-link:hover{border-color:var(--g400)}
+.share-done{height:34px;padding:0 18px;border-radius:8px;background:var(--red);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font)}
+.collab-perm{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:9999px}
+.collab-perm.perm-c{background:var(--grn-bg);color:var(--grn-tx)}
+.collab-perm.perm-v{background:var(--g100);color:var(--g500)}
+.collab-share-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:7px;border:1px solid var(--g200);background:#fff;font-size:12.5px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.collab-share-btn:hover{border-color:var(--g400);color:var(--g950)}
+</style>
+<style id="navbtns-css">
+.nav-dash,.nav-share{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 13px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .12s}
+.nav-dash:hover,.nav-share:hover{background:rgba(255,255,255,.2)}
+.nav-dash{margin-right:14px}
+.nav-share{margin-right:12px}
+</style>
+<style id="done-check">.step-item.s-done .step-name::after,.ss-item.s-done .ss-name::after{content:"\2713";margin-left:7px;color:#1E7D40;font-weight:800;font-size:12px;-webkit-text-stroke:0}</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <button class="nav-dash" onclick="location.href='00_dashboard.html'"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard</button>
+    <div class="tb-brand">
+    <div class="tb-mark">
+      <!--
+        Bain logo geometry (all in a 20×20 viewBox, circle centred at 10,10 r=7.8):
+        Ring: 315° arc, gap at top-right (12 o'clock → 1:30)
+          Start (1:30 = 315°): x=10+7.8·cos315=15.52, y=10+7.8·sin315=4.48
+          End   (12:00 = 270°): x=10, y=10-7.8=2.2
+        Triangle: apex at 10 o'clock (210°, r=6.2), base at ~3 o'clock and ~6 o'clock
+      -->
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+        <path d="M 15.52 4.48 A 7.8 7.8 0 1 1 10 2.2"
+              stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 4.63 7.1 L 16.4 11.8 L 10 16.2 Z" fill="white"/>
+      </svg>
+    </div>
+    <span class="tb-wm">OI 3.0</span>
+  </div>
+  <span class="tb-case">Nike, Inc.</span>
+  <span class="tb-sector" title="Detected by the agent — tailors output for this sector">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1.2l1.3 2.9 3.1.3-2.4 2 .8 3-2.8-1.7-2.8 1.7.8-3-2.4-2 3.1-.3z" fill="#7FB2E8"/></svg>
+    Sector: Consumer / Retail
+  </span>
+  <div class="tb-right"><button class="nav-share" onclick="openShareModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 6.5l4-3M4 5.5l4 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="9" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="9" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="2.5" cy="6" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Share</button>
+    <div class="tb-ava">RG</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <div class="workspace">
+    <div class="stepper">
+      <div class="stepper-row">
+        <div class="step-item s-done" style="cursor:pointer" onclick="navTo(0)">
+          <div class="step-num"></div>
+          <div class="step-name">Target</div>
+          <div class="step-sub">Nike · CFO · $200M · 3 docs</div>
+        </div>
+        <div class="step-div"></div>
+        <div class="step-item s-active" id="step-peers">
+          <div class="step-num" style="color:var(--red)">02</div>
+          <div class="step-name">Peers</div>
+          <div class="step-sub" id="step2-sub" style="display:flex;align-items:center;gap:4px">
+            <svg width="10" height="12" viewBox="0 0 12 15"><path d="M2 1h8l-2 3 2 3H2z" fill="#D68A1C"/><path d="M2 1v13" stroke="#D68A1C" stroke-width="1.5" stroke-linecap="round"/></svg>
+            8 proposed
+          </div>
+        </div>
+        <div class="step-div"></div>
+        <div class="step-item s-locked" style="cursor:pointer" onclick="navTo(1)">
+          <div class="step-num">03</div>
+          <div class="step-name">Case for change</div>
+          <div class="step-sub">Unlocks after peers</div>
+        </div>
+        <div class="step-div"></div>
+        <div class="step-item s-locked" style="cursor:pointer" onclick="navTo(2)">
+          <div class="step-num">04</div>
+          <div class="step-name">Analysis</div>
+          <div class="step-sub">Unlocks after peers</div>
+        </div>
+        <div class="step-div"></div>
+        <div class="step-item s-locked" style="cursor:pointer" onclick="navTo(3)">
+          <div class="step-num">05</div>
+          <div class="step-name">Output</div>
+          <div class="step-sub">Deck · export</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ws-content">
+
+      <!-- PEERS VIEW (default) -->
+      <div id="peers-view">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+          <div class="ws-h1">Build your peer set</div>
+          <button class="ws-bar-btn" id="btn-add-peer">
+            <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Add a peer
+          </button>
+        </div>
+        <div class="ws-sub">Your proposed peer set. Tap the checkmark to deselect, or click a tile to see the agent's rationale.</div>
+        <div class="grid-wrap">
+          <div class="peer-grid" id="pgrid"></div>
+        </div>
+      </div>
+
+      <!-- DETAIL PANEL — replaces L1 modal, takes over workspace -->
+      <div id="detail-panel">
+        <div class="bc-bar">
+          <button class="bc-back" id="bc-back-btn" onclick="bcBack()">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="bc-back-lbl">Peers</span>
+          </button>
+          <span class="bc-sep">›</span>
+          <!-- L2 crumb — visible when source panel is open -->
+          <button class="bc-back" id="bc-crumb-peer" onclick="backToPeerDetail()" style="display:none">
+            <span id="bc-peer-name-link"></span>
+          </button>
+          <span class="bc-sep" id="bc-sep-2" style="display:none">›</span>
+          <span class="bc-live" id="bc-peer-name"></span>
+        </div>
+
+        <!-- PEER DETAIL (L1 content) -->
+        <div class="dp-scroll" id="dp-scroll">
+          <div class="dp-hd">
+            <div>
+              <div class="dp-name" id="dp-name"></div>
+              <div class="dp-ticker" id="dp-ticker"></div>
+            </div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Why included</div>
+            <div class="dp-txt" id="dp-why"></div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Selection criteria <span style="font-size:12px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0">— how this peer scores on the factors we chose the set on</span></div>
+            <div id="dp-criteria"></div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Business units</div>
+            <div id="dp-bus"></div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Analyst view <span style="font-size:12px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0">— sell-side cross-check</span></div>
+            <div id="dp-analyst"></div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Key metrics</div>
+            <div id="dp-metrics" style="margin-top:2px"></div>
+          </div>
+          <div class="dp-section">
+            <div class="dp-sl">Data sources <span style="font-size:12px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0">— tap to see audit</span></div>
+            <div class="sh-srcs" id="dp-srcs"></div>
+          </div>
+          <div class="dp-section" id="dp-section-conf">
+            <div class="dp-sl" style="display:flex;align-items:center;justify-content:space-between">
+              Confidence
+              <button onclick="openConfDetail(currentPeerId)" style="font-size:12px;font-weight:600;color:var(--red);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:4px">Details <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="sh-conf" id="dp-conf"></div>
+          </div>
+        </div>
+
+        <!-- CONFIDENCE DETAIL PANEL (L3) -->
+        <div id="dp-conf-view" style="display:none;flex:1;flex-direction:column;overflow-y:auto;padding:28px 40px 80px">
+          <div style="margin-bottom:22px">
+            <div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px">Confidence breakdown</div>
+            <div style="font-size:23px;font-weight:700;color:var(--g950);letter-spacing:-.03em" id="conf-peer-name"></div>
+          </div>
+          <div id="conf-detail-body"></div>
+        </div>
+
+        <!-- SPIDER FACTOR DETAIL PANEL (L3) -->
+        <div id="dp-spider-view" style="display:none;flex:1;flex-direction:column;overflow-y:auto;padding:28px 40px 80px">
+          <div id="dp-spider-content"></div>
+        </div>
+        <div id="dp-src-view" style="display:none;flex:1;flex-direction:column;overflow-y:auto;padding:28px 40px 80px">
+          <div style="margin-bottom:20px">
+            <div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px" id="src-eyebrow">Data source audit</div>
+            <div style="font-size:23px;font-weight:700;color:var(--g950);letter-spacing:-.03em" id="src-name"></div>
+            <div style="font-size:15px;color:var(--g500);margin-top:3px" id="src-sub"></div>
+          </div>
+          <div id="src-chart-area"></div>
+          <div id="src-audit-body"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHAT RESIZE HANDLE -->
+  <div class="chat-resize-handle" id="chat-resize"></div>
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chat-panel">
+    <div class="cp-tabs">
+      <button class="cp-tab on" id="tab-chat">Chat</button>
+      <button class="cp-tab" id="tab-log">Log <span class="tab-dot" id="log-dot" style="display:none"></span></button>
+      <button class="cp-tab" id="tab-sources">Sources</button>
+    </div>
+    <div id="vw-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+      <div class="cp-msgs-wrap" id="c-scroll">
+        <div class="cp-msgs" id="c-msgs">
+          <div class="c-div"><div class="cd-l"></div><div class="cd-t">Nike OI</div><div class="cd-l"></div></div>
+          <div class="msg-a">
+            <div class="msg-a-b">
+              <div class="msg-a-t"><strong>Eight peers to start with.</strong> Pulled from CapIQ, the 10-K, and a couple of past OI benchmarks, all pre-selected. Open any tile to see why it's in and how comparable it really is.</div>
+            </div>
+            <div class="msg-tm">Just now</div>
+          </div>
+
+          <div class="msg-a">
+            <div class="msg-flag-wrap">
+              <div class="msg-flag-body">
+                <div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">
+                  <svg width="12" height="14" viewBox="0 0 12 15"><path d="M2 1h8l-2 3 2 3H2z" fill="#D68A1C"/><path d="M2 1v13" stroke="#D68A1C" stroke-width="1.5" stroke-linecap="round"/></svg>
+                  <div class="msg-flag-title" style="margin-bottom:0">One to look at: VF Corp</div>
+                </div>
+                <div class="msg-flag-detail">VF Corp is Vans, Timberland, Supreme, and Dickies under one roof, and their cost profiles are nothing alike. Without brand-level SG&amp;A, the blended number won't sit cleanly against Nike's focused athletic model. I'd drop it, or use just the Vans segment for a cleaner read.</div>
+                <div class="msg-flag-acts">
+                  <button class="msg-flag-btn-pri" onclick="deselPeer('vfcorp')">Deselect VF Corp</button>
+                  <button class="msg-flag-btn-sec" onclick="openVFBUFlow()">Use Vans segment only</button>
+                  <button class="msg-flag-btn-sec" onclick="keepPeer('vfcorp')">Keep as-is</button>
+                </div>
+              </div>
+            </div>
+            <div class="msg-tm">Just now</div>
+          </div>
+        </div>
+      </div>
+      <div class="cp-sugs" id="cp-sugs"></div>
+      <div class="cp-ft">
+        <div class="cp-row">
+          <button class="cp-attach" id="ci-attach" onclick="attachFile()" title="Add a document or file"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <input class="cp-inp" id="ci" placeholder="Ask about this analysis…" />
+          <button class="cp-send" id="ci-send"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 7 2 2v4l8 1-8 1v4z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="vw-log" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+      <div class="lg-filter-bar" id="lg-filter-bar">
+        <button class="lg-fchip on" data-filter="all" onclick="setLogFilter('all',this)">All</button>
+        <button class="lg-fchip" data-filter="p" onclick="setLogFilter('p',this)"><span class="lg-fchip-dot" style="background:#CC0000"></span>Partner</button>
+        <button class="lg-fchip" data-filter="c" onclick="setLogFilter('c',this)"><span class="lg-fchip-dot" style="background:#2E7FD9"></span>Collaborator</button>
+        <button class="lg-fchip" data-filter="a" onclick="setLogFilter('a',this)"><span class="lg-fchip-dot" style="background:#8E8E93"></span>Agent</button>
+        <button class="lg-fchip" data-filter="override" onclick="setLogFilter('override',this)">Overrides</button>
+        <button class="lg-fchip" data-filter="flag" onclick="setLogFilter('flag',this)">Flags</button>
+      </div>
+      <div id="lg-collab" style="padding:14px 13px 0;flex:none"></div>
+      <div class="lg-scroll">
+        <div class="lg-list" id="lg-list">
+          <div class="lg-e"><div class="lg-ln"><div class="lg-dot s"></div></div><div class="lg-b"><div class="lg-who lw-s">System</div><div class="lg-tx">Project created</div><div class="lg-tm">Just now</div></div></div>
+          <div class="lg-e"><div class="lg-ln"><div class="lg-dot p"></div><div class="lg-con"></div></div><div class="lg-b"><div class="lg-who lw-p">You</div><div class="lg-tx">Named target: <strong>Nike, Inc.</strong></div><div class="lg-tm">Just now</div></div></div>
+          <div class="lg-e"><div class="lg-ln"><div class="lg-dot a"></div></div><div class="lg-b"><div class="lg-who lw-a">Agent</div><div class="lg-tx">Proposed <strong>8 peers</strong>. VF Corp flagged for review.</div><div class="lg-tm">Just now</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="vw-sources" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+      <div style="flex:1;overflow-y:auto;padding:14px 13px">
+        <div class="src-upload-zone" onclick="document.getElementById('peers-file-input').click()">
+          <input type="file" id="peers-file-input" multiple accept=".pdf,.xlsx,.xls,.docx,.doc,.pptx,.csv,.txt" style="display:none" onchange="handlePeersUpload(this)"/>
+          <div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:2px">Upload files</div>
+          <div style="font-size:11px;color:var(--g400)">PDF, Excel, Word, PowerPoint, CSV</div>
+        </div>
+        <div id="peers-uploaded-list"></div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:10px" id="src-count-lbl">7 active sources</div>
+        <div id="src-list-s1"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCEED BAR -->
+<div class="proceed">
+  <div class="proc-l"><strong id="proc-lbl">8 peers selected</strong> &middot; tap checkmark to deselect</div>
+  <div class="proc-r">
+    <span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--g400);margin-right:4px"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 6l2 2 4-4.5" stroke="var(--grn-tx)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Auto-saved</span>
+    <button class="proc-confirm" id="btn-confirm">Confirm peer set <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+<!-- SHEET L1: peer justification -->
+<div id="sheet-l1" style="display:none;position:fixed;bottom:10vh;left:calc(50% - var(--chat-w)/2);transform:translateX(-50%);width:740px;max-width:92%;max-height:82vh;overflow-y:auto;background:#fff;border-radius:18px;z-index:501;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08)">
+  <div class="sh-hd">
+    <div>
+      <div class="sh-name" id="sh-name"></div>
+      <div class="sh-sub" id="sh-sub"></div>
+    </div>
+    <button class="sh-close" id="sh-close-l1">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="sh-body">
+    <div class="sh-s"><div class="sh-sl">Why included</div><div class="sh-txt" id="sh-why"></div></div>
+    <div class="sh-s">
+      <div class="sh-sl">Business units</div>
+      <div id="sh-bus"></div>
+    </div>
+    <div class="sh-s">
+      <div class="sh-sl">Data sources <span style="font-size:12px;color:var(--g400);font-weight:400;text-transform:none;letter-spacing:0">— tap to see adjustments</span></div>
+      <div class="sh-srcs" id="sh-srcs"></div>
+    </div>
+    <div class="sh-s"><div class="sh-sl">Key metrics</div><div class="sh-metrics" id="sh-metrics"></div></div>
+    <div class="sh-s">
+      <div class="sh-sl">Confidence</div>
+      <div class="sh-conf">
+        <div class="sh-cr"><span style="font-size:14px;color:var(--g700)">Data coverage</span><span class="sh-cv" id="sh-cv"></span></div>
+        <div class="sh-cbar"><div class="sh-cfill" id="sh-cf"></div></div>
+        <div id="sh-cn"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- L1 DIM overlay -->
+<div id="l1-dim" style="display:none;position:fixed;bottom:10vh;left:calc(50% - var(--chat-w)/2);transform:translateX(-50%);width:740px;max-width:92%;border-radius:18px;background:rgba(0,0,0,0.55);z-index:502;pointer-events:none"></div>
+<div id="sheet-scrim" style="display:none;position:fixed;bottom:10vh;left:calc(50% - var(--chat-w)/2);transform:translateX(-50%);width:740px;max-width:92%;max-height:82vh;background:rgba(0,0,0,0);border-radius:18px;z-index:503;pointer-events:none;transition:background .3s ease"></div>
+
+<!-- SHEET L2: source audit / BU detail -->
+<div id="sheet-l2" style="display:none;position:fixed;top:50%;left:calc(50% - var(--chat-w)/2);transform:translate(-50%,-50%) scale(0.96);opacity:0;width:480px;max-width:92%;max-height:82vh;overflow-y:auto;background:#fff;border-radius:18px;z-index:504;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);transition:transform .18s ease,opacity .18s ease">
+  <div class="sh-hd">
+    <div>
+      <div style="font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:3px" id="sh2-ey"></div>
+      <div class="sh-name" id="sh2-name"></div>
+      <div class="sh-sub" id="sh2-sub"></div>
+    </div>
+    <button class="sh-close" id="sh-close-l2">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div id="sh2-body"></div>
+</div>
+
+<!-- ADD PEER SPOTLIGHT -->
+<div id="sheet-add">
+  <div class="add-sheet-inner">
+    <div class="add-search-bar">
+      <svg width="17" height="17" viewBox="0 0 18 18" fill="none" style="flex:none;color:var(--g400)"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="add-inp" placeholder="Search company name or ticker…" autocomplete="off"/>
+      <button class="spl-close" id="sh-close-add">
+        <svg width="8" height="8" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="add-cands-wrap" id="add-cands"></div>
+    <div class="add-footer">
+      <span style="font-size:12px;color:var(--g400)">Return to add &nbsp;·&nbsp; Esc to close</span>
+      <span style="font-size:12px;color:var(--g400)" id="add-footer-count">5 candidates</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PEERS DATA ──────────────────────────────────────────────────────────────
+var PEERS = [
+  {
+    id:"adidas", region:"Europe",
+    primaryRegion:"Europe (33% of revenue)",
+    revBreakdown:{regions:[{name:"Europe",pct:"33%"},{name:"North America",pct:"23%"},{name:"Greater China",pct:"15%"},{name:"Asia-Pacific & LatAm",pct:"17%"},{name:"Emerging markets",pct:"12%"}],sector:"Consumer / Retail",sub:"Athletic footwear & apparel"}, name:"Adidas", ticker:"ADS · XETRA",
+    reason:"<strong>Primary SG&amp;A comp.</strong> Closest revenue scale. Used in 2 prior OI benchmarks.",
+    why:"Adidas is the closest revenue-scale comp to Nike — roughly 60% of revenue, same DTC and wholesale split. Used as the primary SG&amp;A anchor in 2 prior OI benchmarks. The FY22 restructuring charge was stripped before benchmarking.",
+    bus:[
+      {name:"Footwear", share:"~55%", nikeEquiv:"Footwear", comp:"yes"},
+      {name:"Apparel", share:"~36%", nikeEquiv:"Apparel", comp:"yes"},
+      {name:"Accessories &amp; hardware", share:"~9%", nikeEquiv:"Equipment", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"SG&amp;A reported at 27.4% of revenue (FY24 per CapIQ)",
+       adjustment:"Stripped $335M (~€310M) FY22 restructuring charge. CapIQ includes this in SG&amp;A by default — leaving it in overstates the steady-state cost base.",
+       adjusted:"26.2% — used in benchmarking",
+       comparable:"Same revenue recognition standard (IFRS). DTC/wholesale split within 4pp of Nike. Directly comparable after adjustment."},
+      {label:"Nike 10-K", detail:"Peer comparison section — cross-check only",
+       raw:"Nike discloses peer set in proxy filing. Adidas listed as primary comp.",
+       adjustment:"No adjustment needed — used as confirmation only.",
+       adjusted:"Confirms Adidas as primary SG&amp;A benchmark.",
+       comparable:"Nike management itself uses Adidas as its primary comp. Adds credibility to inclusion."},
+      {label:"OI history", detail:"2 prior OI benchmarks used Adidas as primary anchor",
+       raw:"Adidas used in Nike OI (2021) and Footwear sector OI (2023).",
+       adjustment:"Prior benchmarks used unadjusted figures. This run uses the adjusted figure for consistency.",
+       adjusted:"Adjusted figure aligns with prior benchmark methodology.",
+       comparable:"Consistent with how Bain has benchmarked this pair before."}
+    ],
+    metrics:{"Revenue":"$24.3B","Gross margin":"51.3%","SG&amp;A / rev":"26.2%","EBIT margin":"9.5%"},
+    conf:"high", pct:85, note:"FY22 restructuring charge stripped. CapIQ current to Q3 2024."
+  },,
+  {
+    id:"puma", region:"Europe",
+    primaryRegion:"EMEA (42% of revenue)",
+    revBreakdown:{regions:[{name:"EMEA",pct:"42%"},{name:"Americas",pct:"32%"},{name:"Asia-Pacific",pct:"26%"}],sector:"Consumer / Retail",sub:"Athletic footwear & apparel"}, name:"Puma", ticker:"PUM · XETRA",
+    reason:"<strong>Footwear-first, strong NWC comp.</strong> Similar DTC mix. Lean inventory benchmark.",
+    why:"Puma is footwear-first with a similar DTC ratio. Puma runs lean inventory relative to revenue — a useful NWC lower-bound benchmark. A FY23 one-time inventory write-down was excluded before NWC comparison.",
+    bus:[
+      {name:"Footwear", share:"~47%", nikeEquiv:"Footwear", comp:"yes"},
+      {name:"Apparel", share:"~38%", nikeEquiv:"Apparel", comp:"yes"},
+      {name:"Accessories", share:"~15%", nikeEquiv:"Equipment", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"NWC days reported at 28 days (FY24 per CapIQ)",
+       adjustment:"Excluded FY23 one-time inventory write-down (~$194M / €180M). This was a supply chain disruption — not steady-state operations.",
+       adjusted:"22 days NWC — used in benchmarking",
+       comparable:"After adjustment reflects normal lean-inventory model. Directly comparable to Nike on a like-for-like basis."},
+      {label:"Puma earnings", detail:"FY22–FY24 calls — verified write-down rationale",
+       raw:"Puma CFO commentary confirmed write-down was one-time, supply-chain-driven.",
+       adjustment:"Earnings call language used to justify exclusion of the FY23 figure.",
+       adjusted:"Supports the 22-day adjusted NWC figure.",
+       comparable:"Agent used management commentary to validate the adjustment — not just mechanical stripping."},
+      {label:"UBS sector report", detail:"Athletic footwear NWC benchmarks by company",
+       raw:"UBS reports Puma NWC at 20–24 days (normalised).",
+       adjustment:"No adjustment — used as external cross-check.",
+       adjusted:"22 days falls within UBS normalised range. Validated.",
+       comparable:"Third-party validation of the adjusted NWC figure."}
+    ],
+    metrics:{"Revenue":"$9.3B","Gross margin":"47.8%","SG&amp;A / rev":"31.4%","EBIT margin":"7.5%"},
+    conf:"high", pct:80, note:"FY23 inventory write-down excluded. UBS sector report cross-check confirms NWC range."
+  },,
+  {
+    id:"underarmour", region:"N. America",
+    primaryRegion:"North America (67% of revenue)",
+    revBreakdown:{regions:[{name:"North America",pct:"67%"},{name:"International",pct:"33%"}],sector:"Consumer / Retail",sub:"Athletic apparel & footwear"}, name:"Under Armour", ticker:"UAA · NYSE",
+    reason:"<strong>Post-restructuring SG&amp;A discipline.</strong> Comparable DTC. Useful lower bound.",
+    why:"Under Armour post-restructuring SG&amp;A makes it a useful lower bound for best-practice SG&amp;A in athletic apparel. Restructuring charges from FY21–FY23 were excluded before benchmarking.",
+    bus:[
+      {name:"Footwear", share:"~25%", nikeEquiv:"Footwear", comp:"yes"},
+      {name:"Apparel", share:"~65%", nikeEquiv:"Apparel", comp:"yes"},
+      {name:"Accessories", share:"~10%", nikeEquiv:"Equipment", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"SG&amp;A reported at 38.9% of revenue (FY24 per CapIQ — includes restructuring)",
+       adjustment:"Excluded $420M restructuring charges across FY21–FY23. These are non-recurring and inflate the apparent SG&amp;A base.",
+       adjusted:"34.1% — used in benchmarking (steady-state post-restructuring)",
+       comparable:"Reflects what Under Armour looks like once the transformation is complete. Valid lower-bound benchmark for Nike."},
+      {label:"Under Armour 10-K", detail:"Restructuring footnotes — line-item isolation",
+       raw:"10-K footnotes detail which charges are restructuring-related vs operational.",
+       adjustment:"Agent used footnote disclosures to isolate and exclude restructuring items.",
+       adjusted:"Adjusted SG&amp;A confirmed at 34.1%.",
+       comparable:"Source-level verification — not relying on CapIQ defaults which bundle restructuring into SG&amp;A."},
+      {label:"OI history", detail:"Used in 1 prior Bain OI benchmark (apparel sector)",
+       raw:"Prior OI used unadjusted Under Armour figures — noted as a limitation.",
+       adjustment:"This run corrects the prior methodology by stripping restructuring charges.",
+       adjusted:"More defensible figure than prior OI benchmarks for this peer.",
+       comparable:"Improvement on prior Bain methodology — more credible if CFO pushes back."}
+    ],
+    metrics:{"Revenue":"$5.7B","Gross margin":"47.5%","SG&amp;A / rev":"34.1%","EBIT margin":"8.0%"},
+    conf:"high", pct:75, note:"Restructuring charges FY21–FY23 excluded. 10-K footnotes used for line-item isolation."
+  },,
+  {
+    id:"newbalance", region:"N. America",
+    primaryRegion:"North America (55% of revenue)",
+    revBreakdown:{regions:[{name:"North America",pct:"55%"},{name:"Europe",pct:"25%"},{name:"Asia-Pacific",pct:"15%"},{name:"Other",pct:"5%"}],sector:"Consumer / Retail",sub:"Athletic footwear & apparel"}, name:"New Balance", ticker:"Private",
+    reason:"<strong>Manufacturing cost benchmark.</strong> Private — Companies House used.",
+    why:"New Balance is private — financials from Companies House UK and Bundesanzeiger Germany. Included for manufacturing cost benchmarking. Confidence is medium because P&amp;L depth in statutory filings is limited.",
+    bus:[
+      {name:"Footwear", share:"~65%", nikeEquiv:"Footwear", comp:"yes"},
+      {name:"Apparel", share:"~35%", nikeEquiv:"Apparel", comp:"partial"}
+    ],
+    sources:[
+      {label:"Companies House UK", detail:"Annual statutory accounts · FY22–FY23",
+       raw:"Revenue reported at ~$6.8B (GBP converted). SG&amp;A not disclosed at line-item level.",
+       adjustment:"Agent estimated gross margin range using industry benchmarks for private athletic footwear (40–48%). No line-item SG&amp;A available.",
+       adjusted:"~$7.0B revenue (estimated). GM ~45% (estimated from benchmarks).",
+       comparable:"Statutory accounts give revenue and EBIT only. SG&amp;A is estimated — flagged as medium confidence. Uploading direct financials would sharpen this significantly."},
+      {label:"Bundesanzeiger DE", detail:"German entity filing — European cost structure",
+       raw:"German subsidiary accounts show manufacturing cost ratios.",
+       adjustment:"Agent used subsidiary cost ratios to triangulate overall manufacturing efficiency.",
+       adjusted:"Manufacturing cost estimate cross-checked against German entity data.",
+       comparable:"Useful for manufacturing benchmark only — limited applicability for SG&amp;A."},
+      {label:"Public press", detail:"CEO interviews and trade press on revenue",
+       raw:"New Balance CEO confirmed ~$7B revenue target in 2023 trade press interviews.",
+       adjustment:"Used as cross-check on Companies House revenue figure.",
+       adjusted:"$7.0B estimate consistent with management statements.",
+       comparable:"Management-stated figures used as directional confirmation only — not audited."}
+    ],
+    metrics:{"Revenue":"~$7.0B est","Gross margin":"~45% est","SG&amp;A / rev":"Limited","EBIT margin":"Limited"},
+    conf:"med", pct:72, plFlag:"Limited P&L depth", note:"Statutory accounts cross-checked against management revenue statements. Sufficient for manufacturing cost benchmarking."
+  },,
+  {
+    id:"vfcorp", region:"N. America",
+    primaryRegion:"North America (62% of revenue)",
+    revBreakdown:{regions:[{name:"North America",pct:"62%"},{name:"Europe",pct:"26%"},{name:"Asia-Pacific",pct:"12%"}],sector:"Consumer / Retail",sub:"Diversified lifestyle apparel & footwear"}, name:"VF Corp", ticker:"VFC · NYSE", flagged:true, reportingFlag:true, buFlag:true,
+    reason:"<strong style='color:#6A3C00'>Flagged.</strong> Conglomerate structure — diverse brand portfolio distorts SG&amp;A comparability.",
+    why:"VF Corp's portfolio spans Vans, Timberland, Supreme, and Dickies — each with structurally different cost models. Without brand-level SG&amp;A disclosure, the blended cost base doesn't benchmark cleanly against Nike's focused athletic model. The Vans segment (athletic/casual footwear) is the most comparable portion.",
+    bus:[
+      {name:"Vans", share:"~37%", nikeEquiv:"Footwear", comp:"partial", subBUs:[
+        {name:"Footwear", share:"~70% of Vans", nikeEquiv:"Footwear", comp:"yes"},
+        {name:"Apparel", share:"~30% of Vans", nikeEquiv:"Apparel", comp:"partial"}
+      ], buIsolate:true},
+      {name:"Timberland", share:"~28%", nikeEquiv:"–", comp:"no"},
+      {name:"Supreme", share:"~16%", nikeEquiv:"–", comp:"no"},
+      {name:"Other (Altra, Dickies, Kipling…)", share:"~19%", nikeEquiv:"–", comp:"no"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"SG&amp;A reported at 38.2% of revenue (FY24). Blended across all VF brands.",
+       adjustment:"No clean adjustment possible. SG&amp;A is not disclosed at brand level in public filings. The entire 38.2% reflects a blended conglomerate cost base.",
+       adjusted:"38.2% — used as-is, flagged as non-comparable",
+       comparable:"Blended cost base includes brand management overhead across non-athletic categories. Not a clean like-for-like comp without segment-level SG&amp;A."},
+      {label:"VF Corp 10-K", detail:"Segment disclosure — checked for brand-level SG&amp;A",
+       raw:"10-K shows revenue by segment but does not disclose SG&amp;A at segment level.",
+       adjustment:"Agent attempted to isolate athletic-relevant segments — not possible without segment-level cost disclosure.",
+       adjusted:"No adjustment achievable from public data.",
+       comparable:"Absence of segment-level SG&amp;A is the core reason for the flag. A direct upload would be needed to make this comparable."}
+    ],
+    metrics:{"Revenue":"$11.6B","Gross margin":"51.8%","SG&amp;A / rev":"38.2% (blended)","EBIT margin":"10.2%"},
+    conf:"med", pct:48, note:"Segment-level revenue available. Brand-level SG&amp;A not disclosed in public filings. Recommend deselecting or uploading brand-level P&amp;L."
+  },,
+  {
+    id:"skechers", region:"N. America",
+    primaryRegion:"North America (58% of revenue)",
+    revBreakdown:{regions:[{name:"North America",pct:"58%"},{name:"International",pct:"42%"}],sector:"Consumer / Retail",sub:"Value-positioned footwear"}, name:"Skechers", ticker:"SKX · NYSE", reportingFlag:true,
+    reason:"<strong>Lower-bound distribution cost comp.</strong> Value footwear. Range anchor.",
+    why:"Skechers is a high-volume, lower-margin footwear brand — useful as a lower-bound distribution cost and SG&amp;A benchmark. Included to anchor the range, not as a target. Nike should not aspire to Skechers SG&amp;A levels as the model is structurally different.",
+    bus:[
+      {name:"Footwear", share:"~87%", nikeEquiv:"Footwear", comp:"partial"},
+      {name:"Apparel &amp; accessories", share:"~13%", nikeEquiv:"Apparel", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"SG&amp;A reported at 37.4% of revenue (FY24 per CapIQ). No major one-time items.",
+       adjustment:"No adjustment required. Clean SG&amp;A without significant non-recurring items in FY24.",
+       adjusted:"37.4% — used as lower-bound range anchor",
+       comparable:"Structurally high SG&amp;A due to wholesale-heavy, low-DTC model. Included to show the range — not as a target. Nike peer median should sit well below this."},
+      {label:"Skechers 10-K", detail:"Channel mix and cost structure verification",
+       raw:"10-K confirms 82% wholesale, 18% DTC in FY24.",
+       adjustment:"No adjustment — used to contextualise why SG&amp;A is high.",
+       adjusted:"High SG&amp;A explained by wholesale model — not operational inefficiency.",
+       comparable:"Wholesale-heavy model means high distribution costs. Valid lower-bound anchor, not a target."}
+    ],
+    metrics:{"Revenue":"$8.1B","Gross margin":"52.0%","SG&amp;A / rev":"37.4%","EBIT margin":"6.5%"},
+    conf:"med", pct:72, note:"No adjustments required. Included as lower-bound range anchor only — not a target benchmark."
+  },
+  {
+    id:"lululemon", region:"N. America",
+    primaryRegion:"North America (85% of revenue)",
+    revBreakdown:{regions:[{name:"North America",pct:"85%"},{name:"Rest of world",pct:"15%"}],sector:"Consumer / Retail",sub:"Premium athletic & lifestyle apparel"}, name:"Lululemon", ticker:"LULU · NASDAQ",
+    reason:"<strong>Gross margin ceiling.</strong> Best-in-class athletic DTC cost structure.",
+    why:"Lululemon operates at premium gross margins — included as a gross margin ceiling benchmark. High DTC concentration (over 90%) makes the cost structure directly comparable on the cost side.",
+    bus:[
+      {name:"Apparel", share:"~88%", nikeEquiv:"Apparel", comp:"yes"},
+      {name:"Footwear &amp; accessories", share:"~12%", nikeEquiv:"Footwear / Equipment", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY19–FY24",
+       raw:"Gross margin reported at 57.7% (FY24). No major one-time items flagged.",
+       adjustment:"No adjustment required. Lululemon reports clean gross margin with no significant non-recurring items in FY24.",
+       adjusted:"57.7% gross margin — used as ceiling benchmark",
+       comparable:"High DTC concentration means cost structure is directly comparable to Nike DTC channel. Used as ceiling — not median — because product mix differs (premium yoga vs athletic)."},
+      {label:"Lululemon 10-K", detail:"DTC mix and channel split verification",
+       raw:"10-K confirms 91% DTC revenue in FY24.",
+       adjustment:"No adjustment — used as channel confirmation.",
+       adjusted:"DTC concentration confirmed as basis for inclusion.",
+       comparable:"DTC-heavy structure makes Lululemon a valid gross margin ceiling comp despite different product."},
+      {label:"UBS sector report", detail:"Gross margin benchmarks by channel mix",
+       raw:"UBS reports Lululemon as the gross margin ceiling in athletic at ~57–59%.",
+       adjustment:"No adjustment — third-party confirmation.",
+       adjusted:"57.7% consistent with UBS ceiling range.",
+       comparable:"Independent validation of Lululemon as the ceiling benchmark."}
+    ],
+    metrics:{"Revenue":"$9.6B","Gross margin":"57.7%","SG&amp;A / rev":"29.4%","EBIT margin":"22.1%"},
+    conf:"high", pct:90, note:"No adjustments required. Clean financials. UBS sector report confirms ceiling position."
+  },,
+  {
+    id:"onrunning", region:"Europe",
+    primaryRegion:"Europe (45% of revenue)",
+    revBreakdown:{regions:[{name:"Europe",pct:"45%"},{name:"Americas",pct:"39%"},{name:"Asia-Pacific",pct:"16%"}],sector:"Consumer / Retail",sub:"Premium running & performance footwear"}, name:"On Running", ticker:"ONON · NYSE",
+    reason:"<strong>Best-in-class NWC.</strong> Supply chain efficiency. Challenger comp.",
+    why:"On Running runs exceptionally lean NWC relative to revenue growth — the best-in-class supply chain benchmark in this peer set. Included specifically to give Nike a stretch target on inventory efficiency.",
+    bus:[
+      {name:"Footwear", share:"~88%", nikeEquiv:"Footwear", comp:"yes"},
+      {name:"Apparel &amp; accessories", share:"~12%", nikeEquiv:"Apparel", comp:"partial"}
+    ],
+    sources:[
+      {label:"CapIQ", detail:"Revenue, GM, SG&amp;A, NWC · FY21–FY24",
+       raw:"NWC days reported at 10 days (FY24). No major one-time items.",
+       adjustment:"No adjustment needed. On Running has run lean NWC consistently with no one-time distortions.",
+       adjusted:"10 days NWC — used as supply chain stretch benchmark",
+       comparable:"Faster-growth, smaller-scale company — not a like-for-like SG&amp;A comp. Included for NWC benchmarking only. Scale difference is flagged in the confidence note."},
+      {label:"On Running earnings", detail:"Management commentary on supply chain model",
+       raw:"On Running CEO discussed asset-light supply chain model in FY23 and FY24 earnings calls.",
+       adjustment:"Agent used earnings commentary to confirm lean NWC reflects structural operating model, not temporary working capital management.",
+       adjusted:"10-day NWC confirmed as structural, not one-time.",
+       comparable:"Structural lean model makes this a defensible stretch target for Nike."},
+      {label:"Analyst reports", detail:"Bernstein and UBS coverage of supply chain",
+       raw:"Both analysts cite On Running as best-in-class NWC in the athletic space.",
+       adjustment:"No adjustment — used as external validation.",
+       adjusted:"Third-party confirmation of 10-day NWC as industry-leading.",
+       comparable:"Independent analyst validation strengthens use as stretch benchmark."}
+    ],
+    metrics:{"Revenue":"$2.4B","Gross margin":"59.2%","SG&amp;A / rev":"39.1%","EBIT margin":"18.4%"},
+    conf:"high", pct:78, note:"Scale difference noted — NWC benchmark only, not SG&amp;A. Structural lean model confirmed via earnings."
+  },
+];
+
+// ── CANDIDATES (Add peer sheet) ─────────────────────────────────────────────
+var CANDIDATES = [
+  {
+    id:"decathlon", name:"Decathlon", sub:"Private · Sports retail · France", tag:"Suggested",
+    shortReason:"<strong>Sports retail benchmark.</strong> Asset-light, lean NWC — useful SG&amp;A lower bound across the full sports value chain.",
+    why:"Asset-light, high-volume sports retail. Strong private label margins and lean NWC make it a useful SG&amp;A lower bound across the full sports value chain.",
+    notIncluded:"Private company with limited public financial data. Core financials are estimated — revenue-level figures are available but SG&amp;A granularity is low.",
+    dataGate:["Decathlon internal P&amp;L or annual report (France statutory)","Revenue breakdown by product category","SG&amp;A or opex line disclosure"]
+  },
+  {
+    id:"columbia", name:"Columbia Sportswear", sub:"COLM · NASDAQ", tag:"Suggested",
+    shortReason:"<strong>Outdoor-adjacent DTC comp.</strong> Comparable channel split. Useful gross margin and S&amp;M context.",
+    why:"Comparable DTC/wholesale split to Nike. Useful gross margin and S&amp;M spend benchmark for the outdoor-adjacent segment.",
+    notIncluded:"Outdoor-adjacent product mix means gross margin isn't a direct comp to Nike's athletic positioning — useful as context, not a primary peer.",
+    dataGate:[]
+  },
+  {
+    id:"asics", name:"Asics", sub:"TYO: 7936 · Japan", tag:"Candidate",
+    shortReason:"<strong>Performance running.</strong> Similar product and NWC profile to Nike's performance division.",
+    why:"Performance running brand with similar product mix. NWC and R&amp;D cost structure comparable to Nike's performance division.",
+    notIncluded:"Japanese accounting standards (JGAAP) — financials require restatement before comparison. Adds complexity without enough incremental value over Adidas and Puma.",
+    dataGate:["Asics financials restated to IFRS or US GAAP","Or written confirmation that JGAAP comparisons are acceptable to the client"]
+  },
+  {
+    id:"mizuno", name:"Mizuno", sub:"TYO: 8022 · Japan", tag:"Candidate",
+    shortReason:"<strong>Marketing-light lower bound.</strong> Niche performance brand — useful S&amp;M spend floor benchmark.",
+    why:"Niche performance brand. Lower SG&amp;A driven by limited marketing — useful lower bound for S&amp;M benchmarking.",
+    notIncluded:"Too small and marketing-light to be a meaningful SG&amp;A comp for Nike's scale. More useful as a footnote than a primary peer.",
+    dataGate:[]
+  },
+  {
+    id:"amer", name:"Amer Sports", sub:"AS · NYSE", tag:"Candidate",
+    shortReason:"<strong>Premium DTC growth comp.</strong> Multi-brand portfolio — relevant for DTC margin expansion benchmarking.",
+    why:"Multi-brand portfolio with premium DTC growth. Relevant benchmark for Nike's DTC margin expansion and pricing strategy.",
+    notIncluded:"Recent IPO (2024) — only one year of public financial data available. Insufficient history for trend-based benchmarking.",
+    dataGate:["Amer Sports pre-IPO financials (2022–23)","Or confirmation that single-year comparison is sufficient for this case"]
+  }
+];
+
+var SUGS = [
+  ["Why flag VF Corp?","Why is VF Corp flagged for removal?"],
+  ["What's Vans' cost structure?","Can you tell me more about the Vans segment cost structure vs Nike?"],
+  ["Find APAC peers","What companies in the Asia Pacific region could work as peers for Nike?"],
+  ["Why not Asics?","Why was Asics not included in the initial peer set?"],
+  ["Full longlist","Show me the full candidate longlist"]
+];
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+var selectedIds = PEERS.map(function(p){return p.id;});
+var currentPeer = null;
+var l1Open = false, l2Open = false, addOpen = false;
+var l2Mode = "source"; // "source" | "bu"
+var PEERS_MAP = {};
+PEERS.forEach(function(p){ PEERS_MAP[p.id] = p; });
+
+// ── ANALYST REPORTS (per peer) — cross-check the CapIQ set and surface priorities/challenges ──
+var ANALYST = {
+  adidas:{bank:"Morgan Stanley",rating:"Overweight",date:"May 2026",insight:"Flags DTC margin recovery as the key FY25 driver and names Nike as the primary comp. Confirms the peer pairing from the sell-side view.",priorities:"Priorities cited: DTC gross margin, inventory normalisation, China recovery."},
+  puma:{bank:"UBS",rating:"Neutral",date:"Apr 2026",insight:"Notes lean inventory model but rising SG&A. Validates the FY23 write-down as one-time, supporting our NWC adjustment.",priorities:"Priorities cited: cost discipline, wholesale rebalancing."},
+  underarmour:{bank:"Barclays",rating:"Underweight",date:"Mar 2026",insight:"Turnaround story with SG&A well above peers. Useful as an upper-bound cost benchmark, not a like-for-like operator.",priorities:"Priorities cited: SG&A reset, brand repositioning, North America stabilisation."},
+  lululemon:{bank:"Goldman Sachs",rating:"Buy",date:"May 2026",insight:"Best-in-class DTC margins and inventory turns. A useful stretch benchmark for what good looks like on NWC.",priorities:"Priorities cited: international expansion, men's category, DTC efficiency."},
+  onrunning:{bank:"Morgan Stanley",rating:"Overweight",date:"Feb 2026",insight:"High growth but logistics cost looks favourable partly due to geographic footprint, so read the supply chain comparison with care.",priorities:"Priorities cited: scaling supply chain, wholesale expansion, premium pricing."},
+  newbalance:{bank:"Private — no coverage",rating:"n/a",date:"—",insight:"No sell-side coverage (private). Relying on Companies House UK statutory accounts, so treat the read as directional.",priorities:"Limited disclosure. Directional only."},
+  vfcorp:{bank:"J.P. Morgan",rating:"Neutral",date:"Apr 2026",insight:"Multi-brand portfolio makes group-level comparison weak. Analyst breaks out Vans separately, which supports isolating that segment rather than using the whole group.",priorities:"Priorities cited: portfolio simplification, Vans turnaround, debt reduction."},
+  skechers:{bank:"Wells Fargo",rating:"Equal Weight",date:"Mar 2026",insight:"Value-positioned with a different margin structure. FY23 one-off distorts the reported cost base, consistent with our adjustment.",priorities:"Priorities cited: international growth, DTC build-out."}
+};
+// ── SELECTION CRITERIA (per peer) — the factors the set was chosen on ──
+var CRITERIA = {
+  adidas:{model:"strong",scale:"strong",region:"strong",market:"strong",product:"strong",growth:"partial",
+    summary:"Near-complete structural comparable — only growth trajectory holds it back from a full match.",
+    rationale:{model:"Direct-to-consumer and wholesale split closely mirrors Nike's. Two-segment reporting (Europe and Americas) is analogous.",scale:"$24.3B revenue (€22.5B converted at FY24 avg EUR/USD 1.08) puts Adidas within 50% of Nike's scale — the closest peer on absolute size.",region:"Operates across all major geographies with similar APAC and Americas weighting.",market:"Performance footwear and apparel is the primary category — like-for-like on end market.",product:"Footwear-led (~55% of revenue), apparel second, equipment minor — mirrors Nike's product hierarchy.",growth:"Revenue declined FY22–23 post-Yeezy exit; growth rate is not comparable to Nike's trajectory during this period."}},
+  puma:{model:"strong",scale:"partial",region:"strong",market:"strong",product:"strong",growth:"partial",
+    summary:"Strong structural match but smaller scale means benchmark gaps widen at absolute dollar level.",
+    rationale:{model:"Wholesale-led model with growing DTC — same structural dynamics as Nike pre-2020.",scale:"$9.3B revenue (€8.6B at FY24 avg EUR/USD 1.08) is roughly 18% of Nike's — absolute benchmarks must be scaled; ratio comparisons are valid.",region:"Global footprint with strong Europe and growing APAC — regional mix is comparable.",market:"Performance and lifestyle footwear/apparel — same end market as Nike.",product:"Footwear ~57%, apparel ~38% — product split is directionally consistent.",growth:"Growth moderated in FY24 vs the prior acceleration period — not fully comparable to Nike's current phase."}},
+  underarmour:{model:"strong",scale:"partial",region:"partial",market:"partial",product:"partial",growth:"weak",
+    summary:"Partial match only — North America concentration and declining revenue make most benchmarks directional at best.",
+    rationale:{model:"Performance-first brand with DTC ambition — model intent is similar but execution maturity differs.",scale:"~$5.7B revenue, ~11% of Nike — scale gap limits the usefulness of absolute benchmarks.",region:"~65% North America revenue — lacks the international scale for regional comparisons.",market:"Performance athletic only — narrower than Nike's lifestyle/performance blend.",product:"Apparel-heavier than Nike (~50% apparel vs 35%) — product mix adjustment required.",growth:"Revenue has been declining or flat since FY21 — not a valid growth comparator."}},
+  lululemon:{model:"partial",scale:"partial",region:"partial",market:"partial",product:"partial",growth:"strong",
+    summary:"Useful for premium DTC and growth benchmarking only — not a structural comparable on cost or scale.",
+    rationale:{model:"Predominantly DTC (~90% of revenue) vs Nike's mixed model — channel economics are structurally different.",scale:"~$9.6B revenue (~19% of Nike) — usable for ratio benchmarks but not absolute.",region:"~65% Americas, limited APAC — not comparable on international mix.",market:"Premium performance and athleisure — overlaps Nike's growth segments but not the core volume business.",product:"Apparel-only (~97%) — no footwear scale; product mix is fundamentally different.",growth:"Consistent double-digit growth — the strongest growth comparator in the set."}},
+  onrunning:{model:"strong",scale:"weak",region:"partial",market:"partial",product:"partial",growth:"strong",
+    summary:"High-growth DTC analogue useful for premium channel benchmarking — too small for cost structure comparisons.",
+    rationale:{model:"DTC-first with selective wholesale — same direction Nike is moving; useful for channel economics.",scale:"~$2.5B revenue (~5% of Nike) — too small for cost benchmarking; ratio metrics only.",region:"~40% Europe, ~40% Americas — APAC underweight relative to Nike.",market:"Premium running and outdoor performance — niche within Nike's addressable market.",product:"Footwear-first (~97%) with nascent apparel — not comparable on product mix.",growth:"Revenue growing ~30%+ — the best comparator for premium segment growth rates."}},
+  newbalance:{model:"strong",scale:"partial",region:"strong",market:"strong",product:"strong",growth:"partial",
+    summary:"Strong structural match and the closest private-company comparable — data quality requires validation.",
+    rationale:{model:"Owned manufacturing with DTC and wholesale split — mirrors Nike's operational structure.",scale:"~$6.5B estimated revenue (private, not disclosed) — scale adjustment required; figures are estimates.",region:"Global with strong APAC and North America — regional mix is comparable.",market:"Performance and lifestyle footwear and apparel — same end market.",product:"Footwear-led (~70%) with growing apparel — directionally consistent with Nike.",growth:"Strong growth in FY22–23 but figures are not publicly audited — treat as directional."}},
+  vfcorp:{model:"weak",scale:"strong",region:"strong",market:"partial",product:"weak",growth:"weak",
+    summary:"Limited structural overlap — included for SG&A and shared-services benchmarking of a large multi-brand portfolio.",
+    rationale:{model:"Multi-brand holding company (Vans, The North Face, Timberland) — fundamentally different operating model.",scale:"~$11.8B revenue (~23% of Nike) — scale is comparable but structure is not.",region:"Global distribution across all major regions — regional mix is usable.",market:"Outdoor and lifestyle — partial overlap with Nike's lifestyle segment only.",product:"Footwear, apparel and accessories across brands — not a single-brand comparable.",growth:"Revenue declining in FY23–24 — negative growth trajectory not comparable."}},
+  skechers:{model:"partial",scale:"partial",region:"strong",market:"partial",product:"partial",growth:"partial",
+    summary:"Partial match — useful for value-segment and logistics benchmarking; not a premium performance comparable.",
+    rationale:{model:"Wholesale-heavy with growing DTC — model is directionally similar but positioned at value end.",scale:"~$8.9B revenue (~17% of Nike) — usable for ratio benchmarks.",region:"Strong international footprint (~55% non-US) — regional mix is comparable.",market:"Value/comfort footwear with limited apparel — overlaps Nike's volume segments only.",product:"Footwear (~95%) — no meaningful apparel business; product mix adjustment required.",growth:"Steady mid-single-digit growth — comparable as a baseline but not directionally relevant to Nike's premium growth thesis."}}
+};
+var CRIT_FACTORS=[
+  {key:"model",label:"Business model"},
+  {key:"scale",label:"Revenue scale"},
+  {key:"region",label:"Regional"},
+  {key:"market",label:"End market"},
+  {key:"product",label:"Product mix"},
+  {key:"growth",label:"Growth"}
+];
+function critPill(level){
+  var map={strong:["Strong match","var(--grn-bg)","var(--grn-tx)"],partial:["Partial","var(--amb-bg)","var(--amb-tx)"],weak:["Weak","var(--g100)","var(--g500)"]};
+  var m=map[level]||map.weak;
+  return '<span style="font-size:12px;font-weight:700;padding:2px 8px;border-radius:9999px;background:'+m[1]+';color:'+m[2]+'">'+m[0]+'</span>';
+}
+function spiderInsight(crit){
+  var strong=[],partial=[],weak=[];
+  CRIT_FACTORS.forEach(function(f){var lv=crit[f.key]; if(lv==="strong")strong.push(f.label); else if(lv==="partial")partial.push(f.label); else weak.push(f.label);});
+  function j(a){ if(!a.length)return ""; if(a.length===1)return a[0]; return a.slice(0,-1).join(", ")+" and "+a[a.length-1]; }
+  var parts=[];
+  if(strong.length) parts.push("<strong>Strongest on "+j(strong).toLowerCase()+".</strong>");
+  if(weak.length) parts.push("Weakest on "+j(weak).toLowerCase()+" \u2014 weight the benchmark accordingly.");
+  else if(partial.length) parts.push("Partial match on "+j(partial).toLowerCase()+".");
+  var takeaway = strong.length>=5 ? "Reads as a near-complete structural comparable."
+    : strong.length>=3 ? "A solid comparable on the factors that matter most."
+    : strong.length>=1 ? "Comparable on some axes \u2014 treat as directional."
+    : "Limited structural overlap; use as context only.";
+  parts.push(takeaway);
+  return parts.join(" ");
+}
+function radarSVG(crit, peerId){
+  var lv={strong:1.0,partial:0.62,weak:0.34};
+  var N=CRIT_FACTORS.length, cx=125, cy=105, R=62;
+  function pt(i,r){var a=-Math.PI/2 + i*2*Math.PI/N; return [cx+Math.cos(a)*r, cy+Math.sin(a)*r];}
+  var svg='<svg viewBox="-12 0 274 215" width="100%" style="max-width:310px;display:block;margin:2px auto 0">';
+  [0.34,0.67,1].forEach(function(g){
+    var pts=CRIT_FACTORS.map(function(f,i){var q=pt(i,R*g);return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');
+    svg+='<polygon points="'+pts+'" fill="none" stroke="var(--g150)" stroke-width="1" style="pointer-events:none"/>';
+  });
+  CRIT_FACTORS.forEach(function(f,i){var q=pt(i,R);svg+='<line x1="'+cx+'" y1="'+cy+'" x2="'+q[0].toFixed(1)+'" y2="'+q[1].toFixed(1)+'" stroke="var(--g150)" stroke-width="1" style="pointer-events:none"/>';});
+  var dp=CRIT_FACTORS.map(function(f,i){var v=lv[crit[f.key]]||0.34;var q=pt(i,R*v);return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');
+  svg+='<polygon points="'+dp+'" fill="rgba(42,158,82,.15)" stroke="var(--grn-st)" stroke-width="2" stroke-linejoin="round" style="pointer-events:none"/>';
+  // Data points — data-factor attr for delegated listener
+  CRIT_FACTORS.forEach(function(f,i){
+    var v=lv[crit[f.key]]||0.34; var q=pt(i,R*v);
+    svg+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="5" fill="var(--grn-st)" data-factor="'+f.key+'" style="cursor:pointer"/>';
+  });
+  // Axis labels — data-factor attr for delegated listener
+  CRIT_FACTORS.forEach(function(f,i){
+    var q=pt(i,R+18), an='middle';
+    if(q[0]>cx+6)an='start'; else if(q[0]<cx-6)an='end';
+    svg+='<text x="'+q[0].toFixed(1)+'" y="'+(q[1]+4).toFixed(1)+'" text-anchor="'+an+'" font-size="9.5" font-weight="600" fill="var(--g600)" font-family="Sans,system-ui,sans-serif" data-factor="'+f.key+'" style="cursor:pointer">'+f.label+'</text>';
+  });
+  svg+='</svg>';
+  return '<div class="spider-wrap" data-peerid="'+(peerId||'')+'">'+svg+'<div style="font-size:11px;color:var(--g400);text-align:center;margin-top:4px">Click any axis or dot to compare across peers</div></div>';
+}
+function openSpiderFactor(peerId, factorKey){
+  var factor = CRIT_FACTORS.find(function(f){return f.key===factorKey;});
+  if(!factor) return;
+  var peer = PEERS_MAP[peerId];
+  if(!peer) return;
+
+  var lvLabels={strong:'Strong match',partial:'Partial match',weak:'Weak match'};
+  var lvColors={strong:'var(--grn-tx)',partial:'var(--amb-tx)',weak:'var(--g500)'};
+  var lvBg={strong:'var(--grn-bg)',partial:'var(--amb-bg)',weak:'var(--g100)'};
+  var regColors=['#0C447C','#185FA5','#378ADD','#85B7EB','#B5D4F4','#D4E8F8'];
+  var buColors=['#0D6E3F','#2A9E52','#5DCAA5','#9FE1CB'];
+
+  var factorDesc={
+    model:'How closely this peer\'s business model — DTC vs wholesale split, brand architecture, channel strategy — mirrors Nike.',
+    scale:'Revenue scale comparability. Closer scale means more credible cost-base benchmarking.',
+    region:'Geographic revenue overlap. Similar regional mix means similar SG&A exposure by market.',
+    market:'End-market and customer segment alignment — performance sport vs lifestyle vs value.',
+    product:'Product category mix — footwear, apparel, accessories — and the margin profile of each.',
+    growth:'Revenue growth trajectory. Note: divergent growth profiles may limit comparability on cost-per-unit metrics.'
+  }[factorKey]||'';
+
+  // Nike reference data for comparison
+  var NIKE_REGIONS=[{name:'North America',pct:'40%'},{name:'Europe',pct:'27%'},{name:'Greater China',pct:'14%'},{name:'Asia-Pacific & LatAm',pct:'19%'}];
+  var NIKE_BUS=[{name:'Footwear',share:'~60%'},{name:'Apparel',share:'~28%'},{name:'Equipment',share:'~12%'}];
+
+  // ── Revenue breakdown (region + BU) with Nike comparison ─────────────────
+  function stackedBar(items, colors){ return items.map(function(r,i){ var v=parseFloat((r.pct||r.share||'0').replace(/[^0-9.]/g,'')); return '<div style="flex:'+v+';background:'+colors[i%colors.length]+'" title="'+(r.name)+' '+(r.pct||r.share)+'"></div>'; }).join(''); }
+  function legend(items, colors){ return items.map(function(r,i){ return '<div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;border-radius:2px;background:'+colors[i%colors.length]+';flex:none"></div><span style="font-size:11px;color:var(--g600)">'+r.name+' <strong style="color:var(--g950)">'+(r.pct||r.share)+'</strong></span></div>'; }).join(''); }
+
+  var rb = peer.revBreakdown;
+  var revHtml = '';
+  if(rb){
+    // Sector pills
+    revHtml +=
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">'+
+        '<span style="font-size:11px;font-weight:500;color:var(--g500);background:var(--g50);padding:3px 10px;border-radius:9999px">'+rb.sector+'</span>'+
+        '<span style="font-size:11px;font-weight:500;color:var(--g500);background:var(--g50);padding:3px 10px;border-radius:9999px">'+rb.sub+'</span>'+
+      '</div>';
+    // Region comparison — peer vs Nike
+    revHtml +=
+      '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:8px">Revenue by region vs Nike</div>'+
+      '<div style="margin-bottom:5px"><div style="font-size:10.5px;font-weight:600;color:var(--g500);margin-bottom:4px">'+peer.name+'</div>'+
+        '<div style="height:18px;border-radius:5px;overflow:hidden;display:flex;margin-bottom:5px">'+stackedBar(rb.regions, regColors)+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:4px 10px">'+legend(rb.regions, regColors)+'</div>'+
+      '</div>'+
+      '<div style="margin-bottom:14px;margin-top:8px"><div style="font-size:10.5px;font-weight:600;color:var(--g400);margin-bottom:4px">Nike (reference)</div>'+
+        '<div style="height:18px;border-radius:5px;overflow:hidden;display:flex;margin-bottom:5px">'+stackedBar(NIKE_REGIONS, regColors)+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:4px 10px;opacity:.7">'+legend(NIKE_REGIONS, regColors)+'</div>'+
+      '</div>';
+    // BU comparison — peer vs Nike
+    if(peer.bus && peer.bus.length){
+      var peerBuItems = peer.bus.map(function(b){ return {name:b.name, pct:b.share}; });
+      revHtml +=
+        '<div style="padding-top:12px;border-top:1px solid var(--g100);margin-bottom:14px">'+
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:8px">Business unit mix vs Nike</div>'+
+          '<div style="margin-bottom:8px"><div style="font-size:10.5px;font-weight:600;color:var(--g500);margin-bottom:4px">'+peer.name+'</div>'+
+            '<div style="height:18px;border-radius:5px;overflow:hidden;display:flex;margin-bottom:5px">'+stackedBar(peerBuItems, buColors)+'</div>'+
+            '<div style="display:flex;flex-wrap:wrap;gap:4px 10px">'+legend(peerBuItems, buColors)+'</div>'+
+          '</div>'+
+          '<div><div style="font-size:10.5px;font-weight:600;color:var(--g400);margin-bottom:4px">Nike (reference)</div>'+
+            '<div style="height:18px;border-radius:5px;overflow:hidden;display:flex;margin-bottom:5px">'+stackedBar(NIKE_BUS, buColors)+'</div>'+
+            '<div style="display:flex;flex-wrap:wrap;gap:4px 10px;opacity:.7">'+legend(NIKE_BUS, buColors)+'</div>'+
+          '</div>'+
+        '</div>';
+    }
+  }
+
+  // Breadcrumb: Peers › PeerName › FactorLabel
+  document.getElementById("bc-peer-name-link").textContent = peer.name;
+  document.getElementById("bc-crumb-peer").style.display = "inline-flex";
+  document.getElementById("bc-sep-2").style.display = "inline";
+  document.getElementById("bc-peer-name").textContent = factor.label;
+
+  // All-peers ranked comparison
+  var currentLevel = (CRITERIA[peerId]||{})[factorKey]||'weak';
+  var order = {strong:0, partial:1, weak:2};
+  var sorted = PEERS.slice().sort(function(a,b){
+    var la=(CRITERIA[a.id]||{})[factorKey]||'weak';
+    var lb=(CRITERIA[b.id]||{})[factorKey]||'weak';
+    return (order[la]||0) - (order[lb]||0);
+  });
+  var rows = sorted.map(function(p){
+    var lv = (CRITERIA[p.id]||{})[factorKey]||'weak';
+    var isThis = p.id===peerId;
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;background:'+(isThis?'var(--g50)':'transparent')+'">'+
+      '<div style="width:10px;height:10px;border-radius:3px;flex:none;background:'+lvBg[lv]+';border:1px solid '+(lv==='strong'?'var(--grn-br)':lv==='partial'?'var(--amb-br)':'var(--g150)')+'""></div>'+
+      '<div style="font-size:13px;font-weight:'+(isThis?'700':'400')+';color:var(--g950);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+(isThis?' ←':'')+
+      '</div>'+
+      '<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:9999px;background:'+lvBg[lv]+';color:'+lvColors[lv]+';flex:none;white-space:nowrap">'+lvLabels[lv]+'</span>'+
+    '</div>';
+  }).join('');
+
+  var content =
+    '<div style="margin-bottom:20px">'+
+      '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:6px">Selection factor</div>'+
+      '<div style="font-size:24px;font-weight:700;color:var(--g950);letter-spacing:-.02em;margin-bottom:8px">'+factor.label+'</div>'+
+      (factorDesc?'<div style="font-size:14px;color:var(--g500);line-height:1.6;padding:12px 14px;background:var(--g25);border-radius:10px;border-left:3px solid var(--g200)">'+factorDesc+'</div>':'')+
+    '</div>'+
+    // Peer's own score + rationale
+    (function(){
+      var crit = CRITERIA[peerId]||{};
+      var rationale = (crit.rationale||{})[factorKey]||'';
+      var scoreCard =
+        '<div style="margin-bottom:20px;padding:14px 16px;border-radius:12px;border:1px solid var(--g100);background:#fff">'+
+          '<div style="display:flex;align-items:center;gap:10px;margin-bottom:'+(rationale?'12px':'0')+'">'+
+            '<div style="flex:1">'+
+              '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:4px">'+peer.name+'\'s score</div>'+
+              '<span style="font-size:13px;font-weight:700;padding:4px 12px;border-radius:9999px;background:'+lvBg[currentLevel]+';color:'+lvColors[currentLevel]+'">'+lvLabels[currentLevel]+'</span>'+
+            '</div>'+
+            '<div style="font-size:13px;color:var(--g400)">vs '+PEERS.length+' peers</div>'+
+          '</div>'+
+          (rationale?
+            '<div style="border-top:1px solid var(--g100);padding-top:12px">'+
+              '<div style="font-size:14px;font-weight:600;color:var(--g950);line-height:1.45;margin-bottom:8px">'+rationale+'</div>'+
+            '</div>'
+          : '')+
+        '</div>';
+      return scoreCard;
+    })()+
+    // Revenue breakdown vs Nike (region + BU)
+    (revHtml ?
+      '<div style="margin-bottom:20px;padding:16px;border-radius:12px;border:1px solid var(--g100);background:#fff">'+
+        revHtml+
+      '</div>' : '')+
+    // All peers ranked
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:6px">All peers — ranked</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px">'+rows+'</div>';
+
+  document.getElementById("dp-spider-content").innerHTML = content;
+
+  document.getElementById("dp-scroll").style.display = "none";
+  document.getElementById("dp-conf-view").style.display = "none";
+  var srcV = document.getElementById("dp-src-view"); if(srcV) srcV.style.display = "none";
+  var spV = document.getElementById("dp-spider-view");
+  spV.style.display = "flex";
+  spV.style.flexDirection = "column";
+  spV.scrollTop = 0;
+}
+function compatScore(crit){
+  var lv={strong:3,partial:2,weak:1}, sum=0, n=0;
+  CRIT_FACTORS.forEach(function(f){sum+=(lv[crit[f.key]]||1);n++;});
+  var avg=sum/n;
+  if(avg>=2.5)return {lbl:"High comparability",bg:"var(--grn-bg)",tx:"var(--grn-tx)"};
+  if(avg>=1.9)return {lbl:"Medium comparability",bg:"var(--amb-bg)",tx:"var(--amb-tx)"};
+  return {lbl:"Lower comparability",bg:"var(--g100)",tx:"var(--g500)"};
+}
+
+var NIKE_METRICS = {"Gross margin": 44.6, "SG&A / rev": 34.2, "EBIT margin": 12.4};
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function(){
+  buildGrid();
+  buildSugs();
+  buildCandidates();
+  buildCollaborators();
+  bindAll();
+  initChatResize();
+  var csc = document.getElementById("c-scroll");
+  if(csc) csc.scrollTop = 99999;
+  var chatTab = document.getElementById("tab-chat");
+  if(chatTab && !chatTab.querySelector(".tab-dot")){
+    var dot = document.createElement("span");
+    dot.className = "tab-dot"; dot.id = "chat-dot";
+    chatTab.appendChild(dot);
+  }
+  chatTab.addEventListener("click", function(){
+    var d = document.getElementById("chat-dot"); if(d) d.style.display = "none";
+  });
+});
+
+// ── GRID ─────────────────────────────────────────────────────────────────────
+var peerScope="full";
+var STD_IDS=["adidas","puma","underarmour","lululemon","newbalance","onrunning"];
+function setPeerScope(sc){
+  peerScope=sc;
+  var a=document.getElementById("scope-standard"),b=document.getElementById("scope-full");
+  if(a)a.classList.toggle("on",sc==="standard"); if(b)b.classList.toggle("on",sc==="full");
+  var g=document.getElementById("pgrid"); if(g)g.innerHTML="";
+  buildGrid();
+  var sub=document.querySelector("#peers-view .ws-sub");
+  if(sub)sub.textContent=(sc==="standard"?"Standard set — the closest comparables. ":"Full set — all proposed peers, including the wider net. ")+"Tap the checkmark to deselect, or click a tile to see the agent's rationale.";
+}
+function buildGrid(){
+  var g = document.getElementById("pgrid");
+  PEERS.forEach(function(p){
+    if(peerScope==="standard" && STD_IDS.indexOf(p.id)===-1 && !p.manuallyAdded) return;
+    g.appendChild(makeTile(p));
+  });
+}
+
+function makeTile(p){
+  var t = document.createElement("div");
+  t.className = "pt selected" + (p.flagged ? " flagged" : "") + (p.buOnly ? " bu-only" : "");
+  if(p.manuallyAdded || p.buOnly) t.className += " has-badge";
+  t.id = "tile-" + p.id;
+
+  var badge = "";
+  if(p.manuallyAdded) badge = '<div class="pt-badge pt-badge-manual">Added by you</div>';
+  else if(p.buOnly) badge = '<div class="pt-badge pt-badge-bu">BU only — ' + (p.buLabel||"Segment") + '</div>';
+  else if(p.dataGateRequired) badge = '<div class="pt-badge pt-badge-gate">Data required</div>';
+
+  t.innerHTML =
+    badge +
+    '<div class="pt-check" id="chk-'+p.id+'"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="var(--grn-tx)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+    '<div class="pt-inner">' +
+      '<div class="pt-top"><div class="pt-name">'+p.name+'</div><div class="pt-ticker">'+p.ticker+' <span style="font-size:10px;font-weight:700;color:var(--g400);background:var(--g100);padding:1px 5px;border-radius:4px;letter-spacing:.04em">USD</span></div></div>' +
+      // Metrics: revenue + EBIT
+      '<div style="height:1px;background:var(--g100);margin:8px 0 7px"></div>'+
+      '<div style="display:flex;flex-direction:column;gap:3px">'+
+        '<div class="pt-fact"><span class="pt-fact-l">Revenue <span class="pt-fact-date">FY25Q1</span></span><span class="pt-fact-v pt-fact-v-plain">'+((p.metrics&&p.metrics.Revenue)||'\u2014')+'</span></div>'+
+        '<div class="pt-fact"><span class="pt-fact-l">EBIT margin</span><span class="pt-fact-v pt-fact-v-plain">'+((p.metrics&&p.metrics["EBIT margin"])||'\u2014')+'</span></div>'+
+      '</div>'+
+      // Primary region — same row style as Revenue and EBIT margin
+      (function(){
+        var pr = p.primaryRegion||p.region||'';
+        var match = pr.match(/^(.*?)\s*\((\d+%[^)]*)\)$/);
+        var name = match ? match[1] : pr;
+        var pct  = match ? match[2] : '';
+        return '<div class="pt-fact"><span class="pt-fact-l">Primary region</span>'+
+          '<span class="pt-fact-v pt-fact-v-plain" style="text-align:right">'+name+
+            (pct ? '<br><span style="font-size:11px;font-weight:400;color:var(--g400)">'+pct+'</span>' : '')+
+          '</span></div>';
+      })()+
+      // Flags
+      '<div style="display:flex;flex-direction:column;gap:3px;margin-top:7px">'+
+        (p.reportingFlag?'<div class="pt-rflag"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1.2L1 10.8h10L6 1.2z" stroke="#D68A1C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 5v2.5M6 9h.01" stroke="#D68A1C" stroke-width="1.1" stroke-linecap="round"/></svg>Reporting structure differs</div>':'')+
+        (p.buFlag?'<div class="pt-rflag"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1.2L1 10.8h10L6 1.2z" stroke="#D68A1C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 5v2.5M6 9h.01" stroke="#D68A1C" stroke-width="1.1" stroke-linecap="round"/></svg>Majority of BUs non-comparable</div>':'')+
+        (p.plFlag?'<div class="pt-rflag"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1.2L1 10.8h10L6 1.2z" stroke="#D68A1C" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 5v2.5M6 9h.01" stroke="#D68A1C" stroke-width="1.1" stroke-linecap="round"/></svg>'+p.plFlag+'</div>':'')+
+      '</div>'+
+    '</div>' +
+    '<div class="pt-footer"'+(p.flagged?' style="background:rgba(254,248,232,.4)"':p.buOnly?' style="background:rgba(238,244,255,.4)"':'')+'>'+
+      '<div class="pt-conf conf-'+(p.manuallyAdded||p.dataGateRequired?'pending':p.conf)+'"><div class="pt-cp"></div><span class="pt-cl">'+
+        (p.manuallyAdded||p.dataGateRequired ? "Pending" : p.conf==="high" ? "High" : "Medium") +
+      '</span></div>'+
+      ''
+    '</div>';
+
+  t.querySelector(".pt-check").addEventListener("click", function(e){
+    e.stopPropagation(); togglePeer(p.id);
+  });
+  t.addEventListener("click", function(){ openSheet(p); });
+  return t;
+}
+
+// ── SUGGESTIONS CHIPS ────────────────────────────────────────────────────────
+function buildSugs(){
+  var w = document.getElementById("cp-sugs");
+  SUGS.forEach(function(s){
+    var b = document.createElement("button");
+    b.className = "cp-sug";
+    b.textContent = s[0];
+    b.addEventListener("click", function(){ sendMsg(s[1]); });
+    w.appendChild(b);
+  });
+}
+
+// ── ADD PEER CANDIDATES ──────────────────────────────────────────────────────
+function buildCandidates(){
+  var w = document.getElementById("add-cands");
+  var suggested = CANDIDATES.filter(function(c){ return c.tag === "Suggested"; });
+  var other = CANDIDATES.filter(function(c){ return c.tag === "Candidate"; });
+
+  // Agent suggestions section
+  var s1 = document.createElement("div");
+  s1.className = "add-section-hd";
+  s1.textContent = "Agent suggestions";
+  w.appendChild(s1);
+  suggested.forEach(function(c){ w.appendChild(makeCandCard(c)); });
+
+  // Divider between sections
+  var div = document.createElement("div");
+  div.className = "add-section-div";
+  w.appendChild(div);
+
+  // Also on longlist
+  var s2 = document.createElement("div");
+  s2.className = "add-section-hd";
+  s2.textContent = "Also on the longlist";
+  w.appendChild(s2);
+  other.forEach(function(c){ w.appendChild(makeCandCard(c)); });
+
+  document.getElementById("add-inp").addEventListener("input", function(){
+    var q = this.value.toLowerCase();
+    w.querySelectorAll(".add-cand-card").forEach(function(el){
+      var name = el.getAttribute("data-name")||"";
+      el.style.display = (!q || name.toLowerCase().includes(q)) ? "block" : "none";
+    });
+  });
+}
+
+function makeCandCard(c){
+  var d = document.createElement("div");
+  d.className = "add-cand-card";
+  d.setAttribute("data-name", c.name);
+
+  var hasGate = c.dataGate && c.dataGate.length > 0;
+  var initials = c.name.split(" ").map(function(w){ return w[0]; }).join("").slice(0,2).toUpperCase();
+  var tagHtml = c.tag === "Suggested"
+    ? '<span class="add-tag add-tag-pick">Suggested</span>'
+    : '<span class="add-tag add-tag-cand">Longlist</span>';
+  var gateTag = hasGate ? '<span class="spl-gate">Data required</span>' : '';
+  var btnHtml = hasGate
+    ? '<button class="add-cand-btn add-cand-btn-gate">Add</button>'
+    : '<button class="add-cand-btn add-cand-btn-confirm">Add</button>';
+
+  d.innerHTML =
+    '<div class="spl-ic">' + initials + '</div>' +
+    '<div class="spl-row-body">' +
+      '<div class="add-cand-name">' + c.name + '</div>' +
+      '<div class="add-cand-sub">' + c.sub + '</div>' +
+      '<div class="spl-hint">' + c.why + '</div>' +
+    '</div>' +
+    '<div class="spl-row-right">' +
+      tagHtml +
+      gateTag +
+      btnHtml +
+    '</div>';
+
+  d.querySelector(".add-cand-btn").addEventListener("click", function(e){
+    e.stopPropagation();
+    addPeerFromSearch(c.name, c.sub, hasGate);
+    closeAdd();
+  });
+  return d;
+}
+
+// ── DETAIL PANEL (replaces L1 modal) ────────────────────────────────────────
+function openSheet(peer){
+  currentPeer = peer;
+
+  // Breadcrumb + header
+  document.getElementById("bc-peer-name").textContent = peer.name;
+  document.getElementById("dp-name").textContent = peer.name;
+  document.getElementById("dp-ticker").innerHTML = peer.ticker + ' <span style="font-size:11px;font-weight:700;color:var(--g400);background:var(--g100);padding:2px 6px;border-radius:4px;letter-spacing:.04em;vertical-align:middle">USD</span>';
+
+  // Why included
+  document.getElementById("dp-why").innerHTML = peer.why;
+
+  // Revenue breakdown — stacked bars
+
+  // Revenue breakdown now lives in spider factor L3 view — removed from L2
+
+
+  // Selection criteria
+  var critEl = document.getElementById("dp-criteria");
+  var crit = CRITERIA[peer.id];
+  if(crit){
+    var sc=compatScore(crit);
+    // Overall summary
+    var summaryHtml = crit.summary
+      ? '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;padding:12px 14px;background:var(--g25);border:1px solid var(--g100);border-radius:10px">'+
+          '<span style="font-size:13px;font-weight:700;padding:2px 10px;border-radius:9999px;background:'+sc.bg+';color:'+sc.tx+';flex:none">'+sc.lbl+'</span>'+
+          '<span style="font-size:13px;color:var(--g700);line-height:1.5">'+crit.summary+'</span>'+
+        '</div>'
+      : '';
+    // Per-factor rationale cards
+    var factorCardsHtml = '';
+    if(crit.rationale){
+      factorCardsHtml = '<div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">';
+      CRIT_FACTORS.forEach(function(f){
+        var level = crit[f.key] || 'weak';
+        var reason = crit.rationale[f.key] || '';
+        var pillMap = {strong:['var(--grn-bg)','var(--grn-tx)','Strong'],partial:['var(--amb-bg)','var(--amb-tx)','Partial'],weak:['var(--g100)','var(--g500)','Weak']};
+        var pill = pillMap[level] || pillMap.weak;
+        factorCardsHtml +=
+          '<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 12px;background:#fff;border:1px solid var(--g100);border-radius:9px">'+
+            '<div style="min-width:80px;flex:none">'+
+              '<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">'+f.label+'</div>'+
+              '<span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:9999px;background:'+pill[0]+';color:'+pill[1]+'">'+pill[2]+'</span>'+
+            '</div>'+
+            '<div style="font-size:12.5px;color:var(--g600);line-height:1.55">'+reason+'</div>'+
+          '</div>';
+      });
+      factorCardsHtml += '</div>';
+    }
+    critEl.innerHTML =
+      summaryHtml +
+      radarSVG(crit, peer.id)+
+      '<div class="spider-insight"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="flex:none;margin-top:1px"><path d="M8 1.6a4.6 4.6 0 00-2.7 8.3c.4.3.6.7.6 1.1v.5h4.2v-.5c0-.4.2-.8.6-1.1A4.6 4.6 0 008 1.6z" stroke="#1D4FA0" stroke-width="1.2" stroke-linejoin="round"/><path d="M6.4 13.6h3.2M6.8 15h2.4" stroke="#1D4FA0" stroke-width="1.2" stroke-linecap="round"/></svg><div>'+spiderInsight(crit)+'</div></div>'+
+      factorCardsHtml;
+    // Wire click via JS delegation — inline event attrs don't fire reliably in injected SVG
+    var wrap = critEl.querySelector('.spider-wrap');
+    if(wrap){
+      wrap.addEventListener('click', function(e){
+        // Walk up from click target to find data-factor (handles SVG child elements)
+        var el = e.target;
+        var fk = null;
+        while(el && el !== wrap){
+          fk = el.getAttribute && el.getAttribute('data-factor');
+          if(fk) break;
+          el = el.parentNode;
+        }
+        if(fk) openSpiderFactor(wrap.getAttribute('data-peerid'), fk);
+      });
+    }
+  } else {
+    critEl.innerHTML = '<div style="font-size:14px;color:var(--g400)">Criteria not yet scored for this candidate.</div>';
+  }
+
+  // Analyst view
+  var anEl = document.getElementById("dp-analyst");
+  var an = ANALYST[peer.id];
+  if(an){
+    var ratingColor = an.rating==="n/a" ? "var(--g400)" : "var(--blue-tx)";
+    anEl.innerHTML = '<div style="border:1px solid var(--g100);border-radius:10px;padding:12px 13px;background:#fff">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px">' +
+        '<div style="font-size:14px;font-weight:700;color:var(--g950)">'+an.bank+'</div>' +
+        '<div style="display:flex;align-items:center;gap:8px">' +
+          '<span style="font-size:12px;font-weight:700;color:'+ratingColor+'">'+an.rating+'</span>' +
+          '<span style="font-size:12px;color:var(--g300)">'+an.date+'</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="font-size:14px;color:var(--g600);line-height:1.55;margin-bottom:7px">'+an.insight+'</div>' +
+      '<div style="font-size:13px;color:var(--g500);line-height:1.5;padding-top:7px;border-top:1px solid var(--g50);margin-bottom:9px">'+an.priorities+'</div>' +
+      (an.rating==="n/a" ? '' :
+      '<button onclick="openAnalystReport(\''+peer.name.replace(/'/g,"\\'")+'\',\''+an.bank.replace(/'/g,"\\'")+'\')" style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--blue-tx);background:var(--blue-bg);border:none;border-radius:6px;padding:5px 10px;cursor:pointer">Open full report<svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M5 2h7v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 8.5V12H2V4h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>') +
+    '</div>';
+  } else {
+    anEl.innerHTML = '<div style="font-size:14px;color:var(--g400)">No analyst coverage on file.</div>';
+  }
+
+  // Business units
+  var busEl = document.getElementById("dp-bus");
+  if(peer.bus && peer.bus.length){
+    // Reporting structure flag (VF Corp, Skechers)
+    var rflagHtml = peer.reportingFlag
+      ? '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:12px;padding:10px 12px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:9px">' +
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex:none;margin-top:1px"><path d="M7 1.2L1 12.8h12L7 1.2z" stroke="#D68A1C" stroke-width="1.3" stroke-linejoin="round"/><path d="M7 5.5v3M7 10h.01" stroke="#D68A1C" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:12px;font-weight:700;color:var(--amb-tx);margin-bottom:3px">Reporting structure differs</div>' +
+            '<div style="font-size:12px;color:var(--amb-tx);line-height:1.55">CapIQ shows figures as presented — this company\'s cost structure is not directly comparable to Nike without adjustment. Requires a partner judgment call before including in the benchmark.</div>' +
+          '</div>' +
+        '</div>'
+      : '';
+
+    var buListHtml = '<div class="bu-list">' +
+      peer.bus.map(function(bu){
+        var compCls = bu.comp==="yes" ? "bu-comp bu-comp-yes" : bu.comp==="partial" ? "bu-comp bu-comp-partial" : "bu-comp bu-comp-no";
+        var compLbl = bu.comp==="yes" ? "Comparable" : bu.comp==="partial" ? "Partial" : "Not comparable";
+        var buNm = bu.name.replace(/'/g,"\\'");
+        var excl = !!EXCLUDED_BUS[peer.id + "::" + bu.name];
+
+        // BUs with subBUs (Vans): no checkbox on the parent, show sub-items + Use X only button
+        if(bu.subBUs && bu.subBUs.length){
+          return '<div class="bu-card-wrap">' +
+            '<div class="bu-card bu-on" style="cursor:default">' +
+              '<div class="bu-card-main">' +
+                '<div class="bu-card-nm">'+bu.name+'</div>' +
+                '<div class="bu-card-sub">'+bu.share+' of revenue · maps to Nike '+(bu.nikeEquiv||"—")+'</div>' +
+              '</div>' +
+              '<span class="'+compCls+'">'+compLbl+'</span>' +
+              '<button class="bu-isolate-btn" onclick="event.stopPropagation();useBuOnly(\''+peer.id+'\',\''+buNm+'\')">Use '+bu.name+' only ›</button>' +
+            '</div>' +
+          '</div>';
+        }
+
+        // Regular BU: checkbox + click to open detail
+        return '<div class="bu-card-wrap">' +
+          '<div class="bu-card ' + (excl?'bu-off':'bu-on') + '" onclick="openBUDetail(\''+peer.id+'\',\''+buNm+'\')">' +
+            '<button type="button" class="bu-check' + (excl?'':' on') + '" onclick="event.stopPropagation();confirmBUToggle(this,\''+peer.id+'\',\'\',\''+buNm+'\',\'main\')"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="var(--grn-tx)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+            '<div class="bu-card-main">' +
+              '<div class="bu-card-nm">'+bu.name+'</div>' +
+              '<div class="bu-card-sub">'+bu.share+' of revenue · maps to Nike '+(bu.nikeEquiv||"—")+'</div>' +
+            '</div>' +
+            '<span class="' + compCls + '">' + compLbl + '</span>' +
+            '<span class="bu-card-arr">›</span>' +
+          '</div>' +
+        '</div>';
+      }).join("") +
+      '</div>';
+
+    var noteHtml = '<div style="margin-top:7px;font-size:12px;color:var(--g400);display:flex;align-items:center;gap:5px">' +
+      '<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="var(--g300)" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="var(--g300)" stroke-width="1.2" stroke-linecap="round"/></svg>' +
+      'AI-suggested · if the match is wrong, correct it via chat' +
+    '</div>';
+
+    busEl.innerHTML = rflagHtml +
+      '<div class="bu-note-sel"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="var(--g300)" stroke-width="1.2"/><path d="M6 5.5v3M6 4h.01" stroke="var(--g300)" stroke-width="1.2" stroke-linecap="round"/></svg>All segments included by default — uncheck any to remove from the benchmark.</div>' +
+      buListHtml + noteHtml;
+  } else {
+    busEl.innerHTML = '<div style="font-size:14px;color:var(--g400)">Single-segment company — no further breakdown available.</div>';
+  }
+
+  // Sources
+  function srcIcon(label){
+    var l=(label||"").toLowerCase();
+    if(l.indexOf("capiq")>-1||l.indexOf("cap iq")>-1||l.indexOf("capital iq")>-1) return {bg:"#EAF2FE",fg:"#1D6DD1",svg:'<svg width="13" height="13" viewBox="0 0 14 14"><rect x="2" y="8" width="2.4" height="4" rx="1" fill="currentColor"/><rect x="5.8" y="5" width="2.4" height="7" rx="1" fill="currentColor"/><rect x="9.6" y="2" width="2.4" height="10" rx="1" fill="currentColor"/></svg>'};
+    if(l.indexOf("10-k")>-1||l.indexOf("10k")>-1||l.indexOf("filing")>-1||l.indexOf("annual")>-1) return {bg:"#F2EFFB",fg:"#6B4FBB",svg:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3.5 1.5h4L11 5v7.5H3.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 1.5V5h3.5M5.5 8.2h3M5.5 10.2h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>'};
+    if(l.indexOf("oi")>-1||l.indexOf("benchmark")>-1||l.indexOf("bain")>-1) return {bg:"#E8F6EE",fg:"#1E7D40",svg:'<svg width="13" height="13" viewBox="0 0 14 14"><path d="M7 1.4l1.6 3.5 3.8.4-2.8 2.6.8 3.7L7 10.3 3.6 12.2l.8-3.7L1.6 5.9l3.8-.4z" fill="currentColor"/></svg>'};
+    return {bg:"var(--g100)",fg:"var(--g500)",svg:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4.6" stroke="currentColor" stroke-width="1.3"/><path d="M7 4.6v3.2M7 9.6v.1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'};
+  }
+  document.getElementById("dp-srcs").innerHTML = peer.sources.map(function(s){
+    var _si = srcIcon(s.label);
+    return '<div class="sh-src" data-pid="'+peer.id+'" data-src="'+s.label.replace(/"/g,'&quot;')+'">' +
+      '<div class="sh-src-ic" style="background:'+_si.bg+';color:'+_si.fg+'">'+_si.svg+'</div>' +
+      '<div style="flex:1"><div class="sh-src-n">'+s.label+'</div><div class="sh-src-s">'+s.detail+'</div></div>' +
+      '<span class="sh-src-arr">›</span></div>';
+  }).join("");
+  document.getElementById("dp-srcs").querySelectorAll(".sh-src").forEach(function(el){
+    el.addEventListener("click", function(){
+      openSourceSheet(el.getAttribute("data-pid"), el.getAttribute("data-src"));
+    });
+  });
+
+  // Metrics
+  var FX_NOTE="All figures in USD. EUR peers converted at FY24 average rate (EUR/USD 1.08) via CapIQ.";
+  var TARGET_DISPLAY={"Revenue":"$51.4B","Gross margin":"44.6%","SG&amp;A / rev":"34.2%","EBIT margin":"12.4%"};
+  var metricRows = Object.entries(peer.metrics).map(function(kv){
+    var k=kv[0], v=kv[1], tgt=TARGET_DISPLAY[k]||"";
+    var isRev = k==="Revenue";
+    var pv=parseFloat((""+v).replace(/[^0-9.]/g,"")), tv=parseFloat((""+tgt).replace(/[^0-9.]/g,""));
+    var gapHtml="—";
+    if(!isRev && tgt && !isNaN(pv) && !isNaN(tv)){
+      var d=pv-tv, sign=d>=0?"+":"";
+      var wild=(k==="EBIT margin"&&Math.abs(d)>8);
+      var dc=wild?"var(--red)":(Math.abs(d)<=3?"var(--grn-tx)":"var(--amb-tx)");
+      var bg=wild?"var(--red-bg)":Math.abs(d)<=3?"var(--grn-bg)":"var(--amb-bg)";
+      gapHtml='<span style="font-size:13px;font-weight:700;padding:3px 9px;border-radius:6px;background:'+bg+';color:'+dc+'">'+sign+d.toFixed(1)+'pp</span>';
+    }
+    // Bar chart for margin metrics
+    var barHtml="";
+    if(!isRev && !isNaN(pv) && !isNaN(tv)){
+      var maxV=Math.max(pv,tv,60);
+      var nikeW=(tv/maxV*100).toFixed(1), peerW=(pv/maxV*100).toFixed(1);
+      barHtml='<div style="display:flex;flex-direction:column;gap:3px;margin-top:8px">' +
+        '<div style="display:flex;align-items:center;gap:7px">' +
+          '<div style="width:36px;font-size:10.5px;font-weight:700;color:var(--grn-tx);flex:none">Nike</div>' +
+          '<div style="flex:1;height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+nikeW+'%;background:var(--grn-st);border-radius:3px"></div></div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:7px">' +
+          '<div style="width:36px;font-size:10.5px;font-weight:700;color:var(--g400);flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Peer</div>' +
+          '<div style="flex:1;height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+peerW+'%;background:var(--g300);border-radius:3px"></div></div>' +
+        '</div>' +
+      '</div>';
+    }
+    return '<tr>' +
+      '<td style="padding:13px 0;border-bottom:1px solid var(--g100);vertical-align:top;width:30%">' +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400)">'+k+'</div>' +
+        '<div style="font-size:10px;color:var(--g300);margin-top:2px">FY25Q1</div>' +
+      '</td>' +
+      '<td style="padding:13px 10px;border-bottom:1px solid var(--g100);vertical-align:top;text-align:right;width:22%">' +
+        '<div style="font-size:18px;font-weight:700;color:var(--grn-tx);letter-spacing:-.02em">'+(tgt||'—')+'</div>' +
+        '<div style="font-size:10px;font-weight:600;color:var(--grn-tx);opacity:.7;margin-top:2px">Nike</div>' +
+      '</td>' +
+      '<td style="padding:13px 10px;border-bottom:1px solid var(--g100);vertical-align:top;text-align:right;width:22%">' +
+        '<div style="font-size:18px;font-weight:700;color:var(--g950);letter-spacing:-.02em">'+v+'</div>' +
+        '<div style="font-size:10px;font-weight:600;color:var(--g400);margin-top:2px">'+peer.name+'</div>' +
+      '</td>' +
+      '<td style="padding:13px 0 13px 12px;border-bottom:1px solid var(--g100);vertical-align:middle;text-align:right;width:26%">'+gapHtml+'</td>' +
+    '</tr>';
+  }).join("");
+  document.getElementById("dp-metrics").style.marginTop = "0";
+  document.getElementById("dp-metrics").innerHTML =
+    '<table style="width:100%;border-collapse:collapse">' +
+      '<thead><tr>' +
+        '<th style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g300);padding:0 0 10px;text-align:left;border-bottom:1.5px solid var(--g100)">Metric</th>' +
+        '<th style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--grn-tx);padding:0 10px 10px;text-align:right;border-bottom:1.5px solid var(--g100)">Nike</th>' +
+        '<th style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);padding:0 10px 10px;text-align:right;border-bottom:1.5px solid var(--g100)">'+peer.name+'</th>' +
+        '<th style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g300);padding:0 0 10px;text-align:right;border-bottom:1.5px solid var(--g100)">Gap</th>' +
+      '</tr></thead>' +
+      '<tbody>'+metricRows+'</tbody>' +
+    '</table>'+
+    (['adidas','puma'].indexOf(peer.id)>-1 ? '<div style="font-size:11px;color:var(--g400);margin-top:6px">All figures in USD. Converted from EUR at FY24 average rate (EUR/USD 1.08) via CapIQ.</div>' : '');
+
+  // Confidence
+  var adjCount = peer.sources.filter(function(s){ return s.adjustment && s.adjustment.toLowerCase().indexOf("no adjustment") < 0; }).length;
+  var verbal = peer.conf==="high"
+    ? (adjCount===0 ? "Clean data across "+peer.sources.length+" sources with no one-time adjustments required. Directly comparable to Nike." : "High confidence after "+adjCount+" adjustment"+(adjCount>1?"s":"")+". "+peer.sources.length+" sources cross-checked.")
+    : "Medium confidence. Key figures estimated or limited by disclosure depth. Uploading documents via chat would raise this score.";
+  var confFactors = [
+    {label:"Data completeness", score: peer.pct>=75?"High":peer.pct>=55?"Medium":"Low", c: peer.pct>=75?"var(--grn-tx)":peer.pct>=55?"var(--amb-tx)":"var(--red)"},
+    {label:"Adjustments required", score: adjCount>1?"Medium":adjCount===1?"1 made":"None", c: adjCount>1?"var(--amb-tx)":"var(--grn-tx)"},
+    {label:"Sources cross-checked", score: peer.sources.length>=3?"Yes ("+peer.sources.length+")":"Partial", c: peer.sources.length>=3?"var(--grn-tx)":"var(--amb-tx)"},
+    {label:"Comparable model", score: peer.conf==="high"?"Yes":"Partial", c: peer.conf==="high"?"var(--grn-tx)":"var(--amb-tx)"}
+  ];
+  var confEl = document.getElementById("dp-conf");
+  confEl.innerHTML =
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
+      '<div style="flex:1;height:6px;background:var(--g100);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:'+(peer.conf==="high"?"var(--grn-st)":"var(--amb-st)")+';width:'+peer.pct+'%"></div></div>' +
+      '<span style="font-size:15px;font-weight:700;color:'+(peer.conf==="high"?"var(--grn-tx)":"var(--amb-tx)")+'">'+peer.pct+'%</span>' +
+    '</div>' +
+    '<div style="font-size:15px;color:var(--g700);line-height:1.65;margin-bottom:12px;padding:10px 14px;background:#F6F7F9;border-radius:8px">'+verbal+'</div>' +
+    '<div style="display:flex;flex-direction:column;gap:5px">' +
+    confFactors.map(function(f){
+      return '<div style="display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px solid var(--g50)">' +
+        '<span style="color:var(--g600)">'+f.label+'</span>' +
+        '<span style="font-weight:600;color:'+f.c+'">'+f.score+'</span></div>';
+    }).join("") + '</div>';
+
+  // Upload suggestion for medium-confidence peers
+  var suggestions = peer.conf==="high" ? [] :
+    peer.id==="vfcorp" ? ["Vans segment P&L (FY22–24)","Brand-level SG&A breakdown","Management accounts"] :
+    peer.id==="newbalance" ? ["New Balance full financials","Wholesale revenue breakdown"] :
+    ["Latest annual report","Management accounts","Segment-level P&L"];
+  if(peer.conf !== "high"){
+    var ctxNote = peer.id==="vfcorp"
+      ? "VF Corp doesn't disclose brand-level SG&A publicly. These documents would let the agent isolate the Vans segment cost base."
+      : "The following would raise confidence from "+peer.pct+"% to 85%+.";
+    var docRows = suggestions.map(function(s){
+      return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--g100)">' +
+        '<div style="width:28px;height:28px;border-radius:7px;background:var(--g50);display:flex;align-items:center;justify-content:center;flex:none"><svg width="12" height="12" viewBox="0 0 14 16" fill="none"><rect x="2" y="1" width="10" height="14" rx="2" stroke="var(--g400)" stroke-width="1.3"/><path d="M5 5h4M5 8h4M5 11h2" stroke="var(--g400)" stroke-width="1.3" stroke-linecap="round"/></svg></div>' +
+        '<div style="font-size:14px;color:var(--g700);flex:1;line-height:1.4">'+s+'</div>' +
+      '</div>';
+    }).join("");
+    confEl.innerHTML += '<div style="margin-top:14px"><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:8px">Raise confidence</div>' +
+      '<div style="font-size:13.5px;color:var(--g600);margin-bottom:10px">'+ctxNote+'</div>' + docRows +
+      '<div style="margin-top:12px;display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:9px">' +
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex:none;margin-top:1px"><path d="M7 1.2L1 12.8h12L7 1.2z" stroke="#D68A1C" stroke-width="1.3" stroke-linejoin="round"/><path d="M7 5.5v3M7 10h.01" stroke="#D68A1C" stroke-width="1.3" stroke-linecap="round"/></svg>' +
+        '<div style="font-size:12.5px;color:var(--amb-tx);line-height:1.55">Drop documents into the chat to raise the confidence score — P&amp;L, management accounts, or a segment breakdown all work.</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Show panel, hide peers grid
+  currentPeerId = peer.id;
+  document.getElementById("peers-view").style.display = "none";
+  document.getElementById("detail-panel").style.display = "flex";
+  document.getElementById("detail-panel").querySelector(".dp-scroll").scrollTop = 0;
+  var proc = document.querySelector(".proceed"); if(proc) proc.style.display = "none";
+}
+
+function closeDetailPanel(){
+  document.getElementById("detail-panel").style.display = "none";
+  document.getElementById("peers-view").style.display = "flex";
+  var proc = document.querySelector(".proceed"); if(proc) proc.style.display = "flex";
+}
+
+
+var currentPeerId = null;
+
+function openConfDetail(peerId){
+  var peer = PEERS_MAP[peerId]; if(!peer) return;
+  // Update breadcrumb
+  document.getElementById("bc-crumb-peer").style.display = "inline-flex";
+  document.getElementById("bc-peer-name-link").textContent = peer.name;
+  document.getElementById("bc-sep-2").style.display = "inline";
+  document.getElementById("bc-peer-name").textContent = "Confidence";
+  // Hide L1, show conf view
+  document.getElementById("dp-scroll").style.display = "none";
+  document.getElementById("dp-conf-view").style.display = "flex";
+  document.getElementById("conf-peer-name").textContent = peer.name;
+  // Build content
+  var adjCount = peer.sources.filter(function(s){ return s.adjustment && s.adjustment.toLowerCase().indexOf("no adjustment") < 0; }).length;
+  var verbal = peer.conf==="high"
+    ? (adjCount===0 ? "Clean data across "+peer.sources.length+" sources with no one-time adjustments required. Directly comparable to Nike." : "High confidence after "+adjCount+" adjustment"+(adjCount>1?"s":"")+". "+peer.sources.length+" sources cross-checked.")
+    : "Medium confidence. Key figures estimated or limited by disclosure depth. Uploading documents via chat would raise this score.";
+  var confFactors = [
+    {label:"Data completeness", score: peer.pct>=75?"High":peer.pct>=55?"Medium":"Low", c: peer.pct>=75?"var(--grn-tx)":peer.pct>=55?"var(--amb-tx)":"var(--red)"},
+    {label:"Adjustments required", score: adjCount>1?"Medium":adjCount===1?"1 made":"None", c: adjCount>1?"var(--amb-tx)":"var(--grn-tx)"},
+    {label:"Sources cross-checked", score: peer.sources.length>=3?"Yes ("+peer.sources.length+")":"Partial", c: peer.sources.length>=3?"var(--grn-tx)":"var(--amb-tx)"},
+    {label:"Comparable model", score: peer.conf==="high"?"Yes":"Partial", c: peer.conf==="high"?"var(--grn-tx)":"var(--amb-tx)"}
+  ];
+  var suggestions = peer.conf==="high" ? [] :
+    peer.id==="vfcorp" ? ["Vans segment P&L (FY22–24)","Brand-level SG&A breakdown","Management accounts"] :
+    peer.id==="newbalance" ? ["New Balance full financials","Wholesale revenue breakdown"] :
+    ["Latest annual report","Management accounts","Segment-level P&L"];
+  var html =
+    '<div style="display:flex;align-items:center;gap:14px;padding:18px 20px;background:#F6F7F9;border-radius:14px;margin-bottom:22px">'+
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g500);margin-bottom:6px">Overall confidence score</div>'+
+        '<div style="height:8px;background:var(--g100);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:'+(peer.conf==="high"?"var(--grn-st)":"var(--amb-st)")+';width:'+peer.pct+'%"></div></div>'+
+      '</div>'+
+      '<span style="font-size:30px;font-weight:700;letter-spacing:-.03em;color:'+(peer.conf==="high"?"var(--grn-tx)":"var(--amb-tx)")+'">'+peer.pct+'%</span>'+
+    '</div>'+
+    '<div style="font-size:15px;color:var(--g700);line-height:1.65;margin-bottom:24px;padding:14px 16px;background:#F6F7F9;border-radius:10px">'+verbal+'</div>'+
+    '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:12px">Score factors</div>'+
+    '<div style="border:1px solid var(--g100);border-radius:12px;overflow:hidden;margin-bottom:24px">'+
+    confFactors.map(function(f,i){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;'+(i<confFactors.length-1?'border-bottom:1px solid var(--g50)':'')+'">'+
+        '<span style="font-size:14px;color:var(--g600)">'+f.label+'</span>'+
+        '<span style="font-size:14px;font-weight:700;color:'+f.c+'">'+f.score+'</span></div>';
+    }).join("")+'</div>';
+  if(peer.conf !== "high" && suggestions.length){
+    var ctxNote = peer.id==="vfcorp"
+      ? "VF Corp doesn't disclose brand-level SG&A publicly. These documents would let the agent isolate the Vans segment cost base."
+      : "The following would raise confidence from "+peer.pct+"% to 85%+.";
+    html += '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:12px">Raise confidence</div>'+
+      '<div style="font-size:14px;color:var(--g600);margin-bottom:14px">'+ctxNote+'</div>'+
+      '<div style="border:1px solid var(--g100);border-radius:12px;overflow:hidden;margin-bottom:14px">'+
+      suggestions.map(function(s,i){
+        return '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;'+(i<suggestions.length-1?'border-bottom:1px solid var(--g50)':'')+'">'+
+          '<div style="width:32px;height:32px;border-radius:9px;background:var(--g50);display:flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 14 16" fill="none"><rect x="2" y="1" width="10" height="14" rx="2" stroke="var(--g400)" stroke-width="1.3"/><path d="M5 5h4M5 8h4M5 11h2" stroke="var(--g400)" stroke-width="1.3" stroke-linecap="round"/></svg></div>'+
+          '<div style="font-size:14px;color:var(--g700);flex:1">'+s+'</div>'+
+          '<span style="font-size:12px;color:var(--g400)">Drop in chat →</span>'+
+        '</div>';
+      }).join("")+'</div>'+
+      '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:10px">'+
+        '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex:none;margin-top:1px"><path d="M7 1.2L1 12.8h12L7 1.2z" stroke="var(--amb-st)" stroke-width="1.3" stroke-linejoin="round"/><path d="M7 5.5v3M7 10h.01" stroke="var(--amb-st)" stroke-width="1.3" stroke-linecap="round"/></svg>'+
+        '<div style="font-size:13px;color:var(--amb-tx);line-height:1.55">Drop documents into the chat — P&amp;L, management accounts, or a segment breakdown all work.</div>'+
+      '</div>';
+  }
+  document.getElementById("conf-detail-body").innerHTML = html;
+}
+function openSourceSheet(peerId, sourceLabel){
+  var peer = PEERS_MAP[peerId];
+  if(!peer) return;
+  var src = peer.sources.find(function(s){ return s.label === sourceLabel; });
+  if(!src) return;
+
+  // Populate breadcrumb L3
+  document.getElementById("bc-peer-name-link").textContent = peer.name;
+  document.getElementById("bc-crumb-peer").style.display = "inline-flex";
+  document.getElementById("bc-sep-2").style.display = "inline";
+  document.getElementById("bc-peer-name").textContent = src.label;
+  document.getElementById("bc-back-lbl").textContent = "Peers";
+
+  // Populate source panel header
+  document.getElementById("src-eyebrow").textContent = "Data source audit";
+  document.getElementById("src-name").textContent = src.label;
+  document.getElementById("src-sub").textContent = peer.name;
+
+  // Chart
+  var showChart = src.label === "CapIQ";
+  var chartArea = document.getElementById("src-chart-area");
+  if(showChart){
+    var metricKeys = ["Gross margin","SG&A / rev","EBIT margin"];
+    var nikeVals = metricKeys.map(function(k){ return NIKE_METRICS[k]||0; });
+    var peerVals = metricKeys.map(function(k){ var v=peer.metrics[k]||""; return parseFloat(v.replace(/[^0-9.]/g,""))||0; });
+    window._peerChartData = {labels:metricKeys, nike:nikeVals, peer:peerVals, peerName:peer.name};
+    chartArea.innerHTML =
+      '<div style="margin-bottom:20px;padding:18px 20px;background:#F6F7F9;border-radius:10px">' +
+        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:10px">Peer comparison vs Nike</div>' +
+        '<div style="display:flex;gap:16px;margin-bottom:12px">' +
+          '<span style="display:flex;align-items:center;gap:5px;font-size:14px;color:var(--g600)"><span style="width:10px;height:10px;border-radius:2px;background:#2A9E52;display:inline-block"></span>Nike</span>' +
+          '<span style="display:flex;align-items:center;gap:5px;font-size:14px;color:var(--g600)"><span style="width:10px;height:10px;border-radius:2px;background:#C7C7CC;display:inline-block"></span>'+peer.name+'</span>' +
+        '</div>' +
+        '<div style="position:relative;width:100%;height:160px"><canvas id="peer-chart" role="img" aria-label="Peer comparison chart for '+peer.name+'"></canvas></div>' +
+      '</div>';
+  } else {
+    chartArea.innerHTML = "";
+  }
+
+  // Audit blocks
+  document.getElementById("src-audit-body").innerHTML =
+    '<div class="audit-block">' +
+      '<div class="audit-section"><div class="audit-label">Reported figure</div><div class="audit-val">'+src.raw+'</div></div>' +
+      '<div class="audit-section"><div class="audit-label">Adjustment made</div><div class="audit-val">'+src.adjustment+'</div></div>' +
+      '<div class="audit-section"><div class="audit-label green">'+(src.label==="CapIQ"&&peer.metrics?"SG&A / rev · used in benchmarking":"Figure used in benchmarking")+'</div><div class="audit-val highlight">'+src.adjusted+'</div></div>' +
+      '<div class="audit-section"><div class="audit-label">Why comparable to Nike</div><div class="audit-val">'+src.comparable+'</div></div>' +
+    '</div>';
+
+  // Switch to source panel view — show BEFORE rendering chart so canvas has dimensions
+  document.getElementById("dp-scroll").style.display = "none";
+  var sv = document.getElementById("dp-src-view");
+  sv.style.display = "flex";
+  if(showChart) setTimeout(renderPeerChart, 30);
+}
+
+// ── SHEET L2: BU detail (modal 3 path) ──────────────────────────────────────
+var EXCLUDED_BUS = {};
+var _pendingBUToggle = null;
+
+function confirmBUToggle(btn, pid, parentBU, buName, mode){
+  var isOn = btn.classList.contains("on");
+  if(isOn){
+    // Currently ON — trying to remove: show confirmation modal
+    _pendingBUToggle = {btn:btn, pid:pid, parentBU:parentBU, buName:buName, mode:mode};
+    var peer = PEERS_MAP[pid];
+    var peerName = peer ? peer.name : pid;
+    var displayName = parentBU ? parentBU+" / "+buName : buName;
+    document.getElementById("bu-confirm-name").textContent = displayName;
+    document.getElementById("bu-confirm-peer").textContent = peerName;
+    // Set implication text
+    var implic = "This business unit will be excluded from the "+peerName+" benchmark. Metrics for "+peerName+" will reflect the remaining segments only.";
+    if(buName === "Vans" || (parentBU === "Vans")){
+      implic = "Removing "+displayName+" reduces the comparability of VF Corp to Nike's "+( buName==="Footwear"?"footwear":"apparel")+" cost structure. The remaining segments (Timberland, Supreme, Dickies) are less comparable to Nike.";
+    }
+    document.getElementById("bu-confirm-implic").textContent = implic;
+    document.getElementById("bu-confirm-overlay").style.display = "block";
+    document.getElementById("bu-confirm-modal").style.display = "block";
+  } else {
+    // Currently OFF — re-enabling: no confirmation needed
+    applyBUToggle(btn, pid, parentBU, buName, mode, true);
+  }
+}
+
+function applyBUToggle(btn, pid, parentBU, buName, mode, forceOn){
+  var key = mode==="sub" ? pid+"::"+parentBU+"::"+buName : pid+"::"+buName;
+  var card = btn ? btn.closest(".bu-card,.bu-sub-item") : null;
+  if(forceOn){
+    delete EXCLUDED_BUS[key];
+    if(btn) btn.classList.add("on");
+    if(card){card.classList.add("bu-on");card.classList.remove("bu-off");}
+  } else {
+    EXCLUDED_BUS[key] = true;
+    if(btn) btn.classList.remove("on");
+    if(card){card.classList.add("bu-off");card.classList.remove("bu-on");}
+  }
+}
+
+function confirmBURemoval(){
+  if(!_pendingBUToggle) return;
+  var t = _pendingBUToggle;
+  applyBUToggle(t.btn, t.pid, t.parentBU, t.buName, t.mode, false);
+  var displayName = t.parentBU ? t.parentBU+" / "+t.buName : t.buName;
+  logEntry("p","You","Excluded BU: <strong>"+displayName+"</strong> from "+(PEERS_MAP[t.pid]?PEERS_MAP[t.pid].name:t.pid));
+  closeBUConfirm();
+  _pendingBUToggle = null;
+}
+
+function closeBUConfirm(){
+  document.getElementById("bu-confirm-overlay").style.display = "none";
+  document.getElementById("bu-confirm-modal").style.display = "none";
+  _pendingBUToggle = null;
+}
+function openBUDetail(peerId, buName){
+  var peer = PEERS_MAP[peerId];
+  if(!peer) return;
+  var bu = peer.bus ? peer.bus.find(function(b){ return b.name === buName; }) : null;
+  if(!bu) return;
+
+  l2Mode = "bu";
+  document.getElementById("sh2-ey").textContent = "Business unit detail";
+  document.getElementById("sh2-name").textContent = buName;
+  document.getElementById("sh2-sub").textContent = peer.name + " · " + bu.share + " of revenue";
+
+  var compLabel = bu.comp==="yes" ? "Directly comparable to Nike" : bu.comp==="partial" ? "Partially comparable" : "Not comparable to Nike";
+  var compColor = bu.comp==="yes" ? "var(--grn-tx)" : bu.comp==="partial" ? "var(--amb-tx)" : "var(--g400)";
+  var nikeEquivText = bu.nikeEquiv !== "–" ? "Nike's <strong>" + bu.nikeEquiv + "</strong> segment is the closest equivalent." : "No direct Nike segment equivalent.";
+
+  var warningText = bu.comp === "no"
+    ? "This segment operates in a different category to Nike. Including full-company figures in the benchmark would blend non-comparable cost structures."
+    : bu.comp === "partial"
+    ? "This segment shares some characteristics with Nike but differs on channel mix, product type, or scale. Use with care — note any limitations in the output deck."
+    : "This segment maps well to Nike's cost structure. Public financials support a direct comparison.";
+
+  var dataNote = "";
+  if(peer.id === "vfcorp"){
+    dataNote = '<div style="margin-top:12px;font-size:13px;color:var(--g500);line-height:1.65;background:#F6F7F9;border-radius:8px;padding:10px 12px">' +
+      '<strong style="color:var(--g700)">Data availability:</strong> VF Corp reports segment revenue but not brand-level SG&A or NWC. Proceeding with public data gives a directional cost estimate only. Uploading a Vans brand P&L would give a clean, defensible benchmark.' +
+    '</div>';
+  }
+
+  document.getElementById("sh2-body").innerHTML =
+    '<div class="bu-detail-wrap">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">' +
+        '<div style="font-size:15px;color:var(--g700);line-height:1.6">' + nikeEquivText + '</div>' +
+        '<span style="font-size:13px;font-weight:700;color:'+compColor+';background:var(--g50);padding:3px 10px;border-radius:7px;white-space:nowrap;margin-left:12px">'+compLabel+'</span>' +
+      '</div>' +
+      '<div style="font-size:14px;color:var(--g600);line-height:1.7;background:#F6F7F9;border-radius:9px;padding:11px 13px;margin-bottom:14px">'+warningText+'</div>' +
+      dataNote +
+      (peer.buIsolateOption && peer.buIsolateOption.buName === buName ?
+        '<div class="bu-detail-acts">' +
+          '<button class="bu-detail-btn-pri" onclick="useBuOnly(\''+peerId+'\',\''+peer.buIsolateOption.buName+'\');closeL2();">Use ' + peer.buIsolateOption.buName + ' as standalone peer</button>' +
+          '<button class="bu-detail-btn-sec" onclick="closeL2()">Cancel</button>' +
+        '</div>'
+      : '') +
+    '</div>';
+
+  animateL2Open();
+}
+
+function animateL2Open(){
+  var l2 = document.getElementById("sheet-l2");
+  l2.style.display = "block";
+  l2.style.opacity = "0";
+  l2.style.transform = "translate(-50%,-50%) scale(0.96)";
+  requestAnimationFrame(function(){
+    l2.style.opacity = "1";
+    l2.style.transform = "translate(-50%,-50%) scale(1)";
+  });
+  l2Open = true;
+}
+
+// Breadcrumb navigation
+function bcBack(){
+  var sv = document.getElementById("dp-src-view");
+  var cv = document.getElementById("dp-conf-view");
+  var spv = document.getElementById("dp-spider-view");
+  if((sv && sv.style.display !== "none") || (cv && cv.style.display !== "none") || (spv && spv.style.display !== "none")){ backToPeerDetail(); return; }
+  closeDetailPanel();
+}
+
+function backToPeerDetail(){
+  document.getElementById("dp-src-view").style.display = "none";
+  document.getElementById("dp-conf-view").style.display = "none";
+  document.getElementById("dp-spider-view").style.display = "none";
+  document.getElementById("dp-scroll").style.display = "flex";
+  document.getElementById("bc-crumb-peer").style.display = "none";
+  document.getElementById("bc-sep-2").style.display = "none";
+  document.getElementById("bc-peer-name").textContent = currentPeerId ? (PEERS_MAP[currentPeerId]||{}).name||"" : "";
+}
+
+function renderPeerChart(){
+  var d = window._peerChartData;
+  if(!d || !window.Chart) return;
+  var canvas = document.getElementById("peer-chart");
+  if(!canvas) return;
+  if(window._peerChart) window._peerChart.destroy();
+  window._peerChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: d.labels,
+      datasets: [
+        {label:"Nike", data:d.nike, backgroundColor:"#2A9E52", borderRadius:3, borderWidth:0, barPercentage:0.35},
+        {label:d.peerName, data:d.peer, backgroundColor:"#E5E5EA", borderRadius:3, borderWidth:0, barPercentage:0.35}
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:function(ctx){ return ctx.dataset.label+": "+ctx.raw+(ctx.dataIndex===2?" days":"%"); }}}},
+      scales:{
+        x:{grid:{display:false}, border:{display:false}, ticks:{color:"#8E8E93",font:{size:11,family:"Sans,system-ui,sans-serif"},maxRotation:0}},
+        y:{display:true,grid:{color:"#F2F2F7"},border:{display:false,dash:[2,2]},ticks:{color:"#8E8E93",font:{size:9},padding:4,callback:function(v){return v+"%";}}}
+      }
+    }
+  });
+}
+
+// ── BU ISOLATION ──────────────────────────────────────────────────────────────
+function useBuOnly(peerId, buName){
+  var peer = PEERS_MAP[peerId];
+  if(!peer) return;
+
+  // Deselect the full company tile
+  if(selectedIds.indexOf(peerId) > -1) togglePeer(peerId);
+
+  var buId = peerId + "-bu-" + buName.toLowerCase().replace(/\s/g,"-");
+  if(PEERS_MAP[buId]) return; // already exists
+
+  // Find the source BU to get its subBUs
+  var sourceBU = peer.bus ? peer.bus.find(function(b){ return b.name === buName; }) : null;
+  // Use subBUs (Footwear, Apparel) as the tile's business units — not the parent Vans entry
+  var tileBus = sourceBU && sourceBU.subBUs ? sourceBU.subBUs : [];
+
+  var buPeer = {
+    id: buId,
+    name: buName + " (VF Corp segment)",
+    ticker: peer.ticker + " — BU",
+    region: peer.region,
+    reason: "<strong>Segment-only benchmark.</strong> " + buName + " isolated from VF Corp conglomerate.",
+    why: buName + " segment extracted from " + peer.name + " for focused benchmarking. Public data provides segment revenue but not brand-level SG&A — estimated from industry benchmarks until a Vans P&L is uploaded.",
+    bus: tileBus,
+    sources: peer.sources,
+    metrics: {"Revenue":"~$4.3B est","Gross margin":"~50% est","SG&A / rev":"Estimated","EBIT margin":"Estimated"},
+    conf:"med", pct:52, note:"Segment revenue available from VF Corp 10-K. Brand-level SG&A and NWC estimated — upload Vans P&L to improve.",
+    buOnly: true, buLabel: buName,
+    manuallyAdded: false, dataGateRequired: true
+  };
+  PEERS_MAP[buId] = buPeer;
+  selectedIds.push(buId);
+
+  document.getElementById("pgrid").appendChild(makeTile(buPeer));
+  updateCounts();
+  closeDetailPanel();
+  logEntry("p","You","Created <strong>"+buPeer.name+"</strong> as a standalone BU peer.");
+  agentMsg("Done — <strong>"+buName+"</strong> is in as a standalone segment. Footwear and Apparel are the business units I'll benchmark. I've got revenue from the VF Corp 10-K; SG&amp;A and NWC are estimated off industry benchmarks. Drop in a Vans P&amp;L and I'll tighten those up before we run.");
+}
+
+function openVFBUFlow(){
+  // Called from chat flag button
+  var peer = PEERS_MAP["vfcorp"];
+  if(peer) openSheet(peer);
+}
+
+// ── SOURCES TAB ───────────────────────────────────────────────────────────────
+var PEERS_UPLOADS=[
+  {name:'Nike_FY24_Annual_Report.pdf',size:4817203,icon:'PDF',iconColor:'#E03C3C',iconBg:'#FFEAEA',date:'Added 2 days ago',url:null},
+  {name:'Nike_CFO_Priorities_Q1FY25.docx',size:284160,icon:'DOC',iconColor:'#1E4DB0',iconBg:'#E8EEFF',date:'Added 1 day ago',url:null}
+];
+function peersFmtBytes(b){if(b<1024)return b+'B';if(b<1048576)return Math.round(b/1024)+'KB';return (b/1048576).toFixed(1)+'MB';}
+function buildPeersUploaded(){
+  var el=document.getElementById('peers-uploaded-list');if(!el)return;
+  if(!PEERS_UPLOADS.length){el.innerHTML='';return;}
+  var h='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:7px">Uploaded files ('+PEERS_UPLOADS.length+')</div>';
+  h+='<div style="margin-bottom:12px">';
+  PEERS_UPLOADS.forEach(function(f,i){
+    h+='<div class="src-file-row2">'+
+      '<div class="src-file-ic2" style="background:'+f.iconBg+';color:'+f.iconColor+'">'+f.icon+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12.5px;font-weight:600;color:var(--g950);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div>'+
+        '<div style="font-size:11px;color:var(--g400);margin-top:1px">'+peersFmtBytes(f.size)+' · '+f.date+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:4px;flex:none">'+
+        '<button class="src-file-btn2" onclick="viewPeersFile('+i+')" title="View"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4.5 6-4.5S13 7 13 7s-2.5 4.5-6 4.5S1 7 1 7z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.2"/></svg></button>'+
+        '<button class="src-file-btn2 del" onclick="deletePeersFile('+i+')" title="Delete"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2.5 4h9M5 4V3h4v1M4 4l.5 7h5l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+      '</div>'+
+    '</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+}
+function viewPeersFile(i){
+  var f=PEERS_UPLOADS[i];if(!f)return;
+  if(f.url)window.open(f.url,'_blank');
+  else agentMsg('<strong>'+f.name+'</strong> is indexed into the analysis. No live preview for pre-loaded files.');
+}
+function deletePeersFile(i){
+  var f=PEERS_UPLOADS[i];if(!f)return;
+  if(f.url)URL.revokeObjectURL(f.url);
+  PEERS_UPLOADS.splice(i,1);
+  buildPeersUploaded();
+  agentMsg('<strong>'+f.name+'</strong> removed from sources.');
+}
+function handlePeersUpload(input){
+  if(!input.files||!input.files.length)return;
+  Array.from(input.files).forEach(function(f){
+    if(PEERS_UPLOADS.find(function(u){return u.name===f.name;}))return;
+    var ext=f.name.split('.').pop().toLowerCase();
+    var ic={pdf:'PDF',xlsx:'XLS',xls:'XLS',docx:'DOC',doc:'DOC',pptx:'PPT',csv:'CSV',txt:'TXT'};
+    var co={pdf:'#E03C3C',xlsx:'#1A7A4A',xls:'#1A7A4A',docx:'#1E4DB0',doc:'#1E4DB0',pptx:'#B05A00',csv:'#1A7A4A',txt:'#636366'};
+    var bg={pdf:'#FFEAEA',xlsx:'#E4F5EB',xls:'#E4F5EB',docx:'#E8EEFF',doc:'#E8EEFF',pptx:'#FFF0E0',csv:'#E4F5EB',txt:'#F2F2F7'};
+    PEERS_UPLOADS.push({name:f.name,size:f.size,icon:ic[ext]||ext.slice(0,3).toUpperCase(),iconColor:co[ext]||'#636366',iconBg:bg[ext]||'#F2F2F7',date:'Added just now',url:URL.createObjectURL(f)});
+  });
+  input.value='';
+  buildPeersUploaded();
+  agentMsg('File added to your sources.');
+}
+function buildSources(){
+  var sources = [
+    {label:"CapIQ",        detail:"Revenue, GM, SG&A, NWC · FY19–FY24 · 8 peers",  conf:"h", icon:"CA", captured:"2 Jul 2026"},
+    {label:"Nike 10-K",    detail:"FY24 proxy filing · peer set confirmation",        conf:"h", icon:"NK", captured:"15 Jun 2026"},
+    {label:"Bain experience", detail:"2 prior OI benchmarks — Adidas anchor",        conf:"h", icon:"BE", captured:"1 Jul 2026"},
+    {label:"UBS sector",   detail:"Athletic NWC normalised ranges FY24",              conf:"m", icon:"UB", captured:"28 Jun 2026"},
+    {label:"Analyst reports", detail:"MS, UBS, Barclays, GS · peer cross-check + priorities", conf:"h", icon:"AR", captured:"May 2026"},
+    {label:"Puma earnings",detail:"FY22–FY24 calls — write-down rationale",          conf:"h", icon:"PU", captured:"20 Jun 2026"},
+    {label:"Companies House", detail:"New Balance UK statutory accounts FY22–23",    conf:"m", icon:"CH", captured:"10 Jun 2026"}
+  ];
+  var el = document.getElementById("src-list-s1");
+  if(!el) return;
+  el.innerHTML = sources.map(function(s){
+    var bg = s.conf==="h" ? "var(--grn-bg)" : "var(--amb-bg)";
+    var tx = s.conf==="h" ? "var(--grn-tx)" : "var(--amb-tx)";
+    return '<div style="display:flex;align-items:flex-start;gap:9px;padding:11px 0;border-bottom:1px solid var(--g50)">' +
+      '<div style="width:28px;height:28px;border-radius:6px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g500);flex:none;margin-top:1px">'+s.icon+'</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">' +
+          '<div style="font-size:14px;font-weight:600;color:var(--g950)">'+s.label+'</div>' +
+          '<div style="font-size:12px;font-weight:600;padding:1px 6px;border-radius:4px;background:'+bg+';color:'+tx+'">'+(s.conf==="h"?"High":"Medium")+'</div>' +
+        '</div>' +
+        '<div style="font-size:13px;color:var(--g400);margin-bottom:3px">'+s.detail+'</div>' +
+        '<div style="font-size:12px;color:var(--g300);display:flex;align-items:center;gap:3px">' +
+          '<svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="var(--g200)" stroke-width="1.2"/><path d="M6 3.5V6l1.5 1.5" stroke="var(--g200)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+          'Captured ' + s.captured +
+        '</div>' +
+      '</div>' +
+      '<button onclick="refreshSource(\''+s.label+'\')" title="Refresh this source" ' +
+        'style="width:28px;height:28px;border-radius:7px;border:1px solid var(--g100);background:#fff;' +
+        'display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g400);' +
+        'transition:all .12s;flex:none;margin-top:1px" ' +
+        'onmouseover="this.style.borderColor=\'var(--g300)\';this.style.color=\'var(--g700)\'" ' +
+        'onmouseout="this.style.borderColor=\'var(--g100)\';this.style.color=\'var(--g400)\'">' +
+        '<svg width="11" height="11" viewBox="0 0 14 14" fill="none">' +
+          '<path d="M12.5 2.5A5.5 5.5 0 112 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>' +
+          '<path d="M2 3.5V7H5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>' +
+      '</button>' +
+    '</div>';
+  }).join("");
+}
+
+function refreshSource(label){
+  // Simulate refresh
+  var el = document.getElementById("src-list-s1");
+  agentMsg("Refreshing <strong>" + label + "</strong> — grabbing the latest. I'll flag anything that moves the benchmarks.");
+  // Flash the source row briefly
+  if(el){
+    el.style.opacity = ".5";
+    setTimeout(function(){ el.style.opacity = ""; agentMsg("<strong>"+label+"</strong> is current. Nothing material changed in the figures we're using."); }, 1200);
+  }
+}
+
+// ── MODAL CONTROLS ────────────────────────────────────────────────────────────
+function showOverlay(){ document.getElementById("overlay").style.display = "block"; }
+function hideOverlay(){ document.getElementById("overlay").style.display = "none"; }
+
+function closeL2(){
+  l2Open = false;
+  var l2 = document.getElementById("sheet-l2");
+  l2.style.opacity = "0";
+  l2.style.transform = "translate(-50%,-50%) scale(0.96)";
+  setTimeout(function(){ l2.style.display = "none"; }, 190);
+}
+
+function openAddSheet(){
+  
+  addOpen = true;
+  document.getElementById("sheet-add").style.display = "flex";
+  showOverlay();
+  setTimeout(function(){ document.getElementById("add-inp").focus(); }, 100);
+}
+
+function closeAdd(){
+  addOpen = false;
+  document.getElementById("sheet-add").style.display = "none";
+  
+}
+
+function closeAll(){
+  if(l2Open) closeL2();
+  closeDetailPanel();
+  closeAdd();
+  hideOverlay();
+}
+
+// ── PEER TOGGLE ───────────────────────────────────────────────────────────────
+function togglePeer(id){
+  var tile = document.getElementById("tile-"+id);
+  var peer = PEERS_MAP[id];
+  var idx = selectedIds.indexOf(id);
+  if(idx === -1){
+    selectedIds.push(id);
+    tile.classList.remove("deselected");
+    tile.classList.add("selected");
+    if(peer && peer.flagged) tile.classList.add("flagged");
+    if(peer && peer.buOnly) tile.classList.add("bu-only");
+    logEntry("p","You","Re-selected <strong>"+(peer?peer.name:id)+"</strong>.");
+  } else {
+    selectedIds.splice(idx, 1);
+    tile.classList.remove("selected","flagged","bu-only");
+    tile.classList.add("deselected");
+    logEntry("p","You","Deselected <strong>"+(peer?peer.name:id)+"</strong>.");
+    if(peer && peer.flagged){
+      agentMsg("Good call — dropping VF Corp keeps the cost benchmark on genuinely comparable athletic operators.");
+    }
+  }
+  updateCounts();
+}
+
+function updateCounts(){
+  var n = selectedIds.length;
+  var label = n + " peer"+(n!==1?"s":"")+" selected";
+  document.getElementById("proc-lbl").textContent = label;
+  document.getElementById("step2-sub").textContent = label;
+}
+
+// ── AUTO-SOURCE GENERATION ────────────────────────────────────────────────────
+function generateSourcesForPeer(name, sub){
+  var isJapan   = sub.indexOf("TYO") > -1 || sub.indexOf("Japan") > -1;
+  var isPrivate = sub.toLowerCase().indexOf("private") > -1;
+  var isNASDAQ  = sub.indexOf("NASDAQ") > -1;
+  var isNYSE    = sub.indexOf("NYSE") > -1;
+  var isEU      = sub.indexOf("XETRA") > -1 || sub.indexOf("LSE") > -1 || sub.indexOf("France") > -1;
+
+  var sources = [];
+
+  // CapIQ — always available for any coverage-level company
+  sources.push({
+    label:"CapIQ",
+    detail:"Revenue, GM, SG&amp;A, NWC · FY21–FY24 · initial pull",
+    raw:"Data pull initiated. Revenue and gross margin retrieved. SG&amp;A depth depends on disclosure level.",
+    adjustment:"No adjustments applied yet. Agent will review for one-time items before benchmarking.",
+    adjusted:"Initial figures ready — adjustments pending partner review.",
+    comparable:"Will be assessed once adjusted figures are confirmed against Nike's peer set methodology."
+  });
+
+  if(isJapan){
+    sources.push({
+      label:name + " Annual Report",
+      detail:"JGAAP · requires restatement to IFRS before benchmarking",
+      raw:"Fiscal year accounts retrieved. Reported under Japanese GAAP (JGAAP).",
+      adjustment:"JGAAP to IFRS conversion required for direct SG&amp;A comparison. Agent will flag where restating changes the figures materially.",
+      adjusted:"Restated figures pending — directional benchmarking available in the interim.",
+      comparable:"Comparable to Nike once restated. Flagged for partner confirmation before deck assembly."
+    });
+    sources.push({
+      label:"Bain experience",
+      detail:"Japanese athletics benchmarks — prior OI context",
+      raw:"Bain has used Japanese athletics peers in prior OIs. Restatement methodology documented.",
+      adjustment:"Prior methodology applied as starting point. Partner can override.",
+      adjusted:"Restatement approach validated against 2 prior OI runs.",
+      comparable:"Standard Bain approach for JGAAP peers — defensible for CFO audience."
+    });
+  } else if(isPrivate){
+    sources.push({
+      label:"Companies House / Statutory filings",
+      detail:"Annual statutory accounts · revenue-level, limited P&amp;L depth",
+      raw:"Statutory revenue retrieved. SG&amp;A not consistently disclosed at line-item level.",
+      adjustment:"No adjustment possible from statutory data alone. Estimates use Bain IP for SG&amp;A range.",
+      adjusted:"Directional SG&amp;A range from Bain IP. Upload management accounts to sharpen.",
+      comparable:"Limited comparability at SG&amp;A level. Revenue and gross margin directionally valid."
+    });
+    sources.push({
+      label:"Public press &amp; trade reports",
+      detail:"Management statements and industry coverage",
+      raw:"Revenue estimates cross-checked against published management interviews and industry reports.",
+      adjustment:"No adjustment — used as directional cross-check only.",
+      adjusted:"Confirms revenue order of magnitude.",
+      comparable:"Insufficient for SG&amp;A benchmarking alone. Combine with statutory filings."
+    });
+  } else if(isNASDAQ || isNYSE){
+    sources.push({
+      label:name + " 10-K",
+      detail:"SEC annual filing · SG&amp;A, GM, NWC · latest available",
+      raw:"Full 10-K retrieved. Revenue, gross margin, and SG&amp;A available at group level.",
+      adjustment:"Agent will review footnotes for one-time items (restructuring, impairments, write-offs).",
+      adjusted:"Clean figures pending footnote review.",
+      comparable:"US GAAP — directly comparable to Nike once one-time items are stripped."
+    });
+  } else {
+    sources.push({
+      label:name + " Annual Report",
+      detail:"Annual filing · SG&amp;A, GM, NWC · latest available",
+      raw:"Annual report retrieved. Revenue, gross margin, and SG&amp;A available at group level.",
+      adjustment:"Agent will review for one-time items before benchmarking.",
+      adjusted:"Clean figures pending adjustment review.",
+      comparable:"Directly comparable once one-time items are identified and stripped."
+    });
+  }
+
+  sources.push({
+    label:"Bain experience",
+    detail:"Consumer goods / athletic sector benchmarks",
+    raw:"Bain IP provides sector-level SG&amp;A ranges for this company type.",
+    adjustment:"Applied as cross-check against CapIQ figures.",
+    adjusted:"Bain range used to validate CapIQ data or fill gaps where public disclosure is thin.",
+    comparable:"Internal validation layer — not a primary source, used to sense-check outliers."
+  });
+
+  return sources;
+}
+
+// ── ADD PEER FROM SEARCH ──────────────────────────────────────────────────────
+function addPeerFromSearch(name, sub, hasGate){
+  var ticker = sub.split("·")[0].trim();
+  var newId = "added-" + Date.now();
+
+  // Match against CANDIDATES for enriched content
+  var candMatch = CANDIDATES.find(function(c){ return c.name.toLowerCase() === name.toLowerCase(); });
+
+  var tileReason = candMatch && candMatch.shortReason
+    ? candMatch.shortReason + (hasGate ? " <span style='color:var(--amb-tx)'>Data required.</span>" : "")
+    : hasGate
+      ? "<strong>Partner-added.</strong> Relevant comparable — data required before benchmarking runs."
+      : "<strong>Partner-added.</strong> Benchmarking will run against the Nike peer set on confirm.";
+
+  var modalWhy = candMatch
+    ? candMatch.why + (hasGate ? " Data required before the agent can benchmark — upload using the confidence section below." : " The agent will pull available public financials and benchmark against Nike once confirmed.")
+    : "Added by you. The agent will pull available public financials and benchmark this company against Nike when the peer set is confirmed." + (hasGate ? " Upload the required documents to improve data coverage." : "");
+
+  var autoSources = generateSourcesForPeer(name, sub);
+  var isJapan   = sub.indexOf("TYO") > -1 || sub.indexOf("Japan") > -1;
+  var isPrivate = sub.toLowerCase().indexOf("private") > -1;
+  var autoConf  = hasGate ? 44 : isPrivate ? 58 : isJapan ? 62 : 72;
+  var autoConfLabel = (autoConf >= 70) ? "high" : "med";
+
+  // Auto-generate placeholder metrics based on company type
+  var autoMetrics = isPrivate
+    ? {"Revenue":"Est. from filings","Gross margin":"Est. range","SG&amp;A / rev":"Est. (Bain IP)","NWC days":"Est."}
+    : {"Revenue":"CapIQ pull","Gross margin":"CapIQ pull","SG&amp;A / rev":"Pending adj.","NWC days":"CapIQ pull"};
+
+  var newPeer = {
+    id:newId, name:name, ticker:ticker,
+    reason: tileReason,
+    why: modalWhy,
+    bus:[],
+    sources: autoSources,
+    metrics: autoMetrics,
+    conf: autoConfLabel, pct: autoConf,
+    note:"Newly added — confidence will update once benchmarking runs and adjustments are reviewed.",
+    manuallyAdded: true, dataGateRequired: hasGate
+  };
+  PEERS_MAP[newId] = newPeer;
+  selectedIds.push(newId);
+  document.getElementById("pgrid").appendChild(makeTile(newPeer));
+  updateCounts();
+  logEntry("p","You","Added <strong>"+name+"</strong> to peer set"+(hasGate?" (data required)":"")+".");
+  var isPriv = sub.toLowerCase().indexOf("private") > -1;
+  if(isPriv){
+    agentMsg("<strong>"+name+"</strong> added — private company, so no public financials to pull. Drop a P&amp;L, management accounts, or annual report into the chat below and I'll read the cost bar from your numbers. I'll hold this at estimated until you do.");
+  } else if(hasGate){
+    agentMsg("<strong>"+name+"</strong> added — <strong>data required before benchmarking.</strong> Open the tile and drop the relevant documents into the confidence panel. I'll update the score once they're in.");
+  } else {
+    agentMsg("<strong>"+name+"</strong> added. Public company — I've pulled the financials from CapIQ and the 10-K. I'll review for one-time items and score it when we benchmark.");
+  }
+}
+
+// ── CONFIRM / SAVE ────────────────────────────────────────────────────────────
+function deselPeer(id){
+  if(selectedIds.indexOf(id) > -1) togglePeer(id);
+}
+function keepPeer(id){
+  agentMsg("Kept in. The blended SG&A will show as a footnoted outlier in the deck — I'll flag it in the output so the CFO sees the caveat.");
+  logEntry("p","You","Kept VF Corp as-is — flagged as outlier.");
+}
+function confirmPeers(){
+  var n = selectedIds.length;
+  var node = document.getElementById("step-peers");
+  node.classList.remove("s-active"); node.classList.add("s-done");
+  node.querySelector(".step-num").textContent = "Done";
+  node.querySelector(".step-num").style.color = "var(--grn-tx)";
+  document.getElementById("step2-sub").textContent = n+" peer"+(n!==1?"s":"")+" confirmed";
+  logEntry("p","You","Confirmed — <strong>"+n+" peers</strong>. Proceeding to analysis.");
+  var hasAdidas = selectedIds.indexOf("adidas") !== -1;
+  var hasOn = selectedIds.indexOf("onrunning") !== -1;
+  var implication = "With "+n+" peers confirmed";
+  if(hasAdidas && hasOn){
+    implication += " — spanning Adidas at Nike's scale down to On Running's lean, high-growth model — this set gives strong SG&A and NWC benchmarks across both large-cap and best-in-class operators.";
+  } else if(hasAdidas){
+    implication += " including Adidas as the primary scale comp, SG&A and NWC benchmarks will be anchored to the most defensible peer.";
+  } else {
+    implication += ", the analysis will benchmark Nike's cost structure across a broad competitive set.";
+  }
+  agentMsg("On it — taking you to the analysis. I'll benchmark across SG&A, NWC, and gross margin.");
+}
+function navTo(idx){
+  try{ window.parent.postMessage({type:"nav",idx:idx},"*"); } catch(e){}
+}
+function agentUpload(docName){
+  agentMsg("Got <strong>"+docName+"</strong> — I'll update confidence once it's processed.");
+}
+function openAnalystReport(peerName,bank){
+  agentMsg("Opening the <strong>"+bank+"</strong> report on <strong>"+peerName+"</strong> in a new tab. Worth scanning the priorities section — it often flags challenges the numbers alone won't show.");
+  logEntry("p","You","Opened analyst report · "+peerName+" ("+bank+")");
+}
+function attachFile(){
+  var names=["Analyst_report_Nike_MS.pdf","Peer_NWC_working.xlsx","Sector_note_athletic.pdf"];
+  var n=names[(window._attachN||0)%names.length];window._attachN=(window._attachN||0)+1;
+  appendP("Added <strong>"+n+"</strong>");scrollB();
+  logEntry("p","You","Attached <strong>"+n+"</strong> via chat");
+  setTimeout(function(){agentMsg("Got <strong>"+n+"</strong>, it's in your Sources now and I'll factor it into the peer set. Anything in it you want me to weight heavily?");scrollB();},450);
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+function switchTab(id){
+  ["chat","log","sources"].forEach(function(t){
+    var btn = document.getElementById("tab-"+t);
+    if(btn) btn.classList.toggle("on", t===id);
+  });
+  document.getElementById("vw-chat").style.display = id==="chat" ? "flex" : "none";
+  document.getElementById("vw-log").style.display = id==="log" ? "flex" : "none";
+  var vs = document.getElementById("vw-sources");
+  if(vs) vs.style.display = id==="sources" ? "flex" : "none";
+  if(id==="log"){
+    var dot = document.getElementById("log-dot");
+    if(dot) dot.style.display = "none";
+  }
+  if(id==="sources" && !window._srcBuilt){ buildSources(); window._srcBuilt = true; }
+  if(id==="sources"){ buildPeersUploaded(); }
+}
+function showLogDot(){
+  var dot = document.getElementById("log-dot");
+  if(dot) dot.style.display = "inline-block";
+}
+function sendFromInput(){
+  var i = document.getElementById("ci");
+  if(!i.value.trim()) return;
+  sendMsg(i.value); i.value = "";
+}
+function sendMsg(txt){ appendP(txt); scrollB(); setTimeout(function(){ agentMsg("Good challenge. Let me work through that with you, give me a second."); scrollB(); }, 800); }
+function appendP(txt){
+  var m = document.getElementById("c-msgs"), el = document.createElement("div");
+  el.className = "msg-p";
+  el.innerHTML = '<div class="msg-p-b"><div class="msg-p-t">'+txt+'</div></div><div class="msg-tm" style="text-align:right">Just now</div>';
+  m.appendChild(el);
+}
+function uploadViaChat(){
+  if(typeof agentMsg==="function") agentMsg("Drop a document straight into the message box below \u2014 or use the paperclip. A P&amp;L, management accounts, or a segment breakdown all work. I\u2019ll re-read the cost bar from your numbers and update the confidence score.");
+  var i=document.getElementById("ci"); if(i){ i.focus(); i.placeholder="Attach financials or paste figures here\u2026"; }
+}
+function agentMsg(txt){
+  var m = document.getElementById("c-msgs"), el = document.createElement("div");
+  el.className = "msg-a";
+  el.innerHTML = '<div class="msg-a-b"><div class="msg-a-t">'+txt+'</div></div><div class="msg-tm">Just now</div>';
+  m.appendChild(el); scrollB();
+}
+function scrollB(){ var s = document.getElementById("c-scroll"); if(s) s.scrollTop = s.scrollHeight; }
+var COLLABORATORS=[
+  {nm:"Raema Grover",in:"RG",role:"Design lead",last:"Active now",online:true,edits:8,perm:"Contributor"},
+  {nm:"Joanna Soh",in:"JS",role:"Design manager",last:"6 min ago",online:true,edits:3,perm:"Contributor"},
+  {nm:"Noah Wells",in:"NW",role:"Product owner",last:"Yesterday",online:false,edits:1,perm:"Viewer"},
+  {nm:"Kasia Mrowca",in:"KM",role:"Stakeholder",last:"2 days ago",online:false,edits:0,perm:"Viewer"}
+];
+function buildCollaborators(){
+  var el=document.getElementById("lg-collab");if(!el)return;
+  var active=COLLABORATORS.filter(function(c){return c.online;}).length;
+  el.innerHTML='<div class="collab-panel">'+
+    '<div class="collab-hd"><div class="collab-t">Shared with '+COLLABORATORS.length+'</div></div>'+
+    COLLABORATORS.map(function(c){
+      return '<div class="collab-row">'+
+        '<div class="collab-av">'+c.in+(c.online?'<span class="collab-on"></span>':'')+'</div>'+
+        '<div class="collab-main"><div class="collab-nm">'+c.nm+'</div><div class="collab-role">'+c.role+'</div></div>'+
+        '<div class="collab-meta"><span class="collab-perm '+(c.perm==="Viewer"?"perm-v":"perm-c")+'">'+(c.perm||"Contributor")+'</span><div class="collab-last" style="margin-top:5px">'+c.last+'</div></div>'+
+      '</div>';
+    }).join('')+
+    '<div class="collab-foot">Contributors can edit; viewers can view &amp; comment only.</div>'+
+  '</div>';
+}
+function logEntry(type,who,txt){
+  var l = document.getElementById("lg-list"), el = document.createElement("div");
+  el.className = "lg-e";
+  el.dataset.type = type; el.dataset.txt = txt.replace(/<[^>]+>/g,'');
+  var cls = type==="p"?"p":type==="a"?"a":"s";
+  var wc = type==="p"?"lw-p":type==="a"?"lw-a":"lw-s";
+  el.innerHTML = '<div class="lg-ln"><div class="lg-dot '+cls+'"></div></div><div class="lg-b"><div class="lg-who '+wc+'">'+who+'</div><div class="lg-tx">'+txt+'</div><div class="lg-tm">Just now</div></div>';
+  l.insertBefore(el, l.firstChild);
+  applyLogFilter();
+  var logTab = document.getElementById("tab-log");
+  if(logTab && !logTab.classList.contains("on")) showLogDot();
+}
+
+// ── BINDINGS ──────────────────────────────────────────────────────────────────
+function bindAll(){
+  document.getElementById("ci-send").addEventListener("click", sendFromInput);
+  document.getElementById("ci").addEventListener("keydown", function(e){ if(e.key==="Enter") sendFromInput(); });
+  document.getElementById("tab-chat").addEventListener("click", function(){ switchTab("chat"); });
+  document.getElementById("tab-log").addEventListener("click", function(){ switchTab("log"); });
+  var tabSrc = document.getElementById("tab-sources");
+  if(tabSrc) tabSrc.addEventListener("click", function(){ switchTab("sources"); });
+  document.getElementById("btn-confirm").addEventListener("click", confirmPeers);
+  document.getElementById("btn-add-peer").addEventListener("click", openAddSheet);
+  document.getElementById("overlay").addEventListener("click", closeAll);
+  document.getElementById("sh-close-l2").addEventListener("click", closeL2);
+  document.getElementById("sh-close-add").addEventListener("click", closeAdd);
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape"){ if(l2Open) closeL2(); else { var sv=document.getElementById("dp-src-view"); if(sv&&sv.style.display!=="none") backToPeerDetail(); else if(addOpen) closeAdd(); else closeDetailPanel(); } } });
+  ["sheet-l1","sheet-l2","sheet-add"].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener("click", function(e){ e.stopPropagation(); });
+  });
+}
+
+// ── CHAT RESIZE ───────────────────────────────────────────────────────────────
+function initChatResize(){
+  var handle = document.getElementById("chat-resize");
+  var panel = document.getElementById("chat-panel");
+  var dragging = false;
+  var startX, startW;
+
+  handle.addEventListener("mousedown", function(e){
+    dragging = true;
+    startX = e.clientX;
+    startW = panel.offsetWidth;
+    handle.classList.add("dragging");
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "col-resize";
+    e.preventDefault();
+  });
+
+  document.addEventListener("mousemove", function(e){
+    if(!dragging) return;
+    var delta = startX - e.clientX; // drag left = wider chat
+    var newW = Math.max(200, Math.min(500, startW + delta));
+    panel.style.width = newW + "px";
+    // Update CSS var so proceed bar right edge stays in sync
+    document.documentElement.style.setProperty("--chat-w", newW + "px");
+  });
+
+  document.addEventListener("mouseup", function(){
+    if(dragging){
+      dragging = false;
+      handle.classList.remove("dragging");
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    }
+  });
+}
+function renderShareMembers(){
+  var el=document.getElementById("share-list"); if(!el)return;
+  el.innerHTML=COLLABORATORS.map(function(c,i){
+    return '<div class="share-row">'+
+      '<div class="share-av">'+c.in+'</div>'+
+      '<div class="share-main"><div class="share-nm">'+c.nm+'</div><div class="share-role">'+c.role+'</div></div>'+
+      '<select class="share-permsel" onchange="setPerm('+i+',this.value)"><option'+(c.perm==="Contributor"?" selected":"")+'>Contributor</option><option'+(c.perm==="Viewer"?" selected":"")+'>Viewer</option></select>'+
+      (i>0?'<button class="share-rm" onclick="removeMember('+i+')" title="Remove"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>':'<span style="width:22px;flex:none"></span>')+
+    '</div>';
+  }).join('');
+}
+function openShareModal(){ renderShareMembers(); document.getElementById("share-overlay").style.display="block"; document.getElementById("share-modal").style.display="block"; }
+function closeShareModal(){ document.getElementById("share-overlay").style.display="none"; document.getElementById("share-modal").style.display="none"; }
+function setPerm(i,v){ if(COLLABORATORS[i]){ COLLABORATORS[i].perm=v; buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You",COLLABORATORS[i].nm+" set to <strong>"+v+"</strong>"); } }
+function removeMember(i){ if(COLLABORATORS[i]){ var nm=COLLABORATORS[i].nm; COLLABORATORS.splice(i,1); renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Removed <strong>"+nm+"</strong> from the project"); } }
+function addMember(){ var inp=document.getElementById("share-inp"),ps=document.getElementById("share-perm"); if(!inp||!inp.value.trim())return; var nm=inp.value.trim(); var initials=nm.split(/[\s@._-]+/).filter(Boolean).slice(0,2).map(function(w){return w[0].toUpperCase();}).join("")||"?"; COLLABORATORS.push({nm:nm,in:initials,role:"Invited",last:"Just invited",online:false,edits:0,perm:ps.value}); inp.value=""; renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Invited <strong>"+nm+"</strong> as "+ps.value); }
+function copyShareLink(){ var b=event.target.closest("button"); if(!b)return; var t=b.innerHTML; b.innerHTML="Link copied \u2713"; setTimeout(function(){b.innerHTML=t;},1400); }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
+/* ── LOG FILTER ───────────────────────────────────────────── */
+var _logFilter = "all";
+function setLogFilter(f, btn) {
+  _logFilter = f;
+  var bar = document.getElementById("lg-filter-bar");
+  if(bar) bar.querySelectorAll(".lg-fchip").forEach(function(b){ b.classList.toggle("on", b===btn); });
+  applyLogFilter();
+}
+function applyLogFilter() {
+  var list = document.getElementById("lg-list");
+  if(!list) return;
+  var entries = list.querySelectorAll(".lg-e");
+  entries.forEach(function(el) {
+    var type = el.dataset.type || "";
+    var txt  = (el.dataset.txt || "").toLowerCase();
+    var show = false;
+    if(_logFilter === "all")      show = true;
+    else if(_logFilter === "p")   show = type === "p";
+    else if(_logFilter === "c")   show = type === "c";
+    else if(_logFilter === "a")   show = type === "a";
+    else if(_logFilter === "override") show = (type==="p"||type==="c") && /override|assumption|changed|updated|set to|removed|promoted|demoted|moved/i.test(txt);
+    else if(_logFilter === "flag") show = type==="a" && /flag|warn|⚠|caution|recommend|watch|note|check/i.test(txt);
+    el.classList.toggle("lg-hidden", !show);
+  });
+}
+
+</script>
+<!-- BU DESELECT CONFIRMATION MODAL -->
+<div id="bu-confirm-overlay" onclick="closeBUConfirm()" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.32);backdrop-filter:blur(2px)"></div>
+<div id="bu-confirm-modal" style="display:none;position:fixed;top:50%;left:calc(50% - var(--chat-w)/2);transform:translate(-50%,-50%);width:400px;max-width:90%;background:#fff;border-radius:16px;z-index:701;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);overflow:hidden">
+  <div style="padding:20px 22px 16px;border-bottom:1px solid var(--g100)">
+    <div style="font-size:16px;font-weight:700;color:var(--g950);letter-spacing:-.01em;margin-bottom:4px">Remove <span id="bu-confirm-name"></span>?</div>
+    <div style="font-size:13px;color:var(--g500)">from <span id="bu-confirm-peer" style="font-weight:600;color:var(--g700)"></span></div>
+  </div>
+  <div style="padding:14px 22px">
+    <div style="font-size:13.5px;color:var(--g700);line-height:1.6;margin-bottom:16px" id="bu-confirm-implic"></div>
+    <div style="display:flex;gap:9px;justify-content:flex-end">
+      <button onclick="closeBUConfirm()" style="height:36px;padding:0 18px;border-radius:8px;border:1px solid var(--g200);background:#fff;font-size:13px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)">Cancel</button>
+      <button onclick="confirmBURemoval()" style="height:36px;padding:0 18px;border-radius:8px;border:none;background:var(--g950);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font)">Confirm removal</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div id="share-overlay" onclick="closeShareModal()" style="display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;z-index:600;background:rgba(0,0,0,.3);backdrop-filter:blur(2px)"></div>
+<div id="share-modal" style="display:none;position:fixed;top:50%;left:calc(50% - var(--chat-w)/2);transform:translate(-50%,-50%);width:440px;max-width:92%;background:#fff;border-radius:18px;z-index:601;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);overflow:hidden">
+  <div class="share-hd">
+    <div><div class="share-title">Share this OI</div><div class="share-sub">Nike, Inc. · anyone you add can open it at any stage</div></div>
+    <button class="share-close" onclick="closeShareModal()"><svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="share-add">
+    <input id="share-inp" placeholder="Add people by name or email"/>
+    <select id="share-perm"><option>Contributor</option><option>Viewer</option></select>
+    <button class="share-add-btn" onclick="addMember()">Add</button>
+  </div>
+  <div class="share-list" id="share-list"></div>
+  <div class="share-ft">
+    <button class="share-link" onclick="copyShareLink()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M5.5 8.5a2.5 2.5 0 003.5 0l2-2a2.5 2.5 0 10-3.5-3.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8.5 5.5a2.5 2.5 0 00-3.5 0l-2 2a2.5 2.5 0 103.5 3.5l1-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Copy link</button>
+    <button class="share-done" onclick="closeShareModal()">Done</button>
+  </div>
+</div>
+</div>
+</body>
+</html>

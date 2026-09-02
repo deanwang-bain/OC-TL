@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OI 3.0 — Case for Change</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ─── DESIGN TOKENS ────────────────────────────────────────────────────── */
+:root{
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --serif:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --red:#CC0000;--red-h:#A80000;--red-bg:#FDF2F2;--red-br:#F0C8C8;
+  --g950:#111;--g900:#1C1C1E;--g800:#2C2C2E;--g700:#3A3A3C;
+  --g600:#48484A;--g500:#636366;--g400:#8E8E93;--g300:#AEAEB2;
+  --g200:#C7C7CC;--g150:#D1D1D6;--g100:#E5E5EA;--g50:#F2F2F7;--g25:#F9F9FB;
+  --amb-bg:#FDF3E7;--amb-br:#E8B66A;--amb-st:#C47C12;--amb-tx:#8A5A12;
+  --grn-bg:#E7F6EC;--grn-br:#A9DCB6;--grn-st:#2A9E52;--grn-tx:#17703A;
+  --sh-card:0 1px 3px rgba(0,0,0,.05),0 2px 10px rgba(0,0,0,.04);
+  --sh-hover:0 4px 20px rgba(0,0,0,.09);
+  --chat-w:50vw;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);background:#FFFFFF;color:var(--g950);height:100%;-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+input{font-family:var(--font)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--g150);border-radius:2px}
+
+/* ─── SHELL ─────────────────────────────────────────────────────────────── */
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.body{display:flex;flex:1;overflow:hidden}
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+
+/* ─── STEPPER (shared, verbatim) ─────────────────────────────────────────── */
+.stepper{background:#fff;border-bottom:1px solid var(--g100);padding:15px 40px 0;flex:none}
+.stepper-row{display:flex;align-items:stretch}
+.step-item{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;flex:1;cursor:default}
+.step-item.s-done,.step-item.s-active{cursor:pointer}
+.step-item.s-active{border-bottom:2px solid var(--red);margin-bottom:-1px}
+.step-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;color:var(--g300)}
+.step-item.s-done .step-num{color:var(--grn-tx)}
+.step-item.s-active .step-num{color:var(--red)}
+.step-item.s-locked .step-num{color:var(--g200)}
+.step-name{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1.1;color:var(--g300)}
+.step-item.s-done .step-name{color:var(--g700)}
+.step-item.s-active .step-name{color:var(--g950)}
+.step-item.s-locked .step-name{color:var(--g200)}
+.step-sub{font-size:11px;color:var(--g400);letter-spacing:-.01em;line-height:1.25}
+.step-item.s-locked .step-sub{color:var(--g200)}
+.step-div{width:1px;height:30px;background:var(--g100);flex:none;margin:2px 20px 0;align-self:flex-start}
+
+/* ─── PROCEED BAR (shared, verbatim) ────────────────────────────────────── */
+.proceed{position:fixed;bottom:0;left:0;right:var(--chat-w);height:66px;background:#fff;border-top:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:20}
+.proc-l{font-size:15px;color:var(--g500)}
+.proc-l strong{font-weight:700;color:var(--g950)}
+.proc-r{display:flex;gap:10px}
+.proc-ghost{height:40px;padding:0 20px;border-radius:8px;font-size:15px;font-weight:600;color:var(--g700);border:1px solid var(--g150);background:#fff;transition:all .12s}
+.proc-ghost:hover{border-color:var(--g400)}
+.proc-confirm{height:40px;padding:0 24px;border-radius:9999px;font-size:15px;font-weight:600;background:var(--red);color:#fff;display:flex;align-items:center;gap:7px;transition:background .12s}
+.proc-confirm:hover{background:var(--red-h)}
+.proc-confirm:disabled{background:var(--grn-st);cursor:default}
+
+/* ─── CHAT RESIZE HANDLE (shared, verbatim) ─────────────────────────────── */
+.chat-resize-handle{width:4px;background:transparent;cursor:col-resize;flex:none;position:relative;z-index:30;transition:background .15s}
+.chat-resize-handle:hover,.chat-resize-handle.dragging{background:var(--g100)}
+.chat-resize-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:28px;border-radius:2px;background:var(--g200)}
+
+/* ─── CHAT PANEL (shared, verbatim) ─────────────────────────────────────── */
+.chat-panel{width:var(--chat-w);flex:none;background:#FFFFFF;display:flex;flex-direction:column;border-left:1px solid var(--g100);overflow:hidden}
+.cp-tabs{display:flex;border-bottom:1px solid var(--g100);flex:none;background:#fff;padding:0 4px}
+.cp-tab{height:40px;padding:0 14px;font-size:15px;font-weight:600;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s}
+.cp-tab.on{color:var(--g950);border-bottom-color:var(--g950)}
+.cp-tab:hover:not(.on){color:var(--g700)}
+.tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:3px;vertical-align:middle}
+.cp-msgs-wrap{flex:1;overflow-y:auto;padding:20px 16px 0}
+.cp-msgs{display:flex;flex-direction:column;gap:11px;padding-bottom:14px}
+.c-div{display:flex;align-items:center;gap:8px;margin:2px 0}
+.cd-l{flex:1;height:1px;background:var(--g100)}
+.cd-t{font-size:12px;color:var(--g300);font-weight:600;white-space:nowrap}
+.msg-a{display:flex;flex-direction:column;gap:3px}
+.msg-a-b{background:#F7F7F9;border-radius:2px 12px 12px 12px;padding:12px 14px}
+.msg-a-t{font-size:14px;color:var(--g700);line-height:1.65}
+.msg-a-t strong{font-weight:700;color:var(--g950)}
+.msg-tm{font-size:12px;color:var(--g300);margin-top:2px}
+.msg-p{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.msg-p-b{background:var(--g950);border-radius:10px 2px 10px 10px;padding:9px 12px;max-width:210px}
+.msg-p-t{font-size:14px;color:#fff;line-height:1.6}
+.msg-a-meta{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.msg-a-stat-row{display:flex;gap:0;margin-top:8px;border-top:1px solid var(--g100);padding-top:8px}
+.msg-a-stat{flex:1;display:flex;flex-direction:column;gap:1px;padding:0 8px}
+.msg-a-stat:first-child{padding-left:0}
+.msg-a-stat:not(:last-child){border-right:1px solid var(--g100)}
+.msg-a-stat-val{font-size:17px;font-weight:700;color:var(--g950);letter-spacing:-.02em}
+.msg-a-stat-lbl{font-size:12px;color:var(--g400)}
+.msg-flag-wrap{background:var(--amb-bg);border:1.5px solid var(--amb-br);border-radius:12px;padding:12px 14px}
+.msg-flag-body{flex:1}
+.msg-flag-title{font-size:15px;font-weight:700;color:var(--amb-tx);margin-bottom:5px}
+.msg-flag-detail{font-size:14px;color:var(--g500);line-height:1.65;margin-bottom:10px}
+.msg-flag-acts{display:flex;gap:8px;flex-wrap:wrap}
+.msg-flag-btn-pri{height:32px;padding:0 14px;border-radius:9999px;border:1px solid var(--g300);color:var(--g700);background:#fff;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .12s}
+.msg-flag-btn-pri:hover{border-color:var(--g600);color:var(--g950)}
+.msg-flag-btn-sec{height:32px;padding:0 14px;border-radius:9999px;border:1px solid var(--g300);color:var(--g700);background:#fff;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .12s}
+.cp-sugs{display:flex;gap:5px;overflow-x:auto;padding:8px 13px 2px;scrollbar-width:none;flex:none}
+.cp-sug{font-size:11.5px;font-weight:600;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;cursor:pointer;transition:all .12s;font-family:var(--font);white-space:nowrap;flex:none}
+.cp-sug:hover{border-color:var(--g400);color:var(--g900)}
+.cp-ft{height:66px;display:flex;flex-direction:column;justify-content:center;gap:7px;padding:0 14px;border-top:1px solid var(--g100);flex:none;background:#fff}
+.cp-row{display:flex;gap:7px}
+.cp-inp{flex:1;height:38px;background:#F6F7F9;border:1px solid var(--g150);border-radius:8px;padding:0 12px;font-size:15px;color:var(--g950);outline:none;transition:border-color .15s}
+.cp-inp:focus{border-color:var(--g500)}
+.cp-inp::placeholder{color:var(--g300)}
+.cp-send{width:38px;height:38px;border-radius:8px;background:var(--g950);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;border:none;transition:all .12s}
+.cp-send:hover{background:var(--g950);color:#fff;border-color:var(--g950)}
+
+/* ─── LOG ────────────────────────────────────────────────────────────────── */
+.lg-scroll{flex:1;overflow-y:auto;padding:12px}
+.lg-list{display:flex;flex-direction:column}
+.lg-e{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.lg-e:last-child{border-bottom:none}
+.lg-ln{display:flex;flex-direction:column;align-items:center;width:11px;margin-top:3px;flex:none}
+.lg-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.lg-dot.p{background:var(--red)}.lg-dot.a{background:var(--g400)}.lg-dot.s{background:var(--g200)}.lg-dot.c{background:#2E7FD9}
+.lg-con{width:1px;flex:1;background:var(--g100);margin-top:3px}
+.lg-b{flex:1}
+.lg-who{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.lw-p{color:var(--red)}.lw-a{color:var(--g500)}.lw-s{color:var(--g300)}.lw-c{color:#2E7FD9}
+.lg-tx{font-size:14px;color:var(--g700);line-height:1.5}
+.lg-tx strong{font-weight:700;color:var(--g950)}
+.lg-tm{font-size:12px;color:var(--g300);margin-top:2px}
+
+/* ─── MODAL SYSTEM (shared, verbatim) ───────────────────────────────────── */
+.overlay{display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;z-index:500;background:rgba(0,0,0,.3);backdrop-filter:blur(2px)}
+.sh-hd{padding:18px 22px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:18px 18px 0 0}
+.sh-ey{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-bottom:4px}
+.sh-name{font-size:23px;font-weight:700;letter-spacing:-.025em;color:var(--g950);margin-bottom:3px}
+.sh-sub{font-size:14px;color:var(--g400)}
+.sh-close{width:30px;height:30px;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;color:var(--g500);transition:background .12s;flex:none;margin-top:2px}
+.sh-close:hover{background:var(--g100);color:var(--g950)}
+.sh-body{padding:20px 22px}
+.sh-s{margin-bottom:18px}
+.sh-sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:8px}
+.sh-txt{font-size:14px;color:var(--g700);line-height:1.7}
+.sh-srcs{display:flex;flex-direction:column;gap:6px}
+.sh-src{display:flex;align-items:center;gap:9px;background:#F6F7F9;border-radius:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
+.sh-src:hover{background:var(--g100)}
+.sh-src-ic{width:26px;height:26px;border-radius:6px;background:var(--g100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g500);flex:none}
+.sh-src-n{font-size:15px;font-weight:600;color:var(--g950)}
+.sh-src-s{font-size:14px;color:var(--g400)}
+.sh-src-arr{margin-left:auto;color:var(--g300)}
+.audit-block{display:flex;flex-direction:column;gap:12px;padding:16px 22px 20px}
+.audit-section{display:flex;flex-direction:column;gap:5px}
+.audit-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400)}
+.audit-label.green{color:var(--grn-tx)}
+.audit-val{font-size:14px;color:var(--g700);line-height:1.6;background:var(--g50);border-radius:8px;padding:9px 11px}
+.audit-val.highlight{background:var(--grn-bg);border:1px solid var(--grn-br);color:var(--g950);font-weight:700;font-size:15px}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  PAGE-SPECIFIC CSS: MODE SYSTEM
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Mode 1.1 — hide workspace content + proceed bar + chat panel */
+body.chat-mode .proceed{display:none!important}
+body.chat-mode #mode-ws{display:none!important}
+
+/* Mode 1.2 — hide full-screen chat */
+body.workspace-mode #mode-chat{border-left:1px solid var(--g100)}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  PAGE-SPECIFIC CSS: MODE 1.1 — SYNTHESIS CHAT
+═══════════════════════════════════════════════════════════════════════════ */
+.chat-full{display:flex;flex-direction:column;flex:1;overflow:hidden;background:#FFFFFF}
+/* Full-chat tab bar */
+.cf-tabs{display:flex;gap:2px;background:#fff;border-bottom:1px solid var(--g100);padding:0 20px;flex:none}
+.cf-tab{height:42px;padding:0 16px;font-size:15px;font-weight:600;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s;background:none;cursor:pointer}
+.cf-tab.on{color:var(--g950);border-bottom-color:var(--g950)}
+.cf-tab:hover:not(.on){color:var(--g700)}
+.cf-alt{flex:1;overflow-y:auto;background:#FFFFFF}
+.cf-alt-inner{width:100%;max-width:min(900px,calc(100% - 40px));margin:0 auto;padding:30px 34px}
+.cf-attach{width:42px;height:42px;border-radius:50%;background:#fff;color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;border:1.5px solid var(--g150);transition:all .12s;cursor:pointer}
+.cf-attach:hover{background:var(--g50);color:var(--g900);border-color:var(--g300)}
+/* Collaborators panel */
+.collab-panel{background:#fff;border:1px solid var(--g150);border-radius:12px;padding:12px 13px}
+.collab-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.collab-t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g500)}
+.collab-live{font-size:12px;font-weight:600;color:var(--grn-tx);background:var(--grn-bg);border-radius:9999px;padding:2px 9px}
+.collab-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100)}
+.collab-row:last-of-type{border-bottom:none}
+.collab-av{position:relative;width:30px;height:30px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.collab-on{position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:var(--grn-tx);border:2px solid #fff}
+.collab-main{flex:1;min-width:0}
+.collab-nm{font-size:14.5px;font-weight:600;color:var(--g950)}
+.collab-role{font-size:12.5px;color:var(--g400)}
+.collab-meta{text-align:right;flex:none}
+.collab-last{font-size:12.5px;color:var(--g600)}
+.collab-edits{font-size:11.5px;color:var(--g300);margin-top:1px}
+.collab-foot{font-size:12px;color:var(--g400);line-height:1.5;margin-top:9px;padding-top:9px;border-top:1px solid var(--g100)}
+/* Sources */
+.src-count{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:12px}
+.src-cat{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin:16px 0 6px}
+.src-cat:first-of-type{margin-top:0}
+.src-cat-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.src-row{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--g100)}
+.src-ic{width:30px;height:30px;border-radius:7px;background:#fff;border:1px solid var(--g100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g500);flex:none}
+.src-main{flex:1;min-width:0}
+.src-nm{font-size:14px;font-weight:600;color:var(--g950)}
+.src-d{font-size:13px;color:var(--g400);margin-top:1px}
+.src-date{font-size:12px;color:var(--g300);margin-top:3px}
+.src-refresh{width:30px;height:30px;border-radius:7px;border:1px solid var(--g150);background:#fff;color:var(--g400);display:flex;align-items:center;justify-content:center;flex:none;transition:all .12s;cursor:pointer}
+.src-refresh:hover{border-color:var(--g400);color:var(--g900)}
+.cf-msgs-wrap{flex:1;overflow-y:auto;padding:0;background:transparent}
+/* Full-width chat column — messages left or right, no centering constraint */
+.cf-msgs{display:flex;flex-direction:column;width:100%;max-width:min(900px,calc(100% - 40px));margin:0 auto;background:transparent;border-radius:0;padding:26px 30px 8px}
+/* Agent messages — left aligned, max 65% so they don't span the full width */
+.cf-msg-a{display:flex;gap:10px;align-items:flex-end;margin-bottom:16px;max-width:65%;align-self:flex-start}
+.cf-avatar{width:28px;height:28px;border-radius:50%;background:var(--g900);display:flex;align-items:center;justify-content:center;flex:none}
+.cf-body{flex:1;min-width:0}
+.cf-name{font-size:12.5px;font-weight:600;color:var(--g400);margin-bottom:5px;letter-spacing:.01em}
+.cf-bubble{background:#F7F7F9;border-radius:18px 18px 18px 4px;padding:14px 17px;font-size:14.5px;color:var(--g900);line-height:1.6}
+.cf-bubble p{margin-bottom:9px}.cf-bubble p:last-child{margin-bottom:0}
+.cf-bubble strong{font-weight:600;color:var(--g950)}
+/* User messages — right aligned */
+.cf-msg-p{display:flex;justify-content:flex-end;margin-bottom:16px;align-self:flex-end;max-width:60%}
+.cf-bubble-p{background:var(--g950);border-radius:18px 18px 4px 18px;padding:11px 16px;font-size:14.5px;color:#fff;line-height:1.6}
+.cf-tm{font-size:13px;color:var(--g300);margin-top:4px;padding:0 2px}
+.cf-tm-r{font-size:13px;color:var(--g300);margin-top:4px;text-align:right;padding:0 2px}
+/* Stat tiles */
+.cf-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 4px}
+.cf-stat{background:#F2F2F7;border-radius:12px;padding:12px 14px}
+.cf-stat.lead{background:var(--red-bg);border:1px solid var(--red-br)}
+/* No serif — consistent normal font throughout */
+.cf-stat-val{font-size:23px;font-weight:700;letter-spacing:-.03em;color:var(--g950);margin-bottom:1px}
+.cf-stat.lead .cf-stat-val{color:var(--red)}
+.cf-stat-lbl{font-size:14px;color:var(--g500);line-height:1.3}
+.cf-stat-badge{display:inline-flex;align-items:center;gap:3px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:9999px;margin-top:6px}
+.cf-stat-badge.h{background:var(--grn-bg);color:var(--grn-tx)}
+.cf-stat-badge.h::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--grn-st)}
+.cf-stat-badge.m{background:var(--amb-bg);color:var(--amb-tx)}
+.cf-stat-badge.m::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amb-st)}
+/* Finding bullets */
+.cf-bullet{display:flex;gap:0;border-radius:10px;overflow:hidden;margin-bottom:6px;background:#F2F2F7}
+.cf-bullet:last-child{margin-bottom:0}
+.cf-bar{width:3px;flex:none}
+.cf-bar.h{background:var(--grn-st)}.cf-bar.m{background:var(--amb-st)}.cf-bar.n{background:var(--g300)}
+.cf-bi{padding:10px 14px;flex:1}
+.cf-bl{font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.cf-bl.h{color:var(--grn-tx)}.cf-bl.m{color:var(--amb-tx)}.cf-bl.n{color:var(--g500)}
+.cf-bt{font-size:15px;color:var(--g700);line-height:1.55}.cf-bt strong{color:var(--g950);font-weight:600}
+/* Narrative card */
+.cf-narrative-card{background:#F6F7F9;border-radius:12px;border:1px solid var(--g100);padding:16px 18px;margin:8px 0 4px}
+.cf-narrative-eyebrow{font-size:12px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px}
+.cf-narrative-headline{font-size:17px;font-weight:400;color:var(--g950);line-height:1.6;margin-bottom:8px}
+.cf-narrative-headline em{color:var(--red);font-style:normal}
+.cf-narrative-body{font-size:15px;color:var(--g600);line-height:1.7}
+/* Suggestion rows */
+.cf-sugs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.cf-sug{text-align:left;background:#fff;border:none;border-radius:12px;padding:10px 14px;font-size:14.5px;color:var(--g700);cursor:pointer;font-family:var(--font);line-height:1.45;width:100%;transition:background .1s}
+.cf-sug:hover{background:var(--g100)}
+.cf-sug strong{color:var(--g950);font-weight:600;display:block;margin-bottom:2px}
+/* Typing indicator */
+.cf-typing-bubble{background:#fff;border-radius:18px 18px 18px 4px;padding:14px 18px;box-shadow:0 1px 2px rgba(0,0,0,.06);display:inline-flex;gap:5px;align-items:center}
+.cf-dot{width:7px;height:7px;border-radius:50%;background:var(--g300);animation:cfp 1.3s infinite}
+.cf-dot:nth-child(2){animation-delay:.15s}.cf-dot:nth-child(3){animation-delay:.3s}
+@keyframes cfp{0%,60%,100%{transform:scale(1);opacity:.4}30%{transform:scale(1.2);opacity:1}}
+/* Float suggestions — horizontal chips, centered, compact */
+.cf-sug-float{
+  display:none;
+  flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:center;
+  padding:9px 32px 7px;
+  background:#fff;border-top:1px solid var(--g100);
+}
+.cf-sug-float.visible{display:flex}
+.cf-sug-float-btn{
+  height:24px;padding:0 9px;border-radius:9999px;
+  font-size:13px;font-weight:600;color:var(--g500);
+  border:1px solid var(--g150);background:#fff;
+  cursor:pointer;font-family:var(--font);
+  transition:all .12s;white-space:nowrap;flex:none;
+}
+.cf-sug-float-btn:hover{border-color:var(--g700);color:var(--g950)}
+
+/* Input bar — full page width */
+.cf-input-outer{background:#fff;border-top:1px solid rgba(0,0,0,.08);flex:none;display:flex;flex-direction:column}
+.cf-input-bar{padding:10px 32px 14px;width:100%}
+.cf-input-row{display:flex;gap:8px;align-items:center}
+.cf-inp{flex:1;height:42px;border:1.5px solid var(--g150);border-radius:21px;padding:0 20px;font-size:17px;font-family:var(--font);color:var(--g950);outline:none;background:#fff;transition:border-color .15s}
+.cf-inp:focus{border-color:var(--g400)}
+.cf-send{width:42px;height:42px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:opacity .12s}
+.cf-send:hover{opacity:.85}
+/* Build the analysis CTA — inline right of input, hidden until ready */
+#cf-build-cta{
+  display:none;align-items:center;gap:7px;
+  height:42px;padding:0 20px;border-radius:21px;
+  background:var(--red);color:#fff;font-size:16px;font-weight:600;
+  border:none;cursor:pointer;font-family:var(--font);
+  white-space:nowrap;flex:none;transition:opacity .12s;
+}
+#cf-build-cta:hover{opacity:.82}
+#cf-build-cta.visible{display:inline-flex}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+  PAGE-SPECIFIC CSS: MODE 1.2 — ANALYSIS WORKSPACE
+═══════════════════════════════════════════════════════════════════════════ */
+/* Custom chat header */
+.cp-hd{padding:10px 13px;border-bottom:1px solid var(--g100);background:#fff;flex:none}
+.cp-hd-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px}
+.cp-hd-title{font-size:14px;font-weight:700;color:var(--g950)}
+.cp-back-btn{height:26px;padding:0 10px;border-radius:7px;border:1px solid var(--g200);background:#fff;font-size:13px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:4px;transition:all .12s;white-space:nowrap}
+.cp-back-btn:hover{border-color:var(--g500);color:var(--g950)}
+
+/* Workspace content — natural height, #mode-ws is the scroll container */
+.ws-content{display:flex;flex-direction:column;padding:16px 20px 0}
+.ws-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;flex:none}
+.ws-h1{font-family:var(--serif);font-size:25px;font-weight:600;letter-spacing:-.01em;color:var(--g950);margin-bottom:10px}
+.ws-meta{font-size:14px;color:var(--g500)}
+.ws-meta strong{color:var(--g700);font-weight:600}
+/* Scroll column — natural height, no overflow. Scrolling is on #mode-ws */
+.ws-scroll-col{display:flex;flex-direction:column;gap:16px;padding-bottom:80px}
+
+/* ─── BREADCRUMB SYSTEM ─────────────────────────────────────────────────── */
+.bc-bar{display:flex;align-items:center;gap:8px;padding:14px 40px;background:#fff;border-bottom:1px solid var(--g100);flex:none;position:sticky;top:0;z-index:5}
+.bc-back{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:9999px;border:1px solid var(--g200);background:#fff;font-size:14px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font);transition:all .12s}
+.bc-back:hover{border-color:var(--g400);color:var(--g950)}
+.bc-sep{font-size:14px;color:var(--g200)}
+.bc-live{font-size:14px;font-weight:500;color:var(--g500)}
+
+/* Opportunity detail panel */
+.opp-detail-panel{display:none;flex-direction:column;padding:28px 40px 80px;gap:24px}
+.odp-name{font-size:25px;font-weight:700;color:var(--g950);letter-spacing:-.04em;line-height:1.1}
+.odp-sub{font-size:15px;color:var(--g500);margin-top:4px}
+.odp-sl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:10px}
+
+/* Card base */
+.card{background:#fff;border-radius:14px;border:1px solid var(--g100);box-shadow:var(--sh-card);display:flex;flex-direction:column;overflow:hidden}
+.card-hd{padding:14px 16px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;flex:none}
+.card-title{font-size:16px;font-weight:700;color:var(--g950);letter-spacing:-.015em}
+.card-hd-r{display:flex;align-items:center;gap:8px}
+.s-badge{display:flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9999px;font-size:13px;font-weight:600}
+.sb-running{background:var(--g50);color:var(--g500);border:1px solid var(--g150)}
+.sb-done{background:var(--grn-bg);color:var(--grn-tx);border:1px solid var(--grn-br)}
+
+/* Right column no longer needed — flattened into scroll */
+.right-col{display:contents}
+
+.costbar-card{display:flex;flex-direction:column}
+/* Cost bar items in a 2-col grid inside card body */
+.cb-body{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cb-item{display:flex;flex-direction:column;gap:6px;cursor:pointer;padding:14px;background:#F6F7F9;border-radius:10px;transition:background .12s;border:1px solid var(--g100)}
+.cb-item:hover{background:var(--g50)}
+.cb-row-top{display:flex;align-items:center;justify-content:space-between}
+.cb-lbl{font-size:15px;font-weight:500;color:var(--g700)}
+.cb-pct{font-size:21px;font-weight:700;color:var(--g950);letter-spacing:-.02em}
+.cb-bar-wrap{height:6px;background:var(--g200);border-radius:3px;overflow:hidden}
+.cb-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* Narrative bar — no green dot */
+.narrative-bar{padding:12px 16px 8px;flex:none}
+.narrative-txt{font-size:15px;color:var(--g700);line-height:1.6}
+.narrative-txt strong{font-weight:700;color:var(--g950)}
+
+/* OPP list — natural height, no flex overflow clipping */
+.opp-scroll{padding:8px 16px 12px}
+.opp-row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--g50);cursor:pointer;position:relative}
+.opp-row:last-of-type{border-bottom:none}
+.opp-row:hover{background:#F6F7F9;border-radius:8px;border-bottom-color:transparent;margin:0 -4px;padding-left:4px;padding-right:4px}
+.opp-rank{font-size:15px;font-weight:700;color:var(--g700);width:20px;text-align:center;flex:none;margin-top:2px}
+.opp-row.promoted .opp-rank{color:var(--g950)}
+.opp-body{flex:1;min-width:0;padding-right:4px}
+.opp-name{font-size:17px;font-weight:700;color:var(--g950);letter-spacing:-.02em;margin-bottom:3px;line-height:1.3}
+.opp-kind{display:inline-block;vertical-align:middle;margin-left:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:5px}
+.opp-kind.cost{background:#E7EDFB;color:#3060C4}
+.opp-kind.rev{background:#E1F5EF;color:#0C8F6E}
+.opp-detail{font-size:14px;color:var(--g400);line-height:1.4}
+.soft-flag{display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:4px;background:var(--amb-bg);border:1px solid var(--amb-br);font-size:12px;font-weight:600;color:var(--amb-tx);margin-left:6px}
+.opp-val{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.opp-val-num{font-size:17px;font-weight:700;color:var(--g950);letter-spacing:-.025em;line-height:1.2}
+.opp-acts{display:flex;gap:2px;justify-content:flex-end;opacity:0;transition:opacity .12s}
+.opp-row:hover .opp-acts{opacity:1}
+.opp-act{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--g400);transition:all .12s}
+.opp-act:hover{background:var(--g50);color:var(--g950)}
+.opp-act.rm:hover{background:var(--red-bg);color:var(--red)}
+.opp-row[draggable]{cursor:grab}
+.opp-row.dragging{opacity:.4;background:var(--g50)}
+.opp-row.drag-over{border-top:2px solid var(--red)}
+
+/* Longlist */
+.ll-section{padding:0 16px 16px;flex:none}
+.ll-header{display:flex;align-items:center;gap:8px;padding:10px 0 8px;border-top:1px solid var(--g100)}
+.ll-header-txt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400)}
+.ll-grid{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px}
+.ll-row{display:flex;align-items:center;gap:5px;padding:5px 20px 5px 11px;border-radius:9999px;background:#fff;border:1px solid var(--g150);cursor:pointer;transition:background .18s,border-color .18s;flex:none;position:relative}
+.ll-row:hover{border-color:var(--grn-br);background:var(--grn-bg)}
+.ll-row::after{content:"+";position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:700;color:var(--grn-tx);opacity:0;transition:opacity .18s}
+.ll-row:hover::after{opacity:1}
+.ll-name{font-size:14px;color:var(--g700);font-weight:500;white-space:nowrap}
+.ll-val{font-size:14px;font-weight:700;color:var(--g950);white-space:nowrap}
+
+/* tooltip */
+[data-tooltip]{position:relative}
+[data-tooltip]::before{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 8px);left:0;background:var(--g950);color:#fff;font-size:13px;line-height:1.5;padding:8px 11px;border-radius:8px;white-space:normal;width:220px;z-index:100;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+[data-tooltip]:hover::before{opacity:1}
+
+/* Size of prize — natural height */
+.sop-card{display:flex;flex-direction:column}
+.sop-refresh{height:28px;padding:0 10px;border-radius:7px;font-size:13px;font-weight:600;color:var(--g500);border:1px solid var(--g150);background:#fff;transition:all .12s}
+.sop-refresh:hover{border-color:var(--g400);color:var(--g950)}
+.sop-tabs{display:flex;border-bottom:1px solid var(--g100);flex:none;padding:0 4px}
+.sop-tab{height:36px;padding:0 14px;font-size:14px;font-weight:600;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;background:none;cursor:pointer;transition:color .12s}
+.sop-tab.on{color:var(--g950);border-bottom-color:var(--g950)}
+.sop-panel{display:none;flex-direction:column}
+.sop-panel.on{display:flex}
+.sop-waterfall{display:flex;flex-direction:column}
+.sop-total-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;border-bottom:1px solid var(--g100)}
+.sop-total-lbl{font-size:14px;font-weight:600;color:var(--g500)}
+.sop-total-val{font-size:23px;font-weight:700;color:var(--g950);letter-spacing:-.03em}
+.sop-anchor-opt{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;border:1px solid var(--g150);background:#fff;cursor:pointer;transition:all .12s}
+.sop-anchor-opt:hover{border-color:var(--g400)}
+.sop-anchor-opt.selected{border-color:var(--grn-br);background:var(--grn-bg)}
+.sop-ao-main{flex:1;min-width:0}
+.sop-ao-tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--grn-tx);margin-bottom:2px}
+.sop-ao-why{font-size:13px;color:var(--g500);line-height:1.4}
+.sop-ao-val{font-size:18px;font-weight:700;color:var(--g950);letter-spacing:-.025em;flex:none}
+.sop-anchor-opt.selected .sop-ao-val{color:var(--grn-tx)}
+.jc-inp{flex:1;height:32px;background:#F6F7F9;border:1px solid var(--g150);border-radius:8px;padding:0 10px;font-size:14px;color:var(--g950);outline:none;transition:border-color .15s}
+.jc-inp:focus{border-color:var(--g700)}
+.jc-inp::placeholder{color:var(--g300)}
+.jc-apply{height:32px;padding:0 12px;border-radius:8px;background:var(--g50);color:var(--g950);font-size:14px;font-weight:600;border:1px solid var(--g200);transition:all .12s}
+.jc-apply:hover{background:var(--g950);color:#fff;border-color:var(--g950)}
+
+/* Longlist modal */
+#ll-overlay{display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;z-index:599;background:rgba(0,0,0,.3);backdrop-filter:blur(2px)}
+#ll-modal{display:none;position:fixed;top:50%;left:calc(50% - var(--chat-w)/2);transform:translate(-50%,-50%);width:460px;max-width:92%;background:#fff;border-radius:18px;z-index:600;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);overflow:hidden}
+.ll-modal-hd{padding:20px 22px 16px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;justify-content:space-between}
+.ll-modal-name{font-size:15px;font-weight:600;color:var(--g500);margin-bottom:6px}
+.ll-modal-val{font-size:29px;font-weight:700;color:var(--g950);letter-spacing:-.04em;line-height:1}
+.ll-modal-val-lbl{font-size:14px;color:var(--g400);margin-top:4px}
+.ll-modal-body{padding:16px 22px}
+.ll-modal-why-lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--g400);margin-bottom:6px}
+.ll-modal-reason{font-size:14px;color:var(--g700);line-height:1.7;margin-bottom:10px}
+.ll-modal-condition{font-size:14px;color:var(--g500);line-height:1.6;padding:10px 12px;background:#F6F7F9;border-radius:8px;border:1px solid var(--g100)}
+.ll-modal-ft{padding:10px 22px 18px;display:flex;justify-content:flex-end}
+.ll-modal-add{height:30px;padding:0 14px;border-radius:7px;background:var(--g50);color:var(--g950);font-size:14px;font-weight:600;border:1px solid var(--g200);transition:all .12s}
+.ll-modal-add:hover{background:var(--g100);border-color:var(--g400)}
+.ll-modal-add:disabled{background:var(--grn-bg);color:var(--grn-tx);border-color:var(--grn-br);cursor:default}
+.ll-modal-close{width:28px;height:28px;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;color:var(--g400);transition:background .12s;flex:none}
+.ll-modal-close:hover{background:var(--g100);color:var(--g950)}
+
+/* Cost bar modal */
+#cb-overlay{display:none;position:fixed;top:0;left:0;right:var(--chat-w);bottom:0;z-index:599;background:rgba(0,0,0,.25);backdrop-filter:blur(1px)}
+#cb-modal{display:none;position:fixed;top:50%;left:calc(50% - var(--chat-w)/2);transform:translate(-50%,-50%);width:360px;max-width:92%;background:#fff;border-radius:16px;z-index:600;box-shadow:0 8px 40px rgba(0,0,0,.18);overflow:hidden}
+.cb-modal-hd{padding:18px 20px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:flex-start;justify-content:space-between}
+.cb-modal-label{font-size:13px;font-weight:600;color:var(--g400);margin-bottom:4px}
+.cb-modal-name{font-size:21px;font-weight:700;color:var(--g950);letter-spacing:-.025em}
+.cb-modal-close{width:28px;height:28px;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;color:var(--g400);transition:background .12s;flex:none}
+.cb-modal-close:hover{background:var(--g100);color:var(--g950)}
+.cb-modal-body{padding:16px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.cb-modal-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cb-modal-tile{background:#F6F7F9;border-radius:9px;padding:11px 13px}
+.cb-modal-tile-val{font-size:21px;font-weight:700;color:var(--g950);letter-spacing:-.025em}
+.cb-modal-tile-lbl{font-size:13px;color:var(--g400);margin-top:2px}
+.cb-modal-prize{background:#F6F7F9;border-radius:9px;padding:11px 13px;display:flex;align-items:baseline;gap:8px}
+.cb-modal-prize-val{font-size:23px;font-weight:700;color:var(--g950);letter-spacing:-.03em}
+.cb-modal-prize-gap{font-size:14px;color:var(--g400)}
+.cb-modal-detail{font-size:14px;color:var(--g700);line-height:1.7}
+.cb-modal-source{font-size:13px;color:var(--g400)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── LOG FILTER BAR ───────────────────────────────────────── */
+.lg-filter-bar{display:flex;gap:5px;flex-wrap:wrap;padding:10px 13px 8px;border-bottom:1px solid var(--g100);flex:none;background:#fff}
+.lg-fchip{height:26px;padding:0 10px;border-radius:9999px;border:1px solid var(--g150);background:#fff;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;font-family:var(--font);transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.lg-fchip:hover{border-color:var(--g400);color:var(--g700)}
+.lg-fchip.on{background:var(--g950);border-color:var(--g950);color:#fff}
+.lg-fchip .lg-fchip-dot{width:6px;height:6px;border-radius:50%}
+.lg-e{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.lg-e:last-child{border-bottom:none}
+.lg-e.lg-hidden{display:none!important}
+
+</style>
+<style id="nav36">
+.nav36{height:44px;background:#1C1C1E;border-bottom:1px solid #2C2C2E;display:flex;align-items:center;padding:0 24px;gap:12px;flex:none}
+.nav36-mark{display:flex;align-items:center;gap:8px;padding-right:18px;border-right:1px solid #3A3A3C;margin-right:6px}
+.nav36-logo{width:20px;height:20px;background:#CC0000;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.nav36-wm{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.nav36-case{font-size:15px;font-weight:600;color:#fff}
+.nav36-sector{display:inline-flex;align-items:center;gap:6px;margin-left:14px;padding:4px 11px;border-radius:9999px;background:rgba(127,178,232,.15);border:1px solid rgba(127,178,232,.35);font-size:13px;font-weight:600;color:#AEC2F0;letter-spacing:.01em}
+.nav36-right{margin-left:auto}
+.nav36-avatar{width:28px;height:28px;border-radius:50%;background:#CC0000;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+</style>
+<style id="cfc-extra">
+.na-wrap{display:flex;flex-direction:column;gap:14px;margin:16px 0 4px}
+.na-card{position:relative;background:#fff;border:1px solid var(--g100);border-radius:16px;padding:0;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.03),0 6px 20px rgba(0,0,0,.05);transition:box-shadow .18s,transform .18s,border-color .18s;cursor:pointer}
+.na-card:hover{border-color:var(--g150);box-shadow:0 2px 6px rgba(0,0,0,.05),0 12px 32px rgba(0,0,0,.08);transform:translateY(-1px)}
+.na-card.selected{border-color:var(--grn-st);box-shadow:0 0 0 3px var(--grn-bg),0 10px 30px rgba(0,0,0,.09)}
+.na-top{display:flex;align-items:center;gap:9px;padding:17px 18px 0}
+.na-tag{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--nc);padding:3px 9px;border-radius:9999px;background:var(--nc-bg);margin-right:auto}
+
+.na-pick{width:22px;height:22px;border-radius:6px;border:1.8px solid var(--g200);display:flex;align-items:center;justify-content:center;transition:all .15s;flex:none}
+.na-card.selected .na-pick{background:var(--nc);border-color:var(--nc)}
+.na-skip.selected .na-pick{background:var(--grn-st);border-color:var(--grn-st)}
+.na-skip.selected .na-pick svg{opacity:1}
+.na-pick svg{opacity:0;transition:opacity .12s}
+.na-card.selected .na-pick svg{opacity:1}
+.na-body{padding:11px 18px 17px}
+.na-title{font-size:19px;font-weight:700;color:var(--g950);letter-spacing:-.015em;line-height:1.25;margin-bottom:7px}
+.na-card.selected .na-title{color:var(--nc)}
+.na-drill{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border-top:1px solid var(--g100);font-size:13.5px;font-weight:600;color:var(--nc);cursor:pointer;transition:background .12s}
+.na-drill:hover{background:var(--nc-bg)}
+.na-head{display:flex;align-items:center;gap:10px;padding:16px 18px 0}
+.na-cat{display:flex;align-items:center;gap:9px;margin-right:auto}
+.na-cat-ic{width:30px;height:30px;border-radius:9px;background:var(--nc-bg);color:var(--nc);display:flex;align-items:center;justify-content:center;flex:none}
+.na-cat-tx{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--nc)}
+.na-stat{display:flex;align-items:baseline;gap:8px;margin:4px 0 11px}
+.na-stat-num{font-size:23px;font-weight:700;color:var(--nc);letter-spacing:-.02em;line-height:1;flex:none}
+.na-stat-lbl{font-size:13.5px;color:var(--g500);line-height:1.35}
+.na-metric-line{display:flex;align-items:baseline;gap:6px;margin-bottom:9px}
+.na-metric-num{font-size:16px;font-weight:700;color:var(--nc);letter-spacing:-.01em}
+.na-metric-lbl{font-size:13.5px;color:var(--g500);line-height:1.4}
+.na-angle{font-size:14.5px;color:var(--g600);line-height:1.55}
+.na-ev{border-top:1px solid var(--g100);padding:15px 18px 17px;display:grid;grid-template-columns:1fr 1fr;gap:18px;background:transparent}
+.na-ev-col-hd{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.na-src{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.na-src:last-child{margin-bottom:0}
+.na-src-ic{height:17px;padding:0 5px;border-radius:5px;background:#fff;border:1px solid var(--g200);display:flex;align-items:center;justify-content:center;flex:none;font-size:10px;font-weight:700;color:var(--g500);margin-top:1px;letter-spacing:.03em;white-space:nowrap}
+.na-src-tx{font-size:14.5px;color:var(--g600);line-height:1.45}
+.na-sig{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+.na-sig:last-child{margin-bottom:0}
+.na-sig-dot{width:5px;height:5px;border-radius:50%;background:var(--nc);flex:none;margin-top:6px}
+.na-sig-tx{font-size:14.5px;color:var(--g600);line-height:1.45}
+.na-sig-tx strong{color:var(--g950);font-weight:600}
+/* skip / later option */
+.na-skip{display:flex;align-items:center;gap:10px;padding:13px 16px;border:1.5px dashed var(--g200);border-radius:13px;background:transparent;cursor:pointer;transition:all .15s;margin-top:2px}
+.na-skip:hover{border-color:var(--g400);background:#F6F7F9}
+.na-skip.selected{border-style:solid;border-color:var(--grn-st);background:var(--grn-bg)}
+.na-skip-ic{width:30px;height:30px;border-radius:8px;background:var(--g50);color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none}
+.na-skip.selected .na-skip-ic{background:#fff;color:var(--grn-tx)}
+.na-skip-tx{flex:1}
+.na-skip-t{font-size:15px;font-weight:700;color:var(--g950)}
+.na-skip-s{font-size:13.5px;color:var(--g500);line-height:1.4;margin-top:1px}
+/* multi-select hint + count */
+.na-hint{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--g500);margin:2px 0 12px;line-height:1.45}
+.na-hint svg{flex:none}
+.na-alt-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin:16px 0 8px}
+.cf-msg-a.wide{max-width:92%}
+.cf-msg-a.wide .cf-bubble{width:100%}
+
+/* ══ CASE FOR CHANGE — situation card + ranked framings ══════════════════
+   Spacing on a 4pt grid. Type scale: 24/17/15/13.5/12/10.5.
+   Colour carries meaning only: red = Nike's position, accent = category. */
+
+/* ── Situation card: verdict + the three numbers behind it ── */
+.sit{background:#fff;border:1px solid var(--g150);border-radius:16px;overflow:hidden;margin-bottom:28px}
+.sit-hd{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 16px}
+.sit-badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:6px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;flex:none;margin-top:1px}
+.sit-verdict{font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--g950);line-height:1.25}
+.sit-line{font-size:13.5px;color:var(--g600);line-height:1.55;margin-top:5px}
+.sit-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--g100)}
+.sit-stat{padding:15px 20px 16px;border-right:1px solid var(--g100);cursor:pointer;position:relative;transition:background .12s;outline:none}
+.sit-stat:last-child{border-right:none}
+.sit-stat:hover{background:var(--g25)}
+.sit-stat:focus-visible{background:var(--g25);box-shadow:inset 0 0 0 2px var(--red)}
+.sit-val{font-size:25px;font-weight:800;letter-spacing:-.035em;line-height:1;color:var(--red);font-variant-numeric:tabular-nums}
+.sit-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-top:7px}
+.sit-cmp{font-size:12px;color:var(--g500);margin-top:5px;line-height:1.45}
+.sit-cmp b{color:var(--g700);font-weight:700}
+.sit-go{display:inline-flex;align-items:center;gap:3px;margin-top:9px;font-size:11px;font-weight:700;color:var(--g300);letter-spacing:.02em;transition:color .12s}
+.sit-go svg{width:11px;height:11px;transition:transform .14s}
+.sit-stat:hover .sit-go{color:var(--red)}
+.sit-stat:hover .sit-go svg{transform:translateX(2px)}
+
+/* ── Section header ── */
+.sec-hd{display:flex;align-items:baseline;gap:8px;margin-bottom:4px;flex-wrap:wrap}
+.sec-t{font-size:17px;font-weight:700;letter-spacing:-.015em;color:var(--g950)}
+.sec-c{font-size:12.5px;color:var(--g400)}
+.sec-info{width:16px;height:16px;border-radius:50%;border:1px solid var(--g200);color:var(--g400);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex:none;position:relative;top:1px;font-family:var(--font)}
+.sec-info:hover{border-color:var(--g400);color:var(--g700)}
+.sec-sub{font-size:12.5px;color:var(--g400);line-height:1.5;margin-bottom:14px}
+
+/* ── Ranked framing row ── */
+.na-wrap{display:flex;flex-direction:column;gap:8px;margin:0 0 4px}
+.cfr{display:flex;background:#fff;border:1px solid var(--g150);border-radius:13px;transition:border-color .14s,box-shadow .14s;cursor:pointer;position:relative}
+.cfr:hover{border-color:var(--g300);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.cfr.selected{border-color:var(--nc);box-shadow:0 0 0 2px var(--nc-bg)}
+
+.cfr-rail{width:48px;flex:none;display:flex;flex-direction:column;align-items:center;padding:14px 0 10px;gap:2px;border-right:1px solid var(--g50)}
+.cfr-rank{font-size:19px;font-weight:800;color:var(--g300);letter-spacing:-.03em;line-height:1;transition:color .14s}
+.cfr.selected .cfr-rank,.cfr:hover .cfr-rank{color:var(--nc)}
+/* Reorder controls are always visible — hiding them until hover made the
+   manual re-rank effectively undiscoverable. Bordered so they read as
+   buttons at rest, not just glyphs. */
+.cfr-arrows{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.cfr-arw{width:22px;height:19px;border:1px solid var(--g200);background:#fff;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g500);padding:0;
+  transition:background .12s,border-color .12s,color .12s,transform .1s}
+.cfr-arw svg{width:10px;height:10px}
+.cfr-arw svg path{stroke-width:2.2}
+.cfr-arw:hover:not(:disabled){background:var(--g950);border-color:var(--g950);color:#fff}
+.cfr-arw:active:not(:disabled){transform:scale(.9)}
+.cfr-arw:focus-visible{outline:none;box-shadow:0 0 0 2.5px rgba(26,93,170,.3)}
+.cfr-arw:disabled{opacity:.3;cursor:default;background:var(--g25)}
+
+.cfr-body{flex:1;min-width:0;padding:14px 4px 13px 14px}
+.cfr-eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.cfr-cat{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--nc)}
+.cfr-cat svg{width:13px;height:13px}
+.cfr-lead{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--grn-tx);background:var(--grn-bg);padding:2px 7px;border-radius:4px}
+.cfr-title{font-size:16.5px;font-weight:700;color:var(--g950);letter-spacing:-.015em;line-height:1.25}
+.cfr-metric{font-size:13px;color:var(--g500);margin-top:3px}
+.cfr-metric b{color:var(--g950);font-weight:700}
+.cfr-take{font-size:13.5px;color:var(--g700);line-height:1.5;margin-top:9px}
+
+/* Agent framing block on the row */
+.cfr-framing{margin-top:10px;padding:11px 13px;background:var(--nc-bg);border-radius:9px}
+.cfr-framing-l{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--nc);margin-bottom:5px}
+.cfr-framing-l svg{width:11px;height:11px}
+.cfr-framing-t{font-size:13.5px;color:var(--g700);line-height:1.55}
+.cfr-read{display:inline-flex;align-items:center;gap:4px;margin-top:8px;border:none;background:none;padding:0;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--nc);cursor:pointer}
+.cfr-read:hover{text-decoration:underline}
+
+/* Named indicators — words carry the meaning, bar is a glance aid */
+.cfr-meta{display:flex;align-items:center;gap:18px;margin-top:12px;flex-wrap:wrap}
+.cfr-ind{display:flex;flex-direction:column;gap:4px}
+.cfr-ind-l{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g300)}
+.cfr-ind-r{display:flex;align-items:center;gap:7px}
+.cfr-ind-v{font-size:12.5px;font-weight:700;letter-spacing:-.01em}
+.cfr-ind-bar{width:38px;height:3px;border-radius:2px;background:var(--g100);overflow:hidden}
+.cfr-ind-fill{height:100%;border-radius:2px}
+.cfr-reason{font-size:12px;color:var(--g400);margin-left:auto;padding-right:4px;align-self:flex-end}
+
+/* Selection interplay: a thesis and "explore" are mutually exclusive */
+.cfr.superseded{opacity:.45}
+.cf-note{display:flex;gap:9px;align-items:flex-start;padding:11px 14px;border-radius:10px;margin:10px 0 2px;background:#EBF3FD;border:1px solid #C3DCF7;color:#1A5DAA;font-size:12.5px;line-height:1.55}
+.cf-note svg{width:15px;height:15px;flex:none;margin-top:1px}
+.cf-note span{color:var(--g700)}
+.cf-note b{color:var(--g950);font-weight:700}
+.cf-note.warn{background:#FFF6E5;border-color:#E8CB92;color:#8A5A00}
+.cf-note.warn span{color:#6B4400}
+
+/* Selection control — identical to the peers tile and the analysis table:
+   circular, tinted when on, dark-green tick, generous hit target. */
+.cfr-sel{width:52px;flex:none;display:flex;align-items:flex-start;justify-content:center;padding-top:9px}
+.sel-hit{display:flex;align-items:center;justify-content:center;width:34px;height:34px;cursor:pointer;
+  border:none;background:none;padding:0;border-radius:50%;-webkit-tap-highlight-color:transparent;
+  transition:background .15s ease}
+.sel-hit:hover{background:rgba(0,0,0,.035)}
+.sel-hit:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(23,112,58,.28)}
+.sel-hit:active .sel-box{transform:scale(.9)}
+.sel-box{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--g200);background:transparent;
+  display:flex;align-items:center;justify-content:center;flex:none;
+  transition:background .16s cubic-bezier(.4,0,.2,1),border-color .16s cubic-bezier(.4,0,.2,1),transform .12s cubic-bezier(.4,0,.2,1)}
+.sel-box svg{width:10px;height:10px;opacity:0;transform:scale(.6);
+  transition:opacity .14s ease,transform .22s cubic-bezier(.34,1.56,.64,1)}
+.sel-box svg path{stroke:var(--grn-tx);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.cfr.selected .sel-box{background:var(--grn-bg);border-color:var(--grn-br)}
+.cfr.selected .sel-box svg{opacity:1;transform:scale(1)}
+.sel-hit:hover .sel-box{border-color:var(--g300)}
+.cfr:not(.selected) .sel-hit:hover .sel-box svg{opacity:.28;transform:scale(1)}
+.cfr:not(.selected) .sel-hit:hover .sel-box svg path{stroke:var(--g500)}
+.cfr.superseded .sel-box{border-color:var(--g150)}
+.na-card{background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--sh-card);cursor:pointer;transition:box-shadow .15s,transform .12s;border:1px solid var(--g100);position:relative;padding:0}
+.na-card:hover{box-shadow:var(--sh-hover);transform:translateY(-1px);border-color:var(--g150)}
+.na-card.selected{border-color:var(--grn-st);box-shadow:0 0 0 2px var(--grn-bg)}
+.na-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .15s;z-index:2;cursor:pointer;background:transparent;border:1.5px solid var(--g200)}
+.na-check:hover{border-color:var(--nc)}
+.na-check svg{opacity:0;transition:opacity .12s}
+.na-card.selected .na-check{background:var(--grn-bg);border-color:var(--grn-st)}
+.na-card.selected .na-check svg{opacity:1}
+.na-inner{padding:15px 28px 11px 14px;flex:1;display:flex;flex-direction:column;gap:8px}
+.na-cat-row{display:flex;align-items:center;gap:7px}
+.na-cat-ic{width:22px;height:22px;border-radius:7px;background:var(--nc-bg);color:var(--nc);display:flex;align-items:center;justify-content:center;flex:none}
+.na-cat-ic svg{width:12px;height:12px}
+.na-cat-tx{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--nc)}
+.na-tile-title{font-size:16px;font-weight:700;color:var(--g950);letter-spacing:-.01em;line-height:1.25}
+.na-tile-sub{font-size:13px;color:var(--g500);line-height:1.45}
+.na-tile-sub strong{color:var(--nc);font-weight:700}
+.na-tile-footer{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-top:1px solid var(--g50)}
+.na-tile-conf{font-size:12px;font-weight:600;color:var(--g400)}
+.na-tile-conf.rec{color:var(--red)}
+
+
+.cf-split-row{display:flex;flex:1;overflow:hidden;min-height:0}
+
+.share-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--g100)}
+.share-title{font-size:18px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.share-sub{font-size:13.5px;color:var(--g500);margin-top:3px}
+.share-close{width:28px;height:28px;border-radius:50%;background:var(--g50);color:var(--g500);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-close:hover{background:var(--g100);color:var(--g950)}
+.share-add{display:flex;gap:8px;padding:14px 22px}
+.share-add input{flex:1;height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 12px;font-size:15px;font-family:var(--font);outline:none}
+.share-add input:focus{border-color:var(--g500)}
+.share-add select{height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 8px;font-size:14px;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-add-btn{height:36px;padding:0 16px;border-radius:8px;background:var(--g950);color:#fff;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:var(--font)}
+.share-list{padding:0 22px;max-height:280px;overflow-y:auto}
+.share-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--g50)}
+.share-av{width:32px;height:32px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.share-main{flex:1;min-width:0}
+.share-nm{font-size:15px;font-weight:600;color:var(--g950)}
+.share-role{font-size:13px;color:var(--g400)}
+.share-permsel{height:30px;border:1px solid var(--g200);border-radius:7px;padding:0 8px;font-size:14px;font-weight:600;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-rm{width:22px;height:22px;border-radius:6px;border:none;background:none;color:var(--g300);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-rm:hover{background:var(--red-bg);color:var(--red)}
+.share-ft{display:flex;align-items:center;justify-content:space-between;padding:14px 22px 18px;border-top:1px solid var(--g100)}
+.share-link{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--g200);background:#fff;font-size:14px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.share-link:hover{border-color:var(--g400)}
+.share-done{height:34px;padding:0 18px;border-radius:8px;background:var(--red);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;font-family:var(--font)}
+.collab-perm{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:9999px}
+.collab-perm.perm-c{background:var(--grn-bg);color:var(--grn-tx)}
+.collab-perm.perm-v{background:var(--g100);color:var(--g500)}
+.collab-share-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:7px;border:1px solid var(--g200);background:#fff;font-size:12.5px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.collab-share-btn:hover{border-color:var(--g400);color:var(--g950)}
+
+
+#cf-tiles-scroll{flex:1;min-width:0}
+#cf-detail{flex:1 1 0;min-width:0}
+#mode-chat{border-left:1px solid var(--g100);flex:1 1 0;min-width:0}
+
+.cf-cta-bar{height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 28px;border-top:1px solid var(--g100);background:#fff;flex:none}
+.cf-skip{background:none;border:none;font-family:var(--font);font-size:14px;font-weight:600;color:var(--g500);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.cf-skip:hover{color:var(--g900)}
+.cf-build{height:38px;padding:0 20px;border-radius:9999px;border:none;background:var(--red);color:#fff;font-size:15px;font-weight:600;font-family:var(--font);cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity .12s}
+.cf-build:hover{opacity:.85}
+
+.cp-sugs{display:flex;gap:5px;overflow-x:auto;padding:8px 13px 2px;scrollbar-width:none;flex:none}
+.cp-sugs::-webkit-scrollbar{display:none}
+.cp-sug{font-size:11.5px;font-weight:600;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;cursor:pointer;transition:all .12s;font-family:var(--font);white-space:nowrap;flex:none}
+.cp-sug:hover{border-color:var(--g400);color:var(--g900)}
+.cp-ft{padding:10px 12px;border-top:1px solid var(--g100);flex:none;background:#fff}
+.cp-row{display:flex;gap:7px}
+.cp-inp:focus{border-color:var(--g500)}
+.cp-send{cursor:pointer}
+.cp-send:hover{background:var(--g950);color:#fff;border-color:var(--g950)}
+.cp-attach{width:38px;height:38px;border-radius:8px;background:var(--g50);color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--g150);transition:all .12s;cursor:pointer}
+.cp-attach:hover{border-color:var(--g400);color:var(--g900)}
+.src-upload-zone{border:1.5px dashed var(--g150);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .14s;margin-bottom:12px;background:var(--g25)}
+.src-upload-zone:hover{border-color:var(--g400);background:var(--g50)}
+.src-file-row2{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--g50)}
+.src-file-row2:last-child{border-bottom:none}
+.src-file-ic2{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex:none}
+.src-file-btn2{width:24px;height:24px;border-radius:6px;border:1px solid var(--g100);background:#fff;color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;transition:all .12s}
+.src-file-btn2:hover{border-color:var(--g400);color:var(--g950)}
+.src-file-btn2.del:hover{border-color:#E03C3C;color:#E03C3C}
+</style>
+<style id="navbtns-css">
+.nav-dash,.nav-share{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 13px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .12s}
+.nav-dash:hover,.nav-share:hover{background:rgba(255,255,255,.2)}
+.nav-dash{margin-right:14px}
+.nav-share{margin-right:12px}
+
+.na-skip.selected{border-style:solid !important;border-color:var(--grn-st) !important;background:var(--grn-bg) !important}
+.na-skip.selected .na-pick{background:var(--grn-st) !important;border-color:var(--grn-st) !important}
+.na-skip.selected .na-pick svg{opacity:1 !important}
+.na-skip.selected .na-skip-ic{background:#fff !important;color:var(--grn-tx) !important}
+</style>
+<style id="done-check">.step-item.s-done .step-name::after,.ss-item.s-done .ss-name::after{content:"\2713";margin-left:7px;color:#1E7D40;font-weight:800;font-size:12px;-webkit-text-stroke:0}
+.topbar{height:44px;background:#1D1D1F;border-bottom:1px solid #2C2C2E;display:flex;align-items:center;padding:0 24px;gap:0;flex:none}
+.tb-brand{display:flex;align-items:center;gap:8px;padding-right:18px;border-right:1px solid #2C2C2E;margin-right:16px}
+.tb-mark{width:22px;height:22px;background:#CC0000;border-radius:5px;display:flex;align-items:center;justify-content:center;flex:none}
+.tb-wm{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.tb-case{font-size:15px;font-weight:600;color:rgba(255,255,255,.85)}
+.tb-sector{display:inline-flex;align-items:center;gap:6px;margin-left:14px;padding:4px 11px;border-radius:9999px;background:rgba(127,178,232,.15);border:1px solid rgba(127,178,232,.35);font-size:13px;font-weight:600;color:#AEC2F0;letter-spacing:.01em}
+.tb-right{margin-left:auto;display:flex;align-items:center}
+.tb-ava{width:26px;height:26px;border-radius:50%;background:#CC0000;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+</style>
+
+<body class="chat-mode">
+<div class="shell">
+<div class="topbar">
+  <button class="nav-dash" onclick="location.href='00_dashboard.html'"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard</button>
+  <div class="tb-brand">
+    <div class="tb-mark">
+      <svg width="14" height="14" viewBox="0 0 100 100" fill="none">
+        <path d="M 72 14 A 44 44 0 1 1 28 14" stroke="white" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <polygon points="22,44 78,62 50,88" fill="white"/>
+      </svg>
+    </div>
+    <span class="tb-wm">OI 3.0</span>
+  </div>
+  <span class="tb-case">Nike, Inc.</span>
+  <span class="tb-sector" title="Detected by the agent — tailors output for this sector">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1.2l1.3 2.9 3.1.3-2.4 2 .8 3-2.8-1.7-2.8 1.7.8-3-2.4-2 3.1-.3z" fill="#7FB2E8"/></svg>
+    Sector: Consumer / Retail
+  </span>
+  <div class="tb-right"><button class="nav-share" onclick="openShareModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 6.5l4-3M4 5.5l4 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="9" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="9" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="2.5" cy="6" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Share</button><div class="tb-ava">RG</div></div>
+</div>
+
+<div class="body">
+  <div class="workspace">
+
+    <!-- STEPPER -->
+    <div class="stepper"><div class="stepper-row" id="stepper-row"></div></div>
+
+    <!-- WORKSPACE: tiles / drill detail -->
+    <div id="cf-tiles-scroll" style="flex:1;overflow-y:auto;padding:22px 28px 40px;background:#F6F7F9">
+      <div style="font-family:var(--serif);font-size:25px;font-weight:600;color:var(--g950);letter-spacing:-.01em;margin-bottom:6px">Case for change</div>
+      <div style="font-size:14.5px;color:var(--g500);line-height:1.5;margin-bottom:12px">Four ways to frame the why-now for Nike.</div>
+      <div id="cf-tiles"></div>
+    </div>
+    <!-- ANGLE DETAIL (drill-down, shown in workspace-mode) -->
+    <div id="cf-detail" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;background:#F6F7F9">
+      <div style="display:flex;align-items:center;gap:8px;padding:14px 28px;border-bottom:1px solid var(--g100);flex:none">
+        <button onclick="closeAngleDetail()" style="display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:9999px;border:1px solid var(--g200);background:#fff;font-size:14px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M8 2L4 6l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Case for change</button>
+        <span style="font-size:14px;color:var(--g200)">&rsaquo;</span>
+        <span id="cf-d-crumb" style="font-size:14px;font-weight:500;color:var(--g500)"></span>
+      </div>
+      <div id="cf-d-scroll" style="flex:1;overflow-y:auto;padding:24px 28px 44px"><div id="cf-d-body"></div></div>
+    </div>
+    <div class="cf-cta-bar">
+      <button class="cf-skip" onclick="proceedToAnalysis()">Skip this step<svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="cf-build" onclick="proceedToAnalysis()">Confirm &amp; build analysis<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+
+  </div>
+
+  <!-- CHAT PANEL (right 50%) -->
+  <div class="chat-resize-handle" id="chat-resize"></div>
+  <div class="chat-panel" id="chat-panel">
+    <div class="cp-tabs">
+      <button class="cp-tab on" id="tab-chat" onclick="cpTab('chat')">Chat</button>
+      <button class="cp-tab" id="tab-log" onclick="cpTab('log')">Log</button>
+      <button class="cp-tab" id="tab-sources" onclick="cpTab('sources')">Sources</button>
+    </div>
+    <div id="vw-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0">
+      <div class="cp-msgs-wrap" id="c-scroll"><div class="cp-msgs" id="c-msgs"></div></div>
+      <div class="cp-sugs" id="cp-sugs">
+        <button class="cp-sug" onclick="askFor(this)">Combine below-peer + fuel-growth</button>
+        <button class="cp-sug" onclick="askFor(this)">Which resonates most with a CFO?</button>
+        <button class="cp-sug" onclick="askFor(this)">Propose a different angle</button>
+      </div>
+      <div class="cp-ft">
+        
+        <div class="cp-row">
+          <button class="cp-attach" onclick="attachFile()" title="Add a document or file"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <input class="cp-inp" id="cp-inp" placeholder="Push back on an angle, or ask for another…"/>
+          <button class="cp-send" id="cp-send"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 7 2 2v4l8 1-8 1v4z" fill="currentColor"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div id="vw-log" style="display:none;flex:1;overflow-y:auto;padding:16px 18px"><div id="lg-collab"></div>
+<div class="lg-filter-bar" id="lg-filter-bar" style="margin:0 -18px 0;padding:8px 18px;border-bottom:1px solid var(--g100)">
+  <button class="lg-fchip on" data-filter="all" onclick="setLogFilter('all',this)">All</button>
+  <button class="lg-fchip" data-filter="p" onclick="setLogFilter('p',this)"><span class="lg-fchip-dot" style="background:#CC0000"></span>Partner</button>
+  <button class="lg-fchip" data-filter="c" onclick="setLogFilter('c',this)"><span class="lg-fchip-dot" style="background:#2E7FD9"></span>Collaborator</button>
+  <button class="lg-fchip" data-filter="a" onclick="setLogFilter('a',this)"><span class="lg-fchip-dot" style="background:#8E8E93"></span>Agent</button>
+  <button class="lg-fchip" data-filter="override" onclick="setLogFilter('override',this)">Overrides</button>
+  <button class="lg-fchip" data-filter="flag" onclick="setLogFilter('flag',this)">Flags</button>
+</div>
+<div id="lg-list" style="margin-top:8px"></div></div>
+    <div id="vw-sources" style="display:none;flex:1;overflow-y:auto;padding:16px 18px">
+      <div class="src-upload-zone" onclick="document.getElementById('cfc-file-input').click()">
+        <input type="file" id="cfc-file-input" multiple accept=".pdf,.xlsx,.xls,.docx,.doc,.pptx,.csv,.txt" style="display:none" onchange="handleCfcUpload(this)"/>
+        <div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:2px">Upload files</div>
+        <div style="font-size:11px;color:var(--g400)">PDF, Excel, Word, PowerPoint, CSV</div>
+      </div>
+      <div id="cfc-uploaded-list"></div>
+      <div class="src-count" id="src-count">4 active sources</div>
+      <div id="src-list"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* ─── PAGE CONFIG — Case for Change is step index 2 (after Target, Peers) ─── */
+var PAGE_CONFIG = {
+  activeStep: 2,
+  steps:[
+    {name:"Target",        sub:"Nike · CFO · $200M · 3 docs"},
+    {name:"Peers",         sub:"7 confirmed"},
+    {name:"Case for change",sub:"Choose narrative"},
+    {name:"Analysis",      sub:"Locked"},
+    {name:"Output",        sub:"Deck · export"}
+  ]
+};
+
+/* ─── NARRATIVE ANGLES — agent-proposed, each with sources + mindset signals ── */
+var ANGLES = [
+  {
+    id:"below-peer",
+    tag:"Benchmarking",
+    rank:1, qs:9, ls:8,
+    takeaway:"Nike sits 3.1pp below the adjusted peer EBITDA median \u2014 a gap that is both quantifiable and defensible. Close half of it in 18 months for $150\u2013200M of structural EBIT improvement.",
+    rankShort:"Cleanest evidence base \u00b7 CFO already primed",
+    rankWhy:"Largest quantifiable gap with the cleanest evidence base. Three independent sources, all public. CFO has named efficiency in every recent call — the client is already primed for this conversation.",
+    metric:"3.1pp",
+    metricLabel:"below the peer EBITDA median",
+    recommended:true,
+    title:"Below peers on profitability",
+    angle:"Nike's EBITDA margin sits below the adjusted peer median — a clear, benchmarkable gap that frames cost and revenue action as closing distance to peers.",
+    sources:[
+      {ic:"10-K",tx:"FY24 10-K — EBITDA margin 10.4% vs peer median 13.5%"},
+      {ic:"UBS",tx:"UBS Q3 note flags margin underperformance vs Adidas, Puma"},
+      {ic:"CALL",tx:"Q3 earnings call — CFO acknowledges margin pressure"}
+    ],
+    signals:[
+      {tx:"CFO used the word <strong>\u201cefficiency\u201d 11 times</strong> on the last two earnings calls"},
+      {tx:"Analysts repeatedly probing the <strong>gap to Adidas margins</strong>"}
+    ],
+    proposal:"Nike is operating 3.1pp below the adjusted peer EBITDA median — a gap that is both quantifiable and defensible. The CFO has flagged \"efficiency\" as a priority in every recent earnings call. The case: close half the gap in 18 months by addressing SG&A deleverage and gross margin leakage, generating $150–200M of structural EBIT improvement.",
+    levers:["SG&A rationalisation — overhead, spans and layers vs peer best-in-class","Procurement consolidation — indirect spend and agency roster reduction","DTC channel cost efficiency — fulfilment and returns vs pure-play benchmarks","Marketing ROI improvement — shift mix toward performance and reduce waste","Wholesale complexity reduction — SKU rationalisation and channel discipline","Shared services consolidation — G&A functions below peer cost ratios","IT run-cost reduction — vendor renegotiation and infrastructure right-sizing"],
+    sniffTable:[{bucket:"SG&A / overhead",baseline:"$5.2B",pct:"3–5%",value:"$156–260M",levers:["SG&A rationalisation — overhead, spans and layers vs peer best-in-class","Shared services consolidation — G&A functions below peer cost ratios","Wholesale complexity reduction — SKU rationalisation and channel discipline"]},{bucket:"Gross margin (COGS)",baseline:"$24.4B",pct:"0.5–1%",value:"$122–244M",levers:["Procurement consolidation — indirect spend and agency roster reduction","DTC channel cost efficiency — fulfilment and returns vs pure-play benchmarks","IT run-cost reduction — vendor renegotiation and infrastructure right-sizing"]},{bucket:"Marketing spend",baseline:"$4.1B",pct:"2–4%",value:"$82–164M",levers:["Marketing ROI improvement — shift mix toward performance and reduce waste"]}],
+  },
+  {
+    id:"margin-decline",
+    tag:"Trend",
+    rank:2, qs:8, ls:9,
+    takeaway:"Gross margin has compressed 250bps over three years and is now a board-level concern. Arrest the decline and restore 100\u2013150bps within two years.",
+    rankShort:"Board comp tied to recovery \u00b7 mandate exists",
+    rankWhy:"Strongest qualitative signal in the set — board compensation is tied to margin recovery, so the mandate already exists. Slightly softer on quant because the decline has multiple drivers that need unpicking.",
+    metric:"\u2212250bps",
+    metricLabel:"gross margin decline over 3 years",
+    title:"Margin erosion over time",
+    angle:"Gross and operating margins have compressed over three years. The story is about arresting a decline and restoring historical profitability, not just benchmarking.",
+    sources:[
+      {ic:"10-K",tx:"FY22\u2013FY24 10-Ks — gross margin down 250bps over 3 years"},
+      {ic:"AR",tx:"Annual report — CEO letter cites \u201cinput cost and promotional pressure\u201d"},
+      {ic:"CALL",tx:"Earnings transcripts — three consecutive quarters of margin miss"}
+    ],
+    signals:[
+      {tx:"CEO letter opens with <strong>margin recovery as priority one</strong>"},
+      {tx:"Board compensation now tied to <strong>gross margin targets</strong>"}
+    ],
+    proposal:"Gross margin has compressed 250bps over three years — the trajectory is now a board-level concern, with compensation tied to recovery targets. The case: arrest the decline and restore 100–150bps within two years by fixing product cost structure and promotional discipline. This is a \"stop the bleeding\" narrative before it becomes a strategic crisis.",
+    levers:["Direct material cost reduction — sourcing and supplier consolidation","Product cost engineering — designed-to-value and specification review","Promotional intensity reduction — markdown discipline and channel clean-up","Manufacturing yield improvement — defect and waste reduction","Freight and logistics optimisation — carrier mix and route consolidation","Inventory management — aged stock clearance without margin destruction"],
+    sniffTable:[{bucket:"COGS — direct materials",baseline:"$14.2B",pct:"1.5–3%",value:"$213–426M",levers:["Direct material cost reduction — sourcing and supplier consolidation","Product cost engineering — designed-to-value and specification review"]},{bucket:"COGS — manufacturing",baseline:"$5.1B",pct:"2–4%",value:"$102–204M",levers:["Manufacturing yield improvement — defect and waste reduction","Freight and logistics optimisation — carrier mix and route consolidation","Inventory management — aged stock clearance without margin destruction"]},{bucket:"Promotional / markdown",baseline:"$1.8B",pct:"5–10%",value:"$90–180M",levers:["Promotional intensity reduction — markdown discipline and channel clean-up"]}],
+  },
+  {
+    id:"fuel-growth",
+    tag:"Growth",
+    rank:3, qs:6, ls:7,
+    takeaway:"Nike's growth adjacencies are capital constrained while leadership signals invest-to-grow. Free up $150M+ of recurring P&L headroom, plus a one-off cash release, to self-fund the build.",
+    rankShort:"Matches leadership language \u00b7 softer $ case",
+    rankWhy:"Aligns with how leadership talks publicly — growth-first, not cost-first. But the $ case rests on estimated adjacency funding needs rather than a disclosed gap, so it is harder to defend in a first meeting.",
+    metric:"3",
+    metricLabel:"growth adjacencies to self-fund",
+    title:"Free up cash to fund growth",
+    angle:"Nike wants to invest in adjacencies (women's, running, direct) but lacks the cash headroom. The case is pulling cost out of the core to self-fund the growth agenda.",
+    sources:[
+      {ic:"AR",tx:"Annual report — strategy section names 3 growth adjacencies"},
+      {ic:"DAY",tx:"Investor day — \u201cinvest to grow\u201d framing, capital constraints noted"},
+      {ic:"PRESS",tx:"Press — leadership signalling reinvestment over buybacks"}
+    ],
+    signals:[
+      {tx:"CEO framing consistently <strong>growth-first, not cost-first</strong>"},
+      {tx:"CFO linking cost programme to <strong>\u201cfuel for growth\u201d</strong> explicitly"}
+    ],
+    proposal:"Nike's growth adjacencies — women's, running, DTC digital — are capital constrained. Leadership is signalling \"invest to grow\" but the cost base doesn't yet create that headroom. The case comes in two parts, and they are not the same currency. <b>$150M+ of recurring P&L headroom</b> from the core cost base, which funds the build every year. Plus a <b>one-off cash release</b> from working capital, which funds the first wave without touching the balance sheet. Cost reduction isn't the story — freeing up investment capacity is.",
+    levers:["Core overhead reduction to fund adjacency investment","Legacy wholesale complexity removal — free up ops bandwidth","G&A below the line — finance, HR, legal vs revenue growth","IT legacy decommissioning — release capital from run costs","SKU rationalisation in core categories — improve margin mix","Agency and external spend consolidation — retain in-house capability"],
+    sniffTable:[{bucket:"G&A (non-selling overhead)",baseline:"$2.1B",pct:"4–7%",value:"$84–147M",levers:["Core overhead reduction to fund adjacency investment","G&A below the line — finance, HR, legal vs revenue growth"]},{bucket:"IT run cost",baseline:"$1.3B",pct:"5–10%",value:"$65–130M",levers:["IT legacy decommissioning — release capital from run costs"]},{bucket:"External agency spend",baseline:"$0.9B",pct:"8–15%",value:"$72–135M",levers:["Agency and external spend consolidation — retain in-house capability","Legacy wholesale complexity removal — free up ops bandwidth","SKU rationalisation in core categories — improve margin mix"]}],
+  },
+  {
+    id:"activist",
+    tag:"Defensive",
+    rank:4, qs:5, ls:6,
+    takeaway:"Nike's valuation discount to peers makes it a credible activist target inside 18 months. Move first and control the narrative.",
+    rankShort:"Real risk \u00b7 speculative timing",
+    rankWhy:"Real risk, but speculative timing and no confirmed activist position. Useful as a supporting urgency argument rather than the lead narrative — raising it too early can read as alarmist.",
+    metric:"18mo",
+    metricLabel:"of stock underperformance vs sector",
+    title:"Pre-empt activist pressure",
+    angle:"With margins lagging and the stock underperforming, Nike has a window to move first on efficiency before an activist forces the agenda. The case is proactive control.",
+    sources:[
+      {ic:"MKT",tx:"Stock down vs sector over 18 months — underperformance visible"},
+      {ic:"PRESS",tx:"Press — speculation on activist interest in underperforming names"},
+      {ic:"UBS",tx:"Analyst note raises \u201cvalue unlock\u201d question"}
+    ],
+    signals:[
+      {tx:"Board recently added <strong>capital-allocation expertise</strong>"},
+      {tx:"IR tone shifting toward <strong>proactive margin commitments</strong>"}
+    ],
+    proposal:"With 18 months of underperformance vs the sector and analysts raising \"value unlock\" publicly, Nike is in the activist window. Moving first on efficiency credibly — not defensively — allows management to control the narrative. The case: announce a programme with a quantified $180–220M target before the story shifts from \"strategic\" to \"reactive\".",
+    levers:["Visible overhead reduction — headline SG&A savings story for investors","Margin improvement programme — gross margin recovery commitments","Capital returns optionality — cost savings enabling buyback or dividend step-up","Portfolio simplification — divest or wind down underperforming units","Executive layer reduction — signals accountability and cost seriousness","Supply chain simplification — reduce working capital and complexity","Governance and reporting improvements — address investor information gaps"],
+    sniffTable:[{bucket:"SG&A headline reduction",baseline:"$5.2B",pct:"3–4%",value:"$156–208M",levers:["Visible overhead reduction — headline SG&A savings story for investors","Executive layer reduction — signals accountability and cost seriousness"]},{bucket:"Portfolio / non-core",baseline:"TBD",pct:"Qualitative",value:"Signal value",levers:["Portfolio simplification — divest or wind down underperforming units","Governance and reporting improvements — address investor information gaps"]},{bucket:"Working capital release",baseline:"$2.8B NWC",pct:"5–8% NWC",value:"$140–224M",levers:["Supply chain simplification — reduce working capital and complexity","Capital returns optionality — cost savings enabling buyback or dividend step-up","Margin improvement programme — gross margin recovery commitments"]}],
+  }
+];
+
+var selectedAngles=[];
+var deferMode=null; // null | "explore"
+
+/* ─── STEPPER ─────────────────────────────────────────────────────────────── */
+function navTo(idx){ /* prototype: navigation stub */ }
+function initStepper(){
+  var row=document.getElementById("stepper-row");var active=PAGE_CONFIG.activeStep;
+  PAGE_CONFIG.steps.forEach(function(step,i){
+    if(i>0){var d=document.createElement("div");d.className="step-div";row.appendChild(d);}
+    var el=document.createElement("div");
+    var state=i<active?"s-done":i===active?"s-active":"s-locked";
+    el.className="step-item "+state;el.id="step-"+i;
+    var numTxt="0"+(i+1);
+    el.innerHTML='<div class="step-num">'+numTxt+'</div><div class="step-name">'+step.name+'</div><div class="step-sub">'+step.sub+'</div>';
+    if(state==="s-done"||state==="s-active")el.addEventListener("click",function(){navTo(i);});
+    row.appendChild(el);
+  });
+}
+
+/* ─── CHAT HELPERS ────────────────────────────────────────────────────────── */
+function scrollCF(){var s=document.getElementById("cf-scroll");if(s)s.scrollTop=s.scrollHeight;}
+
+/* ─── FULL-CHAT TABS: Chat / Log / Sources ────────────────────────────────── */
+function cfTab(id){
+  ["chat","log","sources"].forEach(function(t){var b=document.getElementById("cft-"+t);if(b)b.classList.toggle("on",t===id);});
+  var _cs=document.getElementById("cf-scroll");if(_cs)_cs.style.display=id==="chat"?"":"none";
+  var _ci=document.getElementById("cf-input-outer");if(_ci)_ci.style.display=id==="chat"?"":"none";
+  var _cl=document.getElementById("cf-log");if(_cl)_cl.style.display=id==="log"?"":"none";
+  var _cx=document.getElementById("cf-sources");if(_cx)_cx.style.display=id==="sources"?"":"none";
+}
+
+/* ─── COLLABORATORS (log) ─────────────────────────────────────────────────── */
+var COLLABORATORS=[
+  {nm:"Raema Grover",in:"RG",role:"Design lead",last:"Active now",online:true,edits:6,perm:"Contributor"},
+  {nm:"Joanna Soh",in:"JS",role:"Design manager",last:"8 min ago",online:true,edits:2,perm:"Contributor"},
+  {nm:"Noah Wells",in:"NW",role:"Product owner",last:"Yesterday",online:false,edits:1,perm:"Viewer"},
+  {nm:"Kasia Mrowca",in:"KM",role:"Stakeholder",last:"3 days ago",online:false,edits:0,perm:"Viewer"}
+];
+function buildCollaborators(){
+  var el=document.getElementById("lg-collab");if(!el)return;
+  var active=COLLABORATORS.filter(function(c){return c.online;}).length;
+  el.innerHTML='<div class="collab-panel">'+
+    '<div class="collab-hd"><div class="collab-t">Shared with '+COLLABORATORS.length+'</div></div>'+
+    COLLABORATORS.map(function(c){
+      return '<div class="collab-row">'+
+        '<div class="collab-av">'+c.in+(c.online?'<span class="collab-on"></span>':'')+'</div>'+
+        '<div class="collab-main"><div class="collab-nm">'+c.nm+'</div><div class="collab-role">'+c.role+'</div></div>'+
+        '<div class="collab-meta"><span class="collab-perm '+(c.perm==="Viewer"?"perm-v":"perm-c")+'">'+(c.perm||"Contributor")+'</span><div class="collab-last" style="margin-top:5px">'+c.last+'</div></div>'+
+      '</div>';
+    }).join('')+
+    '<div class="collab-foot">Contributors can edit; viewers can view &amp; comment only.</div>'+
+  '</div>';
+}
+function logEntry(type,who,txt){
+  var l=document.getElementById("lg-list");if(!l)return;
+  var el=document.createElement("div");
+  el.className="lg-e"; el.dataset.type=type; el.dataset.txt=txt.replace(/<[^>]+>/g,'');
+  el.style.cssText="display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)";
+  var col=type==="p"?"var(--g950)":type==="a"?"var(--red)":"var(--g300)";
+  el.innerHTML='<div style="width:7px;height:7px;border-radius:50%;background:'+col+';margin-top:5px;flex:none"></div>'+
+    '<div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--g950)">'+who+'</div><div style="font-size:14px;color:var(--g500);line-height:1.5;margin-top:1px">'+txt+'</div><div style="font-size:12px;color:var(--g300);margin-top:2px">Just now</div></div>';
+  l.insertBefore(el,l.firstChild);
+  applyLogFilter();
+}
+
+/* ─── SOURCES ─────────────────────────────────────────────────────────────── */
+var extraSources=[];
+var CFC_UPLOADS=[
+  {name:'Nike_FY24_Annual_Report.pdf',size:4817203,icon:'PDF',iconColor:'#E03C3C',iconBg:'#FFEAEA',date:'Added 2 days ago',url:null},
+  {name:'Nike_CFO_Priorities_Q1FY25.docx',size:284160,icon:'DOC',iconColor:'#1E4DB0',iconBg:'#E8EEFF',date:'Added 1 day ago',url:null}
+];
+function cfcFmtBytes(b){if(b<1024)return b+'B';if(b<1048576)return Math.round(b/1024)+'KB';return (b/1048576).toFixed(1)+'MB';}
+function buildCfcUploaded(){
+  var el=document.getElementById('cfc-uploaded-list');if(!el)return;
+  if(!CFC_UPLOADS.length){el.innerHTML='';return;}
+  var h='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:7px">Uploaded files ('+CFC_UPLOADS.length+')</div>';
+  h+='<div style="margin-bottom:12px">';
+  CFC_UPLOADS.forEach(function(f,i){
+    h+='<div class="src-file-row2">'+
+      '<div class="src-file-ic2" style="background:'+f.iconBg+';color:'+f.iconColor+'">'+f.icon+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12.5px;font-weight:600;color:var(--g950);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div>'+
+        '<div style="font-size:11px;color:var(--g400);margin-top:1px">'+cfcFmtBytes(f.size)+' · '+f.date+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:4px;flex:none">'+
+        '<button class="src-file-btn2" onclick="viewCfcFile('+i+')" title="View"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4.5 6-4.5S13 7 13 7s-2.5 4.5-6 4.5S1 7 1 7z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.2"/></svg></button>'+
+        '<button class="src-file-btn2 del" onclick="deleteCfcFile('+i+')" title="Delete"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2.5 4h9M5 4V3h4v1M4 4l.5 7h5l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+      '</div>'+
+    '</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+}
+function viewCfcFile(i){var f=CFC_UPLOADS[i];if(!f)return;if(f.url)window.open(f.url,'_blank');else cfAgent('<strong>'+f.name+'</strong> is indexed into the analysis.');}
+function deleteCfcFile(i){var f=CFC_UPLOADS[i];if(!f)return;if(f.url)URL.revokeObjectURL(f.url);CFC_UPLOADS.splice(i,1);buildCfcUploaded();cfAgent('<strong>'+f.name+'</strong> removed from sources.');}
+function handleCfcUpload(input){
+  if(!input.files||!input.files.length)return;
+  Array.from(input.files).forEach(function(f){
+    if(CFC_UPLOADS.find(function(u){return u.name===f.name;}))return;
+    var ext=f.name.split('.').pop().toLowerCase();
+    var ic={pdf:'PDF',xlsx:'XLS',xls:'XLS',docx:'DOC',doc:'DOC',pptx:'PPT',csv:'CSV',txt:'TXT'};
+    var co={pdf:'#E03C3C',xlsx:'#1A7A4A',xls:'#1A7A4A',docx:'#1E4DB0',doc:'#1E4DB0',pptx:'#B05A00',csv:'#1A7A4A',txt:'#636366'};
+    var bg={pdf:'#FFEAEA',xlsx:'#E4F5EB',xls:'#E4F5EB',docx:'#E8EEFF',doc:'#E8EEFF',pptx:'#FFF0E0',csv:'#E4F5EB',txt:'#F2F2F7'};
+    CFC_UPLOADS.push({name:f.name,size:f.size,icon:ic[ext]||ext.slice(0,3).toUpperCase(),iconColor:co[ext]||'#636366',iconBg:bg[ext]||'#F2F2F7',date:'Added just now',url:URL.createObjectURL(f)});
+  });
+  input.value='';buildCfcUploaded();
+  cfAgent('Added to your sources \u2014 I\'ll fold it into the angle analysis.');
+}
+function buildSources(){
+  var base=[
+    {ic:"NK",l:"Nike 10-K",d:"FY22\u2013FY24 filings",cat:"fin",up:"Updated 3 wks ago"},
+    {ic:"EC",l:"Earnings transcripts",d:"Last 4 quarterly calls",cat:"fin",up:"Updated 2 wks ago"},
+    {ic:"LT",l:"CEO & chairman letters",d:"Shareholder letters FY23\u201324",cat:"fin",up:"Updated 1 mo ago"},
+    {ic:"AN",l:"Analyst notes",d:"UBS, Morgan Stanley \u00b7 athletic sector",cat:"mkt",up:"Updated May 2026"},
+    {ic:"PR",l:"Recent press",d:"Trade + financial press \u00b7 last 90 days",cat:"mkt",up:"Updated 4 days ago"}
+  ];
+  var S=base.concat(extraSources.map(function(s){
+    var cat=s.ic==="WB"?"mkt":s.ic==="UP"?"up":"bain";
+    return {ic:s.ic,l:s.l,d:s.d,cat:cat,up:s.up||"Added just now"};
+  }));
+  var CATS=[
+    {id:"fin",label:"Filings & disclosures",dot:"var(--blue-tx)"},
+    {id:"mkt",label:"Analyst & market",dot:"var(--amb-tx)"},
+    {id:"bain",label:"Bain knowledge",dot:"var(--red)"},
+    {id:"up",label:"Uploaded",dot:"#2A9E52"}
+  ];
+  var cnt=document.getElementById("src-count");if(cnt)cnt.textContent=S.length+" active sources";
+  var html="";
+  CATS.forEach(function(c){
+    var items=S.filter(function(s){return s.cat===c.id;});if(!items.length)return;
+    html+='<div class="src-cat"><span class="src-cat-dot" style="background:'+c.dot+'"></span>'+c.label+'</div>';
+    html+=items.map(function(s){
+      return '<div class="src-row">'+
+        '<div class="src-ic">'+s.ic+'</div>'+
+        '<div class="src-main"><div class="src-nm">'+s.l+'</div><div class="src-d">'+s.d+'</div><div class="src-date">'+s.up+'</div></div>'+
+        '<button class="src-refresh" title="Refresh source" onclick="refreshSource(\''+s.l.replace(/'/g,"\\'")+'\',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M12 7a5 5 0 1 1-1.6-3.7M12 1.8v2.6H9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+      '</div>';
+    }).join('');
+  });
+  document.getElementById("src-list").innerHTML=html;
+}
+function refreshSource(name,btn){
+  cfAgent("<p>Pulling the latest from <strong>"+name+"</strong>. I'll reflag anything that shifts the read on leadership priorities.</p>");
+  var row=btn.closest(".src-row");if(row){var d=row.querySelector(".src-date");if(d)d.textContent="Updated just now";}
+  logEntry("a","Agent","Refreshed source \u00b7 "+name);
+}
+function attachFile(){
+  var names=["CFO_call_notes.docx","Board_deck_extract.pdf","Activist_letter.pdf"];
+  var n=names[(window._attachN||0)%names.length];window._attachN=(window._attachN||0)+1;
+  cfUser("Added <strong>"+n+"</strong>");
+  extraSources.push({ic:"UP",l:n,d:"Uploaded via chat \u00b7 just now"});
+  buildSources();
+  logEntry("p","You","Attached "+n+" via chat");
+  setTimeout(function(){cfAgent("<p>Got <strong>"+n+"</strong>, it's in your Sources now. I'll fold it into the read on what leadership cares about, it may sharpen or reorder the angles.</p>");},450);
+}
+function cfAgent(html,wide){
+  var m=document.getElementById("c-msgs");if(!m)return;
+  var el=document.createElement("div");el.className="msg-a";
+  el.innerHTML='<div class="msg-a-b"><div class="msg-a-t">'+html+'</div></div><div class="msg-tm">Just now</div>';
+  m.appendChild(el);var sc=document.getElementById("c-scroll");if(sc)sc.scrollTop=sc.scrollHeight;
+}
+function cfUser(txt){
+  var m=document.getElementById("c-msgs");if(!m)return;
+  var el=document.createElement("div");el.style.cssText="display:flex;justify-content:flex-end;margin:8px 0";
+  el.innerHTML='<div style="background:var(--g900,#1d1d1f);color:#fff;border-radius:12px 12px 2px 12px;padding:9px 13px;font-size:14.5px;line-height:1.5;max-width:82%">'+txt+'</div>';
+  m.appendChild(el);var sc=document.getElementById("c-scroll");if(sc)sc.scrollTop=sc.scrollHeight;
+}
+/* side chat */
+function sideAgent(txt){var m=document.getElementById("c-msgs");if(m){var el=document.createElement("div");el.className="msg-a";el.innerHTML='<div class="msg-a-b"><div class="msg-a-t">'+txt+'</div></div><div class="msg-tm">Just now</div>';m.appendChild(el);var s=document.getElementById("c-scroll");if(s)s.scrollTop=s.scrollHeight;}if(typeof logEntry==="function")logEntry("a","Agent",txt);}
+
+/* ─── RENDER NARRATIVE ANGLES ─────────────────────────────────────────────── */
+var ANGLE_COLORS={
+  "Growth":      {st:"#2A9E52", bg:"#E7F6EC", br:"#A9DCB6"},
+  "Defensive":   {st:"#3060C4", bg:"#E7EDFB", br:"#AEC2F0"},
+  "Benchmarking":{st:"#2A9188", bg:"#E4F4F1", br:"#97D3CB"},
+  "Trend":       {st:"#7D53CE", bg:"#F1EAFB", br:"#CFB6EE"}
+};
+var ANGLE_ICONS={
+  "Growth":      '<svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M2 9.5L5.5 6l2 2L12 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 3.5h3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  "Defensive":   '<svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 1.5l4 1.5v3.3c0 2.8-1.7 4.9-4 5.7-2.3-.8-4-2.9-4-5.7V3z" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/><path d="M5.2 7l1.3 1.3L9 5.8" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  "Benchmarking":'<svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M2.6 11.5V8M7 11.5V3.5M11.4 11.5V6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  "Trend":       '<svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M2 8.6l2.5-3 2 1.8 3-4.4L12 6.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+var userOrder = null;            // set once the partner re-orders
+
+/* Named scales — words carry meaning, numbers stay internal to the ranking.
+   evidence  = how defensible the number is (public, sourced, quantifiable)
+   readiness = how primed the client is to hear it (calls, board signals) */
+function evidenceLabel(s){ return s>=8?{t:"Strong",c:"#0D6E3F"}:s>=6?{t:"Moderate",c:"#8A5A00"}:{t:"Limited",c:"var(--g500)"}; }
+function readinessLabel(s){ return s>=8?{t:"High",c:"#0D6E3F"}:s>=6?{t:"Moderate",c:"#8A5A00"}:{t:"Low",c:"var(--g500)"}; }
+function indicator(label,scale,score){
+  return '<div class="cfr-ind"><div class="cfr-ind-l">'+label+'</div>'+
+    '<div class="cfr-ind-r"><span class="cfr-ind-v" style="color:'+scale.c+'">'+scale.t+'</span>'+
+    '<span class="cfr-ind-bar"><span class="cfr-ind-fill" style="width:'+(score*10)+'%;background:'+scale.c+'"></span></span></div></div>';
+}
+
+/* Agent order: strongest combined evidence first. Stable on rank as tiebreak. */
+function agentOrder(){
+  return ANGLES.slice().sort(function(a,b){
+    var sa=(a.qs||0)+(a.ls||0), sb=(b.qs||0)+(b.ls||0);
+    return sb!==sa ? sb-sa : (a.rank||99)-(b.rank||99);
+  }).map(function(a){return a.id;});
+}
+function currentOrder(){ return (userOrder||agentOrder()).slice(); }
+
+function redrawAngles(){
+  document.getElementById("cf-tiles").innerHTML=renderAngles();
+  syncSelectionUI(false);
+}
+
+function moveAngle(id,dir){
+  if(!userOrder) userOrder=agentOrder();
+  var i=userOrder.indexOf(id), j=i+dir;
+  if(i<0||j<0||j>=userOrder.length) return;
+  userOrder[i]=userOrder.splice(j,1,userOrder[i])[0];
+  redrawAngles();
+}
+function resetRanking(){ userOrder=null; redrawAngles(); }
+
+/* ── Situation: the three numbers that justify the verdict ───────────────── */
+/* Severity is a heat gradient, not decoration — it ranks how damning each
+   number is, so the partner reads the worst one first. */
+var SEV={
+  critical:{t:"Critical", fg:"#B00020", bg:"#FDF2F3", br:"#F1C4C9", chipBg:"#F8DADE"},
+  severe:  {t:"Severe",   fg:"#B4460B", bg:"#FFF6F0", br:"#F2CFB8", chipBg:"#FAE2D2"},
+  material:{t:"Material", fg:"#8A5A00", bg:"#FFFBEF", br:"#EBD9A5", chipBg:"#F7EBC8"}
+};
+
+var SITUATION=[
+  {k:"tsr", sev:"critical", v:"\u221219%", l:"3-year TSR",
+   peer:"+24%", peerLbl:"peer median", tail:"only negative name in the set"},
+  {k:"sga_growth", sev:"severe", v:"6.6pp", l:"Cost-to-revenue growth gap",
+   peer:"+2.3pp", peerLbl:"peers, inverted", tail:"SG&A +7.8% vs revenue +1.2%"},
+  {k:"sga_ratio", sev:"material", v:"34.2%", l:"SG&A as % of revenue",
+   peer:"28.2%", peerLbl:"peer median", tail:"6pp gap worth ~$310M"}
+];
+
+/* ══ Chart primitives for metric deep-dives ═══════════════════════════════ */
+var CH_NS="http://www.w3.org/2000/svg";
+function cEl(t,a){var e='<'+t;for(var k in a)e+=' '+k+'="'+a[k]+'"';return e+'/>';}
+function cTx(x,y,s,a){var o='<text x="'+x+'" y="'+y+'"';for(var k in (a||{}))o+=' '+k+'="'+a[k]+'"';return o+'>'+s+'</text>';}
+
+/* Indexed multi-series line chart with optional band and event markers */
+function lineChart(o){
+  var W=o.w||660,H=o.h||300,PL=44,PR=o.pr||96,PT=14,PB=42;
+  var iw=W-PL-PR, ih=H-PT-PB;
+  var lo=o.yMin, hi=o.yMax, n=o.labels.length;
+  var X=function(i){return PL+(i/(n-1))*iw;};
+  var Y=function(v){return PT+ih-((v-lo)/(hi-lo))*ih;};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;overflow:visible" xmlns="'+CH_NS+'">';
+  (o.ticks||[]).forEach(function(t){
+    var y=Y(t);
+    s+=cEl('line',{x1:PL,y1:y,x2:PL+iw,y2:y,stroke:(t===o.baseAt?'#C7C7CC':'#EDEDF0'),'stroke-width':1,'stroke-dasharray':(t===o.baseAt?'none':'3 4')});
+    s+=cTx(PL-8,y+4,t+(o.ySuffix||''),{'font-family':'system-ui','font-size':10.5,fill:'#AEAEB2','text-anchor':'end'});
+  });
+  o.labels.forEach(function(l,i){
+    if(o.labelEvery&&i%o.labelEvery!==0&&i!==n-1)return;
+    s+=cTx(X(i),PT+ih+18,l,{'font-family':'system-ui','font-size':10,fill:'#AEAEB2','text-anchor':'middle'});
+  });
+  if(o.band){
+    var a=o.series[o.band[0]].v,bb=o.series[o.band[1]].v,d='';
+    a.forEach(function(v,i){d+=(i?'L':'M')+X(i)+','+Y(v);});
+    for(var i=bb.length-1;i>=0;i--) d+='L'+X(i)+','+Y(bb[i]);
+    s+=cEl('path',{d:d+'Z',fill:o.bandFill||'#CC0000','fill-opacity':.07});
+  }
+  o.series.forEach(function(se){
+    var d='';se.v.forEach(function(v,i){d+=(i?'L':'M')+X(i)+','+Y(v);});
+    s+=cEl('path',{d:d,fill:'none',stroke:se.c,'stroke-width':se.w||1.6,'stroke-dasharray':se.dash||'none','stroke-opacity':se.o||1,'stroke-linejoin':'round','stroke-linecap':'round'});
+    var lx=X(n-1),ly=Y(se.v[n-1]);
+    if(se.lead) s+=cEl('circle',{cx:lx,cy:ly,r:3.4,fill:'#fff',stroke:se.c,'stroke-width':2});
+    s+=cTx(lx+8,ly+(se.dy||0)+3.5,se.name,{'font-family':'system-ui','font-size':10.5,'font-weight':(se.lead?700:500),fill:se.c});
+    if(se.endLabel) s+=cTx(lx+8,ly+(se.dy||0)+15,se.endLabel,{'font-family':'system-ui','font-size':10,'font-weight':700,fill:se.c,'fill-opacity':.85});
+  });
+  (o.events||[]).forEach(function(ev){
+    var x=X(ev.i);
+    s+=cEl('line',{x1:x,y1:PT,x2:x,y2:PT+ih,stroke:'#8E8E93','stroke-width':1,'stroke-dasharray':'2 3','stroke-opacity':.55});
+    s+=cEl('circle',{cx:x,cy:PT+2,r:7,fill:'#48484A'});
+    s+=cTx(x,PT+5.5,ev.n,{'font-family':'system-ui','font-size':9,'font-weight':700,fill:'#fff','text-anchor':'middle'});
+  });
+  return s+'</svg>';
+}
+
+function eventKey(evts,A){
+  return '<div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g50)">'+
+    evts.map(function(e){
+      return '<div style="display:flex;gap:6px;align-items:flex-start;max-width:290px">'+
+        '<span style="width:15px;height:15px;border-radius:50%;background:'+(A||'#48484A')+';color:#fff;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none;margin-top:1px">'+e.n+'</span>'+
+        '<span style="font-size:11.5px;color:var(--g600);line-height:1.45">'+e.t+'</span></div>';
+    }).join('')+'</div>';
+}
+
+/* Attribution waterfall — what a headline number decomposes into */
+function attribChart(rows,total,totalLabel,A){
+  var W=660,H=186,PL=8,base=112,span=0,run=0;
+  rows.forEach(function(r){run+=r.v; span=Math.max(span,Math.abs(run),Math.abs(r.v));});
+  var scale=Math.min(2.6,74/Math.max(span,1));
+  var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;overflow:visible" xmlns="'+CH_NS+'">';
+  s+=cEl('line',{x1:PL,y1:base,x2:W-8,y2:base,stroke:'#D1D1D6','stroke-width':1});
+  var colW=(W-PL-16)/(rows.length+1);
+  run=0;
+  rows.forEach(function(r,i){
+    var x=PL+colW*i+colW*0.22, bw=colW*0.56;
+    var y0=base-run*scale, y1=base-(run+r.v)*scale;
+    var top=Math.min(y0,y1), hgt=Math.max(Math.abs(y1-y0),2);
+    s+=cEl('rect',{x:x,y:top,width:bw,height:hgt,rx:3,fill:r.v<0?(A||'#CC0000'):'#0D6E3F','fill-opacity':.85});
+    s+=cEl('line',{x1:x,y1:y1,x2:x+bw+colW*0.44,y2:y1,stroke:'#C7C7CC','stroke-width':1,'stroke-dasharray':'3 3'});
+    s+=cTx(x+bw/2,(r.v<0?top+hgt+14:top-8),(r.v>0?'+':'\u2212')+Math.abs(r.v)+'pp',{'font-family':'system-ui','font-size':11.5,'font-weight':700,fill:r.v<0?(A||'#CC0000'):'#0D6E3F','text-anchor':'middle'});
+    r.l.split('\n').forEach(function(p,pi){
+      s+=cTx(x+bw/2,base+21+pi*12,p,{'font-family':'system-ui','font-size':10.5,fill:'#636366','text-anchor':'middle'});
+    });
+    run+=r.v;
+  });
+  var tx=PL+colW*rows.length+colW*0.22, tw=colW*0.56;
+  var ty=base-run*scale, tTop=Math.min(base,ty), tH=Math.max(Math.abs(base-ty),2);
+  s+=cEl('rect',{x:tx,y:tTop,width:tw,height:tH,rx:3,fill:'#1C1C1E'});
+  s+=cTx(tx+tw/2,(run<0?tTop+tH+14:tTop-8),(run<0?'\u2212':'+')+Math.abs(total)+'pp',{'font-family':'system-ui','font-size':12.5,'font-weight':800,fill:'#1C1C1E','text-anchor':'middle'});
+  totalLabel.split('\n').forEach(function(p,pi){
+    s+=cTx(tx+tw/2,base+21+pi*12,p,{'font-family':'system-ui','font-size':10.5,'font-weight':700,fill:'#1C1C1E','text-anchor':'middle'});
+  });
+  return s+'</svg>';
+}
+
+/* Comparison table — Nike row emphasised */
+function miniTable(cols,rows,A,ASOFT){
+  var th=cols.map(function(c,i){return '<th style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);text-align:'+(i?'right':'left')+';padding:0 0 9px;border-bottom:1.5px solid '+(A||'var(--g100)')+'">'+c+'</th>';}).join('');
+  var tb=rows.map(function(r){
+    var tgt=r[0].indexOf('Nike')===0, med=r[0].indexOf('Peer median')===0;
+    return '<tr'+(tgt?' style="background:'+(ASOFT||'#FDF4F4')+'"':(med?' style="background:var(--g25)"':''))+'>'+r.map(function(c,i){
+      return '<td style="font-size:12.5px;padding:9px '+(i?'0':'8px')+' 9px '+(i?'0':'8px')+';border-bottom:1px solid var(--g50);text-align:'+(i?'right':'left')+';color:'+(tgt?(A||'var(--g950)'):(med?'var(--g700)':'var(--g600)'))+';font-weight:'+((tgt||med)?'700':'400')+'">'+c+'</td>';
+    }).join('')+'</tr>';
+  }).join('');
+  return '<table style="width:100%;border-collapse:collapse"><thead><tr>'+th+'</tr></thead><tbody>'+tb+'</tbody></table>';
+}
+
+/* ── Metric deep-dives ────────────────────────────────────────────────────
+   Each situation tile opens a full evidence page: the path the metric took,
+   what the number decomposes into, the peer table, sourcing and caveats. */
+
+var Q_LABELS=["Jun 21","Sep 21","Dec 21","Mar 22","Jun 22","Sep 22","Dec 22","Mar 23","Jun 23","Sep 23","Dec 23","Mar 24","Jun 24"];
+
+var SIT_DETAIL={
+
+  /* ── 1. TSR ── */
+  tsr:{
+    accent:"#B00020", accentBg:"#FDF2F3", accentBr:"#F1C4C9", accentSoft:"#FBE7E9",
+    title:"3-year total shareholder return",
+    value:"\u221219%", valueLabel:"Nike \u00b7 Jun 2021 \u2013 Jun 2024",
+    reading:"Nike is the only name in the peer set with a negative three-year return, finishing 43 percentage points below the peer median. The gap opened in the second half of FY22 and has not closed since \u2014 this is a sustained de-rating, not a single bad quarter.",
+    chartTitle:"Total return indexed to 100 at 30 June 2021",
+    chartNote:"Includes reinvested dividends. Rebased so every line starts at 100 \u2014 the vertical distance at the right edge is the three-year return.",
+    chart:function(){
+      return lineChart({
+        labels:Q_LABELS, labelEvery:2, yMin:50, yMax:230, ticks:[50,100,150,200], baseAt:100,
+        band:[0,1], bandFill:"#B00020",
+        series:[
+          {name:"Peer median", v:[100,104,98,92,88,96,104,110,108,112,118,122,124], c:"#8E8E93", w:1.8, dash:"5 4", endLabel:"+24%", lead:true},
+          {name:"Nike",        v:[100,108,95,82,74,88,96,91,85,79,88,84,81],        c:"#B00020", w:2.6, endLabel:"\u221219%", lead:true, dy:4},
+          {name:"On Running",  v:[100,130,118,96,88,112,140,158,172,168,190,205,212],c:"#0D6E3F", w:1.4, o:.55, endLabel:"+112%"},
+          {name:"Adidas",      v:[100,96,82,68,58,66,78,90,96,104,118,124,128],      c:"#1A5DAA", w:1.4, o:.5, endLabel:"+28%", dy:-12}
+        ],
+        events:[{i:3,n:"1"},{i:6,n:"2"},{i:9,n:"3"}]
+      });
+    },
+    chartEvents:[
+      {n:"1",t:"Mar 22 \u2014 China lockdowns and inventory build; first guidance cut of the cycle."},
+      {n:"2",t:"Dec 22 \u2014 markdown-led clearance restores volume but sets the margin reset."},
+      {n:"3",t:"Sep 23 \u2014 DTC growth stalls; multiple compresses as the growth story is questioned."}
+    ],
+    attribTitle:"What the \u221219% is made of",
+    attribNote:"Return decomposed into earnings growth, change in the earnings multiple, and dividends. Nike's operating performance was mildly positive \u2014 almost the entire loss is the market re-rating the business down.",
+    attrib:{rows:[{l:"EPS\ngrowth",v:6},{l:"Multiple\nre-rating",v:-28},{l:"Dividends\n& buyback",v:3}],total:19,label:"3-year\nTSR"},
+    tableTitle:"Peer set \u00b7 three-year return and what drove it",
+    tableCols:["Company","3yr TSR","EPS growth","Multiple change","Fwd P/E now"],
+    tableRows:[
+      ["On Running","+112%","+64%","+29%","41.2x"],
+      ["Lululemon","+41%","+38%","+2%","24.8x"],
+      ["Adidas","+28%","\u22124%","+30%","33.6x"],
+      ["Peer median","+24%","+11%","+9%","26.4x"],
+      ["Puma","\u22128%","+3%","\u221211%","18.1x"],
+      ["Nike","\u221219%","+6%","\u221228%","21.7x"]
+    ],
+    why:"TSR is the measure the board and the market judge management on, which makes it the most direct answer to \u201cwhy does Nike need help now\u201d. It is also the hardest number for a client to argue with \u2014 it is not an estimate, an allocation or a benchmark adjustment, it is the return the owners actually received. The decomposition sharpens it further: because the loss is multiple compression rather than earnings, the market is pricing in a structural problem, not a bad year. That is precisely the argument for a transformation rather than a cost exercise.",
+    evidence:[
+      {ic:"CapIQ",tx:"Total return including reinvested dividends, 30 Jun 2021 \u2013 30 Jun 2024, S&P Capital IQ, quarterly close"},
+      {ic:"10-K", tx:"Nike FY24 10-K \u2014 stock performance graph confirms underperformance vs both the S&P 500 and the peer index"},
+      {ic:"CapIQ",tx:"EPS and forward multiple decomposition derived from consensus estimates at each period end"},
+      {ic:"UBS",  tx:"UBS Q3 note \u2014 attributes de-rating to margin and growth concerns rather than sector rotation"}
+    ],
+    caveat:"On Running's return is flattered by a 2021 IPO base. Excluding it the peer median is +24% and Nike's gap is unchanged, so the conclusion holds either way \u2014 but expect the client to raise it. The window also starts near Nike's all-time high; measured from Jun 2019 the gap narrows to roughly 28pp."
+  },
+
+  /* ── 2. SG&A vs revenue growth ── */
+  sga_growth:{
+    accent:"#B4460B", accentBg:"#FFF6F0", accentBr:"#F2CFB8", accentSoft:"#FCEADD",
+    title:"SG&A growth against revenue growth",
+    value:"6.6pp", valueLabel:"Nike cost-to-revenue growth gap \u00b7 3yr CAGR",
+    reading:"Nike's overhead is compounding at 7.8% a year while revenue grows at 1.2%. Across the peer set the relationship is inverted, with revenue outpacing SG&A by 2.3pp. Three years of that divergence is roughly $2.6B of cost the business did not grow into.",
+    chartTitle:"Revenue and SG&A indexed to 100 at FY21",
+    chartNote:"The shaded area is the deleverage gap \u2014 cost growth the top line did not fund. It widens every year.",
+    chart:function(){
+      return lineChart({
+        labels:["FY21","FY22","FY23","FY24"], yMin:95, yMax:130, ticks:[100,110,120,130], baseAt:100, pr:118,
+        band:[0,1], bandFill:"#B4460B",
+        series:[
+          {name:"Nike SG&A",    v:[100,109.0,116.4,125.3], c:"#B4460B", w:2.6, endLabel:"+7.8% CAGR", lead:true},
+          {name:"Nike revenue", v:[100,105.0,104.5,103.6], c:"#1C1C1E", w:2.2, endLabel:"+1.2% CAGR", lead:true, dy:4},
+          {name:"Peer SG&A",    v:[100,104.0,106.9,109.6], c:"#8E8E93", w:1.4, dash:"5 4", o:.7, endLabel:"+3.1%", dy:-10},
+          {name:"Peer revenue", v:[100,107.0,112.0,117.1], c:"#0D6E3F", w:1.4, o:.6, endLabel:"+5.4%"}
+        ]
+      });
+    },
+    attribTitle:"Where the extra cost went",
+    attribNote:"FY21 to FY24 SG&A increase of $3.9B, split by category. Demand creation is partly discretionary growth investment; the operating-overhead lines are the structural component.",
+    attrib:{rows:[{l:"Demand\ncreation",v:11},{l:"Salaries\n& benefits",v:9},{l:"Technology\n& digital",v:4},{l:"Other\noperating",v:1}],total:25,label:"Total SG&A\ngrowth"},
+    tableTitle:"Three-year CAGR \u00b7 Nike against the peer set",
+    tableCols:["Company","Revenue CAGR","SG&A CAGR","Gap","Direction"],
+    tableRows:[
+      ["Lululemon","+18.9%","+17.2%","+1.7pp","Leveraging"],
+      ["On Running","+41.2%","+38.6%","+2.6pp","Leveraging"],
+      ["Peer median","+5.4%","+3.1%","+2.3pp","Leveraging"],
+      ["Adidas","\u22120.8%","\u22121.4%","+0.6pp","Leveraging"],
+      ["Puma","+6.1%","+7.0%","\u22120.9pp","Deleveraging"],
+      ["Nike","+1.2%","+7.8%","\u22126.6pp","Deleveraging"]
+    ],
+    why:"This is the clearest single piece of evidence that the problem is structural. A cost base growing six times faster than the top line is not a cyclical issue that trading through will fix \u2014 it compounds every year it is left alone. It also reframes the conversation usefully: not \u201cyou spend too much\u201d, which invites a defensive response, but \u201cyour operating model has stopped scaling with your business\u201d, which is a problem a client will accept help with. Puma is the only other deleveraging name and its gap is under one point.",
+    evidence:[
+      {ic:"10-K", tx:"Nike FY21\u2013FY24 10-Ks \u2014 reported total SG&A and net revenue, CAGR calculated on as-reported figures"},
+      {ic:"10-K", tx:"SG&A category split from the FY24 10-K note on operating overhead and demand creation expense"},
+      {ic:"CapIQ",tx:"Peer revenue and SG&A CAGRs over the identical period, restructuring and impairment charges stripped"},
+      {ic:"CALL", tx:"Q3 earnings call \u2014 CFO uses the word \u201cdeleverage\u201d in response to an analyst question on SG&A"}
+    ],
+    caveat:"Roughly $1.4B of the increase is demand creation, which leadership will argue is growth investment rather than overhead. Even excluding it entirely the gap is 3.8pp and Nike still deleverages against every peer but Puma. Splitting discretionary from structural spend is a first-week analysis task."
+  },
+
+  /* ── 3. SG&A ratio ── */
+  sga_ratio:{
+    accent:"#8A5A00", accentBg:"#FFFBEF", accentBr:"#EBD9A5", accentSoft:"#F9F0D8",
+    title:"SG&A as a percentage of revenue",
+    value:"34.2%", valueLabel:"Nike FY24 \u00b7 $17.5B on $51.4B revenue",
+    reading:"Nike runs a 6pp higher cost-to-revenue ratio than the adjusted peer median, and the gap has widened every year since FY21. Closing it in full is worth roughly $310M; closing half is the $150\u2013200M in the recommended framing.",
+    chartTitle:"SG&A ratio over time \u00b7 Nike against the peer range",
+    chartNote:"Grey band is the peer interquartile range. Nike sat inside it in FY21 and has moved outside and above it every year since.",
+    chart:function(){
+      return lineChart({
+        labels:["FY21","FY22","FY23","FY24"], yMin:24, yMax:36, ticks:[26,28,30,32,34], baseAt:28.2, ySuffix:"%", pr:112,
+        band:[0,1], bandFill:"#8E8E93",
+        series:[
+          {name:"Peer 75th",   v:[31.5,31.6,31.5,31.4], c:"#C7C7CC", w:1.2, o:.9},
+          {name:"Peer 25th",   v:[26.5,26.4,26.3,26.2], c:"#C7C7CC", w:1.2, o:.9, dy:2},
+          {name:"Peer median", v:[29.1,28.8,28.5,28.2], c:"#8E8E93", w:1.8, dash:"5 4", endLabel:"28.2%", lead:true, dy:-11},
+          {name:"Nike",        v:[29.8,31.2,32.9,34.2], c:"#8A5A00", w:2.8, endLabel:"34.2%", lead:true}
+        ]
+      });
+    },
+    attribTitle:"The 6pp gap, converted to value",
+    attribNote:"Each point of SG&A ratio is worth roughly $514M of revenue at current scale. The recommended framing captures half the gap over 18 months.",
+    attrib:{rows:[{l:"S&M\noverhead",v:-3.1},{l:"G&A\nfunctions",v:-1.9},{l:"IT &\nshared svcs",v:-1.0}],total:6.0,label:"Total gap\nto median"},
+    tableTitle:"FY24 SG&A ratio \u00b7 as reported and adjusted",
+    tableCols:["Company","SG&A / revenue","One-offs stripped","Adjusted","vs Nike"],
+    tableRows:[
+      ["Adidas","28.4%","\u2212$335M restr.","26.2%","\u22128.0pp"],
+      ["Peer median","\u2014","\u2014","28.2%","\u22126.0pp"],
+      ["Lululemon","29.4%","none","29.4%","\u22124.8pp"],
+      ["Puma","31.4%","none","31.4%","\u22122.8pp"],
+      ["Skechers","39.6%","\u2212$340M w/off","37.4%","+3.2pp"],
+      ["Nike","34.2%","none","34.2%","\u2014"]
+    ],
+    why:"This is the number that converts the story into something the client can act on. TSR says something is wrong, the growth gap says it is structural, and this says how much it is worth and which functions it sits in. It is also the most defensible of the three \u2014 drawn straight from filings with only one-off charges removed, and the decomposition maps directly onto the workstreams in the analysis that follows.",
+    evidence:[
+      {ic:"10-K", tx:"Nike FY24 10-K \u2014 total SG&A of $17.5B on net revenue of $51.4B"},
+      {ic:"CapIQ",tx:"Peer SG&A ratios FY21\u2013FY24 with restructuring and impairment charges identified and stripped"},
+      {ic:"10-K", tx:"Adidas FY22 annual report \u2014 \u20ac310M restructuring charge disclosed in operating expense note"},
+      {ic:"CALL", tx:"CFO has used the word \u201cefficiency\u201d 11 times across the last two earnings calls"}
+    ],
+    caveat:"Adidas FY22 restructuring and Skechers FY24 write-off were removed before taking the median. Leaving them in narrows Nike's gap to roughly 4pp \u2014 the adjustment is standard practice and defensible, but the partner should expect to be asked and be ready to show both. Nike's higher DTC mix also structurally carries more SG&A than a wholesale-weighted peer; a mix-adjusted comparison is a first-week refinement."
+  }
+};
+
+function openSitDetail(key){
+  var m=SIT_DETAIL[key]; if(!m) return;
+  var A=m.accent, ABG=m.accentBg, ABR=m.accentBr, ASOFT=m.accentSoft;
+
+  // Breadcrumb picks up the metric's colour so the page identifies itself
+  var cr=document.getElementById("cf-d-crumb");
+  if(cr){
+    cr.innerHTML='<span style="display:inline-flex;align-items:center;gap:7px">'+
+      '<span style="width:8px;height:8px;border-radius:50%;background:'+A+'"></span>'+
+      '<span style="color:'+A+';font-weight:700">'+m.title+'</span></span>';
+  }
+  var b=document.getElementById("cf-d-body"); if(!b) return;
+
+  // Section label with a colour tick, so sections read as belonging to this metric
+  function sec(t,n){
+    return '<div style="margin:26px 0 10px">'+
+      '<div style="display:flex;align-items:center;gap:7px">'+
+        '<span style="width:3px;height:12px;border-radius:2px;background:'+A+'"></span>'+
+        '<span style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:'+A+'">'+t+'</span>'+
+      '</div>'+
+      (n?'<div style="font-size:12.5px;color:var(--g500);line-height:1.55;margin-top:6px;max-width:640px">'+n+'</div>':'')+
+    '</div>';
+  }
+  function card(inner,pad){
+    return '<div style="background:#fff;border:1px solid '+ABR+';border-radius:12px;padding:'+(pad||'16px 18px')+'">'+inner+'</div>';
+  }
+
+  var ev=m.evidence.map(function(s){
+    return '<div style="display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--g50)">'+
+      '<div style="min-width:48px;height:21px;padding:0 7px;border-radius:5px;background:'+ABG+';color:'+A+';font-size:9.5px;font-weight:800;letter-spacing:.04em;display:flex;align-items:center;justify-content:center;flex:none">'+s.ic+'</div>'+
+      '<div style="font-size:13px;color:var(--g700);line-height:1.55">'+s.tx+'</div></div>';
+  }).join('');
+
+  b.innerHTML=
+    // Headline banner, tinted in the metric's colour
+    '<div style="display:flex;align-items:flex-start;gap:20px;background:'+ABG+';border:1px solid '+ABR+';border-radius:14px;padding:18px 20px">'+
+      '<div style="flex:none;border-right:1px solid '+ABR+';padding-right:20px">'+
+        '<div style="font-size:40px;font-weight:800;letter-spacing:-.045em;line-height:1;color:'+A+';font-variant-numeric:tabular-nums">'+m.value+'</div>'+
+        '<div style="font-size:12px;color:var(--g500);margin-top:8px;max-width:180px;line-height:1.45">'+m.valueLabel+'</div>'+
+      '</div>'+
+      '<div style="flex:1;min-width:0;padding-top:1px">'+
+        '<div style="font-size:21px;font-weight:700;letter-spacing:-.02em;color:var(--g950);line-height:1.25">'+m.title+'</div>'+
+        '<div style="font-size:14px;color:var(--g700);line-height:1.65;margin-top:8px">'+m.reading+'</div>'+
+      '</div>'+
+    '</div>'+
+
+    sec(m.chartTitle,m.chartNote)+
+    card(m.chart()+(m.chartEvents?eventKey(m.chartEvents,A):''))+
+
+    sec(m.attribTitle,m.attribNote)+
+    card(attribChart(m.attrib.rows,m.attrib.total,m.attrib.label,A))+
+
+    sec(m.tableTitle)+
+    card(miniTable(m.tableCols,m.tableRows,A,ASOFT),'14px 18px 6px')+
+
+    sec('Why this matters to the case')+
+    '<div style="background:#fff;border:1px solid '+ABR+';border-left:3px solid '+A+';border-radius:12px;padding:15px 18px">'+
+      '<div style="font-size:14px;color:var(--g700);line-height:1.7">'+m.why+'</div></div>'+
+
+    sec('Evidence behind the number')+
+    card(ev,'4px 18px 6px')+
+
+    sec('What to watch for')+
+    '<div style="display:flex;gap:11px;align-items:flex-start;background:#FFF6E5;border:1px solid #E8CB92;border-radius:12px;padding:14px 16px">'+
+      '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex:none;margin-top:1px"><path d="M8 1.6l6.4 11.1H1.6z" stroke="#8A5A00" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.4v3M8 11.2h.01" stroke="#8A5A00" stroke-width="1.4" stroke-linecap="round"/></svg>'+
+      '<div style="font-size:13px;color:#6B4400;line-height:1.65">'+m.caveat+'</div>'+
+    '</div>'+
+    '<div style="height:28px"></div>';
+
+  var t=document.getElementById("cf-tiles-scroll"); if(t)t.style.display="none";
+  var d=document.getElementById("cf-detail"); if(d)d.style.display="flex";
+  var cta=document.querySelector(".cf-cta-bar"); if(cta)cta.style.display="none";
+  var sc=document.getElementById("cf-d-scroll"); if(sc)sc.scrollTop=0;
+}
+
+/* Situation card removed — the framing list is the page. */
+function situationCard(){ return ''; }
+
+function renderAngles(){
+  var order=currentOrder();
+  var html='<div class="sec-hd">'+
+    '<span class="sec-t">Framings</span>'+
+    '<span class="sec-c">ranked by strength of evidence</span>'+
+    '<span class="sec-info" title="Ranked automatically on two things. Evidence — how defensible the number is from public, sourced data. Client readiness — how primed the client already is for this conversation, read from earnings calls, board signals and leadership language. Use the arrows on any row to re-order.">i</span>'+
+    (userOrder?'<button onclick="resetRanking()" style="margin-left:auto;border:none;background:none;font-size:12.5px;color:var(--g500);cursor:pointer;font-family:var(--font);padding:0;text-decoration:underline">Reset order</button>':'')+
+  '</div>'+
+  '<div class="sec-sub">Pick one, or several to carry forward as scenarios.</div>';
+
+  html+='<div class="na-wrap" id="na-wrap">';
+  order.forEach(function(id,i){
+    var a=ANGLES.filter(function(x){return x.id===id;})[0];
+    if(!a) return;
+    var col=ANGLE_COLORS[a.tag]||{st:"var(--g500)",bg:"var(--g50)",br:"var(--g150)"};
+    html+='<div class="cfr" id="na-'+a.id+'" style="--nc:'+col.st+';--nc-bg:'+col.bg+'" onclick="openAngleDetail(\''+a.id+'\')">'+
+
+      '<div class="cfr-rail" onclick="event.stopPropagation()">'+
+        '<div class="cfr-rank">'+(i+1)+'</div>'+
+        '<div class="cfr-arrows">'+
+          '<button class="cfr-arw" '+(i===0?'disabled':'')+' title="Move up" onclick="event.stopPropagation();moveAngle(\''+a.id+'\',-1)"><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 6.25L5 3.25l3 3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+          '<button class="cfr-arw" '+(i===order.length-1?'disabled':'')+' title="Move down" onclick="event.stopPropagation();moveAngle(\''+a.id+'\',1)"><svg width="9" height="9" viewBox="0 0 10 10" fill="none"><path d="M2 3.75L5 6.75l3-3" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+        '</div>'+
+      '</div>'+
+
+      '<div class="cfr-body">'+
+        '<div class="cfr-eyebrow">'+
+          '<span class="cfr-cat">'+(ANGLE_ICONS[a.tag]||'')+a.tag+'</span>'+
+          (i===0?'<span class="cfr-lead">Recommended lead</span>':'')+
+        '</div>'+
+        '<div class="cfr-title">'+a.title+'</div>'+
+        '<div class="cfr-metric"><b>'+a.metric+'</b> '+a.metricLabel+'</div>'+
+        (a.takeaway?
+          '<div class="cfr-framing">'+
+            '<div class="cfr-framing-l">'+
+              '<svg viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.6v2.9M6 8.3h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'+
+              'Agent\'s proposed framing'+
+            '</div>'+
+            '<div class="cfr-framing-t">'+a.takeaway+'</div>'+
+            '<button class="cfr-read" onclick="event.stopPropagation();openAngleDetail(\'' + a.id + '\')">Read the full case'+
+              '<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M4 2.5L7.5 6L4 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+            '</button>'+
+          '</div>':'')+
+        '<div class="cfr-meta">'+
+          indicator('Evidence', evidenceLabel(a.qs||0), a.qs||0)+
+          indicator('Client readiness', readinessLabel(a.ls||0), a.ls||0)+
+          (a.rankShort?'<span class="cfr-reason">'+a.rankShort+'</span>':'')+
+        '</div>'+
+      '</div>'+
+
+      '<div class="cfr-sel">'+
+        '<button class="sel-hit" onclick="event.stopPropagation();pickAngle(\''+a.id+'\')" '+
+          'aria-pressed="'+(selectedAngles.indexOf(a.id)!==-1?'true':'false')+'" '+
+          'title="'+(selectedAngles.indexOf(a.id)!==-1?'Selected \u2014 click to deselect':'Select this framing')+'">'+
+          '<span class="sel-box"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5"/></svg></span>'+
+        '</button>'+
+      '</div>'+
+    '</div>';
+  });
+  html+='</div>';
+
+  html+='<div class="na-alt-label">Not ready to commit to a story?</div>';
+  html+='<div class="cf-note" id="cf-auto-note" style="display:none">'+
+    '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.1v3.6M8 10.9h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'+
+    '<span>Selecting every framing is the same as having no fixed thesis, so this has switched to <b>Explore the full potential</b>. Pick a single framing to go back.</span>'+
+  '</div>';
+  html+='<div class="cf-note warn" id="cf-clear-warn" style="display:none">'+
+    '<svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.4" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.1v3.6M8 10.9h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'+
+    '<span></span>'+
+  '</div>';
+  html+='<div class="na-skip" id="na-explore" onclick="pickDefer(\'explore\')">'+
+    '<div class="na-skip-ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>'+
+    '<div class="na-skip-tx"><div class="na-skip-t">Explore the full potential</div><div class="na-skip-s">No fixed thesis? I\u2019ll map every opportunity across cost and revenue, and we\u2019ll find the strongest story in the results.</div></div>'+
+    '<div class="na-pick"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.5 2.5L11 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+  '</div>';
+  return html;
+}
+
+/* Per-framing benchmark data — the quantitative gap each angle rests on */
+var ANGLE_BENCH={
+  "below-peer":{title:"EBITDA margin \u00b7 Nike vs peers",unit:"%",
+    rows:[["Adidas",14.2,false],["Peer median",13.5,false],["Puma",12.8,false],["Nike",10.4,true]]},
+  "margin-decline":{title:"Nike EBITDA margin \u00b7 4-year trend",unit:"%",
+    rows:[["FY21",12.9,false],["FY22",11.8,false],["FY23",10.9,false],["FY24",10.4,true]]},
+  "fuel-growth":{title:"SG&A as % of revenue \u00b7 Nike vs peers",unit:"%",
+    rows:[["Adidas",26,false],["Peer median",28,false],["Nike",34,true]]},
+  "activist":{title:"EV/EBITDA multiple \u00b7 Nike vs peers",unit:"x",
+    rows:[["Lululemon",24.8,false],["Peer median",26.4,false],["Adidas",33.6,false],["Nike",21.7,true]]}
+};
+
+/* Section label inside the framing detail page */
+function dSecL(t){
+  return '<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin:24px 0 10px">'+t+'</div>';
+}
+
+function benchBars(id){
+  var B=ANGLE_BENCH[id]; if(!B) return '';
+  var mx=Math.max.apply(null,B.rows.map(function(r){return Math.abs(r[1]);}))||1;
+  return '<div style="background:#fff;border:1px solid var(--g150);border-radius:12px;padding:15px 18px 12px;margin-bottom:6px">'+
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);margin-bottom:12px">'+B.title+'</div>'+
+    B.rows.map(function(r){var w=Math.max(3,Math.round(Math.abs(r[1])/mx*100)),hi=r[2];
+      return '<div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><div style="width:80px;font-size:13px;color:'+(hi?"var(--g950)":"var(--g500)")+';font-weight:'+(hi?"700":"400")+';flex:none;text-align:right">'+r[0]+'</div><div style="flex:1;height:9px;background:var(--g100);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+w+'%;border-radius:5px;background:'+(hi?"var(--red)":"var(--g300)")+'"></div></div><div style="width:46px;font-size:13px;font-weight:700;color:'+(hi?"var(--red)":"var(--g700)")+';flex:none">'+r[1]+B.unit+'</div></div>';
+    }).join('')+
+    '<div style="font-size:12.5px;color:var(--g400);line-height:1.5;margin-top:6px">Nike shown in red \u2014 the quantitative gap this angle is built on.</div>'+
+  '</div>';
+}
+/* Fallback passages shown when a source has no bespoke extract */
+var SRC_PARAS={
+  "10-K":"\u201cSelling and administrative expense increased as a percentage of revenues, driven by higher operating overhead and demand creation investment.\u201d \u2014 FY24 Form 10-K, Management's Discussion and Analysis.",
+  "CALL":"\u201cWe are looking hard at our cost structure and where we can drive efficiency without compromising the brand.\u201d \u2014 CFO, most recent quarterly earnings call.",
+  "AR":"\u201cRestoring margin and reigniting profitable growth are the board's principal priorities for the coming financial year.\u201d \u2014 Annual report, letter to shareholders.",
+  "UBS":"\u201cWe see limited near-term catalyst for multiple re-rating absent visible progress on the cost base.\u201d \u2014 UBS equity research note.",
+  "PRESS":"\u201cLeadership has signalled reinvestment in growth categories over near-term shareholder returns.\u201d \u2014 trade press coverage.",
+  "PR":"\u201cThe company reiterated its commitment to disciplined cost management alongside brand investment.\u201d \u2014 company press release.",
+  "DAY":"\u201cManagement framed the plan as invest-to-grow, while acknowledging capital constraints in the medium term.\u201d \u2014 investor day transcript.",
+  "MKT":"\u201cSector multiples have compressed, but the discount applied to this name is wider than peers on comparable growth.\u201d \u2014 market data commentary.",
+  "AN":"\u201cConsensus estimates have been revised down twice in the last three quarters on margin concerns.\u201d \u2014 analyst consensus summary.",
+  "EC":"\u201cManagement acknowledged deleverage in operating overhead relative to revenue growth.\u201d \u2014 earnings call transcript.",
+  "LT":"\u201cThe long-term plan assumes margin recovery toward historical levels by the end of the planning horizon.\u201d \u2014 long-term guidance.",
+  "NK":"\u201cInternal reporting shows cost growth outpacing revenue across the majority of support functions.\u201d \u2014 company disclosure.",
+  "UP":"\u201cUploaded document \u2014 the agent extracted this passage as the key supporting evidence.\u201d"
+};
+
+function srcPara(sx){ if(sx.para)return sx.para; if(SRC_PARAS[sx.ic])return SRC_PARAS[sx.ic]; return '\u201c'+sx.tx+'\u201d \u2014 extracted by the agent as the key supporting line; open the full source for surrounding context.'; }
+function srcRow(aid,i,sx){
+  return '<div style="border:1px solid var(--g150);border-radius:11px;margin-bottom:8px;overflow:hidden">'+
+    '<div onclick="toggleSrcPara(\''+aid+'\','+i+')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer">'+
+      '<div style="width:34px;height:26px;border-radius:6px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g500);flex:none">'+sx.ic+'</div>'+
+      '<div style="flex:1;font-size:14.5px;color:var(--g700);line-height:1.5">'+sx.tx+'</div>'+
+      '<svg id="src-chev-'+aid+'-'+i+'" width="12" height="12" viewBox="0 0 12 12" fill="none" style="flex:none;transition:transform .18s"><path d="M3 4.5L6 7.5l3-3" stroke="var(--g400)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+    '</div>'+
+    '<div id="src-para-'+aid+'-'+i+'" style="display:none;padding:0 14px 13px 48px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:6px">Referenced passage</div><div style="font-size:14px;color:var(--g700);line-height:1.7;border-left:2px solid var(--g200);padding:2px 0 2px 12px">'+srcPara(sx)+'</div><div style="margin-top:11px"><button onclick="openSourceModal(\''+aid+'\','+i+')" style="height:30px;padding:0 13px;border-radius:8px;border:1px solid var(--g200);background:#fff;font-size:12px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px">Open full source<svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M5 2h7v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div></div>'+
+  '</div>';
+}
+function toggleSrcPara(aid,i){ var el=document.getElementById("src-para-"+aid+"-"+i),ch=document.getElementById("src-chev-"+aid+"-"+i); if(!el)return; var open=el.style.display!=="none"; el.style.display=open?"none":"block"; if(ch)ch.style.transform=open?"":"rotate(180deg)"; }
+function cfDetailChat(a){ if(typeof cfAgent==="function") cfAgent('You\u2019re looking at the evidence behind <strong>'+a.title+'</strong>. Tap any source to read the passage I used, or push back here and I\u2019ll re-run the angle.'); }
+function openSourceModal(aid,i){
+  var a=ANGLES.find(function(x){return x.id===aid;}); if(!a)return; var sx=a.sources[i]; if(!sx)return;
+  var b=document.getElementById("srcmod-body"); if(!b)return;
+  b.innerHTML='<div style="display:flex;align-items:center;gap:11px;margin-bottom:16px"><div style="width:40px;height:32px;border-radius:8px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--g500);flex:none">'+sx.ic+'</div><div><div style="font-size:16px;font-weight:700;color:var(--g950)">'+sx.tx+'</div><div style="font-size:12px;color:var(--g400)">Referenced by the agent for this angle</div></div></div>'+
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:8px">Passage used</div>'+
+    '<div style="font-size:14.5px;color:var(--g700);line-height:1.8;border-left:3px solid var(--grn-st);padding:4px 0 4px 14px;margin-bottom:18px">'+srcPara(sx)+'</div>'+
+    '<div style="font-size:13px;color:var(--g500);line-height:1.65;background:var(--g25);border-radius:10px;padding:14px 16px">This is the exact passage the agent drew on. In the full build, opening the source loads the complete document in Sage with this passage highlighted in context and the surrounding pages available to read.</div>';
+  document.getElementById("srcmod-overlay").style.display="block";
+  document.getElementById("srcmod").style.display="block";
+}
+function closeSourceModal(){ var o=document.getElementById("srcmod-overlay"),m=document.getElementById("srcmod"); if(o)o.style.display="none"; if(m)m.style.display="none"; }
+function openAngleDetail(id){
+  var a=ANGLES.find(function(x){return x.id===id;}); if(!a)return;
+  var col=ANGLE_COLORS[a.tag]||{st:"var(--g500)",bg:"var(--g50)",br:"var(--g150)"};
+  var cr=document.getElementById("cf-d-crumb"); if(cr)cr.textContent=a.title;
+  var b=document.getElementById("cf-d-body"); if(!b)return;
+
+  // ── Sniff table ──────────────────────────────────────────────────────
+  var sniffHtml='';
+  if(a.sniffTable&&a.sniffTable.length){
+    var sniffRows = a.sniffTable.map(function(r,i){
+      var rowId='sniff-row-'+a.id+'-'+i;
+      var drillId='sniff-drill-'+a.id+'-'+i;
+      var hasLevers=r.levers&&r.levers.length;
+      var leversInner=hasLevers?r.levers.map(function(l,j){
+        return '<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--g50)">'+
+          '<div style="width:17px;height:17px;border-radius:5px;background:'+col.bg+';color:'+col.st+';font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px">'+(j+1)+'</div>'+
+          '<div style="font-size:12.5px;color:var(--g700);line-height:1.5">'+l+'</div>'+
+        '</div>';
+      }).join(''):'';
+      return '<div id="'+rowId+'" style="border-bottom:1px solid var(--g50);background:#fff">'+
+        '<div style="display:grid;grid-template-columns:1fr 90px 90px 110px;padding:10px 14px;gap:10px;cursor:'+(hasLevers?'pointer':'default')+';transition:background .1s" '+
+          (hasLevers?'onclick="(function(){var d=document.getElementById(\''+drillId+'\');var open=d.style.display!==\'none\';d.style.display=open?\'none\':\'block\';this.querySelector(\'.sniff-chevron\').style.transform=open?\'rotate(0deg)\':\'rotate(180deg)\';}).call(this)"':'')+'>'+
+          '<div style="font-size:13px;font-weight:500;color:var(--g950);display:flex;align-items:center;gap:6px">'+r.bucket+
+            (hasLevers?'<svg class="sniff-chevron" width="12" height="12" viewBox="0 0 14 14" fill="none" style="flex:none;transition:transform .18s;color:var(--g400)"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+
+          '</div>'+
+          '<div style="font-size:13px;color:var(--g500);text-align:right">'+r.baseline+'</div>'+
+          '<div style="font-size:13px;font-weight:700;color:var(--grn-tx);text-align:right">'+r.pct+'</div>'+
+          '<div style="font-size:13px;font-weight:700;color:var(--g950);text-align:right">'+r.value+'</div>'+
+        '</div>'+
+        (hasLevers?'<div id="'+drillId+'" style="display:none;padding:4px 14px 12px 14px;background:var(--g25);border-top:1px solid var(--g100)">'+
+          '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:4px;padding-top:6px">Levers</div>'+
+          leversInner+
+        '</div>':'')+
+      '</div>';
+    }).join('');
+    sniffHtml=
+      '<div style="border:1px solid var(--g150);border-radius:12px;overflow:hidden;margin-bottom:22px">'+
+        '<div style="display:grid;grid-template-columns:1fr 90px 90px 110px;background:var(--g25);border-bottom:1px solid var(--g150);padding:9px 14px;gap:10px">'+
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400)">Bucket</div>'+
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);text-align:right">Baseline</div>'+
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);text-align:right">% uplift</div>'+
+          '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);text-align:right">Value range</div>'+
+        '</div>'+
+        sniffRows+
+      '</div>';
+  }
+
+  // ── Levers list (removed — now live inside each bucket row) ──────────────
+
+  b.innerHTML=
+    // Category tag
+    '<div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">'+
+      '<div style="width:30px;height:30px;border-radius:9px;background:'+col.bg+';color:'+col.st+';display:flex;align-items:center;justify-content:center;flex:none">'+(ANGLE_ICONS[a.tag]||'')+'</div>'+
+      '<span style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+col.st+'">'+a.tag+'</span>'+
+    '</div>'+
+    // Title + angle statement
+    '<div style="font-size:23px;font-weight:700;letter-spacing:-.02em;color:var(--g950);line-height:1.15;margin-bottom:7px">'+a.title+'</div>'+
+    '<div style="font-size:15px;color:var(--g600);line-height:1.6;margin-bottom:18px">'+a.angle+'</div>'+
+    // Agent proposal
+    // Agent's full proposed framing — the long version of what the row previewed
+    (a.proposal?
+      '<div style="border-radius:12px;overflow:hidden;border:1px solid '+col.br+';margin-bottom:12px">'+
+        '<div style="display:flex;align-items:center;gap:7px;padding:10px 16px;background:'+col.bg+';border-bottom:1px solid '+col.br+'">'+
+          '<svg width="13" height="13" viewBox="0 0 12 12" fill="none" style="color:'+col.st+'"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3.6v2.9M6 8.3h.01" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>'+
+          '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:'+col.st+'">Agent\'s proposed framing</span>'+
+        '</div>'+
+        '<div style="padding:14px 16px;background:#fff;font-size:14px;color:var(--g700);line-height:1.7">'+a.proposal+'</div>'+
+      '</div>':'')+
+    // Why this rank — with the two indicators that drove it
+    (a.rankWhy?
+      '<div style="border:1px solid var(--g150);border-radius:12px;overflow:hidden;margin-bottom:22px">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--g25);border-bottom:1px solid var(--g100);flex-wrap:wrap">'+
+          '<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Why the agent ranked this \u0023'+((a.rank)||'-')+'</span>'+
+          '<div style="display:flex;gap:16px">'+
+            (function(){var e=evidenceLabel(a.qs||0),r=readinessLabel(a.ls||0);
+              return '<span style="font-size:11.5px;color:var(--g400)">Evidence <b style="color:'+e.c+';font-weight:700">'+e.t+'</b></span>'+
+                     '<span style="font-size:11.5px;color:var(--g400)">Client readiness <b style="color:'+r.c+';font-weight:700">'+r.t+'</b></span>';})()+
+          '</div>'+
+        '</div>'+
+        '<div style="padding:13px 16px;font-size:13.5px;color:var(--g700);line-height:1.65">'+a.rankWhy+'</div>'+
+      '</div>':'')+
+    // Benchmark chart
+    dSecL('Where Nike sits — the quantitative gap')+benchBars(id)+
+    // Sniff table (with inline lever drill-down per row)
+    dSecL('Opportunity sizing — sniff test')+
+    '<div style="font-size:13px;color:var(--g400);margin:-6px 0 10px;line-height:1.5">Baseline → % improvement → value. Click a bucket to see its levers.</div>'+
+    sniffHtml+
+    // Sources
+    dSecL('Sources the analysis draws on')+
+    '<div style="font-size:13.5px;color:var(--g500);margin:-4px 0 10px;line-height:1.5">Tap a source to read the exact passage the agent referenced.</div>'+
+    a.sources.map(function(sx,i){return srcRow(a.id,i,sx);}).join('')+
+    '<div style="height:20px"></div>'+
+    // Mindset signals
+    dSecL('Leadership signals')+
+    a.signals.map(function(sg){
+      return '<div style="display:flex;gap:9px;padding:10px 0;border-bottom:1px solid var(--g50)">'+
+        '<div style="width:5px;height:5px;border-radius:50%;background:'+col.st+';flex:none;margin-top:7px"></div>'+
+        '<div style="font-size:14.5px;color:var(--g700);line-height:1.6">'+sg.tx+'</div>'+
+      '</div>';
+    }).join('')+
+    // Push-back nudge
+    '<div style="margin-top:22px;padding:12px 14px;border-radius:10px;background:'+col.bg+';font-size:14px;color:'+col.st+';line-height:1.55">Not convinced? Push back in the chat on the right \u2014 the agent will re-run the angle or surface more evidence.</div>';
+
+  var _t=document.getElementById("cf-tiles-scroll"); if(_t)_t.style.display="none";
+  var d=document.getElementById("cf-detail"); if(d)d.style.display="flex";
+  var cta=document.querySelector(".cf-cta-bar"); if(cta)cta.style.display="none";
+  var sc=document.getElementById("cf-d-scroll"); if(sc)sc.scrollTop=0;
+  cfDetailChat(a);
+}
+function syncSideChat(){
+  var src=document.getElementById("cf-msgs"), dst=document.getElementById("c-msgs");
+  if(!src||!dst)return;
+  dst.innerHTML="";
+  Array.prototype.forEach.call(src.children,function(node){
+    if(node.id==="cf-typing")return;
+    if(node.querySelector&&(node.querySelector(".na-wrap")||node.querySelector(".na-hint")))return;
+    dst.appendChild(node.cloneNode(true));
+  });
+}
+function closeAngleDetail(){ var d=document.getElementById("cf-detail"); if(d)d.style.display="none"; var _t=document.getElementById("cf-tiles-scroll"); if(_t)_t.style.display="block"; var cta=document.querySelector(".cf-cta-bar"); if(cta)cta.style.display="flex"; }
+function pickAngle(id){
+  // Leaving explore mode: this framing becomes the only selection
+  if(deferMode==="explore"){ deferMode=null; selectedAngles=[]; }
+
+  var i=selectedAngles.indexOf(id);
+  if(i===-1)selectedAngles.push(id); else selectedAngles.splice(i,1);
+
+  // Every framing selected is the same statement as having no thesis —
+  // collapse to Explore rather than leave a selection that means nothing.
+  if(selectedAngles.length===ANGLES.length){
+    deferMode="explore";
+    selectedAngles=[];
+    syncSelectionUI(true);
+    return;
+  }
+  deferMode=null;
+  syncSelectionUI(false);
+}
+
+/* Single place reconciling selection state with the DOM.
+   autoNote=true reveals the explanation for the auto-collapse. */
+function syncSelectionUI(autoNote){
+  var exploring = deferMode==="explore";
+  document.querySelectorAll(".cfr").forEach(function(c){
+    var cid=c.id.replace("na-","");
+    var on=selectedAngles.indexOf(cid)!==-1;
+    c.classList.toggle("selected", on);
+    c.classList.toggle("superseded", exploring);
+    var btn=c.querySelector(".sel-hit");
+    if(btn){
+      btn.setAttribute("aria-pressed", on?"true":"false");
+      btn.title = on ? "Selected \u2014 click to deselect" : "Select this framing";
+    }
+  });
+  var ex=document.getElementById("na-explore");
+  if(ex) ex.classList.toggle("selected", exploring);
+
+  // Warn what selecting explore will cost, rather than refusing the click
+  var warn=document.getElementById("cf-clear-warn");
+  if(warn){
+    var n=selectedAngles.length;
+    if(n>0 && !exploring){
+      warn.style.display="flex";
+      warn.querySelector("span").innerHTML='Selecting this will deselect your <b>'+n+' chosen framing'+(n>1?'s':'')+'</b>.';
+    } else {
+      warn.style.display="none";
+    }
+  }
+  var note=document.getElementById("cf-auto-note");
+  if(note) note.style.display = (exploring && autoNote) ? "flex" : "none";
+
+  updateCFCta();
+}
+
+function pickDefer(mode){
+  // Selecting "explore" means starting without a thesis, so any chosen
+  // framings are cleared. The card warns about this before it is clicked.
+  deferMode=(deferMode===mode)?null:mode;
+  if(deferMode) selectedAngles=[];
+  syncSelectionUI(false);
+}
+
+function updateCFCta(){
+  var cta=document.getElementById("cf-build-cta");if(!cta)return;
+  var arrow=' <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  if(deferMode==="explore"){
+    cta.classList.add("visible");cta.innerHTML="Explore full potential"+arrow;
+  }else if(selectedAngles.length){
+    cta.classList.add("visible");
+    var n=selectedAngles.length;
+    cta.innerHTML=(n>1?'Build analysis with '+n+' scenarios':'Confirm &amp; build analysis')+arrow;
+  }else{
+    cta.classList.remove("visible");
+  }
+}
+
+function proceedToAnalysis(){
+  if(deferMode==="explore"){
+    cfUser("Explore the full potential");
+    setTimeout(function(){cfAgent("Good \u2014 no need to force a story yet. I'll map the full opportunity set across cost and revenue, and the case for change will come out of where the value actually is. You can lock a narrative any time once you've seen it. <span style=\"color:var(--g400)\">(prototype \u2014 this navigates to the Analysis screen)</span>");},450);
+    sideAgent("Exploratory run \u2014 full potential first, narrative derived from results.");
+    return;
+  }
+  if(!selectedAngles.length){cfAgent("Pick an angle, take a few forward, or use one of the options below and we'll settle the story after the numbers.");return;}
+  var titles=selectedAngles.map(function(id){return ANGLES.find(function(x){return x.id===id;}).title;});
+  if(selectedAngles.length===1){
+    cfAgent("Locked. Building the analysis around <strong>"+titles[0].toLowerCase()+"</strong>\u2026 <span style=\"color:var(--g400)\">(prototype \u2014 this navigates to the Analysis screen)</span>");
+  }else{
+    cfAgent("Locked in <strong>"+selectedAngles.length+" scenarios</strong>: "+titles.join(", ")+". I'll build the analysis so you can compare them side by side\u2026 <span style=\"color:var(--g400)\">(prototype \u2014 this navigates to the Analysis screen)</span>");
+  }
+}
+
+/* ─── INTRO FLOW ──────────────────────────────────────────────────────────── */
+function cpTab(id){
+  var d={chat:"flex",log:"block",sources:"block"};
+  ["chat","log","sources"].forEach(function(t){
+    var v=document.getElementById("vw-"+t); if(v)v.style.display=(t===id?d[t]:"none");
+    var b=document.getElementById("tab-"+t); if(b)b.classList.toggle("on",t===id);
+  });
+  if(id==="log"&&typeof buildCollaborators==="function")buildCollaborators();
+  if(id==="sources"&&typeof buildSources==="function")buildSources();
+  if(id==="sources")buildCfcUploaded();
+}
+function initCFC(){
+  document.body.classList.add("chat-mode");
+  initStepper();
+  buildCollaborators();
+  buildSources();
+  buildCfcUploaded();
+  logEntry("s","System","Case for change opened");
+  var _ct=document.getElementById("cf-tiles"); if(_ct)_ct.innerHTML=renderAngles();
+  cfAgent("<p>Before we put numbers to anything, let's settle the <strong>case for change</strong> — the \u201cwhy now\u201d that carries the whole story to the CFO.</p>");
+  setTimeout(function(){
+    cfAgent("<p>At setup you flagged three things: <strong>margin pressure</strong>, the rough <strong>$200M cost ambition</strong> the CFO floated, and protecting the <strong>DTC transition</strong>. Here's how each one carries into a case for change.</p>");
+  },650);
+  setTimeout(function(){
+    cfAgent("<p>These aren't one story — they take <strong>different lenses</strong> on the why-now, which is the point. Two are a <strong>profitability</strong> case (below peers, and the three-year margin slide) — that's where your <strong>margin-pressure</strong> flag lands. One is a <strong>cash-to-growth</strong> case: pull cost out of the core to self-fund the direct and DTC push, so the <strong>DTC transition</strong> you flagged lives here. One is a <strong>value / defensive</strong> case: move first on efficiency before an activist forces it.</p><p>The <strong>$200M</strong> sits under whichever you pick — it's the prize the analysis will size, not a story on its own. Starting options, not a fixed list: keep the one that matches your read, take a few forward to test, or hold off until you've seen the analysis.</p>",true);
+  },1400);
+  sideAgent("Mined 14 sources: FY22\u2013FY24 10-Ks, 4 earnings transcripts, CEO &amp; chairman letters, UBS &amp; Morgan Stanley notes, recent press.");
+  // suggestion floats
+  var f=document.getElementById("cf-sug-float");
+  if(f){
+    f.className="cf-sug-float visible";
+    f.innerHTML='<button class="cf-sug-float-btn" onclick="askFor(this)">Combine below-peer + fuel-growth</button>'+
+      '<button class="cf-sug-float-btn" onclick="askFor(this)">Which resonates most with a CFO?</button>'+
+      '<button class="cf-sug-float-btn" onclick="askFor(this)">Propose a different angle</button>';
+  }
+  // wire inputs
+  var send=function(){var i=document.getElementById("cp-inp");if(i&&i.value.trim()){cfUser(i.value.trim());i.value="";setTimeout(function(){cfAgent("Good \u2014 I can redraft any of these around that, or work it into one of the four. Which way do you want to go?");},450);}};
+  var _sb=document.getElementById("cp-send"); if(_sb)_sb.addEventListener("click",send);
+  var _si=document.getElementById("cp-inp"); if(_si)_si.addEventListener("keydown",function(e){if(e.key==="Enter")send();});
+}
+function askFor(btn){cfUser(btn.textContent);setTimeout(function(){cfAgent("Good one. In a real run I'd redraft right here \u2014 for the prototype, pick an angle to keep going.");},450);}
+
+document.addEventListener("DOMContentLoaded",initCFC);
+</script>
+<script>
+function renderShareMembers(){
+  var el=document.getElementById("share-list"); if(!el)return;
+  el.innerHTML=COLLABORATORS.map(function(c,i){
+    return '<div class="share-row">'+
+      '<div class="share-av">'+c.in+'</div>'+
+      '<div class="share-main"><div class="share-nm">'+c.nm+'</div><div class="share-role">'+c.role+'</div></div>'+
+      '<select class="share-permsel" onchange="setPerm('+i+',this.value)"><option'+(c.perm==="Contributor"?" selected":"")+'>Contributor</option><option'+(c.perm==="Viewer"?" selected":"")+'>Viewer</option></select>'+
+      (i>0?'<button class="share-rm" onclick="removeMember('+i+')" title="Remove"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>':'<span style="width:22px;flex:none"></span>')+
+    '</div>';
+  }).join('');
+}
+function openShareModal(){ renderShareMembers(); document.getElementById("share-overlay").style.display="block"; document.getElementById("share-modal").style.display="block"; }
+function closeShareModal(){ document.getElementById("share-overlay").style.display="none"; document.getElementById("share-modal").style.display="none"; }
+function setPerm(i,v){ if(COLLABORATORS[i]){ COLLABORATORS[i].perm=v; buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You",COLLABORATORS[i].nm+" set to <strong>"+v+"</strong>"); } }
+function removeMember(i){ if(COLLABORATORS[i]){ var nm=COLLABORATORS[i].nm; COLLABORATORS.splice(i,1); renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Removed <strong>"+nm+"</strong> from the project"); } }
+function addMember(){ var inp=document.getElementById("share-inp"),ps=document.getElementById("share-perm"); if(!inp||!inp.value.trim())return; var nm=inp.value.trim(); var initials=nm.split(/[\s@._-]+/).filter(Boolean).slice(0,2).map(function(w){return w[0].toUpperCase();}).join("")||"?"; COLLABORATORS.push({nm:nm,in:initials,role:"Invited",last:"Just invited",online:false,edits:0,perm:ps.value}); inp.value=""; renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Invited <strong>"+nm+"</strong> as "+ps.value); }
+function copyShareLink(){ var b=event.target.closest("button"); if(!b)return; var t=b.innerHTML; b.innerHTML="Link copied \u2713"; setTimeout(function(){b.innerHTML=t;},1400); }
+
+/* ── LOG FILTER ───────────────────────────────────────────── */
+var _logFilter = "all";
+function setLogFilter(f, btn) {
+  _logFilter = f;
+  var bar = document.getElementById("lg-filter-bar");
+  if(bar) bar.querySelectorAll(".lg-fchip").forEach(function(b){ b.classList.toggle("on", b===btn); });
+  applyLogFilter();
+}
+function applyLogFilter() {
+  var list = document.getElementById("lg-list");
+  if(!list) return;
+  var entries = list.querySelectorAll(".lg-e");
+  entries.forEach(function(el) {
+    var type = el.dataset.type || "";
+    var txt  = (el.dataset.txt || "").toLowerCase();
+    var show = false;
+    if(_logFilter === "all")      show = true;
+    else if(_logFilter === "p")   show = type === "p";
+    else if(_logFilter === "c")   show = type === "c";
+    else if(_logFilter === "a")   show = type === "a";
+    else if(_logFilter === "override") show = (type==="p"||type==="c") && /override|assumption|changed|updated|set to|removed|promoted|demoted|moved/i.test(txt);
+    else if(_logFilter === "flag") show = type==="a" && /flag|warn|⚠|caution|recommend|watch|note|check/i.test(txt);
+    el.classList.toggle("lg-hidden", !show);
+  });
+}
+
+</script>
+<!-- SHARE MODAL -->
+<div id="share-overlay" onclick="closeShareModal()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.3);backdrop-filter:blur(2px)"></div>
+<div id="share-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:440px;max-width:92%;background:#fff;border-radius:18px;z-index:601;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);overflow:hidden">
+  <div class="share-hd">
+    <div><div class="share-title">Share this OI</div><div class="share-sub">Nike, Inc. · anyone you add can open it at any stage</div></div>
+    <button class="share-close" onclick="closeShareModal()"><svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="share-add">
+    <input id="share-inp" placeholder="Add people by name or email"/>
+    <select id="share-perm"><option>Contributor</option><option>Viewer</option></select>
+    <button class="share-add-btn" onclick="addMember()">Add</button>
+  </div>
+  <div class="share-list" id="share-list"></div>
+  <div class="share-ft">
+    <button class="share-link" onclick="copyShareLink()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M5.5 8.5a2.5 2.5 0 003.5 0l2-2a2.5 2.5 0 10-3.5-3.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8.5 5.5a2.5 2.5 0 00-3.5 0l-2 2a2.5 2.5 0 103.5 3.5l1-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Copy link</button>
+    <button class="share-done" onclick="closeShareModal()">Done</button>
+  </div>
+</div>
+<!-- SOURCE MODAL -->
+<div id="srcmod-overlay" onclick="closeSourceModal()" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,.35);backdrop-filter:blur(2px)"></div>
+<div id="srcmod" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;max-width:92%;max-height:80vh;overflow-y:auto;background:#fff;border-radius:18px;z-index:701;box-shadow:0 24px 64px rgba(0,0,0,.25);padding:22px 24px 26px">
+  <div style="display:flex;justify-content:flex-end;margin-bottom:2px"><button onclick="closeSourceModal()" style="width:28px;height:28px;border-radius:50%;background:var(--g50);border:none;cursor:pointer;color:var(--g500);display:flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>
+  <div id="srcmod-body"></div>
+</div>
+</body>
+</html>

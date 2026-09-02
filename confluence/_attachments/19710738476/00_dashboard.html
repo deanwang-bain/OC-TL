@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OI 3.0 · Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --serif:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --sans:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --g25:#F9F9FB;--g50:#F2F2F7;--g100:#E5E5EA;--g150:#D9D9DE;--g200:#C7C7CC;--g300:#AEAEB2;--g400:#8E8E93;--g500:#636366;--g700:#3A3A3C;--g900:#1D1D1F;--g950:#0B0B0C;
+  --red:#CC0000;--red-bg:#FDECEC;
+  --grn-st:#2A9E52;--grn-bg:#E8F6EE;--grn-tx:#1E7D40;--grn-br:#BFE6CD;
+  --amb-bg:#FDF3E7;--amb-tx:#9A6212;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:#F6F7F9;color:var(--g950);-webkit-font-smoothing:antialiased;min-height:100vh}
+/* top nav */
+.nav{height:52px;background:var(--g950);display:flex;align-items:center;padding:0 22px;gap:12px;position:sticky;top:0;z-index:10}
+.nav-logo{display:flex;align-items:center;gap:9px;color:#fff;font-family:var(--serif);font-weight:700;font-size:15px;letter-spacing:-.01em}
+.nav-badge{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:9999px;padding:2px 8px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-avatar{width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+/* page */
+.wrap{max-width:1120px;margin:0 auto;padding:34px 40px 60px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:6px}
+.h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.02em}
+.sub{font-size:13.5px;color:var(--g500);line-height:1.5;margin-top:6px;max-width:560px}
+.new-btn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 20px;border-radius:9999px;background:var(--red);color:#fff;font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:opacity .12s;flex:none}
+.new-btn:hover{opacity:.85}
+.section-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin:30px 0 12px}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.oi{background:#fff;border:1px solid var(--g100);border-radius:16px;overflow:hidden;cursor:pointer;transition:box-shadow .15s,transform .12s;display:flex;flex-direction:column}
+.oi:hover{box-shadow:0 8px 30px rgba(0,0,0,.08);transform:translateY(-2px);border-color:var(--g150)}
+.oi-top{display:flex;align-items:center;gap:12px;padding:18px 18px 12px}
+.oi-mono{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;flex:none}
+.oi-name{font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:var(--g950)}
+.oi-sector{font-size:11.5px;color:var(--g400);margin-top:1px}
+.oi-status{margin-left:auto;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:9999px;flex:none}
+.st-active{background:var(--red-bg);color:var(--red)}
+.st-done{background:var(--grn-bg);color:var(--grn-tx)}
+.st-draft{background:var(--g50);color:var(--g500)}
+/* stage stepper */
+.oi-stages{display:flex;align-items:center;gap:0;padding:6px 18px 4px}
+.stg{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
+.stg-dot{width:13px;height:13px;border-radius:50%;background:var(--g150);border:2px solid var(--g150);z-index:1}
+.stg.done .stg-dot{background:var(--grn-st);border-color:var(--grn-st)}
+.stg.cur .stg-dot{background:#fff;border-color:var(--red);box-shadow:0 0 0 3px var(--red-bg)}
+.stg-line{position:absolute;top:6px;left:50%;width:100%;height:2px;background:var(--g150);z-index:0}
+.stg.done .stg-line{background:var(--grn-st)}
+.stg:last-child .stg-line{display:none}
+.stg-lbl{font-size:8.5px;font-weight:600;color:var(--g400);text-align:center;line-height:1.2}
+.stg.cur .stg-lbl{color:var(--red)}
+.stg.done .stg-lbl{color:var(--grn-tx)}
+.oi-foot{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--g50);margin-top:8px}
+.oi-updated{font-size:11px;color:var(--g400)}
+.oi-collab{margin-left:auto;display:flex}
+.oi-av{width:24px;height:24px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-7px}
+.oi-av:first-child{margin-left:0}
+/* create card */
+.oi-arch-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748B;background:#EEF0F3;border-radius:9999px;padding:2px 8px;margin-left:8px;vertical-align:middle}
+.arch-bc{display:flex;align-items:center;gap:9px;margin-bottom:22px}
+.bc-back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-family:var(--sans);font-size:14px;font-weight:600;color:var(--g500);cursor:pointer;padding:0}
+.bc-back:hover{color:var(--g900)}
+.bc-sep{color:var(--g300);font-size:14px}
+.bc-live{font-size:14px;font-weight:600;color:var(--g950)}
+.archive-btn{display:inline-flex;align-items:center;gap:7px;height:42px;padding:0 20px;border-radius:9999px;border:1px solid var(--g200);background:#fff;color:var(--g700);font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer;transition:all .12s}
+.archive-btn:hover{border-color:var(--g400);color:var(--g900)}
+.archive-btn.on{background:var(--g900);color:#fff;border-color:var(--g900)}
+.oi-new{background:transparent;border:2px dashed var(--g200);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:210px;cursor:pointer;transition:all .14s;color:var(--g500)}
+.oi-new:hover{border-color:var(--red);color:var(--red);background:#fff}
+.oi-new-ic{width:44px;height:44px;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;transition:all .14s}
+.oi-new:hover .oi-new-ic{background:var(--red-bg)}
+.oi-new-t{font-size:14px;font-weight:600}
+.oi-new-s{font-size:11.5px;color:var(--g400);text-align:center;max-width:200px;line-height:1.4}
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--g950);color:#fff;font-size:13px;font-weight:500;padding:12px 18px;border-radius:10px;opacity:0;transition:all .25s;z-index:50;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── redesigned OI cards ── */
+.oi{background:#fff;border:1px solid var(--g100);border-radius:18px;overflow:visible;cursor:pointer;transition:box-shadow .18s cubic-bezier(.4,0,.2,1),transform .16s cubic-bezier(.4,0,.2,1),border-color .16s;display:flex;flex-direction:column;position:relative}
+.oi:hover{box-shadow:0 14px 40px rgba(0,0,0,.10),0 2px 8px rgba(0,0,0,.04);transform:translateY(-3px);border-color:var(--g150)}
+.oi-head{display:flex;align-items:flex-start;gap:13px;padding:20px 18px 0}
+.oi-mono{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;flex:none;box-shadow:0 3px 10px rgba(0,0,0,.14)}
+.oi-id{flex:1;min-width:0;padding-top:3px}
+.oi-name{font-size:16px;font-weight:700;letter-spacing:-.01em;color:var(--g950);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-sector{font-size:12.5px;color:var(--g400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oi-menu-btn{width:30px;height:30px;border-radius:9px;border:none;background:transparent;color:var(--g400);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;transition:background .12s,color .12s;margin:-2px -4px 0 0}
+.oi-menu-btn:hover{background:var(--g50);color:var(--g900)}
+.oi-menu{position:absolute;top:46px;right:14px;background:#fff;border:1px solid var(--g100);border-radius:13px;box-shadow:0 16px 40px rgba(0,0,0,.16),0 2px 8px rgba(0,0,0,.06);padding:6px;min-width:158px;z-index:20;opacity:0;transform:translateY(-6px) scale(.96);transform-origin:top right;pointer-events:none;transition:opacity .15s cubic-bezier(.4,0,.2,1),transform .15s cubic-bezier(.4,0,.2,1)}
+.oi-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.oi-menu button{width:100%;display:flex;align-items:center;gap:10px;padding:9px 11px;border:none;background:none;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--g700);cursor:pointer;font-family:var(--sans);text-align:left;transition:background .12s}
+.oi-menu button:hover{background:var(--g50)}
+.oi-menu button.del{color:#D0342C}
+.oi-menu button.del:hover{background:#FDECEC}
+.oi-prize{padding:18px 20px 2px}
+.oi-prize-num{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.025em;color:var(--g950);line-height:1}
+.oi-prize-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-top:7px}
+.oi-prize-split{display:flex;gap:8px;margin-top:12px}
+.oi-ps{flex:1;background:var(--g25);border:1px solid var(--g100);border-radius:8px;padding:7px 10px;display:flex;flex-direction:row;align-items:center;gap:6px}
+.oi-ps-v{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--g900);letter-spacing:-.01em;line-height:1;flex:none}
+.oi-ps-l{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)}
+.oi-prize.pending .oi-prize-num{color:var(--g300);font-weight:500}
+.oi-state{padding:16px 20px 2px}
+.oi-state-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.oi-stage{font-size:13px;font-weight:600;color:var(--g700)}
+.oi-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3.5px 9px;border-radius:9999px}
+.oi-badge.active{background:#EAF2FE;color:#1D6DD1}
+.oi-badge.done{background:var(--grn-bg);color:var(--grn-tx)}
+.oi-track{height:5px;border-radius:9999px;background:var(--g100);overflow:hidden}
+.oi-track-fill{height:100%;border-radius:9999px;background:#1D6DD1;transition:width .4s cubic-bezier(.4,0,.2,1)}
+.oi-track-fill.done{background:var(--grn-st)}
+.oi-state-sub{font-size:11.5px;color:var(--g400);margin-top:8px}
+.oi-foot{display:flex;align-items:center;gap:10px;padding:16px 20px;margin-top:10px;border-top:1px solid var(--g50)}
+.oi-updated{font-size:11.5px;color:var(--g400)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+
+.nav-logo{display:flex;align-items:center;gap:10px;color:#fff}
+.bain-mark{width:27px;height:27px;border-radius:7px;background:#CC0000;color:#fff;font-family:var(--serif);font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 2px 6px rgba(204,0,0,.4)}
+.bain-name{font-family:var(--serif);font-weight:700;font-size:15px;letter-spacing:-.01em;color:#fff}
+.nav-sep{width:1px;height:16px;background:rgba(255,255,255,.24);margin:0 3px}
+.nav-prod{font-size:12px;font-weight:600;letter-spacing:.02em;color:rgba(255,255,255,.7)}
+.year-divider{display:flex;align-items:center;gap:14px;margin:22px 0 16px}
+.year-divider::before,.year-divider::after{content:"";height:1px;background:var(--g100);flex:1}
+.year-divider span{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--g400);flex:none}
+
+.search-wrap{position:relative;margin:20px 0 4px;max-width:460px}
+.search-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--g400);pointer-events:none}
+.search-input{width:100%;height:44px;border:1px solid var(--g150);border-radius:12px;background:#fff;padding:0 40px 0 40px;font-size:14px;font-family:var(--sans);color:var(--g950);outline:none;transition:border-color .14s,box-shadow .14s}
+.search-input::placeholder{color:var(--g400)}
+.search-input:focus{border-color:var(--g400);box-shadow:0 0 0 4px rgba(0,0,0,.03)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:7px;border:none;background:var(--g50);color:var(--g500);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s}
+.search-clear:hover{background:var(--g100);color:var(--g900)}
+
+/* ── Card states ── */
+/* Waiting for agent */
+.oi.state-waiting{border-color:var(--g100);background:#fff}
+.oi-waiting-bar{display:none}
+@keyframes sweep{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.oi.state-waiting .oi-track-fill{background:linear-gradient(90deg,transparent 0%,#D68A1C 50%,transparent 100%);background-size:200% 100%;animation:sweep 1.6s linear infinite;width:100% !important}
+.oi-waiting-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:9999px;background:var(--g50);color:var(--g500)}
+.oi-waiting-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:#D68A1C;animation:pulse-dot 1.4s ease-in-out infinite}
+.oi-timer{font-size:10px;font-weight:600;color:var(--g400);margin-left:4px;letter-spacing:.01em}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+/* Removed card */
+.oi.state-removed{border-style:dashed;border-color:var(--g150);background:#FAFAFA;opacity:.65;pointer-events:none}
+.oi.state-removed .oi-name,.oi.state-removed .oi-prize-num{text-decoration:line-through;color:var(--g400)}
+.oi-removed-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:9999px;background:var(--g100);color:var(--g400)}
+/* Data vintage */
+.oi-vintage{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--g400);background:var(--g25);border:1px solid var(--g100);border-radius:6px;padding:2px 8px;margin-top:6px}
+.oi-vintage svg{flex:none;color:var(--g300)}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-logo"><span class="bain-mark"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.4" stroke="#fff" stroke-width="1.5"/><path d="M12 4.2l2.1 7.8L12 19.8 9.9 12z" fill="#fff"/><circle cx="12" cy="12" r="1.35" fill="#CC0000"/></svg></span><span class="bain-name">Bain &amp; Company</span><span class="nav-sep"></span><span class="nav-prod">OI 3.0</span></div>
+  <div class="nav-right"><div class="nav-avatar">RG</div></div>
+</div>
+
+<div class="wrap">
+  <div id="dash-main">
+  <div class="head">
+    <div>
+      <div class="h1">Opportunity Indicators</div>
+      <div class="sub">Every OI you and your team are building. Open one to pick up where you left off, or spin up a new one for any target in minutes.</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center"><button class="archive-btn" id="archive-toggle" onclick="openArchive()"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4.2h10M3 4.2l.6 6.4a1 1 0 001 .9h4.8a1 1 0 001-.9l.6-6.4M5.6 6.6h2.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>View archive</button><button class="new-btn" onclick="createOI()"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>Create new OI</button></div>
+  </div>
+  <div class="search-wrap">
+    <svg class="search-ic" width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.6"/><path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <input id="oi-search" class="search-input" oninput="onSearch(this.value)" placeholder="Search by company or sector…" autocomplete="off"/>
+    <button class="search-clear" id="search-clear" onclick="clearSearch()" style="display:none" aria-label="Clear"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+  </div>
+
+  <div class="section-lbl">Your OIs · (<span id="oi-count">4</span>)</div>
+  <div class="year-divider" id="year-2026" style="margin-top:8px;margin-bottom:14px"><span id="section-lbl-2026">2026</span></div>
+  <div class="grid" id="oi-grid"></div>
+  <div class="year-divider" id="year-2025"><span>2025</span></div>
+  <div class="grid" id="oi-grid-2025"></div>
+  <div id="oi-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--g400)"><div style="font-size:15px;font-weight:600;color:var(--g500)">No OIs match your search</div><div style="font-size:13px;margin-top:6px">Try a different company or sector.</div></div>
+  </div><!-- /dash-main -->
+
+  <div id="dash-archive" style="display:none">
+    <div class="arch-bc"><button class="bc-back" onclick="closeArchive()"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Opportunity Indicators</button><span class="bc-sep">/</span><span class="bc-live">Archive</span></div>
+    <div class="head"><div><div class="h1">Archived OIs</div><div class="sub">OIs you've set aside. Open one to review, or restore it to your active list.</div></div></div>
+    <div class="grid" id="oi-grid-archive"></div>
+    <div id="arch-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--g400)"><div style="font-size:15px;font-weight:600;color:var(--g500)">No archived OIs</div><div style="font-size:13px;margin-top:6px">Archive an OI from its ⋯ menu to see it here.</div></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var STAGES=["Target","Peers","Case","Analysis","Output"];
+var OIS=[
+  {name:"Nike, Inc.",sector:"Athletic apparel & footwear",mono:"NK",color:"#1D1D1F",stage:3,status:"active",prize:"$478M", pnl:"$360M", cash:"$118M",year:2026,updated:"Updated 2 min ago",collab:["RG","DM","JS","NW"],dataVintage:"FY25 Q1"},
+  {name:"Lululemon",sector:"Athletic apparel",mono:"LL",color:"#1D1D1F",stage:4,status:"done",prize:"$312M", pnl:"$240M", cash:"$72M",year:2026,updated:"Updated 3 days ago",collab:["RG","JS"],dataVintage:"FY25 Q2"},
+  {name:"Unilever PLC",sector:"Consumer packaged goods",mono:"UN",color:"#1D1D1F",stage:1,status:"active",prize:null,year:2026,updated:"Started 5 min ago",collab:["RG","DM"],dataVintage:"FY24 full year"},
+  {name:"Delta Air Lines",sector:"Airlines",mono:"DL",color:"#1D1D1F",stage:0,status:"active",prize:"$210M", pnl:"$150M", cash:"$60M",year:2025,updated:"Last updated Nov 2025",collab:["RG"],dataVintage:"FY24 Q3"},
+  {name:"Starbucks Corp.",sector:"Coffee & QSR",mono:"SB",color:"#1D1D1F",stage:2,status:"active",prize:"$395M", pnl:"$300M", cash:"$95M",year:2025,updated:"Archived Dec 2025",collab:["RG","JS"],archived:true,dataVintage:"FY24 Q4"}
+];
+function oiCard(o,idx){
+  var done=o.status==="done";
+  var waiting=!o.prize && o.status==="active"; // no prize yet = agent still working
+  var removed=o.status==="removed";
+  var pct=done?100:Math.round(((o.stage+1)/5)*100);
+  var stageName=done?"Published":STAGES[o.stage];
+
+  // Determine card class and top bar
+  var cardClass="oi"+(waiting?" state-waiting":removed?" state-removed":"");
+  var topBar=waiting?'<div class="oi-waiting-bar"></div>':'';
+
+  // Badge
+  var badge=done
+    ?'<span class="oi-badge done">Published</span>'
+    :waiting
+    ?'<span class="oi-waiting-badge">Agent working<span class="oi-timer" id="timer-'+idx+'">· 10 mins left</span></span>'
+    :removed
+    ?'<span class="oi-removed-tag">Removed</span>'
+    :'<span class="oi-badge active">In progress</span>';
+
+  // Prize block
+  var prize=o.prize
+    ?'<div class="oi-prize"><div class="oi-prize-num">'+o.prize+'</div><div class="oi-prize-lbl">Size of prize</div>'+
+      ((o.pnl||o.cash)
+        ?'<div class="oi-prize-split">'+
+          '<div class="oi-ps"><span class="oi-ps-v">'+(o.pnl||"\u2014")+'</span><span class="oi-ps-l">P&amp;L</span></div>'+
+          '<div class="oi-ps"><span class="oi-ps-v">'+(o.cash||"\u2014")+'</span><span class="oi-ps-l">Cash</span></div>'+
+          '</div>':'')+
+      '</div>'
+    :waiting
+    ?'<div class="oi-prize pending"><div class="oi-prize-num" style="color:var(--g300)">\u2014</div><div class="oi-prize-lbl">Agent sizing\u2026</div></div>'
+    :'<div class="oi-prize pending"><div class="oi-prize-num">\u2014</div><div class="oi-prize-lbl">Sized after analysis</div></div>';
+
+  return '<div class="'+cardClass+'" onclick="openOI('+idx+')">'+topBar+
+    '<div class="oi-head"><div class="oi-mono" style="background:'+o.color+'">'+o.mono+'</div>'+
+      '<div class="oi-id"><div class="oi-name">'+o.name+'</div><div class="oi-sector">'+o.sector+(o.archived?' <span class="oi-arch-tag"><svg width="9" height="9" viewBox="0 0 14 14" fill="none"><path d="M2 4.2h10M3 4.2l.6 6.4a1 1 0 001 .9h4.8a1 1 0 001-.9l.6-6.4M5.6 6.6h2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Archived</span>':'')+'</div>'+
+      (o.dataVintage?'<div class="oi-vintage"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2.5" width="9" height="8" rx="1.5" stroke="currentColor" stroke-width="1.1"/><path d="M4 1.5v2M8 1.5v2M1.5 5.5h9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>Using latest '+o.dataVintage+' financials</div>':'')+
+      '</div>'+
+      '<button class="oi-menu-btn" onclick="event.stopPropagation();toggleMenu('+idx+')" aria-label="More"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="4" r="1.4" fill="currentColor"/><circle cx="9" cy="9" r="1.4" fill="currentColor"/><circle cx="9" cy="14" r="1.4" fill="currentColor"/></svg></button>'+
+      '<div class="oi-menu" id="menu-'+idx+'">'+
+        '<button onclick="event.stopPropagation();downloadOI('+idx+')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5v7M4.5 6L7 8.5 9.5 6M2.5 11.5h9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Download</button>'+
+        '<button onclick="event.stopPropagation();shareOI('+idx+')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 7.5l4-3M5 6.5l4 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="10" cy="3" r="1.6" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="11" r="1.6" stroke="currentColor" stroke-width="1.3"/><circle cx="3.5" cy="7" r="1.6" stroke="currentColor" stroke-width="1.3"/></svg>Share</button>'+
+        '<button onclick="event.stopPropagation();archiveOI('+idx+')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4.2h10M3 4.2l.6 6.4a1 1 0 001 .9h4.8a1 1 0 001-.9l.6-6.4M5.6 6.6h2.8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Archive</button>'+
+        '<button class="del" onclick="event.stopPropagation();deleteOI('+idx+')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 4h8M5.5 4V3.2h3V4M4.6 4l.5 7h3.8l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Delete</button>'+
+      '</div>'+
+    '</div>'+prize+
+    '<div class="oi-state"><div class="oi-state-top"><span class="oi-stage">'+stageName+'</span>'+badge+'</div>'+
+      '<div class="oi-track"><div class="oi-track-fill'+(done?" done":"")+'" style="width:'+pct+'%"></div></div>'+
+      '<div class="oi-state-sub">'+(done?"Published \u00b7 all 5 stages":"Stage "+(o.stage+1)+" of 5 \u00b7 "+STAGES[o.stage])+'</div></div>'+
+    '<div class="oi-foot"><span class="oi-updated">'+o.updated+'</span>'+
+      '<div class="oi-collab">'+o.collab.map(function(c){return '<div class="oi-av">'+c+'</div>';}).join('')+'</div></div>'+
+  '</div>';
+}
+var CREATE_CARD='<div class="oi-new" onclick="createOI()"><div class="oi-new-ic"><svg width="20" height="20" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div><div class="oi-new-t">Create new OI</div><div class="oi-new-s">Start from a company name \u2014 the agent handles targeting, peers and analysis.</div></div>';
+var _q="";
+function onSearch(v){ _q=(v||"").toLowerCase().trim(); var c=document.getElementById("search-clear"); if(c)c.style.display=_q?"flex":"none"; render(); }
+function clearSearch(){ var i=document.getElementById("oi-search"); if(i)i.value=""; onSearch(""); }
+function render(){
+  var match=function(o){return !_q || (o.name+" "+o.sector).toLowerCase().indexOf(_q)>-1;};
+  var cur=OIS.filter(function(o){return !o.archived && (o.year||2026)>=2026 && match(o);});
+  var old=OIS.filter(function(o){return !o.archived && (o.year||2026)<2026 && match(o);});
+  document.getElementById("oi-grid").innerHTML=cur.map(function(o){return oiCard(o,OIS.indexOf(o));}).join('')+(_q?'':CREATE_CARD);
+
+  // 2026 section label with count
+  var lbl26=document.getElementById("section-lbl-2026");
+  if(lbl26) lbl26.textContent="2026 ("+cur.length+")";
+
+  // 2025 section with count
+  var g25=document.getElementById("oi-grid-2025"), d25=document.getElementById("year-2025");
+  if(old.length){
+    g25.innerHTML=old.map(function(o){return oiCard(o,OIS.indexOf(o));}).join('');
+    g25.style.display="";
+    if(d25){d25.style.display="flex"; var sp=d25.querySelector("span"); if(sp)sp.textContent="2025 ("+old.length+")";}
+  } else {
+    g25.innerHTML=""; g25.style.display="none"; if(d25)d25.style.display="none";
+  }
+  var empty=document.getElementById("oi-empty"); if(empty)empty.style.display=(_q&&cur.length===0&&old.length===0)?"block":"none";
+  var arch=OIS.filter(function(o){return o.archived;});
+  var ag=document.getElementById("oi-grid-archive");
+  if(ag){ ag.innerHTML=arch.map(function(o){return oiCard(o,OIS.indexOf(o));}).join(''); }
+  var ae=document.getElementById("arch-empty"); if(ae)ae.style.display=arch.length?"none":"block";
+  document.getElementById("oi-count").textContent=OIS.filter(function(o){return !o.archived;}).length;
+}
+function openArchive(){ var m=document.getElementById("dash-main"),a=document.getElementById("dash-archive"); if(m)m.style.display="none"; if(a)a.style.display="block"; render(); if(window.scrollTo)window.scrollTo(0,0); }
+function closeArchive(){ var m=document.getElementById("dash-main"),a=document.getElementById("dash-archive"); if(a)a.style.display="none"; if(m)m.style.display="block"; render(); }
+function archiveOI(idx){ if(OIS[idx]){OIS[idx].archived=true; if(typeof closeMenus==="function")closeMenus(); render(); if(typeof showToast==="function")showToast(OIS[idx].name+" archived");} }
+function unarchiveOI(idx){ if(OIS[idx]){OIS[idx].archived=false; render();} }
+function toggleMenu(i){
+  var m=document.getElementById("menu-"+i); if(!m)return;
+  var wasOpen=m.classList.contains("open");
+  Array.prototype.forEach.call(document.querySelectorAll(".oi-menu.open"),function(x){x.classList.remove("open");});
+  if(!wasOpen)m.classList.add("open");
+}
+document.addEventListener("click",function(){Array.prototype.forEach.call(document.querySelectorAll(".oi-menu.open"),function(x){x.classList.remove("open");});});
+function shareOI(i){Array.prototype.forEach.call(document.querySelectorAll(".oi-menu.open"),function(x){x.classList.remove("open");});toast("Share link for "+OIS[i].name+" copied to clipboard.");}
+function downloadOI(i){
+  var o=OIS[i]; if(!o)return;
+  closeMenus();
+  var rows=[
+    ["OI Export · "+o.name],
+    [],
+    ["Company",o.name],
+    ["Sector",o.sector],
+    ["Stage",STAGES[o.stage]||"Published"],
+    ["Status",o.status],
+    ["Data vintage",o.dataVintage||"—"],
+    ["Last updated",o.updated],
+    [],
+    ["Size of prize",o.prize||"—"],
+    ["P&L impact",o.pnl||"—"],
+    ["Cash impact",o.cash||"—"],
+    [],
+    ["Exported",new Date().toLocaleDateString()]
+  ];
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c==null?"":c).replace(/"/g,'""')+'"';}).join(",");}).join("\r\n");
+  var blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  var url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=o.name.replace(/[^a-z0-9]/gi,"-").toLowerCase()+"-oi.csv";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},100);
+  toast("Downloaded "+o.name+" OI summary.");
+}
+function deleteOI(i){var nm=OIS[i].name;OIS.splice(i,1);render();toast(nm+" deleted.");}
+function toast(msg){
+  var t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(window._tt); window._tt=setTimeout(function(){t.classList.remove("show");},2600);
+}
+function openOI(i){
+  var o=OIS[i];
+  if(o.name==="Nike, Inc."){ toast("Opening "+o.name+" — resuming at "+STAGES[o.stage]+"…"); }
+  else { toast("Opening "+o.name+" ("+(o.status==="done"?"complete":STAGES[o.stage])+")…"); }
+}
+function createOI(){
+  var n=OIS.length+1;
+  var samples=[{name:"New OI · untitled",sector:"Pick a target to begin",mono:"+",color:"#636366"}];
+  OIS.push({name:"Untitled OI",sector:"Awaiting target company",mono:"?",color:"#1D1D1F",stage:0,status:"active",prize:null,year:2026,updated:"Just created",collab:["RG"]});
+  render();
+  toast("New OI created — name a target company and the agent starts targeting.");
+}
+render();
+// Countdown timer for waiting cards
+(function(){
+  var _timers={};
+  function startTimers(){
+    OIS.forEach(function(d,idx){
+      if(!d.waiting && !(!d.prize && d.status==="active")) return;
+      var el=document.getElementById("timer-"+idx);
+      if(!el||_timers[idx]) return;
+      var secs=10*60;
+      function tick(){
+        if(secs<=0){el.textContent="· finishing…";return;}
+        var m=Math.floor(secs/60),s=secs%60;
+        el.textContent="· "+(s===0?m+" min"+(m!==1?"s":"")+" left":m+":"+(s<10?"0":"")+s+" left");
+        secs--;
+        _timers[idx]=setTimeout(tick,1000);
+      }
+      tick();
+    });
+  }
+  startTimers();
+})();
+</script>
+</body>
+</html>

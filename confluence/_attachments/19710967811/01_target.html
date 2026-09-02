@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OI 3.0 — Target Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font:'Sans',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --serif:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --red:#CC0000;--red-h:#A80000;--red-bg:#FDF2F2;--red-br:#F0C8C8;
+  --g950:#111;--g900:#1C1C1E;--g800:#2C2C2E;--g700:#3A3A3C;
+  --g600:#48484A;--g500:#636366;--g400:#8E8E93;--g300:#AEAEB2;
+  --g200:#C7C7CC;--g150:#D1D1D6;--g100:#E5E5EA;--g50:#F2F2F7;--g25:#F9F9FB;
+  --amb-bg:#FBF1DD;--amb-br:#EBCB84;--amb-st:#D68A1C;--amb-tx:#8A5A12;
+  --grn-bg:#E7F6EC;--grn-br:#A9DCB6;--grn-st:#2A9E52;--grn-tx:#17703A;
+  --blue-bg:#EAEBF9;--blue-br:#BFDBFE;--blue-tx:#1D4ED8;
+  --sh-card:0 1px 3px rgba(0,0,0,.05),0 2px 10px rgba(0,0,0,.04);
+  --sh-hover:0 4px 20px rgba(0,0,0,.09);
+  --chat-w:50vw;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:var(--font);background:#F6F7F9;color:var(--g950);height:100%;-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+input,textarea{font-family:var(--font)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--g200);border-radius:3px}
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOP BAR */
+.topbar{height:44px;background:var(--g900);border-bottom:1px solid var(--g800);display:flex;align-items:center;padding:0 24px;gap:0;flex:none}
+.tb-brand{display:flex;align-items:center;gap:8px;padding-right:18px;border-right:1px solid var(--g800);margin-right:16px}
+.tb-mark{width:22px;height:22px;background:var(--red);border-radius:5px;display:flex;align-items:center;justify-content:center;flex:none}
+.tb-wm{font-size:14px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.tb-case{font-size:15px;font-weight:600;color:rgba(255,255,255,.85)}
+.tb-sector{display:inline-flex;align-items:center;gap:6px;margin-left:14px;padding:4px 11px;border-radius:9999px;background:rgba(127,178,232,.15);border:1px solid rgba(127,178,232,.35);font-size:13px;font-weight:600;color:#AEC2F0;letter-spacing:.01em}
+.tb-sector.pending{opacity:.5}
+.tb-right{margin-left:auto;display:flex;align-items:center}
+.tb-ava{width:26px;height:26px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+
+/* STEPPER */
+.stepper{background:#fff;border-bottom:1px solid var(--g100);padding:15px 40px 0;flex:none}
+.stepper-row{display:flex;align-items:stretch}
+.step-item{display:flex;flex-direction:column;gap:2px;padding-bottom:10px;flex:1}
+.step-item.s-active{border-bottom:2px solid var(--red);margin-bottom:-1px}
+.step-num{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g300);line-height:1}
+.step-item.s-done .step-num{color:var(--grn-tx)}
+.step-item.s-active .step-num{color:var(--red)}
+.step-item.s-locked .step-num{color:var(--g200)}
+.step-name{font-family:var(--serif);font-size:15px;font-weight:600;letter-spacing:.01em;line-height:1.1;color:var(--g300)}
+.step-item.s-done .step-name{color:var(--g700)}
+.step-item.s-active .step-name{color:var(--g950)}
+.step-item.s-locked .step-name{color:var(--g200)}
+.step-sub{font-size:11px;color:var(--g400);letter-spacing:-.01em;line-height:1.25}
+.step-item.s-locked .step-sub{color:var(--g200)}
+.step-div{width:1px;height:30px;background:var(--g100);flex:none;margin:2px 20px 0;align-self:flex-start}
+
+/* BODY */
+.body{display:flex;flex:1;overflow:hidden}
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.ws-scroll{flex:1;overflow-y:auto;padding:40px 44px 72px}
+.ws-inner{max-width:780px;margin:0 auto}
+.ws-h1{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--g950);letter-spacing:-.01em;margin-bottom:10px}
+.ws-lede{font-size:13.5px;color:var(--g500);line-height:1.7;margin-bottom:48px}
+/* Intake mode selector */
+.mode-card{margin-bottom:24px}
+.mode-q{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:16px}
+.mode-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.mode-opt{text-align:left;background:#fff;border:1.5px solid var(--g150);border-radius:14px;padding:16px 18px;transition:all .14s;cursor:pointer;display:flex;flex-direction:row;align-items:flex-start;gap:13px}
+.mode-opt-tx{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.mode-opt:hover{border-color:var(--g400);box-shadow:0 3px 14px rgba(0,0,0,.06)}
+.mode-opt.on{border-color:var(--grn-st);box-shadow:0 3px 16px rgba(42,158,82,.12)}
+.mode-opt-ic{width:30px;height:30px;border-radius:8px;background:var(--g50);color:var(--g600);display:flex;align-items:center;justify-content:center;flex:none}
+.mode-opt.on .mode-opt-ic{background:var(--grn-bg);color:var(--grn-tx)}
+.mode-opt-t{font-size:15px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.mode-opt-s{font-size:13px;color:var(--g500);line-height:1.35}
+.mode-opt-lock{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--g400);margin-top:6px}
+.mode-opt-lock svg{flex:none}
+.tn-quick{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:12px;color:var(--red-h);font-weight:600;line-height:1.4}
+
+/* SETUP CARD */
+.setup-card{background:#fff;border:1px solid var(--g100);border-radius:16px;margin-bottom:20px;overflow:hidden;box-shadow:0 1px 2px rgba(17,17,17,.04),0 1px 3px rgba(17,17,17,.03);transition:border-color .15s,box-shadow .15s}
+.setup-card.resolved{border-color:var(--grn-br)}
+.sc-hd{display:flex;align-items:center;gap:12px;padding:16px 28px}
+.sc-step-ic{width:26px;height:26px;border-radius:8px;background:var(--g50);display:flex;align-items:center;justify-content:center;flex:none;font-size:12px;font-weight:700;color:var(--g600)}
+.setup-card.resolved .sc-step-ic{background:var(--grn-st);color:#fff}
+.setup-card.active .sc-step-ic{background:var(--g950);color:#fff}
+.sc-hd-tx{flex:1;min-width:0}
+.sc-title{font-size:17px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.sc-sub{font-size:14px;color:var(--g500);margin-top:3px;line-height:1.35}
+.sc-opt{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);padding:4px 10px;background:var(--g50);border-radius:9999px;flex:none;display:inline-flex;align-items:center;gap:4px}
+.sc-opt::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--g300)}
+.sc-check{width:20px;height:20px;flex:none;opacity:0;transition:opacity .2s}
+.setup-card.resolved .sc-check{opacity:1}
+.sc-body{padding:0 28px 20px;border-top:1px solid var(--g100);padding-top:16px}
+
+/* Target name input */
+.tn-row{display:flex;gap:9px;align-items:stretch}
+#card-target{overflow:visible}
+.tn-ac{position:relative;flex:1}
+.tn-ac .tn-inp{width:100%}
+.tn-sugs{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--g150);border-radius:11px;box-shadow:0 10px 34px rgba(0,0,0,.14);padding:5px;z-index:40;display:none;max-height:280px;overflow-y:auto}
+.tn-sugs.open{display:block}
+.tn-sug-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:9px;cursor:pointer}
+.tn-sug-item:hover{background:var(--g50)}
+.tn-sug-mono{width:30px;height:30px;border-radius:8px;background:var(--g900);color:#fff;font-family:var(--serif);font-weight:700;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.tn-sug-nm{font-size:14px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.tn-sug-meta{font-size:11.5px;color:var(--g400);margin-top:1px}
+.tn-inp{flex:1;height:44px;border:1.5px solid var(--g150);border-radius:10px;padding:0 14px;font-size:15px;font-weight:600;color:var(--g950);outline:none;transition:border-color .15s}
+.tn-inp:focus{border-color:var(--g700)}
+.tn-inp::placeholder{color:var(--g300);font-weight:400}
+.tn-go{height:44px;padding:0 20px;border-radius:10px;background:var(--g950);color:#fff;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:opacity .12s;flex:none}
+.tn-go:hover{opacity:.85}
+.tn-go:disabled{opacity:.3;cursor:default}
+
+/* Resolved target chip */
+.resolved-target{display:flex;align-items:center;gap:12px;padding:13px 15px;background:var(--grn-bg);border:1px solid var(--grn-br);border-radius:10px}
+.rt-logo{width:38px;height:38px;border-radius:9px;background:#fff;border:1px solid var(--g150);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:17px;font-weight:600;color:var(--g950);flex:none}
+.rt-info{flex:1;min-width:0}
+.rt-name{font-size:14px;font-weight:700;color:var(--g950)}
+.rt-meta{font-size:11.5px;color:var(--g600);margin-top:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rt-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:700}
+.rt-badge.pub{background:#fff;border:1px solid var(--grn-br);color:var(--grn-tx)}
+.rt-ticker{font-size:11px;font-weight:700;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:5px;padding:2px 7px;letter-spacing:.02em}
+
+/* Framing textarea */
+.fr-label{font-size:12px;font-weight:600;color:var(--g700);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.fr-hint{font-size:11.5px;color:var(--g400);line-height:1.5;margin-bottom:10px}
+.fr-ta{width:100%;min-height:78px;border:1.5px solid var(--g150);border-radius:10px;padding:11px 13px;font-size:13px;color:var(--g950);line-height:1.6;outline:none;resize:vertical;transition:border-color .15s}
+.fr-ta:focus{border-color:var(--g700)}
+.fr-ta::placeholder{color:var(--g300)}
+
+/* Context fields grid */
+.ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ctx-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+/* Bain relationship card */
+.sc-step-ic.rel{background:var(--blue-bg);color:var(--blue-tx)}
+.rel-partner{display:flex;align-items:center;gap:11px;padding-bottom:12px;border-bottom:1px solid var(--g100)}
+.target-rel{margin-top:16px;padding-top:16px;border-top:1px solid var(--g100)}
+.rel-more-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:2px 0;background:none;border:none;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;font-family:var(--font)}
+.rel-more-btn:hover{color:var(--g700)}
+.rel-av{width:36px;height:36px;border-radius:50%;overflow:hidden;background:#CBD3E1;display:flex;align-items:center;justify-content:center;flex:none}
+.rel-p-main{flex:1;min-width:0}
+.rel-p-nm{font-size:13.5px;font-weight:700;color:var(--g950)}
+.rel-p-meta{font-size:11px;color:var(--g500);margin-top:1px}
+.rel-last{font-size:10.5px;color:var(--g400);flex:none;text-align:right}
+.rel-cases-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin:13px 0 8px}
+.rel-cases{display:flex;flex-direction:column;gap:7px}
+.rel-case{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--g150);border-radius:10px;background:#fff;transition:all .12s;cursor:pointer}
+.rel-case:hover{border-color:var(--blue-tx);box-shadow:0 2px 10px rgba(30,95,168,.08)}
+.rel-c-main{flex:1;min-width:0}
+.rel-c-nm{font-size:12.5px;font-weight:600;color:var(--g950)}
+.rel-c-meta{font-size:10.5px;color:var(--g500);margin-top:1px}
+.rel-c-link{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--blue-tx);background:var(--blue-bg);border-radius:6px;padding:4px 8px;flex:none}
+.ctx-chip{padding:5px 12px;border-radius:9999px;border:1px solid var(--g150);background:#fff;font-size:11.5px;font-weight:600;color:var(--g500);transition:all .12s;cursor:pointer;font-family:var(--font)}
+.ctx-chip:hover{border-color:var(--g400);color:var(--g900)}
+.ctx-chip.used{background:var(--g50);color:var(--g300);border-color:var(--g100)}
+.ctx-field{display:flex;flex-direction:column;gap:6px}
+.ctx-field.full{grid-column:1 / -1}
+.ctx-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)}
+.ctx-lbl .req{color:var(--g300);font-weight:600;text-transform:none;letter-spacing:0;margin-left:4px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg-btn{height:32px;padding:0 14px;border-radius:9999px;border:none;background:var(--g100);font-size:12px;font-weight:500;color:var(--g600);transition:all .12s}
+.seg-btn:hover{background:var(--g150);color:var(--g900)}
+.seg-btn.on{background:var(--g950);color:#fff}
+.ctx-inp{height:38px;border:1.5px solid var(--g150);border-radius:9px;padding:0 12px;font-size:13px;color:var(--g950);outline:none;transition:border-color .15s}
+.ctx-inp:focus{border-color:var(--g700)}
+.ctx-inp::placeholder{color:var(--g300)}
+.ctx-prefix{position:relative;display:flex;align-items:center}
+.ctx-prefix span{position:absolute;left:12px;font-size:13px;font-weight:600;color:var(--g400);pointer-events:none}
+.ctx-prefix .ctx-inp{padding-left:24px;width:100%}
+
+/* Upload zone */
+.up-zone{border:1.5px dashed var(--g200);border-radius:11px;padding:20px;text-align:center;transition:all .15s;cursor:pointer;background:var(--g25)}
+.up-zone:hover{border-color:var(--g400);background:#fff}
+.up-ic{width:34px;height:34px;border-radius:9px;background:#fff;border:1px solid var(--g150);display:flex;align-items:center;justify-content:center;margin:0 auto 9px}
+.up-t{font-size:16px;font-weight:600;color:var(--g700)}
+.up-t strong{color:var(--red)}
+.up-s{font-size:13.5px;color:var(--g500);margin-top:3px;line-height:1.4}
+.up-list{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.up-file{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fff;border:1px solid var(--g150);border-radius:9px}
+.up-file-ic{width:26px;height:26px;border-radius:6px;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;flex:none;font-size:8px;font-weight:700;color:var(--blue-tx)}
+.up-file-nm{flex:1;font-size:12.5px;font-weight:600;color:var(--g950)}
+.up-file-st{font-size:10.5px;color:var(--grn-tx);font-weight:600;display:flex;align-items:center;gap:4px}
+.up-file-x{width:20px;height:20px;border-radius:5px;color:var(--g300);display:flex;align-items:center;justify-content:center;flex:none}
+.up-file-x:hover{color:var(--red);background:var(--red-bg)}
+.up-tpl{font-size:11px;color:var(--blue-tx);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.up-tpl:hover{text-decoration:underline}
+.up-tpl.alt{color:var(--g500)}
+/* Structured document slots */
+.doc-foot{display:flex;flex-direction:column;gap:7px;margin-top:12px;padding-top:12px;border-top:1px solid var(--g100)}
+.up-tpl-note{font-size:14px;color:var(--g500);line-height:1.55}
+/* Confidence nudge (soft gate) */
+.conf-nudge{display:flex;align-items:center;gap:9px;margin-top:11px;padding:10px 12px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:9px}
+.conf-nudge span{flex:1;font-size:11.5px;color:var(--amb-tx);line-height:1.45}
+.conf-nudge span strong{font-weight:700}
+.conf-nudge-btn{height:28px;padding:0 13px;border-radius:9999px;background:var(--amb-st);color:#fff;font-size:11px;font-weight:700;flex:none;transition:opacity .12s}
+.conf-nudge-btn:hover{opacity:.88}
+/* Framing guided prompts */
+.fr-q{padding:0;margin-bottom:40px;background:transparent}
+.fr-q:last-child{margin-bottom:0}
+.fr-q-t{font-size:13px;font-weight:600;color:var(--g950);line-height:1.4;margin-bottom:10px}
+.fr-q-t .fr-q-num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:var(--g50);font-size:10px;font-weight:700;color:var(--g400);margin-right:8px;vertical-align:1px}
+.fr-opts{display:flex;gap:6px;flex-wrap:wrap}
+.fr-detail{width:100%;margin-top:11px;min-height:0;height:40px;border:1px solid var(--g150);border-radius:9px;padding:10px 12px;font-size:14.5px;color:var(--g950);line-height:1.45;outline:none;resize:none;transition:border-color .15s,height .15s;overflow:hidden;background:var(--g25)}
+.fr-detail:focus{border-color:var(--g500);background:#fff;height:64px}
+.fr-detail.free{height:64px;resize:vertical;background:var(--g25)}
+.fr-detail.free:focus{height:64px;background:#fff}
+.fr-detail::placeholder{color:var(--g300)}
+
+/* Confidence meter */
+.conf-card{background:var(--g25);border:1px solid var(--g100);border-radius:11px;padding:14px 16px;margin-top:2px}
+.conf-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.conf-t{font-size:12px;font-weight:700;color:var(--g700)}
+.conf-lvl{font-size:11px;font-weight:700;padding:3px 9px;border-radius:9999px}
+.conf-lvl.hi{background:var(--grn-bg);color:var(--grn-tx)}
+.conf-lvl.med{background:var(--amb-bg);color:var(--amb-tx)}
+.conf-track{height:7px;background:var(--g100);border-radius:4px;overflow:hidden}
+.conf-fill{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.32,1,.23,1),background .5s}
+.conf-note{font-size:11px;color:var(--g500);line-height:1.55;margin-top:9px}
+
+/* Proceed bar */
+.proceed{position:fixed;bottom:0;left:0;right:var(--chat-w);height:66px;background:#fff;border-top:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;padding:0 40px;z-index:20}
+.proc-l{font-size:12px;color:var(--g500);line-height:1.5}
+.proc-l strong{color:var(--g950);font-weight:700}
+.proc-btn{height:42px;padding:0 24px;border-radius:9999px;background:var(--red);color:#fff;font-size:15px;font-weight:600;display:inline-flex;align-items:center;gap:9px;transition:opacity .12s}
+.proc-btn:hover{opacity:.85}
+.proc-btn:disabled{opacity:.3;cursor:default}
+/* Upload / private flag */
+.ws-endflag{display:flex;align-items:center;gap:12px;margin-top:4px;padding:14px 16px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:12px}
+.ws-endflag svg{flex:none}
+.ws-endflag-tx{flex:1;font-size:13px;color:var(--amb-tx);line-height:1.5}
+.ws-endflag-tx strong{font-weight:700}
+
+/* ── CHAT ── */
+.chat-resize-handle{width:4px;background:transparent;cursor:col-resize;flex:none;position:relative;z-index:30;transition:background .15s}
+.chat-resize-handle:hover,.chat-resize-handle.dragging{background:var(--g100)}
+.chat-resize-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:2px;height:28px;border-radius:2px;background:var(--g200)}
+.chat-panel{width:var(--chat-w);flex:none;background:#FFFFFF;display:flex;flex-direction:column;border-left:1px solid var(--g150);overflow:hidden}
+.cp-tabs{display:flex;border-bottom:1px solid var(--g100);flex:none;background:#fff;padding:0 4px}
+.cp-tab{height:40px;padding:0 14px;font-size:15px;font-weight:600;color:var(--g400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s}
+.cp-tab.on{color:var(--g950);border-bottom-color:var(--g950)}
+.cp-tab:hover:not(.on){color:var(--g700)}
+.tab-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-left:3px;vertical-align:middle}
+.cp-msgs-wrap{flex:1;overflow-y:auto;padding:30px 24px 0}
+.cp-msgs{display:flex;flex-direction:column;gap:24px;padding-bottom:20px}
+.c-div{display:flex;align-items:center;gap:8px;margin:2px 0}
+.cd-l{flex:1;height:1px;background:var(--g100)}
+.cd-t{font-size:10px;color:var(--g300);font-weight:600;white-space:nowrap}
+.msg-a{display:flex;flex-direction:column;gap:3px;max-width:600px}
+.msg-a-b{background:#F7F7F9;border-radius:2px 12px 12px 12px;padding:12px 14px}
+.msg-a-t{font-size:14px;color:var(--g700);line-height:1.65}
+.msg-a-t strong{font-weight:700;color:var(--g950)}
+.msg-a-t p{margin-bottom:8px}
+.msg-a-t p:last-child{margin-bottom:0}
+.msg-tm{font-size:12px;color:var(--g300);margin-top:4px}
+.msg-p{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.msg-p-b{background:var(--g950);border-radius:12px 2px 12px 12px;padding:9px 13px;max-width:75%}
+.msg-p-t{font-size:14px;color:#fff;line-height:1.5}
+.cp-sugs{display:flex;gap:6px;overflow-x:auto;padding:10px 14px 4px;scrollbar-width:none;flex:none}
+.cp-sugs::-webkit-scrollbar{display:none}
+.cp-sug{font-size:11.5px;font-weight:600;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;cursor:pointer;transition:all .12s;font-family:var(--font);white-space:nowrap;flex:none}
+.cp-sug:hover{border-color:var(--g400);color:var(--g900)}
+.cp-ft{height:66px;display:flex;flex-direction:column;justify-content:center;gap:7px;padding:0 14px;border-top:1px solid var(--g100);flex:none;background:#fff}
+.cp-row{display:flex;gap:7px}
+.cp-inp{flex:1;height:38px;background:#F6F7F9;border:1px solid var(--g150);border-radius:8px;padding:0 12px;font-size:15px;color:var(--g950);outline:none;transition:border-color .15s}
+.cp-inp:focus{border-color:var(--g500)}
+.cp-inp::placeholder{color:var(--g300)}
+.cp-send{width:40px;height:40px;border-radius:9px;background:var(--g950);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;border:none;transition:opacity .12s;opacity:.9}
+.cp-send:hover{opacity:1}
+.cp-attach{width:40px;height:40px;border-radius:9px;background:var(--g50);color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;border:1px solid var(--g150);transition:all .12s}
+.cp-attach:hover{background:var(--g100);color:var(--g900);border-color:var(--g300)}
+/* Log + Sources tabs */
+.tab-view{flex:1;overflow-y:auto;padding:14px}
+/* Collaborators panel (log) */
+.collab-panel{background:var(--g25);border:1px solid var(--g100);border-radius:12px;padding:12px 13px}
+.collab-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.collab-t{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g500)}
+.collab-live{font-size:10px;font-weight:600;color:#2A9E52;background:#E1F5EF;border-radius:9999px;padding:2px 9px}
+.collab-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100)}
+.collab-row:last-of-type{border-bottom:none}
+.collab-av{position:relative;width:30px;height:30px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.collab-on{position:absolute;bottom:-1px;right:-1px;width:9px;height:9px;border-radius:50%;background:#2A9E52;border:2px solid var(--g25)}
+.collab-main{flex:1;min-width:0}
+.collab-nm{font-size:12.5px;font-weight:600;color:var(--g950)}
+.collab-role{font-size:10.5px;color:var(--g400)}
+.collab-meta{text-align:right;flex:none}
+.collab-last{font-size:10.5px;color:var(--g600)}
+.collab-edits{font-size:9.5px;color:var(--g300);margin-top:1px}
+.collab-foot{font-size:10px;color:var(--g400);line-height:1.5;margin-top:9px;padding-top:9px;border-top:1px solid var(--g100)}
+.collab-div{height:1px;background:var(--g100);margin:14px 0}
+.lg-e{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.lg-e:last-child{border-bottom:none}
+.lg-dot{width:6px;height:6px;border-radius:50%;flex:none;margin-top:4px}
+.lg-dot.p{background:var(--red)}.lg-dot.a{background:var(--g400)}.lg-dot.s{background:var(--g200)}
+.lg-who{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.lw-p{color:var(--red)}.lw-a{color:var(--g500)}.lw-s{color:var(--g300)}
+.lg-tx{font-size:12px;color:var(--g700);line-height:1.5}
+.lg-tx strong{font-weight:700;color:var(--g950)}
+.lg-tm{font-size:9px;color:var(--g300);margin-top:2px}
+.src-row{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid var(--g50)}
+.src-acts{display:flex;gap:4px;flex:none;align-items:center}
+.src-act-btn{width:28px;height:28px;border-radius:8px;border:1px solid var(--g100);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--g400);transition:all .12s;font-size:11px;font-family:var(--font)}
+.src-act-btn:hover{background:var(--g50);color:var(--g700)}
+.src-act-btn.del:hover{background:#FDF2F2;color:var(--red);border-color:var(--red-br)}
+.src-ic{width:30px;height:30px;border-radius:7px;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--g500);flex:none}
+.src-count{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:12px}
+.src-cat{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin:16px 0 6px}
+.src-cat-dot{width:7px;height:7px;border-radius:50%;flex:none}
+.src-main{flex:1;min-width:0}
+.src-nm{font-size:12px;font-weight:600;color:var(--g950)}
+.src-d{font-size:11px;color:var(--g400);margin-top:1px}
+.src-date{font-size:10px;color:var(--g300);margin-top:3px}
+.src-refresh{width:30px;height:30px;border-radius:7px;border:1px solid var(--g150);background:#fff;color:var(--g400);display:flex;align-items:center;justify-content:center;flex:none;transition:all .12s}
+.src-refresh:hover{border-color:var(--g400);color:var(--g900)}
+/* Sage results in chat — seated inside the agent message, not floating boxes */
+.iris-res{display:flex;flex-direction:column;gap:1px;margin-top:10px;background:var(--g25);border:1px solid var(--g100);border-radius:10px;overflow:hidden}
+.iris-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:transparent;border:none}
+.iris-item + .iris-item{border-top:1px solid var(--g100)}
+.iris-main{flex:1;min-width:0}
+.iris-acts{display:flex;align-items:center;gap:6px;flex:none}
+.iris-view,.iris-add{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid var(--g150);background:#fff;color:var(--g500);transition:all .12s;flex:none}
+.iris-view:hover{border-color:var(--g400);color:var(--g900)}
+.iris-add:hover{border-color:var(--g900);background:var(--g900);color:#fff}
+.iris-add.added{background:#E1F5EF;border-color:#B7E0C6;color:#2A9E52}
+.iris-tag{font-size:8px;font-weight:700;letter-spacing:.05em;padding:3px 6px;border-radius:5px;flex:none;margin-top:1px}
+.iris-tag.i{background:#F1EAFB;color:#7D53CE}
+.iris-tag.s{background:var(--blue-bg);color:var(--blue-tx)}
+.iris-tag.w{background:var(--amb-bg);color:var(--amb-tx)}
+.iris-nm{font-size:12px;font-weight:600;color:var(--g950);line-height:1.35}
+.iris-mt{font-size:10.5px;color:var(--g500);margin-top:2px;line-height:1.4}
+
+/* ── LOG FILTER BAR ───────────────────────────── */
+.lg-filter-bar{display:flex;gap:5px;flex-wrap:wrap;padding:10px 13px 8px;border-bottom:1px solid var(--g100);flex:none;background:#fff}
+.lg-fchip{height:26px;padding:0 10px;border-radius:9999px;border:1px solid var(--g150);background:#fff;font-size:12px;font-weight:600;color:var(--g500);cursor:pointer;font-family:var(--font);transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.lg-fchip:hover{border-color:var(--g400);color:var(--g700)}
+.lg-fchip.on{background:var(--g950);border-color:var(--g950);color:#fff}
+.lg-fchip .lg-fchip-dot{width:6px;height:6px;border-radius:50%}
+.lg-e.lg-hidden{display:none!important}
+
+</style>
+<style id="peerset-css">
+.ps-opt{display:flex;gap:12px;padding:14px 15px;border:1.5px solid var(--g150);border-radius:12px;cursor:pointer;transition:all .14s;margin-bottom:10px;align-items:flex-start}
+.ps-opt:last-child{margin-bottom:0}
+.ps-opt:hover{border-color:var(--g300)}
+.ps-opt.on{border-color:var(--grn-st);background:var(--grn-bg)}
+.ps-radio{width:18px;height:18px;border-radius:50%;border:1.8px solid var(--g300);flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .14s}
+.ps-opt.on .ps-radio{border-color:var(--grn-st)}
+.ps-radio-dot{width:9px;height:9px;border-radius:50%;background:var(--grn-st);opacity:0;transition:opacity .14s}
+.ps-opt.on .ps-radio-dot{opacity:1}
+.ps-opt-tx{flex:1;min-width:0}
+.ps-opt-t{font-size:13.5px;font-weight:700;color:var(--g950);display:flex;align-items:center;gap:8px}
+.ps-opt-count{font-size:10.5px;font-weight:600;color:var(--g500);background:var(--g50);padding:1px 8px;border-radius:9999px}
+.ps-opt.on .ps-opt-count{background:#fff}
+.ps-rec{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--grn-tx);background:var(--grn-bg);border:1px solid var(--grn-br);padding:1px 7px;border-radius:9999px}
+.ps-opt-d{font-size:14px;color:var(--g500);line-height:1.4;margin-top:3px}
+.ps-more{font-size:11.5px;font-weight:600;color:var(--red);cursor:pointer;margin-top:6px;display:inline-block}
+.ps-detail{display:none;font-size:11.5px;color:var(--g600);line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)}
+.ps-crit{margin-top:18px;padding-top:16px;border-top:1px solid var(--g100)}
+.ps-crit-lbl{font-size:12px;font-weight:700;color:var(--g900);margin-bottom:10px}
+.ps-crit-sub{font-size:11px;font-weight:400;color:var(--g500);display:block;margin-top:2px}
+.ps-crit-chips{display:flex;flex-wrap:wrap;gap:7px}
+.ps-crit-chip{font-size:11.5px;font-weight:600;color:var(--g500);background:#fff;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;cursor:pointer;transition:all .12s;font-family:var(--font)}
+.ps-crit-chip:hover{border-color:var(--g400);color:var(--g900)}
+.ps-crit-chip.on{background:var(--grn-bg);border-color:var(--grn-st);color:var(--grn-tx)}
+
+.share-hd{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--g100)}
+.share-title{font-size:16px;font-weight:700;color:var(--g950);letter-spacing:-.01em}
+.share-sub{font-size:11.5px;color:var(--g500);margin-top:3px}
+.share-close{width:28px;height:28px;border-radius:50%;background:var(--g50);color:var(--g500);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-close:hover{background:var(--g100);color:var(--g950)}
+.share-add{display:flex;gap:8px;padding:14px 22px}
+.share-add input{flex:1;height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 12px;font-size:13px;font-family:var(--font);outline:none}
+.share-add input:focus{border-color:var(--g500)}
+.share-add select{height:36px;border:1px solid var(--g200);border-radius:8px;padding:0 8px;font-size:12px;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-add-btn{height:36px;padding:0 16px;border-radius:8px;background:var(--g950);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--font)}
+.share-list{padding:0 22px;max-height:280px;overflow-y:auto}
+.share-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--g50)}
+.share-av{width:32px;height:32px;border-radius:50%;background:var(--g200);color:var(--g700);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.share-main{flex:1;min-width:0}
+.share-nm{font-size:13px;font-weight:600;color:var(--g950)}
+.share-role{font-size:11px;color:var(--g400)}
+.share-permsel{height:30px;border:1px solid var(--g200);border-radius:7px;padding:0 8px;font-size:12px;font-weight:600;font-family:var(--font);background:#fff;cursor:pointer;color:var(--g700)}
+.share-rm{width:22px;height:22px;border-radius:6px;border:none;background:none;color:var(--g300);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}
+.share-rm:hover{background:var(--red-bg);color:var(--red)}
+.share-ft{display:flex;align-items:center;justify-content:space-between;padding:14px 22px 18px;border-top:1px solid var(--g100)}
+.share-link{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;border:1px solid var(--g200);background:#fff;font-size:12px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.share-link:hover{border-color:var(--g400)}
+.share-done{height:34px;padding:0 18px;border-radius:8px;background:var(--red);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:var(--font)}
+.collab-perm{display:inline-block;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:9999px}
+.collab-perm.perm-c{background:var(--grn-bg);color:var(--grn-tx)}
+.collab-perm.perm-v{background:var(--g100);color:var(--g500)}
+.collab-share-btn{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:7px;border:1px solid var(--g200);background:#fff;font-size:10.5px;font-weight:600;color:var(--g700);cursor:pointer;font-family:var(--font)}
+.collab-share-btn:hover{border-color:var(--g400);color:var(--g950)}
+
+/* BU selection */
+.bu-section{margin-top:18px;padding-top:18px;border-top:1px solid var(--g100)}
+.bu-q{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:12px}
+.bu-all-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1.5px solid var(--grn-st);border-radius:10px;background:var(--grn-bg);cursor:pointer;margin-bottom:10px;transition:all .13s}
+.bu-all-row.off{border-color:var(--g150);background:#fff}
+.bu-all-row.off:hover{border-color:var(--g400)}
+.bu-all-label{font-size:13px;font-weight:700;color:var(--grn-tx);flex:1}
+.bu-all-row.off .bu-all-label{color:var(--g700)}
+.bu-all-sub{font-size:11.5px;color:var(--grn-tx);opacity:.75}
+.bu-all-row.off .bu-all-sub{color:var(--g400)}
+.bu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bu-item{display:flex;align-items:flex-start;gap:11px;padding:11px 13px;border:1.5px solid var(--g150);border-radius:10px;cursor:pointer;transition:all .13s;background:#fff}
+.bu-item:hover{border-color:var(--g400)}
+.bu-item.on{border-color:var(--grn-st);background:var(--grn-bg)}
+.bu-cb{width:17px;height:17px;border-radius:5px;border:1.8px solid var(--g300);background:#fff;flex:none;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .13s}
+.bu-item.on .bu-cb{background:var(--grn-st);border-color:var(--grn-st)}
+.bu-cb-check{opacity:0;transition:opacity .13s}
+.bu-item.on .bu-cb-check{opacity:1}
+.bu-item-tx{flex:1;min-width:0}
+.bu-item-nm{font-size:13px;font-weight:700;color:var(--g950);line-height:1.2}
+.bu-item-d{font-size:11.5px;color:var(--g500);margin-top:3px;line-height:1.45}
+/* BU data limitation notice */
+.bu-notice{display:none;margin-top:12px;padding:12px 14px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:10px;gap:10px;align-items:flex-start}
+.bu-notice.show{display:flex}
+.bu-notice-body{flex:1;min-width:0}
+.bu-notice-title{font-size:12px;font-weight:700;color:var(--amb-tx);margin-bottom:3px}
+.bu-notice-txt{font-size:11.5px;color:var(--amb-tx);line-height:1.55}
+/* Region scope */
+.region-section{margin-top:18px;padding-top:18px;border-top:1px solid var(--g100)}
+.region-q{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:12px}
+.region-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.region-chip{height:34px;padding:0 14px;border-radius:9999px;border:1.5px solid var(--g150);background:#fff;font-size:13px;font-weight:600;color:var(--g600);cursor:pointer;transition:all .13s;display:inline-flex;align-items:center;gap:6px}
+.region-chip:hover{border-color:var(--g400);color:var(--g950)}
+.region-chip.on{border-color:var(--grn-st);background:var(--grn-bg);color:var(--grn-tx)}
+.region-chip.global.on{border-color:var(--g950);background:var(--g950);color:#fff}
+.region-chip-cpsug.active{border-color:var(--g950);background:var(--g950);color:#fff}
+.rel-mapping-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;font-weight:600;color:var(--g500);text-decoration:none;border:1px solid var(--g150);border-radius:9999px;padding:5px 12px;transition:all .12s;background:#fff}
+.rel-mapping-btn:hover{border-color:var(--g400);color:var(--g950)}
+.region-free{display:flex;gap:8px;margin-top:6px;align-items:center}
+.region-free-inp{flex:1;height:36px;border:1.5px solid var(--g150);border-radius:10px;padding:0 13px;font-size:13px;font-family:var(--font);color:var(--g950);outline:none;background:#fff;transition:border-color .13s}
+.region-free-inp:focus{border-color:var(--g400)}
+.region-free-inp::placeholder{color:var(--g300)}
+.region-free-btn{height:36px;padding:0 14px;border-radius:10px;background:var(--g950);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:var(--font);white-space:nowrap;transition:opacity .12s}
+.region-free-btn:hover{opacity:.85}
+.region-warn{display:none;margin-top:10px;padding:10px 13px;background:var(--amb-bg);border:1px solid var(--amb-br);border-radius:9px;font-size:12px;color:var(--amb-tx);line-height:1.55}
+.region-warn.show{display:block}
+/* Upload flag in docs card */
+.up-flag-wrap{margin-top:14px;padding:12px 14px;background:var(--blue-bg);border:1px solid var(--blue-br);border-radius:10px;display:flex;align-items:flex-start;gap:10px}
+.up-flag-body{flex:1;min-width:0}
+.up-flag-title{font-size:12px;font-weight:700;color:var(--blue-tx);margin-bottom:3px}
+.up-flag-txt{font-size:11.5px;color:var(--g600);line-height:1.55}
+.up-flag-btn{height:30px;padding:0 14px;border-radius:9999px;background:var(--g950);color:#fff;font-size:11px;font-weight:700;flex:none;transition:opacity .12s;cursor:pointer;font-family:var(--font)}
+.up-flag-btn:hover{opacity:.85}
+.ctx-q{font-size:15px;font-weight:600;color:var(--g700);margin-bottom:11px}
+.ctx-chip.on{background:var(--grn-bg);color:var(--grn-tx);box-shadow:inset 0 0 0 1px var(--grn-br)}
+.rel-toggle{display:inline-flex;gap:7px}
+.rel-opt{height:32px;padding:0 22px;border-radius:9999px;border:1px solid var(--g200);background:#fff;font-size:12.5px;font-weight:600;color:var(--g600);cursor:pointer;font-family:var(--font);transition:all .12s}
+.rel-opt:hover{border-color:var(--g400)}
+.rel-opt.on{background:var(--grn-bg);color:var(--grn-tx);border-color:var(--grn-st)}
+.src-upload-zone{border:1.5px dashed var(--g150);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all .14s;margin-bottom:12px;background:var(--g25)}
+.src-upload-zone:hover{border-color:var(--g400);background:var(--g50)}
+.src-file-row2{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--g50)}
+.src-file-row2:last-child{border-bottom:none}
+.src-file-ic2{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:700;flex:none}
+.src-file-btn2{width:24px;height:24px;border-radius:6px;border:1px solid var(--g100);background:#fff;color:var(--g500);display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer;transition:all .12s}
+.src-file-btn2:hover{border-color:var(--g400);color:var(--g950)}
+.src-file-btn2.del:hover{border-color:#E03C3C;color:#E03C3C}
+</style>
+<style id="navbtns-css">
+.nav-dash,.nav-share{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 13px;border-radius:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .12s}
+.nav-dash:hover,.nav-share:hover{background:rgba(255,255,255,.2)}
+.nav-dash{margin-right:14px}
+.nav-share{margin-right:12px}
+</style>
+<style id="done-check">.step-item.s-done .step-name::after,.ss-item.s-done .ss-name::after{content:"\2713";margin-left:7px;color:#1E7D40;font-weight:800;font-size:12px;-webkit-text-stroke:0}</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <button class="nav-dash" onclick="location.href='00_dashboard.html'"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Dashboard</button>
+    <div class="tb-brand">
+      <div class="tb-mark">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+          <path d="M 15.52 4.48 A 7.8 7.8 0 1 1 10 2.2" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M 4.63 7.1 L 16.4 11.8 L 10 16.2 Z" fill="white"/>
+        </svg>
+      </div>
+      <span class="tb-wm">OI 3.0</span>
+    </div>
+    <span class="tb-case" id="tb-case">New analysis</span>
+    <span class="tb-sector pending" id="tb-sector" style="display:none">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1.2l1.3 2.9 3.1.3-2.4 2 .8 3-2.8-1.7-2.8 1.7.8-3-2.4-2 3.1-.3z" fill="#7FB2E8"/></svg>
+      <span id="tb-sector-tx">Detecting sector…</span>
+    </span>
+    <div class="tb-right"><button class="nav-share" onclick="openShareModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 6.5l4-3M4 5.5l4 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="9" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="9" cy="9.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><circle cx="2.5" cy="6" r="1.5" stroke="currentColor" stroke-width="1.3"/></svg>Share</button><div class="tb-ava">RG</div></div>
+  </div>
+
+  <div class="body">
+
+    <!-- WORKSPACE -->
+    <div class="workspace">
+      <div class="stepper">
+        <div class="stepper-row">
+          <div class="step-item s-active">
+            <div class="step-num">01</div>
+            <div class="step-name">Target</div>
+            <div class="step-sub" id="step-target-sub">Name the company to begin</div>
+          </div>
+          <div class="step-div"></div>
+          <div class="step-item s-locked">
+            <div class="step-num">02</div>
+            <div class="step-name">Peers</div>
+            <div class="step-sub">Unlocks after target</div>
+          </div>
+          <div class="step-div"></div>
+          <div class="step-item s-locked">
+            <div class="step-num">03</div>
+            <div class="step-name">Case for change</div>
+            <div class="step-sub">Unlocks after peers</div>
+          </div>
+          <div class="step-div"></div>
+          <div class="step-item s-locked">
+            <div class="step-num">04</div>
+            <div class="step-name">Analysis</div>
+            <div class="step-sub">Unlocks after peers</div>
+          </div>
+          <div class="step-div"></div>
+          <div class="step-item s-locked">
+            <div class="step-num">05</div>
+            <div class="step-name">Output</div>
+            <div class="step-sub">Deck · export</div>
+          </div>
+        </div>
+      </div>
+      <div class="ws-scroll">
+        <div class="ws-inner">
+          <div class="ws-h1">Set up the analysis</div>
+          <div class="ws-lede">Start with just a company name. How you work from there is up to you — get a fast rough answer, or set up a considered analysis.</div>
+
+          <!-- CARD 1: TARGET -->
+          <div class="setup-card active" id="card-target">
+            <div class="sc-hd">
+              <div class="sc-step-ic">1</div>
+              <div class="sc-hd-tx">
+                <div class="sc-title">Name your target</div>
+                <div class="sc-sub">Company name or ticker. The agent resolves it and checks for public financials.</div>
+              </div>
+              <svg class="sc-check" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" fill="#2A9E52"/><path d="M6 10l2.5 2.5L14 7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="sc-body" id="target-body">
+              <div class="tn-row">
+                <div class="tn-ac">
+                  <input class="tn-inp" id="tn-inp" placeholder="e.g. Nike, or NKE" value="" autocomplete="off" oninput="onCompanyInput(this.value)" onblur="setTimeout(closeCompanySugs,150)"/>
+                  <div class="tn-sugs" id="tn-sugs"></div>
+                </div>
+                <button class="tn-go" id="tn-go" onclick="resolveTarget()">
+                  <span id="tn-go-tx">Resolve</span>
+                  <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="tn-quick" id="tn-quick" style="display:none">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M8.5 1.5L3 9h4l-.5 5.5L13 7H9z" fill="#CC0000"/></svg>
+                Quick mode: give me the name and I'll come straight back with a rough number.
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: BAIN RELATIONSHIP (revealed after target resolves) -->
+          <!-- Bain relationship now lives inside the target card (see resolveTarget) -->
+
+          <!-- CARD 3: CONTEXT -->
+          <div class="setup-card" id="card-context" style="display:none">
+            <div class="sc-hd">
+              <div class="sc-step-ic">2</div>
+              <div class="sc-hd-tx">
+                <div class="sc-title">Context</div>
+                <div class="sc-sub">Who's the deck for, and anything that should shape the number.</div>
+              </div>
+              <div class="sc-opt">Optional</div>
+            </div>
+            <div class="sc-body">
+              <div class="ctx-q">Who's this deck for?</div>
+              <div class="ctx-chips" id="ctx-chips">
+                <button class="ctx-chip on" onclick="pickAudience(this,'CFO conversation')">CFO conversation</button>
+                <button class="ctx-chip" onclick="pickAudience(this,'CEO conversation')">CEO conversation</button>
+                <button class="ctx-chip" onclick="pickAudience(this,'Board audience')">Board audience</button>
+                <button class="ctx-chip" onclick="pickAudience(this,'Others')">Others</button>
+              </div>
+              <input id="ctx-other" placeholder="Who's the deck for?" oninput="if(STATE&&STATE.ctx)STATE.ctx.text=this.value;if(typeof updateProceed==='function')updateProceed()" style="display:none;width:100%;margin-top:12px;height:38px;border:1px solid var(--g200);border-radius:9px;padding:0 13px;font-size:14px;font-family:var(--font);outline:none;color:var(--g950)"/>
+            </div>
+          </div>
+
+          <!-- CARD 2: FRAMING -->
+          <div class="setup-card" id="card-framing" style="display:none">
+            <div class="sc-hd">
+              <div class="sc-step-ic">3</div>
+              <div class="sc-hd-tx">
+                <div class="sc-title">Framing</div>
+                <div class="sc-sub">A few quick questions so the agent steers the case the right way.</div>
+              </div>
+              <div class="sc-opt">Optional</div>
+            </div>
+            <div class="sc-body">
+              <div id="fr-prompts"></div>
+            </div>
+          </div>
+
+          <!-- PEER SET -->
+          <div class="setup-card" id="card-peers" style="display:none">
+            <div class="sc-hd">
+              <div class="sc-step-ic">4</div>
+              <div class="sc-hd-tx">
+                <div class="sc-title">Peer set</div>
+                <div class="sc-sub">What matters most for comparability?</div>
+              </div>
+            </div>
+            <div class="sc-body">
+              <div class="ps-crit" style="margin-top:0;padding-top:0;border-top:none">
+                <div class="ps-crit-chips">
+                  <button type="button" class="ps-crit-chip on" onclick="toggleCrit(this)">Business model</button>
+                  <button type="button" class="ps-crit-chip on" onclick="toggleCrit(this)">Revenue scale</button>
+                  <button type="button" class="ps-crit-chip on" onclick="toggleCrit(this)">Regional exposure</button>
+                  <button type="button" class="ps-crit-chip" onclick="toggleCrit(this)">End market &amp; customers</button>
+                  <button type="button" class="ps-crit-chip" onclick="toggleCrit(this)">Product mix</button>
+                  <button type="button" class="ps-crit-chip" onclick="toggleCrit(this)">Growth profile</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 4: DOCUMENTS -->
+          <div class="setup-card" id="card-docs" style="display:none">
+            <div class="sc-hd">
+              <div class="sc-step-ic">5</div>
+              <div class="sc-hd-tx">
+                <div class="sc-title">Documents</div>
+                <div class="sc-sub">Add what you have — each type sharpens a different part of the analysis.</div>
+              </div>
+              <div class="sc-opt">Optional</div>
+            </div>
+            <div class="sc-body">
+              <div class="up-zone" id="up-zone-main" onclick="triggerFileUpload()" ondragover="event.preventDefault();this.style.borderColor='var(--g400)'" ondragleave="this.style.borderColor=''" ondrop="handleFileDrop(event)">
+                <div class="up-ic">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 5l3-3 3 3" stroke="#636366" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11v2h10v-2" stroke="#636366" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </div>
+                <div class="up-t">Drop files or <strong>browse</strong></div>
+                <div class="up-s">Factor decks, financials, RFP, earnings transcripts — anything you have on the target</div>
+              </div>
+              <input type="file" id="file-input-hidden" style="display:none" accept=".pdf,.xlsx,.xls,.docx,.pptx,.csv" onchange="handleFileInputChange(event)"/>
+              <div class="doc-foot">
+                <a class="up-tpl" onclick="event.stopPropagation();mockUpload('Nike_PnL_template.xlsx','P&L','fin')">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><rect x="2" y="11" width="10" height="1.5" fill="currentColor"/></svg>
+                  Download P&amp;L template
+                </a>
+                <div class="up-tpl-note">Nike is public — the agent already has financials from filings. Uploading a factor deck or internal P&amp;L anchors the cost bar in the specific numbers your partner will see in the room.</div>
+              </div>
+              <div class="up-list" id="up-list"></div>
+              <div class="setup-card" id="card-conf" style="display:none;border:none;background:transparent;margin-top:14px;border-top:1px solid var(--g100);padding-top:14px">
+                <div class="conf-card">
+                  <div class="conf-hd">
+                    <div class="conf-t">Analysis confidence</div>
+                    <div class="conf-lvl hi" id="conf-lvl">High</div>
+                  </div>
+                  <div class="conf-track"><div class="conf-fill" id="conf-fill" style="width:82%;background:var(--grn-st)"></div></div>
+                  <div class="conf-note" id="conf-note">Rescored with your upload. Public financials are in place — you can proceed at any point.</div>
+                  <div class="conf-nudge" id="conf-nudge">
+                    <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3" stroke="#8A5A12" stroke-width="1.4" stroke-linecap="round"/><rect x="2" y="11" width="10" height="1.4" fill="#8A5A12"/></svg>
+                    <span>Add a <strong>factor deck or P&amp;L</strong> to anchor the cost bar in the numbers your partner will see in the room.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONFIDENCE -->
+
+          <!-- UPLOAD FLAG (revealed after target resolves) -->
+          <div class="ws-endflag" id="ws-upload-flag" style="display:none">
+            <svg width="17" height="17" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 5l3-3 3 3" stroke="#8A5A12" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12v1.5h10V12" stroke="#8A5A12" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <div class="ws-endflag-tx"><strong>Add documents via chat.</strong> Drop a factor deck, P&amp;L, or earnings transcript into the message box to anchor the cost bar in numbers your partner will recognise.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PROCEED -->
+      <div class="proceed">
+        <div class="proc-l" id="proc-l">Name a target to begin.</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--g400)"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 6l2 2 4-4.5" stroke="var(--grn-tx)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Auto-saved</span>
+          <button class="proc-btn" id="proc-btn" disabled onclick="proceedToPeers()">
+            Propose peers
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT RESIZE -->
+    <div class="chat-resize-handle" id="chat-resize"></div>
+
+    <!-- CHAT PANEL -->
+    <div class="chat-panel" id="chat-panel">
+      <div class="cp-tabs">
+        <button class="cp-tab on" id="tab-chat" onclick="switchTab('chat')">Chat</button>
+        <button class="cp-tab" id="tab-log" onclick="switchTab('log')">Log <span class="tab-dot" id="log-dot" style="display:none"></span></button>
+        <button class="cp-tab" id="tab-sources" onclick="switchTab('sources')">Sources</button>
+      </div>
+
+      <div id="view-chat" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+        <div class="cp-msgs-wrap" id="c-scroll"><div class="cp-msgs" id="c-msgs"></div></div>
+        <div class="cp-sugs" id="c-sugs"></div>
+        <div class="cp-ft"><div class="cp-row">
+          <button class="cp-attach" id="c-attach" onclick="attachFile()" title="Add a document or file"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 3.5v9M3.5 8h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+          <input class="cp-inp" id="c-inp" placeholder="Ask the agent, or add context…"/>
+          <button class="cp-send" id="c-send"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 12L12 7 2 2v4l8 1-8 1v4z" fill="currentColor"/></svg></button>
+        </div></div>
+      </div>
+
+      <div id="view-log" class="tab-view" style="display:none">
+        <div id="log-collab"></div>
+        <div id="log-entries"></div>
+      </div>
+      <div id="view-sources" class="tab-view" style="display:none">
+        <div class="src-upload-zone" onclick="document.getElementById('tgt-file-input').click()">
+          <input type="file" id="tgt-file-input" multiple accept=".pdf,.xlsx,.xls,.docx,.doc,.pptx,.csv,.txt" style="display:none" onchange="handleTgtUpload(this)"/>
+          <div style="font-size:12.5px;font-weight:600;color:var(--g600);margin-bottom:2px">Upload files</div>
+          <div style="font-size:11px;color:var(--g400)">PDF, Excel, Word, PowerPoint, CSV</div>
+        </div>
+        <div id="tgt-uploaded-list"></div>
+        <div id="tgt-src-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var STATE={resolved:false,mode:"full",ctx:{},docs:[]};
+
+/* ── INTAKE MODE ── */
+var COMPANIES=[
+ {name:"Nike, Inc.",q:"nike nke",mono:"NK",meta:"NKE \u00b7 Athletic apparel \u00b7 public"},
+ {name:"Nestl\u00e9 S.A.",q:"nestle nesn",mono:"NE",meta:"NESN \u00b7 Food & beverage \u00b7 public"},
+ {name:"Nvidia Corp.",q:"nvidia nvda",mono:"NV",meta:"NVDA \u00b7 Semiconductors \u00b7 public"},
+ {name:"Netflix, Inc.",q:"netflix nflx",mono:"NF",meta:"NFLX \u00b7 Streaming \u00b7 public"},
+ {name:"Novartis AG",q:"novartis novn",mono:"NO",meta:"NOVN \u00b7 Pharma \u00b7 public"},
+ {name:"Lululemon",q:"lululemon lulu",mono:"LL",meta:"LULU \u00b7 Athletic apparel \u00b7 public"},
+ {name:"Adidas AG",q:"adidas ads",mono:"AD",meta:"ADS \u00b7 Athletic apparel \u00b7 public"},
+ {name:"Unilever PLC",q:"unilever ul",mono:"UN",meta:"UL \u00b7 Consumer goods \u00b7 public"},
+ {name:"Starbucks Corp.",q:"starbucks sbux",mono:"SB",meta:"SBUX \u00b7 Coffee & QSR \u00b7 public"},
+ {name:"Patagonia",q:"patagonia",mono:"PA",meta:"Private \u00b7 Outdoor apparel"}
+];
+function onCompanyInput(v){
+  var q=(v||"").toLowerCase().trim(), box=document.getElementById("tn-sugs");
+  if(!box)return;
+  if(!q){closeCompanySugs();return;}
+  var hits=COMPANIES.filter(function(c){return c.q.indexOf(q)>-1||c.name.toLowerCase().indexOf(q)>-1;}).slice(0,6);
+  if(!hits.length){closeCompanySugs();return;}
+  box.innerHTML=hits.map(function(c){return '<div class="tn-sug-item" onmousedown="pickCompany(\''+c.name.replace(/'/g,"\\'")+'\')"><div class="tn-sug-mono">'+c.mono+'</div><div><div class="tn-sug-nm">'+c.name+'</div><div class="tn-sug-meta">'+c.meta+'</div></div></div>';}).join('');
+  box.classList.add("open");
+}
+function closeCompanySugs(){var box=document.getElementById("tn-sugs"); if(box){box.classList.remove("open");box.innerHTML="";}}
+function pickCompany(name){var i=document.getElementById("tn-inp"); if(i)i.value=name; closeCompanySugs(); if(i)i.focus();}
+function pickMode(mode,silent){
+  STATE.mode="full";
+  var goTx=document.getElementById("tn-go-tx"); if(goTx)goTx.textContent="Resolve";
+  var quick=document.getElementById("tn-quick"); if(quick)quick.style.display="none";
+}
+
+/* ── CHAT HELPERS ── */
+function scrollC(){var s=document.getElementById("c-scroll");if(s)s.scrollTop=s.scrollHeight;}
+function agent(html){
+  var m=document.getElementById("c-msgs"),el=document.createElement("div");el.className="msg-a";
+  el.innerHTML='<div class="msg-a-b"><div class="msg-a-t">'+html+'</div></div><div class="msg-tm">Just now</div>';
+  m.appendChild(el);scrollC();
+}
+function user(txt){
+  var m=document.getElementById("c-msgs"),el=document.createElement("div");el.className="msg-p";
+  el.innerHTML='<div class="msg-p-b"><div class="msg-p-t">'+txt+'</div></div><div class="msg-tm">Just now</div>';
+  m.appendChild(el);scrollC();
+}
+function setSugs(items){
+  var el=document.getElementById("c-sugs");
+  el.innerHTML=items.map(function(s){return '<button class="cp-sug" onclick="'+s.fn+'">'+s.label+'</button>';}).join('');
+}
+function attachFile(){
+  // Prototype: mock a document being attached from the chat
+  var names=["Nike_FY24_investor_deck.pdf","CFO_call_notes.docx","Segment_P&L_extract.xlsx"];
+  var n=names[(STATE.attachCount||0)%names.length];STATE.attachCount=(STATE.attachCount||0)+1;
+  user("Added <strong>"+n+"</strong>");
+  STATE.docs=(STATE.docs||[]).concat([n]);
+  STATE.extraSources=(STATE.extraSources||[]).concat([{ic:"UP",l:n,d:"Uploaded via chat · just now"}]);
+  buildSources();
+  if(typeof revealConfidence==="function")revealConfidence();
+  if(typeof bumpConfidence==="function")bumpConfidence();
+  logEntry("p","You","Attached <strong>"+n+"</strong> via chat");
+  setTimeout(function(){agent("<p>Got <strong>"+n+"</strong>, it\u2019s in your Sources now and I\u2019ll factor it in.</p>");},450);
+}
+function logEntry(type,who,txt){
+  var l=document.getElementById("log-entries"),el=document.createElement("div");el.className="lg-e";
+  el.dataset.type=type;el.dataset.txt=txt.replace(/<[^>]+>/g,"");
+  var wc=type==="p"?"lw-p":type==="a"?"lw-a":"lw-s";
+  el.innerHTML='<div class="lg-dot '+type+'"></div><div><div class="lg-who '+wc+'">'+who+'</div><div class="lg-tx">'+txt+'</div><div class="lg-tm">Just now</div></div>';
+  l.insertBefore(el,l.firstChild);
+  var d=document.getElementById("log-dot");if(d)d.style.display="inline-block";
+}
+var COLLABORATORS=[
+  {nm:"Raema Grover",in:"RG",role:"Design lead",last:"Active now",online:true,edits:12,perm:"Contributor"},
+  {nm:"Joanna Soh",in:"JS",role:"Design manager",last:"3 min ago",online:true,edits:5,perm:"Contributor"},
+  {nm:"Noah Wells",in:"NW",role:"Product owner",last:"Yesterday",online:false,edits:2,perm:"Viewer"},
+  {nm:"Kasia Mrowca",in:"KM",role:"Stakeholder",last:"2 days ago",online:false,edits:0,perm:"Viewer"}
+];
+function buildCollaborators(){
+  var el=document.getElementById("log-collab");if(!el)return;
+  el.innerHTML='<div class="collab-panel">'+
+    '<div class="collab-hd"><div class="collab-t">Shared with '+COLLABORATORS.length+'</div></div>'+
+    COLLABORATORS.map(function(c){
+      return '<div class="collab-row">'+
+        '<div class="collab-av">'+c.in+(c.online?'<span class="collab-on"></span>':'')+'</div>'+
+        '<div class="collab-main"><div class="collab-nm">'+c.nm+'</div><div class="collab-role">'+c.role+'</div></div>'+
+        '<div class="collab-meta"><span class="collab-perm '+(c.perm==="Viewer"?"perm-v":"perm-c")+'">'+(c.perm||"Contributor")+'</span><div class="collab-last" style="margin-top:5px">'+c.last+'</div></div>'+
+      '</div>';
+    }).join('')+
+    '<div class="collab-foot">Contributors can edit; viewers can view &amp; comment only.</div>'+
+  '</div>'+
+  '<div class="collab-div"></div>'+
+  '<div class="lg-filter-bar" id="lg-filter-bar">'+
+    '<button class="lg-fchip on" data-filter="all" onclick="setLogFilter(\'all\',this)">All</button>'+
+    '<button class="lg-fchip" data-filter="p" onclick="setLogFilter(\'p\',this)"><span class="lg-fchip-dot" style="background:#CC0000"></span>Partner</button>'+
+    '<button class="lg-fchip" data-filter="c" onclick="setLogFilter(\'c\',this)"><span class="lg-fchip-dot" style="background:#2E7FD9"></span>Collaborator</button>'+
+    '<button class="lg-fchip" data-filter="a" onclick="setLogFilter(\'a\',this)"><span class="lg-fchip-dot" style="background:#8E8E93"></span>Agent</button>'+
+    '<button class="lg-fchip" data-filter="override" onclick="setLogFilter(\'override\',this)">Overrides</button>'+
+    '<button class="lg-fchip" data-filter="flag" onclick="setLogFilter(\'flag\',this)">Flags</button>'+
+  '</div>';
+}
+
+/* ── TABS ── */
+function switchTab(id){
+  ["chat","log","sources"].forEach(function(t){document.getElementById("tab-"+t).classList.toggle("on",t===id);document.getElementById("view-"+t).style.display=t===id?(t==="chat"?"flex":"block"):"none";});
+  if(id==="log")document.getElementById("log-dot").style.display="none";
+}
+
+/* ── RESOLVE TARGET ── */
+function resolveTarget(){
+  var name=document.getElementById("tn-inp").value.trim();if(!name)return;
+  user("Target: <strong>"+name+"</strong>");
+  document.getElementById("tn-go").disabled=true;
+  document.getElementById("tn-go").innerHTML='Resolving…';
+  agent("<p>Pulling up <strong>Nike, Inc.</strong>…</p>");
+  setTimeout(function(){
+    // Resolved chip (common to all modes)
+    document.getElementById("target-body").innerHTML=
+      '<div class="resolved-target">'+
+        '<div class="rt-logo">N</div>'+
+        '<div class="rt-info"><div class="rt-name">Nike, Inc.<svg width="15" height="15" viewBox="0 0 20 20" fill="none" style="flex:none;margin-left:6px;vertical-align:-2px"><circle cx="10" cy="10" r="9" fill="#2A9E52"/><path d="M6 10l2.5 2.5L14 7" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+        '<div class="rt-meta"><span class="rt-badge pub"><svg width="8" height="8" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="#2A9E52"/></svg>Public</span>'+
+        '<span class="rt-ticker">NYSE: NKE</span>'+
+        '<span>Consumer / Retail · Footwear &amp; apparel</span></div></div>'+
+        '<button class="up-file-x" onclick="resetTarget()" title="Change target"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>'+
+      '</div>'+
+      '<div class="region-section" id="region-section">'+
+        '<div class="region-q">Geographic scope <span style="font-size:10px;font-weight:600;color:var(--g300);text-transform:none;letter-spacing:0;margin-left:6px">optional</span></div>'+
+        '<div class="region-grid">'+
+          '<button class="cp-sug region-chip-cpsug active" id="rchip-global" onclick="pickRegion(\'global\',this)">Global</button>'+
+          '<button class="cp-sug region-chip-cpsug" id="rchip-amers" onclick="pickRegion(\'amers\',this)">AMERS</button>'+
+          '<button class="cp-sug region-chip-cpsug" id="rchip-emea" onclick="pickRegion(\'emea\',this)">EMEA</button>'+
+          '<button class="cp-sug region-chip-cpsug" id="rchip-apac" onclick="pickRegion(\'apac\',this)">APAC</button>'+
+          '<button class="cp-sug region-chip-cpsug" id="rchip-custom" onclick="pickRegion(\'custom\',this)">Custom…</button>'+
+        '</div>'+
+        '<div id="region-custom-row" style="display:none;margin-top:8px">'+
+          '<div class="region-free">'+
+            '<input class="region-free-inp" id="region-custom-inp" placeholder="e.g. Southeast Asia, Nike APAC, DACH…" onkeydown="if(event.key===\'Enter\')applyCustomRegion()"/>'+
+            '<button class="region-free-btn" onclick="applyCustomRegion()">Apply</button>'+
+          '</div>'+
+        '</div>'+
+        '<div class="region-warn" id="region-warn">Regional scope selected — peer set and benchmarks will be filtered to companies with significant revenue exposure in this region.</div>'+
+      '</div>'+
+      '<div class="bu-section">'+
+        '<div class="bu-q">Business unit scope</div>'+
+        '<div class="bu-all-row" id="bu-all-row" onclick="toggleAllBU()">'+
+          '<div style="flex:1"><div class="bu-all-label">All business units</div><div class="bu-all-sub">Full consolidated analysis across all product lines and geographies</div></div>'+
+          '<div class="bu-cb" style="border-color:var(--grn-st);background:var(--grn-st)" id="bu-all-cb"><svg class="bu-cb-check" style="opacity:1" width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+        '</div>'+
+        '<div class="bu-grid" id="bu-grid">'+
+          '<div class="bu-item" id="bui-footwear" onclick="toggleBU(\'footwear\',this)"><div class="bu-cb"><svg class="bu-cb-check" width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="bu-item-tx"><div class="bu-item-nm">Footwear</div><div class="bu-item-d">Running, basketball, training &amp; lifestyle — Nike\'s largest category by revenue (~60%)</div></div></div>'+
+          '<div class="bu-item" id="bui-apparel" onclick="toggleBU(\'apparel\',this)"><div class="bu-cb"><svg class="bu-cb-check" width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="bu-item-tx"><div class="bu-item-nm">Apparel</div><div class="bu-item-d">Jerseys, shorts, kits, and sport lifestyle clothing across all categories (~30% of revenue)</div></div></div>'+
+          '<div class="bu-item" id="bui-equipment" onclick="toggleBU(\'equipment\',this)"><div class="bu-cb"><svg class="bu-cb-check" width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="bu-item-tx"><div class="bu-item-nm">Equipment &amp; other</div><div class="bu-item-d">Bags, socks, sport balls, eyewear, and accessories (~10% of revenue)</div></div></div>'+
+          '<div class="bu-item" id="bui-converse" onclick="toggleBU(\'converse\',this)"><div class="bu-cb"><svg class="bu-cb-check" width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="bu-item-tx"><div class="bu-item-nm">Converse</div><div class="bu-item-d">Reported separately — distinct brand, cost structure, and direct-to-consumer model</div></div></div>'+
+        '</div>'+
+        '<div class="bu-notice" id="bu-notice">'+
+          '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex:none;margin-top:1px"><path d="M8 1.4L1 14h14L8 1.4z" stroke="#8A5A12" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6v3.5M8 11.2h.01" stroke="#8A5A12" stroke-width="1.4" stroke-linecap="round"/></svg>'+
+          '<div class="bu-notice-body">'+
+            '<div class="bu-notice-title">Scoped analysis — data limitations apply</div>'+
+            '<div class="bu-notice-txt" id="bu-notice-txt">Nike reports cost data at the consolidated level. Scoping to specific business units limits peer benchmarking to <strong>revenue and high-level margin only</strong> — granular cost bar decomposition and SG&amp;A line items are not available at the product-line level. Peers will be filtered to those with comparable category disclosure.</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div id="rel-body" class="target-rel"></div>';
+    document.getElementById("card-target").classList.remove("active");
+    document.getElementById("card-target").classList.add("resolved");
+    document.getElementById("card-target").querySelector(".sc-step-ic").textContent="";
+    document.getElementById("step-target-sub").textContent="Nike, Inc. · public";
+    var s=document.getElementById("tb-sector");s.style.display="inline-flex";s.classList.remove("pending");
+    document.getElementById("tb-sector-tx").textContent="Sector: Consumer / Retail";
+    document.getElementById("tb-case").textContent="Nike, Inc.";
+    STATE.resolved=true;
+    logEntry("p","You","Named target: <strong>Nike, Inc.</strong>");
+    logEntry("a","Agent","Resolved to NYSE: NKE · public · sector Consumer / Retail");
+    buildSources();
+
+    if(STATE.mode==="quick"){
+      // Quick: skip all setup, run a first-pass straight to peers
+      var _mc=document.getElementById("mode-card"); if(_mc)_mc.style.display="none";
+      agent("<p><strong>Nike</strong> it is. Running a first pass now — financials, a starter peer set, and our benchmarks. Give me a minute and I'll show you a number. Nothing's locked, so you can fix the peers and framing after.</p>");
+      document.getElementById("proc-l").innerHTML="<strong>Quick run · Nike, Inc.</strong> — generating a first-pass answer…";
+      var pb=document.getElementById("proc-btn");pb.disabled=false;pb.querySelector("span")?null:null;
+      pb.innerHTML='Go to first-pass result <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      setSugs([{label:"Actually, let me set it up properly",fn:"upgradeFromQuick()"}]);
+      return;
+    }
+
+    // Full: reveal setup cards
+    ["card-framing","card-context","card-peers"].forEach(function(id){var el=document.getElementById(id); if(el)el.style.display="block";}); var _uf=document.getElementById("ws-upload-flag"); if(_uf)_uf.style.display="flex"; /* card-docs hidden for public companies */
+    buildRelationship();
+    buildFramingPrompts();
+    updateProceed();
+    agent("<p><strong>Nike, Inc.</strong>, public, NYSE: NKE. I've got the financials, so nothing's needed to move forward.</p><p>Reads as <strong>Consumer / Retail</strong> and I've set the lens to match. We have history on this account too, Michael Chen is the key partner and there are past cases worth a look, I've added them to the target card. Framing and context are below if you want to sharpen the setup.</p>");
+    STATE.irisOffered=true;
+    setSugs([
+      {label:"Yes, pull the IP",fn:"irisSearch('broad')"},
+      {label:"What will you benchmark?",fn:"sugBench()"},
+      {label:"Add the $200M ambition",fn:"sugAmbition()"},
+      {label:"Why Consumer / Retail?",fn:"sugSector()"}
+      ]);
+  },1100);
+}
+function upgradeFromQuick(){
+  STATE.mode="full";
+  var _mc=document.getElementById("mode-card"); if(_mc)_mc.style.display="none";
+  user("Let me set it up properly");
+  document.getElementById("proc-l").textContent="";
+  var pb=document.getElementById("proc-btn");
+  pb.innerHTML='Propose peers <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M8 4l3 3-3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  ["card-relationship","card-framing","card-context","card-docs","card-peers"].forEach(function(id){document.getElementById(id).style.display="block";});
+  buildRelationship();
+  buildFramingPrompts();
+  updateProceed();
+  agent("<p>Good call. Add framing, context, and anything you've got on the left and I'll work it in.</p>");
+  setSugs([{label:"Add the $200M ambition",fn:"sugAmbition()"},{label:"Why Consumer / Retail?",fn:"sugSector()"}]);
+}
+function resetTarget(){location.reload();}
+
+/* ── REGION SCOPE ── */
+STATE.region="global";
+function pickRegion(key,btn){
+  STATE.region=key;
+  document.querySelectorAll(".region-chip,.region-chip-cpsug").forEach(function(c){c.classList.remove("on","active");});
+  btn.classList.add(btn.classList.contains("cp-sug")?"active":"on");
+  var warn=document.getElementById("region-warn");
+  var customRow=document.getElementById("region-custom-row");
+  if(customRow) customRow.style.display = key==="custom" ? "block" : "none";
+  if(key==="custom"){
+    var inp=document.getElementById("region-custom-inp"); if(inp) setTimeout(function(){inp.focus();},50);
+    if(warn) warn.classList.remove("show");
+    return;
+  }
+  if(warn) warn.classList.toggle("show", key!=="global");
+  var label={global:"Global",amers:"AMERS",emea:"EMEA",apac:"APAC"}[key]||key;
+  logEntry("p","You","Geographic scope set to <strong>"+label+"</strong>");
+  if(key!=="global"){
+    agent("<p>Got it — scoping to <strong>"+label+"</strong>. Peer set and benchmarks will be filtered to companies with significant revenue exposure in this region. I'll flag where confidence is lower.</p>");
+  }
+}
+function applyCustomRegion(){
+  var inp=document.getElementById("region-custom-inp"); if(!inp||!inp.value.trim())return;
+  var val=inp.value.trim();
+  STATE.region="custom:"+val;
+  document.querySelectorAll(".region-chip").forEach(function(c){c.classList.remove("on");});
+  var warn=document.getElementById("region-warn"); if(warn)warn.classList.add("show");
+  logEntry("p","You","Geographic scope: <strong>"+val+"</strong>");
+  agent("<p>Custom scope set to <strong>"+val+"</strong>. I'll find the best-fit peers and benchmarks for that geography — confidence will depend on data availability, and I'll be upfront where I'm estimating.</p>");
+}
+
+/* ── BU SELECTION ── */
+STATE.buSelected=[];
+var BU_LABELS={footwear:"Footwear",apparel:"Apparel",equipment:"Equipment & other",converse:"Converse"};
+
+function toggleAllBU(){
+  var allRow=document.getElementById("bu-all-row");
+  var allCb=document.getElementById("bu-all-cb");
+  var isAll=!allRow.classList.contains("off");
+  if(isAll){
+    allRow.classList.add("off");
+    if(allCb){allCb.style.background="#fff";allCb.style.borderColor="var(--g300)";allCb.querySelector(".bu-cb-check").style.opacity="0";}
+    STATE.buSelected=[];
+    document.getElementById("bu-notice").classList.remove("show");
+    agent("<p>Switched to custom scope — check the business units you want to include.</p>");
+  } else {
+    allRow.classList.remove("off");
+    if(allCb){allCb.style.background="var(--grn-st)";allCb.style.borderColor="var(--grn-st)";allCb.querySelector(".bu-cb-check").style.opacity="1";}
+    var items=document.querySelectorAll(".bu-item");
+    for(var i=0;i<items.length;i++)items[i].classList.remove("on");
+    STATE.buSelected=[];
+    document.getElementById("bu-notice").classList.remove("show");
+    agent("<p>Set to all business units — I'll benchmark across the full consolidated cost structure.</p>");
+  }
+  logEntry("p","You","BU scope: <strong>"+(isAll?"Custom selection":"All business units")+"</strong>");
+}
+
+function toggleBU(bu,el){
+  var allRow=document.getElementById("bu-all-row");
+  var allCb=document.getElementById("bu-all-cb");
+  // If "all" was active, deactivate it including the checkbox visual
+  if(!allRow.classList.contains("off")){
+    allRow.classList.add("off");
+    if(allCb){allCb.style.background="#fff";allCb.style.borderColor="var(--g300)";var ck=allCb.querySelector(".bu-cb-check");if(ck)ck.style.opacity="0";}
+    STATE.buSelected=[];
+  }
+  var idx=STATE.buSelected.indexOf(bu);
+  if(idx>-1){
+    STATE.buSelected.splice(idx,1);
+    el.classList.remove("on");
+  } else {
+    STATE.buSelected.push(bu);
+    el.classList.add("on");
+  }
+  var notice=document.getElementById("bu-notice");
+  if(STATE.buSelected.length===0){
+    // Nothing selected — revert to all
+    allRow.classList.remove("off");
+    if(allCb){allCb.style.background="var(--grn-st)";allCb.style.borderColor="var(--grn-st)";var ck=allCb.querySelector(".bu-cb-check");if(ck)ck.style.opacity="1";}
+    notice.classList.remove("show");
+    agent("<p>No specific units selected — defaulting back to full consolidated analysis.</p>");
+  } else {
+    var names=STATE.buSelected.map(function(b){return BU_LABELS[b]||b;});
+    var label=names.length===1?names[0]:names.slice(0,-1).join(", ")+" and "+names[names.length-1];
+    notice.classList.add("show");
+    if(STATE.buSelected.length===1){
+      agent("<p>Scoped to <strong>"+label+"</strong>. Benchmarking will cover revenue and high-level margin for this category — granular cost bar decomposition is only available at the consolidated level. I'll note where coverage is limited.</p>");
+      setSugs([{label:"Add more business units",fn:""},{label:"Reset to all",fn:"toggleAllBU()"}]);
+    }
+  }
+  logEntry("p","You","BU scope: <strong>"+(STATE.buSelected.length?STATE.buSelected.map(function(b){return BU_LABELS[b];}).join(", "):"All")+"</strong>");
+}
+
+/* ── FILE UPLOAD ── */
+function triggerFileUpload(){
+  document.getElementById("file-input-hidden").click();
+}
+function handleFileInputChange(event){
+  var file=event.target.files&&event.target.files[0];
+  if(file)processUploadedFile(file.name);
+}
+function handleFileDrop(event){
+  event.preventDefault();
+  document.getElementById("up-zone-main").style.borderColor="";
+  var file=event.dataTransfer.files&&event.dataTransfer.files[0];
+  if(file)processUploadedFile(file.name);
+}
+function processUploadedFile(name){
+  var ext=(name.split('.').pop()||"").toLowerCase();
+  var ic={"xlsx":"XLS","xls":"XLS","csv":"XLS","pdf":"PDF","pptx":"PPT","docx":"DOC"}[ext]||"DOC";
+  STATE.docs=(STATE.docs||[]).concat([name]);
+  var list=document.getElementById("up-list"),el=document.createElement("div");el.className="up-file";
+  el.innerHTML='<div class="up-file-ic">'+ic+'</div><div class="up-file-nm">'+name+'</div>'+
+    '<div class="up-file-st"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" stroke="#17703A" stroke-width="1.3" fill="none"/><path d="M4 6l1.4 1.4L8 4.5" stroke="#17703A" stroke-width="1.3" stroke-linecap="round"/></svg>Processed</div>'+
+    '<button class="up-file-x" onclick="this.parentNode.remove()"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>';
+  list.appendChild(el);
+  STATE.extraSources=(STATE.extraSources||[]).concat([{ic:ic,l:name,d:"Uploaded · just now",cat:"up",up:"Added just now"}]);
+  buildSources();
+  logEntry("p","You","Uploaded <strong>"+name+"</strong>");
+  revealConfidence();
+  bumpConfidence();
+  updateProceed();
+  // Agent reads file and identifies content
+  setTimeout(function(){
+    agentReadFile(name);
+  },600);
+}
+function agentReadFile(name){
+  var lower=name.toLowerCase();
+  var html;
+  if(lower.indexOf("factor")>-1||lower.indexOf("deck")>-1||lower.indexOf("pptx")>-1||lower.indexOf("ppt")>-1){
+    html='<p>I can see this is <strong>'+name+'</strong> — looks like a factor deck. Here\'s what I can pull from it:</p>'+
+      '<div class="iris-res">'+
+        '<div class="iris-item"><span class="iris-tag s">DATA</span><div class="iris-main"><div class="iris-nm">Revenue &amp; margin figures</div><div class="iris-mt">Top-line and operating margin by segment</div></div></div>'+
+        '<div class="iris-item"><span class="iris-tag s">DATA</span><div class="iris-main"><div class="iris-nm">Cost structure breakdown</div><div class="iris-mt">COGS, SG&amp;A split as presented in the deck</div></div></div>'+
+        '<div class="iris-item"><span class="iris-tag s">DATA</span><div class="iris-main"><div class="iris-nm">Management narrative</div><div class="iris-mt">Strategic priorities and CFO framing — useful context for the case</div></div></div>'+
+      '</div>'+
+      '<p style="margin-top:8px;color:var(--g500)">What I can\'t pull: forward projections or assumptions not backed by reported numbers. I\'ll anchor the cost bar to the reported figures and flag where I\'m estimating.</p>';
+  } else if(lower.indexOf("p&l")>-1||lower.indexOf("pnl")>-1||lower.indexOf("financials")>-1||lower.indexOf("pl_")>-1||ext==="xlsx"||lower.indexOf(".xls")>-1){
+    html='<p>Got <strong>'+name+'</strong>. Reading the cost bar from your reported line items now — this is the cleanest anchor I can get.</p>'+
+      '<p style="margin-top:6px;color:var(--g500)">I\'ll map COGS, SG&amp;A, and any segment splits to the benchmarking structure and flag where line items don\'t map cleanly to the peer set.</p>';
+  } else if(lower.indexOf("transcript")>-1||lower.indexOf("earnings")>-1){
+    html='<p>Got <strong>'+name+'</strong>. I can pull CFO commentary, guidance language, and the numbers management chose to lead with — useful for framing the case and understanding what\'s already on their radar.</p>';
+  } else {
+    html='<p>Got <strong>'+name+'</strong> — I\'ll work through it and pull what\'s relevant to the analysis. I\'ll flag anything that shifts the numbers or sharpens the framing.</p>';
+  }
+  agent(html);
+  logEntry("a","Agent","Read "+name+" and identified usable data points");
+}
+
+/* ── CONTEXT (single box + chips) ── */
+function pickAudience(btn,text){
+  var chips=document.querySelectorAll("#ctx-chips .ctx-chip");
+  for(var i=0;i<chips.length;i++)chips[i].classList.remove("on");
+  btn.classList.add("on");
+  if(STATE&&STATE.ctx){STATE.ctx.audience=text;STATE.ctx.text=text;}
+  var _o=document.getElementById("ctx-other"); if(_o){_o.style.display=(text==="Others")?"block":"none"; if(text==="Others"){_o.value="";setTimeout(function(){_o.focus();},50);}}
+  if(typeof updateProceed==="function")updateProceed();
+}
+function setRelationship(yes){
+  var y=document.getElementById("rel-yes"),nn=document.getElementById("rel-no");
+  if(y)y.classList.toggle("on",yes); if(nn)nn.classList.toggle("on",!yes);
+  if(STATE&&STATE.ctx)STATE.ctx.relationship=yes;
+  if(yes && STATE && !STATE.irisOffered){ STATE.irisOffered=true; setTimeout(function(){ if(typeof irisSearch==="function")irisSearch('broad'); },250); }
+  if(typeof updateProceed==="function")updateProceed();
+}
+function ctxChip(text){
+  var box=document.getElementById("ctx-box");if(!box)return;
+  var cur=box.value.trim();
+  // avoid duplicate insert
+  if(cur.indexOf(text)!==-1)return;
+  box.value=cur?(cur.replace(/\.?\s*$/,"")+". "+text):text;
+  STATE.ctx.text=box.value;
+  // mark chip used
+  event.target.classList.add("used");
+  updateProceed();
+  logEntry("p","You","Context · "+text);
+  // Audience reaction
+  if(/CFO/i.test(text))agent("<p>CFO conversation — I'll keep it in P&amp;L terms: margin, cash, the numbers that move the needle.</p>");
+  else if(/CEO/i.test(text))agent("<p>CEO conversation — I'll lead with the strategic case and the growth story, not just the cost line.</p>");
+  else if(/Board/i.test(text))agent("<p>Board audience — I'll pitch it at governance and capital allocation.</p>");
+  // Relationship → offer Sage
+  if(/relationship/i.test(text)&&!STATE.irisOffered){
+    STATE.irisOffered=true;
+    setTimeout(function(){
+      agent("<p>If we've got a relationship here, there's probably Bain work we can lean on. Worth casting past just Nike and consumer-retail — a lot of the sharpest cost and procurement thinking comes from other sectors entirely. Want me to pull the relevant IP and cut it down to what fits?</p>");
+      setSugs([
+        {label:"Yes, pull the IP",fn:"irisSearch('broad')"},
+        {label:"Just Nike + sector",fn:"irisSearch('narrow')"},
+        {label:"Later",fn:"user('Later');setTimeout(function(){agent('<p>Fine — it's there whenever you want it.</p>');},400)"}
+      ]);
+    },450);
+  }
+}
+
+/* ── Sage / SAGE SEARCH (broad, capability-led, then filtered) ── */
+function irisSearch(scope){
+  scope=scope||"broad";
+  user(scope==="broad"?"Yes, pull the IP":"Just Nike + sector");
+  agent("<p>Looking now…</p>");
+  setTimeout(function(){
+    var results, note;
+    if(scope==="broad"){
+      results=[
+        ["Sage","Procurement transformation playbook","Cross-industry · 8–12% typical reduction"],
+        ["Sage","SG&A / overhead benchmarking","Consumer + industrials · S&M vs G&A"],
+        ["Sage","Commercial excellence &amp; pricing","Retail + B2B · revenue levers"],
+        ["Sage","Nike account history","Past proposals and relationship notes"]
+      ];
+      note="Four that actually fit. The procurement and pricing work is from other sectors — those levers travel, and they're usually where the real upside sits.";
+    }else{
+      results=[
+        ["Sage","Nike DTC margin diagnostic","2023 · 34 slides"],
+        ["Sage","Footwear cost transformation","2022 · peer set + levers"],
+        ["Sage","Nike account history","Past proposals and relationship notes"]
+      ];
+      note="Nike and sector only. Happy to go wider if you want — that's often where the sharper levers turn up.";
+    }
+    var html='<p>Here\u2019s what\u2019s worth having. Add the ones you want, or open them in Sage first:</p><div class="iris-res">'+
+      results.map(function(r,idx){
+        var key=scope+"-"+idx;
+        return '<div class="iris-item"><span class="iris-tag '+(r[0]==="Sage"?"i":"s")+'">'+r[0]+'</span>'+
+          '<div class="iris-main"><div class="iris-nm">'+r[1]+'</div><div class="iris-mt">'+r[2]+'</div></div>'+
+          '<div class="iris-acts">'+
+            '<button class="iris-view" title="Open in Sage" onclick="openIris(\''+r[1].replace(/'/g,"\\'")+'\')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M5 2h7v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 8.5V12H2V4h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+            '<button class="iris-add" id="ia-'+key+'" title="Add to sources" onclick="irisAdd(\''+key+'\',\''+r[0]+'\',\''+r[1].replace(/'/g,"\\'")+'\',\''+r[2].replace(/'/g,"\\'")+'\')"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>'+
+          '</div></div>';
+      }).join('')+'</div><p style="margin-top:8px;color:var(--g500)">'+note+'</p>';
+    agent(html);
+    STATE.iris=(STATE.iris||0)+results.length;
+    STATE.lastIris={scope:scope,items:results.map(function(r,idx){return {key:scope+"-"+idx,tag:r[0],nm:r[1],mt:r[2]};})};
+    revealConfidence();
+    logEntry("a","Agent","Surfaced "+results.length+" IP items from Sage ("+scope+")");
+    if(scope==="broad")setSugs([{label:"Add market context too",fn:"exploreKnowledge()"},{label:"Add all of them",fn:"irisAddAll()"}]);
+    else setSugs([{label:"Go wider",fn:"irisSearch('broad')"},{label:"Add all of them",fn:"irisAddAll()"}]);
+  },1200);
+}
+function irisAdd(key,tag,nm,mt){
+  var btn=document.getElementById("ia-"+key);
+  if(btn&&btn.classList.contains("added"))return;
+  var ic="SG";
+  STATE.extraSources=(STATE.extraSources||[]).concat([{ic:ic,l:tag+" · "+nm,d:mt}]);
+  buildSources();
+  var _ll=document.getElementById("up-list");
+  if(_ll){var _el=document.createElement("div");_el.className="up-file";
+    _el.innerHTML='<div class="up-file-ic">SG</div><div class="up-file-nm">'+nm+'</div><div class="up-file-st"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" stroke="#17703A" stroke-width="1.3" fill="none"/><path d="M4 6l1.4 1.4L8 4.5" stroke="#17703A" stroke-width="1.3" stroke-linecap="round"/></svg>From Sage</div><button class="up-file-x" onclick="this.parentNode.remove()"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>';
+    _ll.appendChild(_el);}
+  if(btn){btn.classList.add("added");btn.innerHTML='<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.5 2.5L11 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';btn.title="Added to sources";}
+  logEntry("p","You","Added to sources · "+nm);
+}
+function irisAddAll(){
+  if(!STATE.lastIris)return;
+  STATE.lastIris.items.forEach(function(it){irisAdd(it.key,it.tag,it.nm,it.mt);});
+  user("Add all of them");
+  setTimeout(function(){agent("<p>Done, all in your Sources tab and they\u2019ll carry through the analysis.</p>");},400);
+}
+function openIris(nm){
+  agent("<p>Opening <strong>"+nm+"</strong> in Sage in a new tab. You can read the full case there, see the team who ran it, and the impact delivered.</p>");
+  logEntry("p","You","Opened in Sage · "+nm);
+}
+
+/* ── EXPLORE: full potential + market context ── */
+function exploreKnowledge(){
+  user("Pull Bain IP + market context");
+  agent("<p>On it…</p>");
+  setTimeout(function(){
+    var html='<p>Here\u2019s the lay of the land before we dig in:</p>'+
+      '<div class="iris-res">'+
+        '<div class="iris-item"><span class="iris-tag w">WEB</span><div><div class="iris-nm">Where the sector\u2019s going</div><div class="iris-mt">Athletic apparel pushing direct-to-consumer, margin mix shifting</div></div></div>'+
+        '<div class="iris-item"><span class="iris-tag w">WEB</span><div><div class="iris-nm">What leadership\u2019s signalling</div><div class="iris-mt">CFO talking cost discipline; analysts fixated on the margin gap</div></div></div>'+
+        '<div class="iris-item"><span class="iris-tag i">Sage</span><div><div class="iris-nm">Full-potential benchmarks</div><div class="iris-mt">Cost and revenue levers from comparable transformations</div></div></div>'+
+      '</div>'+
+      '<p style="margin-top:8px;color:var(--g500)">I\u2019ll lay out the full potential first. We can land on the story once you\u2019ve seen where the value is.</p>';
+    agent(html);
+    STATE.iris=(STATE.iris||0)+3;
+    STATE.extraSources=(STATE.extraSources||[]).concat([{ic:"WB",l:"Web · Sector trends",d:"Premiumisation, DTC shift"},{ic:"WB",l:"Web · Leadership signals",d:"CFO / analyst commentary"}]);
+    buildSources();
+    revealConfidence();
+    logEntry("a","Agent","Pulled market context + full-potential benchmarks");
+    setSugs([{label:"On to peers",fn:"user('On to peers');setTimeout(function(){agent('<p>Lining up the peer set now.</p>');},300)"}]);
+  },1200);
+}
+
+/* ── UPLOAD ── */
+function mockUpload(nm,kind,slot){
+  nm=nm||"Q3_earnings_transcript.pdf";
+  var ic=(kind==="P&L"||kind==="Financials")?"XLS":"PDF";
+  STATE.docs.push(nm);
+  var list=document.getElementById("up-list"),el=document.createElement("div");el.className="up-file";
+  el.innerHTML='<div class="up-file-ic">'+ic+'</div><div class="up-file-nm">'+nm+'</div><div class="up-file-st"><svg width="10" height="10" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" stroke="#17703A" stroke-width="1.3" fill="none"/><path d="M4 6l1.4 1.4L8 4.5" stroke="#17703A" stroke-width="1.3" stroke-linecap="round"/></svg>Processed</div>'+
+    '<button class="up-file-x" onclick="this.parentNode.remove()"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>';
+  list.appendChild(el);
+  logEntry("p","You","Uploaded <strong>"+nm+"</strong> ("+kind+")");
+  logEntry("a","Agent","Rescoring confidence in the background…");
+  if(slot==="fin")STATE.finAdded=true;
+  revealConfidence();
+  updateProceed();
+  agent("<p>Got <strong>"+nm+"</strong> — I'll work it in and update confidence as it lands. No need to wait on it.</p>");
+}
+function revealConfidence(){
+  var card=document.getElementById("card-conf");
+  if(!STATE.confShown){
+    STATE.confShown=true;
+    // baseline before this upload registers, then animate up
+    var fill=document.getElementById("conf-fill");
+    fill.style.width="0%";
+    card.style.display="block";
+    // force reflow so the transition runs from 0
+    card.getBoundingClientRect();
+    setTimeout(bumpConfidence,60);
+  }else{
+    bumpConfidence();
+  }
+}
+function bumpConfidence(){
+  var fill=document.getElementById("conf-fill"),note=document.getElementById("conf-note"),lvl=document.getElementById("conf-lvl"),nudge=document.getElementById("conf-nudge");
+  var docLift=STATE.docs.length*4, irisLift=(STATE.iris||0)*1;
+  var n=78+docLift+irisLift;if(n>97)n=97;
+  fill.style.width=n+"%";
+  // Spectrum: green when strong, amber-green mid, amber only if genuinely low
+  var col, lclass, ltext;
+  if(n>=88){col="var(--grn-st)";lclass="hi";ltext="High";}
+  else if(n>=72){col="linear-gradient(90deg,var(--amb-st),var(--grn-st))";lclass="hi";ltext="Good";}
+  else{col="var(--amb-st)";lclass="med";ltext="Building";}
+  fill.style.background=col;
+  if(lvl){lvl.textContent=ltext;lvl.className="conf-lvl "+lclass;}
+  var parts=[];
+  if(STATE.docs.length)parts.push(STATE.docs.length+" document"+(STATE.docs.length!==1?"s":""));
+  if(STATE.iris)parts.push(STATE.iris+" Sage item"+(STATE.iris!==1?"s":""));
+  note.textContent="Rescored with "+parts.join(" and ")+". Public financials are in place, so you're in good shape to proceed whenever you want.";
+  if(nudge)nudge.style.display=STATE.finAdded?"none":"flex";
+}
+
+/* ── PROCEED ── */
+function updateProceed(){
+  var btn=document.getElementById("proc-btn"),l=document.getElementById("proc-l");
+  if(STATE.resolved){
+    btn.disabled=false;
+    var bits=["Nike, Inc. · public"];
+    if(STATE.framing&&STATE.framing.trigger)bits.push(STATE.framing.trigger);
+    if(STATE.ctx&&STATE.ctx.text&&STATE.ctx.text.trim())bits.push("context added");
+    if(STATE.docs.length)bits.push(STATE.docs.length+" doc"+(STATE.docs.length!==1?"s":""));
+    if(STATE.iris)bits.push(STATE.iris+" Sage item"+(STATE.iris!==1?"s":""));
+    l.innerHTML="<strong>"+bits.join(" · ")+"</strong> — ready when you are.";
+  }else{
+    btn.disabled=true;l.textContent="Name a target to begin.";
+  }
+}
+var PEER_SET="standard";
+function pickPeerSet(k){
+  PEER_SET=k;
+  ["standard","tight","broad"].forEach(function(t){var el=document.getElementById("ps-"+t);if(el)el.classList.toggle("on",t===k);});
+}
+function togglePsDetail(k){
+  var d=document.getElementById("ps-detail-"+k),lnk=event.target;if(!d)return;
+  var open=d.style.display==="block";
+  d.style.display=open?"none":"block";
+  if(lnk&&lnk.classList.contains("ps-more"))lnk.textContent=open?"View more":"View less";
+}
+function toggleCrit(el){el.classList.toggle('on');}
+function proceedToPeers(){
+  agent("<p>Locked. Lining up the peer set for <strong>Nike</strong> — screening on sector, scale, and business model against CapIQ, the 10-K, and past work… <span style=\"color:var(--g400)\">(prototype — this jumps to the Peers screen)</span></p>");
+  logEntry("a","Agent","Setup confirmed — moving to peer proposal");
+  try{window.parent.postMessage({type:"nav",idx:1},"*");}catch(e){}
+}
+
+/* ── CHAT SUGGESTIONS ── */
+function sugBench(){user("What will you benchmark?");setSugs([{label:"Add the $200M ambition",fn:"sugAmbition()"}]);setTimeout(function(){agent("<p>For a consumer target: revenue growth, gross margin, SG&amp;A, and working capital against the peer set, plus TSR. You'll be able to open any one of them in the analysis and see the peer comparison and how confident I am in it.</p>");},450);}
+function sugAmbition(){
+  var f=document.getElementById("fr-freeform");
+  if(f){f.value="CFO informally mentioned a $200M cost ambition. Supply chain and SG&A likely the main levers.";STATE.framing=STATE.framing||{};STATE.framing.freeform=f.value;}
+  var c=document.getElementById("ctx-box");
+  if(c&&c.value.indexOf("$200M")===-1){c.value=(c.value.trim()?c.value.replace(/\.?\s*$/,"")+". ":"")+"Framing toward ~$200M";STATE.ctx.text=c.value;}
+  user("Add the $200M ambition");
+  setTimeout(function(){agent("<p>Noted the <strong>$200M</strong>. I'll aim the size of prize at a credible path to it rather than forcing the number. If the defensible range comes out higher or lower, I'll tell you why.</p>");updateProceed();},450);
+  setSugs([{label:"Why Consumer / Retail?",fn:"sugSector()"}]);
+}
+function sugSector(){user("Why Consumer / Retail?");setTimeout(function(){agent("<p>Nike's filings and revenue mix put it squarely in footwear and apparel retail. That drives the lens — the cost bar splits into S&amp;M, G&amp;A, IT, and supply chain, and I screen peers within consumer. If that's the wrong read, say so and I'll re-scope.</p>");},450);setSugs([{label:"What will you benchmark?",fn:"sugBench()"}]);}
+
+function cSend(){var i=document.getElementById("c-inp");if(!i.value.trim())return;user(i.value);i.value="";setTimeout(function(){agent("<p>Got it, I'll factor that in. Anything else on the left, or say the word and we'll move to peers.</p>");},450);}
+
+/* ── FRAMING GUIDED PROMPTS ── */
+var FR_QUESTIONS=[
+  {id:"trigger",q:"What's prompting this conversation?",opts:["Cost pressure","Margin decline","Cash / liquidity","Growth ambition"]},
+  {id:"priority",q:"Any area the client has flagged as a priority?",opts:["Supply chain","SG&A / overhead","Pricing","Portfolio"]}
+];
+function buildFramingPrompts(){
+  var el=document.getElementById("fr-prompts");if(!el||el.dataset.built)return;el.dataset.built="1";
+  STATE.framing={};
+  el.innerHTML=FR_QUESTIONS.map(function(Q,i){
+    if(Q.free){
+      return '<div class="fr-q"><div class="fr-q-t"><span class="fr-q-num">'+(i+1)+'</span>'+Q.q+'</div>'+
+        '<textarea class="fr-detail free" id="fr-freeform" placeholder="e.g. CFO informally mentioned a $200M cost ambition. They care most about protecting the DTC transition." onclick="demoFill(this)" oninput="STATE.framing.freeform=this.value;updateProceed()"></textarea></div>';
+    }
+    var ph=Q.id==="trigger"
+      ? "Describe what's driving this. Tap a suggestion to start, then add the detail."
+      : "Anything the client has singled out. Tap a suggestion or type your own.";
+    var chips=Q.opts.map(function(o){return '<button class="ctx-chip" onclick="frChip(\''+Q.id+'\',\''+o.replace(/'/g,"\\'")+'\')">'+o+'</button>';}).join('');
+    return '<div class="fr-q"><div class="fr-q-t"><span class="fr-q-num">'+(i+1)+'</span>'+Q.q+'</div>'+
+      '<textarea class="fr-detail free" id="fr-box-'+Q.id+'" placeholder="'+ph+'" onclick="demoFill(this)" oninput="STATE.framing.'+Q.id+'=this.value;updateProceed()"></textarea>'+
+      '<div class="ctx-chips">'+chips+'</div></div>';
+  }).join('');
+}
+function frChip(qid,val){
+  var box=document.getElementById("fr-box-"+qid);if(!box)return;
+  var cur=box.value.trim();
+  box.value=cur?cur+", "+val:val;
+  STATE.framing[qid]=box.value;
+  box.focus();
+  updateProceed();
+  logEntry("p","You","Framing · "+val);
+}
+/* Demo prefill — clicking an empty field drops in the Nike example that carries
+   through to the Case for change recap, showing the prototype is connected. */
+var DEMO_FILL={
+  "fr-box-trigger":"Margin pressure — EBITDA below athletic peers, three straight years of gross-margin decline.",
+  "fr-box-priority":"SG&A and overhead, without derailing the DTC transition.",
+  "fr-freeform":"CFO informally floated a rough $200M cost ambition. They care most about protecting the DTC transition while pulling cost out of the core.",
+  "ctx-box":"CFO conversation, relationship-driven. Framing toward a ~$200M cost ambition."
+};
+function demoFill(el){
+  if(!el||el.value.trim()||el.dataset.demoed)return;
+  var v=DEMO_FILL[el.id];if(!v)return;
+  el.value=v;el.dataset.demoed="1";
+  if(el.id==="ctx-box"){STATE.ctx=STATE.ctx||{};STATE.ctx.text=v;}
+  else if(el.id==="fr-freeform"){STATE.framing=STATE.framing||{};STATE.framing.freeform=v;}
+  else if(el.id.indexOf("fr-box-")===0){STATE.framing=STATE.framing||{};STATE.framing[el.id.replace("fr-box-","")]=v;}
+  var prev=el.style.background;
+  el.style.transition="background .35s ease";el.style.background="#FFF7DB";
+  setTimeout(function(){el.style.background=prev||"";},650);
+  if(typeof updateProceed==="function")updateProceed();
+  if(typeof logEntry==="function")logEntry("p","You","Prefilled example · "+(el.id==="ctx-box"?"context":"framing"));
+}
+
+/* ── BAIN RELATIONSHIP ── */
+var RELATIONSHIP={
+  partner:{nm:"Michael Chen",role:"Key account partner",meta:"Consumer & Retail · relationship since 2019"},
+  lastEngagement:"Last engagement 4 months ago",
+  cases:[
+    {nm:"DTC margin diagnostic",yr:"Oct 2023",team:"Chen, Rossi +6",impact:"180bps gross margin"},
+    {nm:"Footwear cost transformation",yr:"Mar 2022",team:"Okafor +9",impact:"$140M run-rate"},
+    {nm:"Supply chain resilience review",yr:"Jun 2021",team:"Chen, Nasser +4",impact:"scenario planning"}
+  ]
+};
+function relCaseHTML(c){
+  return '<button class="rel-case" onclick="openIris(\''+c.nm.replace(/'/g,"\\'")+'\')">'+
+    '<div class="rel-c-main"><div class="rel-c-nm">'+c.nm+'</div><div class="rel-c-meta">'+c.yr+' · '+c.impact+'</div></div>'+
+    '<span class="rel-c-link">Sage<svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M5 2h7v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 8.5V12H2V4h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
+  '</button>';
+}
+function toggleRelCases(){
+  var m=document.getElementById("rel-cases-more"),b=document.getElementById("rel-more-btn");
+  if(!m||!b)return;
+  var open=m.style.display!=="none", n=m.children.length;
+  m.style.display=open?"none":"flex";
+  b.innerHTML=open
+    ?('See '+n+' more<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="margin-top:1px"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+    :('Show less<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="margin-top:1px"><path d="M3 9l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+function buildRelationship(){
+  var el=document.getElementById("rel-body");if(!el)return;
+  var R=RELATIONSHIP;
+  el.innerHTML=
+    '<div class="rel-partner">'+
+      '<div class="rel-av"><svg width="36" height="36" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="mcbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCE3EC"/><stop offset="1" stop-color="#C3CDDB"/></linearGradient><linearGradient id="mcskin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0C39B"/><stop offset="1" stop-color="#DDA47B"/></linearGradient></defs><rect width="100" height="100" fill="url(#mcbg)"/><path d="M18 100c0-17 14-26 32-26s32 9 32 26z" fill="#2C3B4E"/><path d="M40 78l10 11 10-11-4-7H44z" fill="#F2F4F7"/><path d="M50 83l-4 6 4 13 4-13z" fill="#7A2530"/><path d="M42 64h16v13l-8 6-8-6z" fill="#D69A70"/><circle cx="31" cy="50" r="4" fill="#DDA47B"/><circle cx="69" cy="50" r="4" fill="#DDA47B"/><ellipse cx="50" cy="47" rx="19" ry="22" fill="url(#mcskin)"/><path d="M30 46c-1-17 9-26 20-26s21 9 20 26c0-7-3-12-6-13 1 4 0 7-1 8-2-6-7-9-13-9s-11 3-13 9c-1-1-2-4-1-8-3 1-6 6-6 13z" fill="#161616"/><path d="M39.5 43.5c2.2-1.4 6-1.4 8.2 0" stroke="#161616" stroke-width="1.7" stroke-linecap="round"/><path d="M52.3 43.5c2.2-1.4 6-1.4 8.2 0" stroke="#161616" stroke-width="1.7" stroke-linecap="round"/><path d="M40.5 50c1.6-1.3 5.2-1.3 6.8 0" stroke="#37271C" stroke-width="1.9" stroke-linecap="round"/><path d="M52.7 50c1.6-1.3 5.2-1.3 6.8 0" stroke="#37271C" stroke-width="1.9" stroke-linecap="round"/><path d="M50 52v6l-2.2 2.2" stroke="#C98B62" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M45 63.5c3.2 2 6.8 2 10 0" stroke="#B06E54" stroke-width="1.7" stroke-linecap="round"/></svg></div>'+
+      '<div class="rel-p-main"><div class="rel-p-nm">'+R.partner.nm+'</div><div class="rel-p-meta">'+R.partner.role+' · '+R.partner.meta+'</div></div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">'+
+        '<div class="rel-last">'+R.lastEngagement+'</div>'+
+        '<a href="https://clients.bain.com/account/nike" target="_blank" class="rel-mapping-btn">Account mapping<svg width="9" height="9" viewBox="0 0 14 14" fill="none" style="flex:none"><path d="M5 2h7v7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10 8.5V12H2V4h3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>'+
+      '</div>'+
+    '</div>'+
+    '<div class="rel-cases-lbl">Last 3 cases on this account</div>'+
+    '<div class="rel-cases">'+
+      relCaseHTML(R.cases[0])+
+      '<div id="rel-cases-more" style="display:none;flex-direction:column;gap:7px">'+
+        R.cases.slice(1).map(relCaseHTML).join('')+
+      '</div>'+
+    '</div>'+
+    (R.cases.length>1?'<button class="rel-more-btn" id="rel-more-btn" onclick="toggleRelCases()">See '+(R.cases.length-1)+' more<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="margin-top:1px"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>':'');
+}
+
+var TGT_UPLOADS=[
+  {name:'Nike_FY24_Annual_Report.pdf',size:4817203,icon:'PDF',iconColor:'#E03C3C',iconBg:'#FFEAEA',date:'Added 2 days ago',url:null},
+  {name:'Nike_CFO_Priorities_Q1FY25.docx',size:284160,icon:'DOC',iconColor:'#1E4DB0',iconBg:'#E8EEFF',date:'Added 1 day ago',url:null}
+];
+function fmtBytes(b){if(b<1024)return b+'B';if(b<1048576)return Math.round(b/1024)+'KB';return (b/1048576).toFixed(1)+'MB';}
+function buildTgtUploaded(){
+  var el=document.getElementById('tgt-uploaded-list');if(!el)return;
+  if(!TGT_UPLOADS.length){el.innerHTML='';return;}
+  var h='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);margin-bottom:7px">Uploaded files ('+TGT_UPLOADS.length+')</div>';
+  h+='<div style="margin-bottom:12px">';
+  TGT_UPLOADS.forEach(function(f,i){
+    h+='<div class="src-file-row2">'+
+      '<div class="src-file-ic2" style="background:'+f.iconBg+';color:'+f.iconColor+'">'+f.icon+'</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:12.5px;font-weight:600;color:var(--g950);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+f.name+'</div>'+
+        '<div style="font-size:11px;color:var(--g400);margin-top:1px">'+fmtBytes(f.size)+' \u00b7 '+f.date+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:4px;flex:none">'+
+        '<button class="src-file-btn2" onclick="viewTgtFile('+i+')" title="View"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4.5 6-4.5S13 7 13 7s-2.5 4.5-6 4.5S1 7 1 7z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.2"/></svg></button>'+
+        '<button class="src-file-btn2 del" onclick="deleteTgtFile('+i+')" title="Delete"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2.5 4h9M5 4V3h4v1M4 4l.5 7h5l.5-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+      '</div>'+
+    '</div>';
+  });
+  h+='</div>';
+  el.innerHTML=h;
+}
+function viewTgtFile(i){
+  var f=TGT_UPLOADS[i];if(!f)return;
+  if(f.url)window.open(f.url,'_blank');
+  else agent('<p><strong>'+f.name+'</strong> is indexed into the analysis. No live preview available for pre-loaded files.</p>');
+}
+function deleteTgtFile(i){
+  var f=TGT_UPLOADS[i];if(!f)return;
+  if(f.url)URL.revokeObjectURL(f.url);
+  TGT_UPLOADS.splice(i,1);
+  buildTgtUploaded();
+  agent('<p><strong>'+f.name+'</strong> removed from sources.</p>');
+}
+function handleTgtUpload(input){
+  if(!input.files||!input.files.length)return;
+  Array.from(input.files).forEach(function(f){
+    if(TGT_UPLOADS.find(function(u){return u.name===f.name;}))return;
+    var ext=f.name.split('.').pop().toLowerCase();
+    var ic={pdf:'PDF',xlsx:'XLS',xls:'XLS',docx:'DOC',doc:'DOC',pptx:'PPT',csv:'CSV',txt:'TXT'};
+    var co={pdf:'#E03C3C',xlsx:'#1A7A4A',xls:'#1A7A4A',docx:'#1E4DB0',doc:'#1E4DB0',pptx:'#B05A00',csv:'#1A7A4A',txt:'#636366'};
+    var bg={pdf:'#FFEAEA',xlsx:'#E4F5EB',xls:'#E4F5EB',docx:'#E8EEFF',doc:'#E8EEFF',pptx:'#FFF0E0',csv:'#E4F5EB',txt:'#F2F2F7'};
+    TGT_UPLOADS.push({name:f.name,size:f.size,icon:ic[ext]||ext.toUpperCase().slice(0,3),iconColor:co[ext]||'#636366',iconBg:bg[ext]||'#F2F2F7',date:'Added just now',url:URL.createObjectURL(f)});
+  });
+  input.value='';
+  buildTgtUploaded();
+  agent('<p>Got it \u2014 added to your sources.</p>');
+}
+function buildSources(){
+  var base=[
+    {ic:"CA",l:"CapIQ",d:"Financials, peer screening · FY19–FY24",cat:"fin",up:"Updated 2 days ago"},
+    {ic:"NK",l:"Nike 10-K",d:"FY24 filing · segment + SG&A detail",cat:"fin",up:"Updated 3 wks ago"},
+    {ic:"OI",l:"OI history",d:"Prior Nike and peer analyses",cat:"bain",up:"Updated 1 mo ago"}
+  ];
+  var S=base.concat((STATE.extraSources||[]).map(function(s,si){
+    var cat=s.ic==="WB"?"mkt":s.ic==="UP"?"up":"bain";
+    return {ic:s.ic,l:s.l,d:s.d,cat:cat,up:s.up||"Added just now",uploadIdx:s.ic==="UP"?si:null};
+  }));
+  var CATS=[
+    {id:"fin",label:"Financials & filings",dot:"var(--blue-tx)"},
+    {id:"bain",label:"Bain knowledge",dot:"var(--red)"},
+    {id:"mkt",label:"Market & news",dot:"var(--amb-tx)"},
+    {id:"up",label:"Uploaded files",dot:"#2A9E52"}
+  ];
+  var html='<div class="src-count">'+S.length+' active sources</div>';
+  CATS.forEach(function(c){
+    var items=S.filter(function(s){return s.cat===c.id;});if(!items.length)return;
+    html+='<div class="src-cat"><span class="src-cat-dot" style="background:'+c.dot+'"></span>'+c.label+'</div>';
+    html+=items.map(function(s,i){
+      var isUpload=s.cat==="up";
+      var actions=isUpload
+        ?'<div class="src-acts">'+
+            '<button class="src-act-btn" title="View file" onclick="viewUpload(\''+s.l.replace(/'/g,"\\'")+'\')" ><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M1 7s2.5-4.5 6-4.5S13 7 13 7s-2.5 4.5-6 4.5S1 7 1 7z" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="7" r="1.8" stroke="currentColor" stroke-width="1.3"/></svg></button>'+
+            '<button class="src-act-btn del" title="Remove file" onclick="deleteUpload(\''+s.l.replace(/'/g,"\\'")+'\')" ><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2.5 4h9M5 4V3h4v1M4 4l.5 7h5l.5-7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'+
+          '</div>'
+        :'<button class="src-act-btn src-refresh" title="Refresh source" onclick="refreshSource(\''+s.l.replace(/'/g,"\\'")+'\')"  ><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M12 7a5 5 0 1 1-1.6-3.7M12 1.8v2.6H9.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+      return '<div class="src-row">'+
+        '<div class="src-ic">'+s.ic+'</div>'+
+        '<div class="src-main"><div class="src-nm">'+s.l+'</div><div class="src-d">'+s.d+'</div><div class="src-date">'+s.up+'</div></div>'+
+        actions+
+      '</div>';
+    }).join('');
+  });
+  var uploadedEl=document.getElementById("tgt-uploaded-list");
+  if(uploadedEl) uploadedEl.innerHTML=''; // buildTgtUploaded will repopulate
+  var srcListEl=document.getElementById("tgt-src-list");
+  if(srcListEl) srcListEl.innerHTML=html;
+  else document.getElementById("view-sources").innerHTML='<div id="tgt-src-list">'+html+'</div>';
+  buildTgtUploaded();
+}
+function viewUpload(name){
+  agent("<p>Showing <strong>"+name+"</strong> — the document is available in your project files. I can pull specific sections or answer questions from it directly.</p>");
+  logEntry("p","You","Viewed upload: "+name);
+}
+function deleteUpload(name){
+  STATE.extraSources=(STATE.extraSources||[]).filter(function(s){return s.l!==name;});
+  buildSources();
+  agent("<p><strong>"+name+"</strong> removed from this OI. I won't use it in further analysis.</p>");
+  logEntry("p","You","Removed upload: <strong>"+name+"</strong>");
+}
+
+/* ── CHAT RESIZE ── */
+function initResize(){
+  var h=document.getElementById("chat-resize"),p=document.getElementById("chat-panel");
+  var dr=false,sx,sw;
+  h.addEventListener("mousedown",function(e){dr=true;sx=e.clientX;sw=p.offsetWidth;h.classList.add("dragging");document.body.style.userSelect="none";document.body.style.cursor="col-resize";e.preventDefault();});
+  document.addEventListener("mousemove",function(e){if(!dr)return;var nw=Math.max(320,Math.min(window.innerWidth-360,sw+(sx-e.clientX)));p.style.width=nw+"px";document.documentElement.style.setProperty("--chat-w",nw+"px");});
+  document.addEventListener("mouseup",function(){if(dr){dr=false;h.classList.remove("dragging");document.body.style.userSelect="";document.body.style.cursor="";}});
+}
+
+/* ── INIT ── */
+document.addEventListener("DOMContentLoaded",function(){
+  initResize();
+  buildTgtUploaded();
+  agent("<p>Right, let's get started. Name the target company and I'll resolve it, check for public financials, and set the sector lens. Framing and context are below whenever you want to sharpen the setup.</p>");
+  pickMode("full",true);
+  setSugs([{label:"Use Nike",fn:"document.getElementById('tn-inp').value='Nike';resolveTarget()"}]);
+  document.getElementById("c-send").addEventListener("click",cSend);
+  document.getElementById("c-inp").addEventListener("keydown",function(e){if(e.key==="Enter")cSend();});
+  document.getElementById("tn-inp").addEventListener("keydown",function(e){if(e.key==="Enter")resolveTarget();});
+  buildCollaborators();
+  buildSources();
+  logEntry("s","System","New analysis started");
+});
+</script>
+<script>
+function renderShareMembers(){
+  var el=document.getElementById("share-list"); if(!el)return;
+  el.innerHTML=COLLABORATORS.map(function(c,i){
+    return '<div class="share-row">'+
+      '<div class="share-av">'+c.in+'</div>'+
+      '<div class="share-main"><div class="share-nm">'+c.nm+'</div><div class="share-role">'+c.role+'</div></div>'+
+      '<select class="share-permsel" onchange="setPerm('+i+',this.value)"><option'+(c.perm==="Contributor"?" selected":"")+'>Contributor</option><option'+(c.perm==="Viewer"?" selected":"")+'>Viewer</option></select>'+
+      (i>0?'<button class="share-rm" onclick="removeMember('+i+')" title="Remove"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>':'<span style="width:22px;flex:none"></span>')+
+    '</div>';
+  }).join('');
+}
+function openShareModal(){ renderShareMembers(); document.getElementById("share-overlay").style.display="block"; document.getElementById("share-modal").style.display="block"; }
+function closeShareModal(){ document.getElementById("share-overlay").style.display="none"; document.getElementById("share-modal").style.display="none"; }
+function setPerm(i,v){ if(COLLABORATORS[i]){ COLLABORATORS[i].perm=v; buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You",COLLABORATORS[i].nm+" set to <strong>"+v+"</strong>"); } }
+function removeMember(i){ if(COLLABORATORS[i]){ var nm=COLLABORATORS[i].nm; COLLABORATORS.splice(i,1); renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Removed <strong>"+nm+"</strong> from the project"); } }
+function addMember(){ var inp=document.getElementById("share-inp"),ps=document.getElementById("share-perm"); if(!inp||!inp.value.trim())return; var nm=inp.value.trim(); var initials=nm.split(/[\s@._-]+/).filter(Boolean).slice(0,2).map(function(w){return w[0].toUpperCase();}).join("")||"?"; COLLABORATORS.push({nm:nm,in:initials,role:"Invited",last:"Just invited",online:false,edits:0,perm:ps.value}); inp.value=""; renderShareMembers(); buildCollaborators(); if(typeof logEntry==="function")logEntry("p","You","Invited <strong>"+nm+"</strong> as "+ps.value); }
+function copyShareLink(){ var b=event.target.closest("button"); if(!b)return; var t=b.innerHTML; b.innerHTML="Link copied \u2713"; setTimeout(function(){b.innerHTML=t;},1400); }
+
+/* ── LOG FILTER ─────────────────────────────────── */
+var _logFilter="all";
+function setLogFilter(f,btn){
+  _logFilter=f;
+  var bar=document.getElementById("lg-filter-bar");
+  if(bar)bar.querySelectorAll(".lg-fchip").forEach(function(b){b.classList.toggle("on",b===btn);});
+  applyLogFilter();
+}
+function applyLogFilter(){
+  var list=document.getElementById("log-entries")||document.getElementById("lg-list");
+  if(!list)return;
+  list.querySelectorAll(".lg-e").forEach(function(el){
+    var type=el.dataset.type||"",txt=(el.dataset.txt||"").toLowerCase(),show=false;
+    if(_logFilter==="all") show=true;
+    else if(_logFilter==="p") show=type==="p";
+    else if(_logFilter==="c") show=type==="c";
+    else if(_logFilter==="a") show=type==="a";
+    else if(_logFilter==="override") show=(type==="p"||type==="c")&&/override|assumption|changed|updated|set to|removed|promoted|demoted|moved/i.test(txt);
+    else if(_logFilter==="flag") show=type==="a"&&/flag|warn|caution|recommend|watch|note|check|flagged/i.test(txt);
+    el.classList.toggle("lg-hidden",!show);
+  });
+}
+
+</script>
+<!-- SHARE MODAL -->
+<div id="share-overlay" onclick="closeShareModal()" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.3);backdrop-filter:blur(2px)"></div>
+<div id="share-modal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:440px;max-width:92%;background:#fff;border-radius:18px;z-index:601;box-shadow:0 24px 64px rgba(0,0,0,.2),0 4px 16px rgba(0,0,0,.08);overflow:hidden">
+  <div class="share-hd"><div><div class="share-title">Share this OI</div><div class="share-sub">Nike, Inc. \u00b7 anyone you add can open it at any stage</div></div><button class="share-close" onclick="closeShareModal()"><svg width="10" height="10" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>
+  <div class="share-add"><input id="share-inp" placeholder="Add people by name or email"/><select id="share-perm"><option>Contributor</option><option>Viewer</option></select><button class="share-add-btn" onclick="addMember()">Add</button></div>
+  <div class="share-list" id="share-list"></div>
+  <div class="share-ft"><button class="share-link" onclick="copyShareLink()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M5.5 8.5a2.5 2.5 0 003.5 0l2-2a2.5 2.5 0 10-3.5-3.5l-1 1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M8.5 5.5a2.5 2.5 0 00-3.5 0l-2 2a2.5 2.5 0 103.5 3.5l1-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Copy link</button><button class="share-done" onclick="closeShareModal()">Done</button></div>
+</div>
+</body>
+</html>
