@@ -119,14 +119,18 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 71 pages, **53 carry text, 5 hold only a diagram, and 13 are genuinely empty**.
-The empty set includes every high-level design page this role reviews against: Security
-Design, NFR Design Choices, Observability, Endpoints & Interfaces Design, and Deployment
-Design (CI/CD). Reviews touching those areas rest on judgment, not written policy — say
-so explicitly rather than presenting a standard that does not exist.
+Of 71 pages, **54 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
+empty**. The empty set still includes every high-level design page this role reviews
+against: Security Design, NFR Design Choices, Observability, Endpoints & Interfaces
+Design, and Deployment Design (CI/CD). Reviews touching those areas rest on judgment, not
+written policy — say so explicitly rather than presenting a standard that does not exist.
 
-Treat an empty page as **unknown, not as "no requirement"**, and flag it when a decision
-depends on one. The full breakdown is in
+**A page that looks empty may not be.** Several carry their content as an attached
+spreadsheet or deck rather than prose. Always check
+`confluence/_attachments/<page_id>/` before calling a page undocumented.
+
+Treat a genuinely empty page as **unknown, not as "no requirement"**, and flag it when a
+decision depends on one. The full breakdown is in
 [context/open-questions.md](context/open-questions.md).
 
 ### Permissions

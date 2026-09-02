@@ -7,9 +7,14 @@ Each entry: what is unknown, why it matters, who can answer, and what is blocked
 
 ## Undocumented architecture areas
 
-Of 71 pages, **53 carry text, 5 are diagrams only, and 13 are genuinely empty.** The
-distinction matters: a diagram-only page is documented, just not in prose, while an
-empty page means the decision has not been written down anywhere.
+Of 71 pages, **54 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
+empty.** The distinction matters: an attachment-backed page is documented, just not in
+prose, while an empty page means the decision has not been written down anywhere.
+
+**Corrected 2026-09-02.** Earlier counts said 13 empty. Three of those — GLS Feature Set,
+Sprint 1 stories, and Bain Taxonomy Mapping — were never empty; their content was
+attached as Office files that the sync was dropping. Do not treat a bare page as
+undocumented without checking `confluence/_attachments/<page_id>/`.
 
 ### Written nowhere — no text, no diagram
 
@@ -23,10 +28,7 @@ reviews against is blank. Reviews in these areas rest on judgment, not policy.
 | [Observability & Monitoring](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md) | No logging or alerting standard | Reviewing instrumentation in SN code |
 | [Endpoints & Interfaces Design](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md) | No API contract standard | Reviewing FastAPI surface changes |
 | [Deployment Design (CI/CD)](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md) | No documented pipeline or environment topology | Release and rollback decisions |
-| [Bain Taxonomy Mapping](../confluence/oi30/data-requirements/bain-taxonomy-mapping-19619577930.md) | Now reads "Here's the industry mapping sent by Akhil:" with nothing beside it. The mapping is an attachment the sync was skipping; next run should retrieve it | Reconciling upstream data to Bain taxonomy |
 | [LSEG](../confluence/oi30/data-requirements/data-sources-summary/lseg-19618889872.md) | Integration undocumented, unlike its sibling sources | LSEG integration review |
-| [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) | Scope undefined | Feature planning |
-| [Sprint 1 stories, dependencies and decisions](../confluence/oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md) | Sprint 1 scope not captured where the team can see it | Sprint execution |
 | [Jobs to be done](../confluence/oi30/overview/jobs-to-be-done-19619577898.md) | Feature trade-offs lack a stated yardstick | Prioritisation calls |
 
 Three further empty pages — [Architecture](../confluence/oi30/architecture-19589234692.md),
@@ -34,18 +36,28 @@ Three further empty pages — [Architecture](../confluence/oi30/architecture-195
 [Roadmap / Business Requirements](../confluence/oi30/roadmap-business-requirements-19588546617.md)
 — are parents whose children hold the content. Those are structural, not gaps.
 
-### Documented as diagrams only
+### Documented as an attachment or diagram only
 
-Content exists but carries no prose, so it is not greppable. Open the linked image.
+Content exists but carries no prose, so it will not turn up in a search. Open the file.
 
-- [Technical Architecture](../confluence/oi30/architecture/technical-architecture-19619479668.md)
-- [Data Architecture](../confluence/oi30/architecture/data-architecture-19619840013.md)
-- [Logic Architecture](../confluence/oi30/architecture/logic-architecture-19619840005.md)
-- [Success metrics](../confluence/oi30/overview/success-metrics-19618758856.md)
-- [Onboarding tracker](../confluence/oi30/ways-of-working/onboarding-statusneo/onboarding-tracker-19705593880.md)
+| Page | Attachment |
+| ---- | ---------- |
+| [Technical Architecture](../confluence/oi30/architecture/technical-architecture-19619479668.md) | `OI_3_0_Technical_Architecture_v2.svg` |
+| [Data Architecture](../confluence/oi30/architecture/data-architecture-19619840013.md) | `OI_3_0_Data_Architecture.svg` |
+| [Logic Architecture](../confluence/oi30/architecture/logic-architecture-19619840005.md) | `OI_3_0_Technical_Architecture.svg` (the logical view, despite the name) |
+| [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) | `OI_3.0_Feature_Overview_1.pptx` |
+| [Sprint 1 stories](../confluence/oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md) | `OI3-Sprint_1_planning.xlsx` |
+| [Success metrics](../confluence/oi30/overview/success-metrics-19618758856.md) | `image-20260712-213758.png` |
+| [Onboarding tracker](../confluence/oi30/ways-of-working/onboarding-statusneo/onboarding-tracker-19705593880.md) | `image-20260807-111345.png` |
 
-A diagram cannot state a threshold or a rule precisely. Where one of these is the sole
-source for a decision, confirm the reading before relying on it.
+Attachments live in `confluence/_attachments/<page_id>/`. A diagram or spreadsheet cannot
+state a threshold or a rule precisely, so where one is the sole source for a decision,
+confirm the reading before relying on it.
+
+Other substantive attachments now mirrored, not tied to an empty page: the OI data
+dictionary (v1 and v2), `VCC_Calculations.xlsx`, `Industry_Map.xlsx`, the levers library,
+cost bar breakdown examples, `A1OI_companies_2025.csv`, and the onboarding and kick-off
+decks.
 
 ## Undocumented, and asked about
 

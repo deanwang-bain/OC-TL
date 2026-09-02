@@ -112,11 +112,14 @@ security posture assumes managed infrastructure.
 ### 7. GLS is roughly seven weeks out and the date is not in the documentation
 
 GLS is the **Global Leadership Summit, mid-to-late October**, where OI 3.0 is
-demonstrated to Bain's most senior internal audience. The
-[GLS Feature Set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19761725586) page is
-empty, [Sprint 1 stories](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19763003424)
-is empty, and the MVP is still "to be signed off" — so the hardest date in the programme
-is the one thing the space does not record.
+demonstrated to Bain's most senior internal audience. The MVP is still "to be signed off",
+so the hardest date in the programme is not recorded in the space.
+
+*Corrected 2026-09-02:* [GLS Feature Set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19761725586)
+and [Sprint 1 stories](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19763003424)
+are **not** empty — both carry attachments (`OI_3.0_Feature_Overview_1.pptx` and
+`OI3-Sprint_1_planning.xlsx`) that the sync was dropping until today. Their content
+exists; it is just not on the page or in any search.
 
 Five things now have a deadline attached rather than an open question mark:
 
