@@ -111,6 +111,12 @@ Refresh runs daily via `.github/workflows/confluence-sync.yml`, or on demand fro
 Actions tab. It needs the repository secrets `CONFLUENCE_EMAIL` and
 `CONFLUENCE_API_TOKEN`.
 
+The run fires at **06:07 Singapore** so the daily briefing is waiting by 07:00 even when
+GitHub schedules it late. In UTC that is `22:07` on the *previous* calendar day, so run
+timestamps in the Actions tab look a day behind; the briefing itself is dated in
+Singapore time. The briefing leads with `context/standing-agenda.md` and is archived to
+`context/daily/`.
+
 ### Known gaps in the source material
 
 Of 71 pages, **53 carry text, 5 hold only a diagram, and 13 are genuinely empty**.
