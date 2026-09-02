@@ -64,6 +64,9 @@ decks.
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
+| **Can Glean/IRIS fetch LSEG analyst reports under Bain's existing entitlement?** | Action on Sandeep from the [VCC Overview meeting](../confluence/oi30/meeting-summaries/vcc-overview-meeting-19696746551.md), 4 Aug, due before the architecture workshop. No answer recorded. It is the cheapest possible resolution to the LSEG AMBER flag — see [data-source-map.md](data-source-map.md) §5.4 |
+| **Do consensus revenue-growth estimates come from CapIQ or LSEG?** | The [Data Sources summary](../confluence/oi30/data-requirements/data-sources-summary-19619676163.md) attributes consensus estimates to LSEG; the [VCC Calculations summary](../confluence/oi30/roadmap-business-requirements/vcc-calculations-summary-19699040301.md) builds projected revenue growth on "analyst consensus forecasts" via a CapIQ platform. Decides whether the LSEG restriction touches a sized opportunity or only qualitative surfaces. Akhil or Sandeep can answer in a line |
+| **Glean / Iris sandbox access** — owner and date | Marked only as "(sandbox access TBD)". All 14 Screen 04 sub-levers draw their Bain experience range from Iris/Sage, five with no peer benchmark at all. Larger functional exposure than LSEG, tracked as a parenthetical |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
 ## Conflicts to resolve
@@ -73,6 +76,7 @@ decks.
 | ~~Two different architectures~~ | **Resolved.** Architecture Layers documents two deliberate consumption patterns over one headless layer: deterministic via FastAPI, open-ended via FastMCP/MCP. The React app and the agent swarm are both clients, not rival designs |
 | ~~Two different AI SDKs~~ | **Resolved by ADR-008:** Microsoft Agent Framework, with Foundry Workflows and Prompt flow rejected on cited retirement dates. Technical Stack and the architecture diagram are stale and should be marked superseded |
 | **Hosting: resolved, but inconsistently** | Technology Choices sets an Azure-first rubric with Azure Front Door; the technical architecture diagram still lists Bedrock / Vertex / MS Foundry. The page is newer and more specific — the diagram should be corrected |
+| **Data acquisition: real-time or batch** | [Technology Choices](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md) gives MVP as "Real-time fetch per run", moving to monthly batch at north star, and marks that a *mechanism change*. The [VCC Overview meeting](../confluence/oi30/meeting-summaries/vcc-overview-meeting-19696746551.md) recorded the opposite as a decision: "Batch processing only — no real-time data in OI 3.0 under any circumstances." Both are current |
 | **Security split exists only in a diagram** | The app-level (StatusNeo) vs infra-level (Bain) RACI is drawn in the technical architecture SVG but written on no page, including the empty Security Design page |
 
 ## Product and scope

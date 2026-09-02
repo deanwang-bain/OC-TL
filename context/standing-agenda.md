@@ -56,7 +56,53 @@ and decides whether the AI zone can be fully private or needs a compensating con
 
 **Ask: name a Bain owner and a date for the golden dataset. Confirm item 1 has a driver.**
 
-### 4. CapIQ rate limits block a custom build and a scale question
+### 4. Data sources answered end to end — and the LSEG flag is not the worst of them
+
+Fritz asked on the Build LT thread for an overview of everything we pipe in or allow to be
+uploaded, by source and by risk, after Kasia's AMBER flag on LSEG. Full map, with per-source
+detail and a ranked risk table, in [context/data-source-map.md](data-source-map.md).
+
+Three sources carry the numbers (CapIQ, company filings, Bain IP via Glean), one carries the
+words (LSEG), one is the escape hatch (Partner upload). Everything else is roadmap.
+
+**LSEG is the flagged risk; Glean/Iris is the larger one.** LSEG feeds qualitative surfaces
+only — Screens 04 and 05 state plainly that it is *"not a financial fallback"* — so the size
+of prize does not move if it goes away. Glean access is marked only as *"sandbox access
+TBD"*, and every one of Screen 04's **14 sub-levers** takes its Bain experience range from
+Iris/Sage, with **five having no peer benchmark at all**. That is a bigger functional hole,
+tracked as a parenthetical.
+
+**On LSEG specifically, three things are cheap and should happen before any vendor
+assessment:**
+
+1. **The Glean answer is four weeks old.** *"Confirm with Glean/IRIS whether they can fetch
+   LSEG analyst reports"* was an action on Sandeep from 4 August, due before the
+   architecture workshop, and the space records no answer. If Glean holds LSEG content under
+   Bain's existing entitlement, we inherit it rather than negotiate it.
+2. **Curated reports need no new integration.** The upload path already classifies analyst
+   reports and routes them to the qualitative layer — Kasia's workaround reuses a designed
+   path. Two conditions: the demo target is public anyway, and the 30-minute claim should be
+   stated as excluding the manual retrieval step rather than quietly absorbing it.
+3. **LSEG must be a soft gate.** Every LSEG-fed surface degrades visibly and no LSEG
+   condition blocks a run. Screen 02's private-company fallback is already the pattern. This
+   is ours to decide and does not wait on the contract.
+
+**AlphaSense substitutes the supplier, not the problem** — any licensed research aggregator
+carries the same class of persistence and redistribution restrictions. ADR-007 already
+commits the evidence service to enforcing *"persistence restrictions on analyst report
+content"*, and the LSEG page is empty. That was finding S6 of the ADR review and it is now
+the critical path, not a documentation nicety.
+
+One open question changes the rating: the Data Sources summary attributes **consensus
+analyst estimates (projected revenue growth)** to LSEG, while the VCC calculation lineage
+implies CapIQ. If it is LSEG, the flag touches a sized opportunity rather than only
+qualitative surfaces.
+
+**Ask: chase the Glean answer; confirm whether consensus estimates come from CapIQ or LSEG;
+name an owner and date for Glean/Iris sandbox access; and get the LSEG persistence and
+export rules written onto the page before the evidence service is built.**
+
+### 5. CapIQ rate limits block a custom build and a scale question
 
 Unanswered CapIQ rate limits and per-call cost block two things at once: the design of
 the external rate-limiting component — one of only five builds argued as genuinely
@@ -66,7 +112,7 @@ not an answer.
 
 **Ask: who is chasing CapIQ, and what is the fallback if real-time fetch does not scale?**
 
-### 5. Open-source and third-party positions need a ruling
+### 6. Open-source and third-party positions need a ruling
 
 Technology Choices declares 66 Build / Adopt / Buy positions and is still **Draft for
 review**. No request had been raised for any of them. Full assessment in
@@ -93,7 +139,7 @@ lists it in the frontend table anyway.
 fit, rubric, reversibility and operability, but never records the licence, which is what
 a third-party approval actually turns on.**
 
-### 6. Two topology questions from StatusNeo, both needing a ruling
+### 7. Two topology questions from StatusNeo, both needing a ruling
 
 Asked directly: which services are separate versus one monorepo at MVP, and whether to
 run a proper pipeline on Container Apps or deploy to a VM to protect GLS focus.
@@ -109,7 +155,7 @@ security posture assumes managed infrastructure.
 
 **Ask: confirm both rulings.**
 
-### 7. GLS is roughly seven weeks out and the date is not in the documentation
+### 8. GLS is roughly seven weeks out and the date is not in the documentation
 
 GLS is the **Global Leadership Summit, mid-to-late October**, where OI 3.0 is
 demonstrated to Bain's most senior internal audience. The MVP is still "to be signed off",
@@ -141,7 +187,7 @@ to build the wrong contract and recover.
 **Ask: put the GLS date and demo scope on the GLS Feature Set page, and name an owner
 for demo readiness as distinct from MVP delivery.**
 
-### 8. ADR-001 to ADR-009 reviewed — two structural findings
+### 9. ADR-001 to ADR-009 reviewed — two structural findings
 
 Full review in `reviews/2026-09-01-adr-001-to-009.md`. Outcome **approve with comments**:
 the reasoning quality is high and none of the nine decisions looks wrong.
