@@ -249,12 +249,12 @@
     "19710279791": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-02-peer-review-19710279791.md",
       "title": "Screen 02: Peer Review",
-      "version": 26
+      "version": 27
     },
     "19710705690": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-04-analysis-19710705690.md",
       "title": "Screen 04: Analysis",
-      "version": 16
+      "version": 17
     },
     "19710705698": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-05-output-deck-builder-19710705698.md",
@@ -279,7 +279,7 @@
     "19710967811": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-01-target-setup-19710967811.md",
       "title": "Screen 01: Target Setup",
-      "version": 21
+      "version": 23
     },
     "19714244769": {
       "path": "oi30/roadmap-business-requirements/ux-workshops-open-questions-from-dev-team-19714244769.md",
@@ -354,6 +354,11 @@
     "19765133323": {
       "path": "oi30/architecture/agent-validation-test-plan-19765133323.md",
       "title": "Agent_Validation_Test_Plan",
+      "version": 1
+    },
+    "19792560136": {
+      "path": "oi30/data-requirements/cost-bar-split-19792560136.md",
+      "title": "Cost Bar split",
       "version": 1
     }
   }
