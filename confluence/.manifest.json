@@ -259,7 +259,7 @@
     "19710705698": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-05-output-deck-builder-19710705698.md",
       "title": "Screen 05: Output & Deck Builder",
-      "version": 13
+      "version": 14
     },
     "19710738476": {
       "path": "oi30/data-requirements/data-requirements-per-screen/screen-00-dashboard-19710738476.md",
@@ -359,7 +359,7 @@
     "19792560136": {
       "path": "oi30/data-requirements/cost-bar-split-19792560136.md",
       "title": "Cost Bar split",
-      "version": 1
+      "version": 2
     }
   }
 }
