@@ -59,6 +59,12 @@ and most decision-dense source is
 [Technical Stack](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md)
 page where they disagree.
 
+For **endpoint-level** detail on Target Setup and Peer Selection — public routes,
+component swimlanes, payload contracts, journey invariants, and the tracked blocker
+register — use [context/journey-portal.md](context/journey-portal.md). It distils an
+artifact received outside Confluence, so its workbook citations are reported but not
+verifiable from the mirror; say so when relying on them.
+
 Third-party and open-source positions are tracked in `tools/known_tools.json`; the daily
 digest flags anything new or repositioned as needing a ruling.
 
@@ -70,6 +76,7 @@ Delivery runs in **two-week Scrum cycles**.
 | ---- | ------------- |
 | `confluence/` | Generated mirror of the OI30 space. **Read-only.** Start at `confluence/INDEX.md` |
 | `context/` | Distilled, hand-maintained understanding: project brief, stakeholders, open questions |
+| `context/artifacts/` | Source documents received outside Confluence, kept so distilled claims stay traceable. Not synced — see its `README.md` |
 | `reviews/` | Code review records, one file per review |
 | `requests/` | Technical requests and their recommendations, plus `REGISTER.md` |
 | `decisions/` | Tech Lead decision log for rulings made here, distinct from Confluence ADRs |

@@ -59,11 +59,30 @@ dictionary (v1 and v2), `VCC_Calculations.xlsx`, `Industry_Map.xlsx`, the levers
 cost bar breakdown examples, `A1OI_companies_2025.csv`, and the onboarding and kick-off
 decks.
 
+### Cited by name, but absent from the space
+
+`OI 3.0 - Data and API Mapping by Screen v3.xlsx` is the evidence base for the
+[journey portal](journey-portal.md)'s blocker register — twelve of its thirteen P0 and P1
+blockers cite it down to the cell (`Spec Conflicts!B13:F13`, `Open Questions!B26:F26`,
+`Data Sources!B26:G26`, and so on). **The workbook is attached to no page in `OI30` and no
+mirrored page mentions it.**
+
+This is a different kind of gap from an empty page. The answers exist and are precise;
+they are simply held somewhere the team cannot reach from the documentation. Sheet names
+seen in the citations — `Status`, `Data Sources`, `Source Data`, `Spec Conflicts`,
+`Open Questions`, `API Endpoints`, `S01 Target`, `S02 Peers` — suggest it also carries a
+per-screen endpoint inventory and a conflict log that nothing in the mirror duplicates.
+
+Until it is attached to a page, treat every workbook citation in `journey-portal.md` as
+**reported but unverified from this workspace**.
+
 ## Undocumented, and asked about
 
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
+| **Employee SSO and RBAC** — application-facing issuer, federation direction, claims, role owner, assignment lifecycle | Email sent **2026-09-03**, per the journey portal. Blocks the Screen 01 Login journey entirely; interim rule is *do not treat email as authorization* |
+| **Adjusted EBIT reconciliation tolerance** — the pass / flag / fail threshold | Unresolved and cited to the mapping workbook. Reaches 5 of 11 journeys, more than any other blocker |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
 ## Conflicts to resolve
