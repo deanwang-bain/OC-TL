@@ -111,6 +111,13 @@ Refresh runs daily via `.github/workflows/confluence-sync.yml`, or on demand fro
 Actions tab. It needs the repository secrets `CONFLUENCE_EMAIL` and
 `CONFLUENCE_API_TOKEN`.
 
+If the sync fails, it files an issue titled **"Confluence sync is failing"** assigned to
+the repository owner, quoting the error, and comments on that same issue on subsequent
+failures rather than opening a new one. A 401 or 403 in that notice means the
+`CONFLUENCE_API_TOKEN` secret needs rotating — Atlassian API tokens expire, so this
+recurs. Create a replacement at
+<https://id.atlassian.com/manage-profile/security/api-tokens>.
+
 The run fires at **06:07 Singapore** so the daily briefing is waiting by 07:00 even when
 GitHub schedules it late. In UTC that is `22:07` on the *previous* calendar day, so run
 timestamps in the Actions tab look a day behind; the briefing itself is dated in
