@@ -17,6 +17,10 @@ reviews useful.
       Cite the ADR when flagging.
 - [ ] Stack additions justified — a new library overlapping an approved one (state,
       grids, charts) needs a reason.
+- [ ] **New dependency passes the open-source rules** in `decisions/003`: permissive
+      licence (a red-class or missing licence is blocking), nothing whose behaviour can
+      enter a figure on the calculation path, lockfile updated, open core flagged as
+      procurement rather than waved through as OSS.
 
 ## 2. Product constraints
 

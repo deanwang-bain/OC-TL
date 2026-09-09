@@ -64,6 +64,8 @@ decks.
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
+| **Firmwide Bain open-source / third-party software standard** — does one exist, and what does it say about licence classes, SBOM and approval? | Nothing in the space. `decisions/003` states a programme-level position on judgment, and a firmwide standard would outrank it. Bain Legal / InfoSec can answer; asked 2026-09-09 |
+| **Dependency remediation SLA** — Technology Choices §9.4 makes Dependabot alerts *blocking* but never says how fast, or who grants an exception | Unwritten, and Security Design is empty. Proposed default in `decisions/003`: critical 7 days, high 30, exceptions recorded with an owner |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
 ## Conflicts to resolve

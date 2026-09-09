@@ -93,6 +93,17 @@ lists it in the frontend table anyway.
 fit, rubric, reversibility and operability, but never records the licence, which is what
 a third-party approval actually turns on.**
 
+**The general position is now written up** in `decisions/003-open-source-position.md`
+(proposed): open source is the default for libraries, formats and tooling, bounded by
+four rules — licence class decides the path, nothing on the deterministic calculation
+path takes a dependency whose behaviour can enter a figure, managed-first still applies,
+and open core is procurement rather than an open-source question. Standing asks with it:
+a licence column on Technology Choices, an SBOM per deployable, and a remediation SLA for
+the blocking Dependabot alerts §9.4 already mandates.
+
+**Ask: confirm the position, and confirm whether a firmwide Bain OSS standard exists —
+if it does, it outranks this and we should be applying it instead.**
+
 ### 6. Two topology questions from StatusNeo, both needing a ruling
 
 Asked directly: which services are separate versus one monorepo at MVP, and whether to
