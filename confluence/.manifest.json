@@ -79,7 +79,7 @@
     "19619577930": {
       "path": "oi30/data-requirements/bain-taxonomy-mapping-19619577930.md",
       "title": "Bain Taxonomy Mapping",
-      "version": 2
+      "version": 3
     },
     "19619676163": {
       "path": "oi30/data-requirements/data-sources-summary-19619676163.md",
@@ -370,6 +370,16 @@
       "path": "oi30/post-gls-feature-set-19800162379.md",
       "title": "Post GLS feature set",
       "version": 2
+    },
+    "19808256031": {
+      "path": "oi30/design-requirements-cont-19808256031.md",
+      "title": "Design requirements (Cont.)",
+      "version": 6
+    },
+    "19809534070": {
+      "path": "peer-selection-ranking-19809534070.md",
+      "title": "Peer Selection & Ranking",
+      "version": 6
     }
   }
 }
