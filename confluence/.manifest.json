@@ -377,9 +377,14 @@
       "version": 6
     },
     "19809534070": {
-      "path": "peer-selection-ranking-19809534070.md",
-      "title": "Peer Selection & Ranking",
-      "version": 6
+      "path": "peer-selection-capability-19809534070.md",
+      "title": "Peer Selection Capability",
+      "version": 7
+    },
+    "19817627730": {
+      "path": "oi30/data-contacts-19817627730.md",
+      "title": "Data Contacts",
+      "version": 1
     }
   }
 }
