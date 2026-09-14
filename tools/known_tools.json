@@ -6,15 +6,26 @@
     },
     "A2A over HTTPS": {
       "concern": "Agent delegation",
-      "position": "Adopt"
+      "position": "Adopt",
+      "oss": "standard",
+      "licence": null,
+      "ruling": "noted"
     },
     "AG-Grid Enterprise": {
       "concern": "Tabular inspection and export",
-      "position": "Buy, existing Bain licence"
+      "position": "Buy, existing Bain licence",
+      "oss": "open-core",
+      "licence": null,
+      "ruling": "held",
+      "note": "\"Existing Bain licence\" unverified for this application, deployment model and seat count"
     },
     "AG-UI protocol, CopilotKit": {
       "concern": "Assistant surface",
-      "position": "Buy, licence"
+      "position": "Buy, licence",
+      "oss": "open-core",
+      "licence": null,
+      "ruling": "held",
+      "note": "Open core recorded as \"Buy, licence\" — tier and cost unstated, reversibility poor"
     },
     "API Management": {
       "concern": "Gateway",
@@ -94,11 +105,18 @@
     },
     "Datadog": {
       "concern": "Alternative APM",
-      "position": "Buy, optional"
+      "position": "Buy, optional",
+      "oss": "open-core",
+      "licence": null,
+      "ruling": "held",
+      "note": "\"Optional\" duplicates Azure Monitor, which is already Adopt for the same concern"
     },
     "DuckDB, embedded in process": {
       "concern": "Query engine",
-      "position": "Adopt OSS"
+      "position": "Adopt OSS",
+      "oss": "library",
+      "licence": null,
+      "ruling": "recommended"
     },
     "Entra external OAuth to Snowflake": {
       "concern": "Warehouse identity",
@@ -118,7 +136,11 @@
     },
     "Headless Chromium for HTML and PDF, OOXML writer for presentation": {
       "concern": "Deck rendering",
-      "position": "Build"
+      "position": "Build",
+      "oss": "library",
+      "licence": null,
+      "ruling": "held",
+      "note": "Driver not named — Playwright, Puppeteer or direct CDP"
     },
     "Immutable blob with a legal hold policy": {
       "concern": "Audit immutability",
@@ -130,7 +152,10 @@
     },
     "MCP over streamable HTTP": {
       "concern": "Tool contract",
-      "position": "Adopt protocol, Build servers"
+      "position": "Adopt protocol, Build servers",
+      "oss": "standard",
+      "licence": null,
+      "ruling": "noted"
     },
     "Microsoft Agent Framework": {
       "concern": "Agent orchestration",
@@ -154,7 +179,10 @@
     },
     "Node with TypeScript": {
       "concern": "IO-bound services",
-      "position": "Build"
+      "position": "Build",
+      "oss": "foundation",
+      "licence": null,
+      "ruling": "noted"
     },
     "OAuth2 client credentials, separate audience": {
       "concern": "Platform consumer identity",
@@ -166,11 +194,17 @@
     },
     "OpenTelemetry": {
       "concern": "Instrumentation standard",
-      "position": "Adopt"
+      "position": "Adopt",
+      "oss": "standard",
+      "licence": null,
+      "ruling": "recommended"
     },
     "Parquet": {
       "concern": "Per-run analytical files",
-      "position": "Adopt format"
+      "position": "Adopt format",
+      "oss": "standard",
+      "licence": null,
+      "ruling": "recommended"
     },
     "Pendo": {
       "concern": "Product analytics",
@@ -182,7 +216,10 @@
     },
     "Python": {
       "concern": "Compute and AI services",
-      "position": "Build"
+      "position": "Build",
+      "oss": "foundation",
+      "licence": null,
+      "ruling": "noted"
     },
     "REST with JSON, OpenAPI first": {
       "concern": "Default API style",
@@ -190,11 +227,17 @@
     },
     "Radix with a Bain-token theme layer": {
       "concern": "Component primitives",
-      "position": "Build"
+      "position": "Build",
+      "oss": "library",
+      "licence": null,
+      "ruling": "recommended"
     },
     "React with TypeScript, built with Vite": {
       "concern": "Framework and language",
-      "position": "Build"
+      "position": "Build",
+      "oss": "foundation",
+      "licence": null,
+      "ruling": "noted"
     },
     "Redis pub/sub to SSE": {
       "concern": "Progress fan-out",
@@ -230,7 +273,10 @@
     },
     "TanStack Query": {
       "concern": "Server state",
-      "position": "Build on OSS"
+      "position": "Build on OSS",
+      "oss": "library",
+      "licence": null,
+      "ruling": "recommended"
     },
     "The calculation engine": {
       "concern": "Silver to gold",
@@ -238,7 +284,11 @@
     },
     "Vega-Lite, Apache ECharts": {
       "concern": "Exhibit rendering",
-      "position": "Build on OSS"
+      "position": "Build on OSS",
+      "oss": "library",
+      "licence": null,
+      "ruling": "held",
+      "note": "Vega-Lite recommended; ECharts is rejected by the same page in §2.1"
     },
     "WCAG 2.2 AA": {
       "concern": "Accessibility",
@@ -246,23 +296,40 @@
     },
     "Zustand": {
       "concern": "Client state",
-      "position": "Build on OSS"
+      "position": "Build on OSS",
+      "oss": "library",
+      "licence": null,
+      "ruling": "recommended"
     },
     "Zvec, in-memory, run-scoped": {
       "concern": "In-process vector similarity",
-      "position": "Adopt OSS"
+      "position": "Adopt OSS",
+      "oss": "library",
+      "licence": null,
+      "ruling": "held",
+      "note": "Provenance unknown: licence, maintainer and release cadence unconfirmed"
     },
     "dbt": {
       "concern": "Bronze to silver transformation",
-      "position": "Build on OSS"
+      "position": "Build on OSS",
+      "oss": "open-core",
+      "licence": null,
+      "ruling": "held",
+      "note": "Confirm dbt Core rather than a commercial tier"
     },
     "gRPC with protobuf": {
       "concern": "Calculation hop",
-      "position": "Build"
+      "position": "Build",
+      "oss": "foundation",
+      "licence": null,
+      "ruling": "noted"
     },
     "i18next, English only at MVP": {
       "concern": "Internationalisation",
-      "position": "Build"
+      "position": "Build",
+      "oss": "library",
+      "licence": null,
+      "ruling": "recommended"
     }
   }
 }

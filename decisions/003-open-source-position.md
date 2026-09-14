@@ -188,6 +188,30 @@ exception with an owner).
   carries whatever licence it came from and lands in the repository with no record. It is
   a dependency without a lockfile entry. Treat it as one.
 
+## How this is monitored
+
+This position is only worth writing down if drift against it is visible, so the daily
+briefing carries an **Open-source exposure** section every morning, changed pages or not.
+It reports the count of declared positions resting on open source by shape, the ones held
+pending a ruling with the reason, the block recommended for approval, and — the number
+that matters — how many carry **no recorded licence**.
+
+The state lives in `tools/known_tools.json`, one entry per declared position:
+
+| Field | Meaning |
+| ----- | ------- |
+| `oss` | Shape, per the table above: `standard`, `library`, `foundation`, `open-core`. Absent means the entry is not an open-source commitment |
+| `licence` | What the source records. `null` today for every entry, which is the gap |
+| `ruling` | `held` (awaiting an answer), `recommended` (in the approve-as-a-block set, awaiting sign-off), `noted` (inherent to the stack, no ruling raised) |
+| `note` | Why a held item is held |
+
+Two things happen automatically. A **new or repositioned** third-party entry appearing in
+Confluence is already flagged for a ruling, and now carries its licence or says it is
+unrecorded. And if a licence column ever lands on Technology Choices, the digest reads it
+straight off the page — SPDX identifiers are classified green, amber or red by rule 1 and
+an amber or red one is called out by name. **The section closes itself as the gap closes**,
+rather than needing this file edited to notice.
+
 ## Consequences
 
 - **StatusNeo is unblocked by default.** A permissive, mainstream library inside a bounded

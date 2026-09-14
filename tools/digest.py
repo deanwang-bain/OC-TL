@@ -124,6 +124,29 @@ POSITION = re.compile(
 # which is what needs a Tech Lead ruling. Plain "Build" is our own code.
 NEEDS_RULING = ("OSS", "Buy", "licence", "license", "Adopt")
 
+DECISION = os.path.join("decisions", "003-open-source-position.md")
+
+# Licence classes from decisions/003 rule 1. Green is the default path, amber
+# needs a ruling, red is a no without one. Order matters: AGPL is red before
+# the amber GPL pattern can see it.
+LICENCE_CLASSES = [
+    (
+        r"\b(AGPL|SSPL|BUSL|BSL|Business Source|Commons Clause|Elastic License"
+        r"|source[- ]available)",
+        "red",
+    ),
+    (r"\b(GPL|LGPL|EPL|CDDL|dual[- ]licen[cs]ed|proprietary|commercial)", "amber"),
+    (r"\b(MIT|BSD|Apache|ISC|MPL|CC0|Unlicense|Zlib|PostgreSQL License)", "green"),
+]
+# Shapes carried in the register, in the order decisions/003 lists them.
+SHAPE_LABELS = {
+    "standard": "open standards",
+    "library": "libraries",
+    "foundation": "foundations",
+    "open-core": "open core",
+}
+SHAPES = tuple(SHAPE_LABELS)
+
 
 def load_register() -> dict:
     try:
@@ -133,22 +156,65 @@ def load_register() -> dict:
         return {}
 
 
+def licence_class(text: str) -> str | None:
+    """Classify a licence string green, amber or red per decisions/003."""
+    for pattern, label in LICENCE_CLASSES:
+        if re.search(pattern, text, re.I):
+            return label
+    return None
+
+
+def licence_in(cells: list[str]) -> str | None:
+    """Find a licence cell in a table row, if the source records one.
+
+    The OI30 space records no licence anywhere today. This exists so the
+    exposure section closes itself the day a licence column lands on
+    Technology Choices, rather than needing the register edited by hand.
+    """
+    for cell in cells:
+        if cell and len(cell) <= 40 and licence_class(cell):
+            return cell
+    return None
+
+
+SEPARATOR = re.compile(r"^:?-{2,}:?$")
+NAME_HEADER = re.compile(r"^(choice|component|technology|tool|product)$", re.I)
+LICENCE_HEADER = re.compile(r"licen[cs]e", re.I)
+
+
+def row_cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
 def tools_in(path: str) -> dict[str, dict]:
     """Extract declared technology choices from a page's tables.
 
     The source states each choice as a table row ending in a position — Build,
     Adopt, Adopt OSS, Buy — so matching the row is far less noisy than trying to
     spot product names in prose.
+
+    Headers are read where the table has them, because the column asked for in
+    decisions/003 lands between the choice and its position. Falling back to
+    "the cell left of the position" would then read every licence as the
+    component name.
     """
     found: dict[str, dict] = {}
     try:
         lines = open(path, encoding="utf-8").readlines()
     except OSError:
         return found
+
+    header: list[str] = []
+    previous: list[str] = []
     for line in lines:
         if not line.startswith("|"):
+            header, previous = [], []
             continue
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        cells = row_cells(line)
+        if cells and all(SEPARATOR.fullmatch(c) for c in cells if c):
+            header, previous = previous, []
+            continue
+        previous = cells
         if len(cells) < 3:
             continue
         position = next((c for c in cells if POSITION.fullmatch(c)), None)
@@ -157,10 +223,31 @@ def tools_in(path: str) -> dict[str, dict]:
         index = cells.index(position)
         if index < 1:
             continue
-        name = cells[index - 1]
+
+        name_at = next(
+            (i for i, h in enumerate(header) if NAME_HEADER.fullmatch(h)), index - 1
+        )
+        name = cells[name_at] if name_at < len(cells) else ""
         if not name or len(name) > 90 or name.lower() in ("choice", "value"):
             continue
-        found[name] = {"position": position, "concern": cells[0] if index > 1 else ""}
+
+        licence_at = next(
+            (i for i, h in enumerate(header) if LICENCE_HEADER.search(h)), None
+        )
+        if licence_at is not None and licence_at < len(cells):
+            licence = cells[licence_at] or None
+        else:
+            # No licence header: any cell but the name, the position and the
+            # concern, so a licence column is still picked up unheaded.
+            licence = licence_in(
+                [c for i, c in enumerate(cells) if i not in (0, name_at, index)]
+            )
+
+        found[name] = {
+            "position": position,
+            "concern": cells[0] if index > 1 and name_at != 0 else "",
+            "licence": licence,
+        }
     return found
 
 
@@ -177,16 +264,123 @@ def third_party_changes(paths: list[str]) -> list[str]:
                 continue
             known = register.get(name)
             if known is None:
+                licence = entry.get("licence") or "licence unrecorded"
                 lines.append(
                     f"- **{name}** — {position}"
                     f"{' · ' + entry['concern'] if entry['concern'] else ''} "
-                    f"→ new, in {link(path)}"
+                    f"· {licence} → new, in {link(path)}"
                 )
             elif known.get("position") != position:
                 lines.append(
                     f"- **{name}** — position changed from *{known['position']}* "
                     f"to *{position}* in {link(path)}"
                 )
+    return lines
+
+
+def live_licences() -> dict[str, str]:
+    """Licences the mirror currently records, by component name.
+
+    Scans the whole mirror rather than only the changed pages, so the count
+    reflects today's documentation state rather than today's edits.
+    """
+    found: dict[str, str] = {}
+    for path in all_pages():
+        for name, entry in tools_in(path).items():
+            if entry.get("licence"):
+                found[name] = entry["licence"]
+    return found
+
+
+def oss_exposure() -> list[str]:
+    """Standing open-source position, printed every day.
+
+    Monitored because decisions/003 turns on two facts: which declared
+    positions commit OI 3.0 to someone else's code, and under what licence.
+    The second is recorded nowhere in the space, so the count of unrecorded
+    licences is the live measure of that gap and falls on its own as
+    StatusNeo fills the column in.
+    """
+    register = load_register()
+    tracked = {
+        name: entry
+        for name, entry in register.items()
+        if entry.get("oss") in SHAPES
+    }
+    if not tracked:
+        return []
+
+    recorded = live_licences()
+    by_shape: dict[str, int] = {shape: 0 for shape in SHAPES}
+    unrecorded: list[str] = []
+    flagged: list[tuple[str, str, str]] = []  # name, licence, class
+    for name, entry in tracked.items():
+        by_shape[entry["oss"]] += 1
+        licence = recorded.get(name) or entry.get("licence")
+        if not licence:
+            unrecorded.append(name)
+            continue
+        label = licence_class(licence)
+        if label in ("red", "amber"):
+            flagged.append((name, licence, label))
+
+    lines = ["## Open-source exposure", ""]
+    lines.append(
+        f"{len(tracked)} declared positions rest on open source — "
+        + ", ".join(
+            f"{count} {SHAPE_LABELS[shape]}"
+            for shape, count in by_shape.items()
+            if count
+        )
+        + f". Rules in [`{DECISION}`]({DECISION})."
+    )
+    lines.append("")
+
+    if unrecorded:
+        scope = (
+            "any of them"
+            if len(unrecorded) == len(tracked)
+            else f"{len(unrecorded)} of them"
+        )
+        lines.append(
+            f"**No licence is recorded for {scope}.** Technology Choices tests every "
+            "choice for fit, rubric, reversibility and operability and never records "
+            "the licence, which is what a third-party approval turns on."
+        )
+        lines.append("")
+
+    if flagged:
+        lines.append("**Licences needing a ruling:**")
+        lines.append("")
+        for name, licence, label in sorted(flagged):
+            note = (
+                "no without an explicit ruling"
+                if label == "red"
+                else "ruling needed before it enters a lockfile"
+            )
+            lines.append(f"- **{name}** — {licence} ({label}): {note}")
+        lines.append("")
+
+    held = sorted(n for n, e in tracked.items() if e.get("ruling") == "held")
+    if held:
+        lines.append(f"**Held pending a ruling ({len(held)}):**")
+        lines.append("")
+        for name in held:
+            entry = tracked[name]
+            note = entry.get("note")
+            lines.append(f"- **{name}** — {entry['oss']}{' · ' + note if note else ''}")
+        lines.append("")
+
+    recommended = sorted(n for n, e in tracked.items() if e.get("ruling") == "recommended")
+    if recommended:
+        # Names carry their own commas, so semicolons are what keep the list
+        # readable: "DuckDB, embedded in process" is one entry, not two.
+        lines.append(
+            f"**Recommended for approval as a block, awaiting sign-off "
+            f"({len(recommended)}):** " + "; ".join(recommended) + "."
+        )
+        lines.append("")
+
     return lines
 
 
@@ -277,6 +471,9 @@ def main() -> int:
 
     out: list[str] = []
     out.extend(standing_agenda())
+    # Standing, not change-driven: the exposure is the same on a quiet day, and
+    # a licence that is still unrecorded is exactly what needs to keep showing.
+    out.extend(oss_exposure())
     if not total:
         out.append("## Since the last update")
         out.append("")

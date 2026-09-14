@@ -60,7 +60,10 @@ and most decision-dense source is
 page where they disagree.
 
 Third-party and open-source positions are tracked in `tools/known_tools.json`; the daily
-digest flags anything new or repositioned as needing a ruling.
+digest flags anything new or repositioned as needing a ruling, and carries a standing
+**Open-source exposure** section — shape, held items, and how many still have no recorded
+licence. The rules it monitors against are in
+[decisions/003](decisions/003-open-source-position.md).
 
 Delivery runs in **two-week Scrum cycles**.
 
