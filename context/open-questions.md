@@ -64,6 +64,7 @@ decks.
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
+| **Regional use — can OI 3.0 be used in Greater China?** | No page addresses China, data residency beyond the EU, or regional model routing. Assessment against the Signal/NGGS regional AI guidance in `requests/2026-09-14-china-and-hong-kong-use.md`. Three sub-questions are genuinely unanswered: (a) does that guidance bind OI 3.0 at all, or only client-deployed products — **Angie Wang** is named in it, **Noelle and Kasia** own the Screen 01 residency rules; (b) what the **gateway model-routing policy** is, since [Technology Choices §4.1](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md) defers model selection to deployment and Hong Kong turns entirely on it; (c) whether CapIQ, LSEG and FRWD licence terms permit use into Greater China |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
 ## Conflicts to resolve

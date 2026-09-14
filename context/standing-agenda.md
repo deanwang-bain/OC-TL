@@ -162,6 +162,41 @@ both ADR-008 and ADR-009 provisional. Seven weeks from GLS, that is a schedule r
 **Ask: rule on the store ownership question, fix the chat-turn contradiction, and name an
 owner and date for network isolation.**
 
+### 9. OI 3.0 cannot be used for mainland China cases, and nothing says so
+
+Checked against the Bain regional AI guidance (the Signal / NGGS mainland China and Hong
+Kong rules). Full assessment in `requests/2026-09-14-china-and-hong-kong-use.md`.
+
+**Mainland China is blocked three times over.** The guidance requires AI features backed
+by a Global LLM — OpenAI, Claude, *and AzureAI* — to be off for Bain internal users as
+well as clients. In OI 3.0 the agent layer is the product, so "AI features off" is not a
+running state; the calculation engine survives but has nothing to calculate over. Second,
+[ADR-009](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751960620) puts servers
+in **a single US region**, while mainland-billed cases default to China Cloud — so every
+mainland run is a cross-border transfer needing client consent and an SOW clause, and no
+consent capture exists in the product. Third, the
+[Screen 01](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19710967811) pre-flight
+residency gate is unbuilt, and the logic diagram models it as *"EU target → EU"* — it
+routes on the **target company**, whereas the China rule keys on **where the case is
+billed and where the user sits**. As drawn it would not catch a mainland-billed case
+analysing a US target. That is cheap to fix before SN builds it and expensive after.
+
+**Hong Kong is a different answer and should not be lumped in.** The data-transfer rule
+looks satisfied — HK-billed cases default to Global Cloud, which is where OI 3.0 runs.
+The AI rule depends on which models the gateway routes to, and
+[§4.1](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017) defers that to
+deployment by design. Andromeda serves Claude; peer selection names OpenAI-powered
+search; the stated model platform is Azure AI Foundry. Unanswerable from the record, and
+the guidance requires a case-by-case check with **Angie Wang** regardless.
+
+ADR-009 sizes for **2300 partners plus teams**. That includes Greater China offices, so
+this gets asked the first time one of them opens the tool.
+
+**Ask: confirm with Angie Wang / Noelle whether that guidance binds OI 3.0 or only
+client-deployed products. Record mainland China as an explicit GLS and MVP scope
+exclusion. And tell SN the residency gate must key on billing entity and user location,
+not just the target, before they build it.**
+
 ## Watch list
 
 Not yet worth standup time, but tracked.
