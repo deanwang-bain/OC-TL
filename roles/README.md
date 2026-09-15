@@ -12,4 +12,4 @@ to it. A JD written without that link tends to describe a person rather than a j
 
 | Role | Driven by | Status |
 | ---- | --------- | ------ |
-| [Lead Engineer → Platform Owner, OI 3.0](lead-engineer-platform-owner-oi.md) | [`decisions/003`](../decisions/003-run-model-and-staffing-after-mvp.md) | Draft |
+| [Lead Engineer → Platform Owner, Opportunity Catalyst](lead-engineer-platform-owner.md) | [`decisions/003`](../decisions/003-run-model-and-staffing-after-mvp.md) | Draft |
