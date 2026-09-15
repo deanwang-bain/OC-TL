@@ -177,6 +177,162 @@ but bounded, and honest: it is the position the architecture already implies. Th
 *not deciding* is higher — a partner discovers the constraint mid-case, or does not
 discover it at all.
 
+## Addendum, 2026-09-15 — are the mainland blockers workable?
+
+Asked as a forward-looking thought experiment rather than a live requirement: could a
+China-capable Opportunity Catalyst be built with (1) a dedicated China cloud deployment,
+(2) LLM calls routed to China-approved models, and (3) either new China data pipelines or
+an open-ended manual upload of target and peer inputs? Is that feasible under heavy
+constraints, or infeasible outright? The prompt behind it is broader than this programme:
+CdV is asking the same question of several Reinvention efforts.
+
+**Answer: not infeasible. But it is a fork of the product, not a configuration of it** —
+and the honest unit of decision is a Bain platform question, not an Opportunity Catalyst
+question.
+
+### The three bullets, assessed
+
+**1. A dedicated China cloud deployment — feasible, but it is not "a server".**
+
+Azure's China environment is a separate sovereign cloud operated by a local entity under
+Chinese licence, not a region of global Azure. It carries its own subscriptions, its own
+identity tenant with no federation to the global one, and a service catalogue that trails
+global availability. So the work is not relocating a server; it is re-standing the entire
+managed-service substrate this architecture rests on: Container Apps and dynamic sessions,
+Azure SQL plus ledger tables, immutable blob with legal hold, Redis, ADLS Gen2, Service
+Bus, Front Door Premium with WAF, API Management, Key Vault, private endpoints, Defender,
+AI Foundry, Content Safety and Document Intelligence. Each must exist there at a usable
+version or acquire a substitute.
+
+Two are load-bearing enough to verify before anyone commits:
+
+- **Container Apps dynamic sessions.** This is the sandboxed execution the ad hoc dataset
+  composition capability needs, and it is the specific reason App Service was rejected. No
+  equivalent means hand-rolling a sandbox, which is the escape surface the closed-grammar
+  decision was designed to avoid.
+- **Azure SQL ledger tables.** The tamper-evident audit trail rests on them, and there is
+  already an open item to confirm their regional support in the *target* subscription. A
+  sovereign cloud is a stronger version of that same question.
+
+**The sharpest break is identity.** Sign-on is Okta with Entra ID on Bain's global tenant.
+A China instance cannot use it as designed and needs its own identity path — a security
+decision taken against an empty Security Design page.
+
+**The second break is the Bain-internal sources.** IRIS via Glean, AURA, ARC, PEG and
+SharePoint all live in the global tenant. A China instance either cannot reach them, or
+reaching them *is* the cross-border flow the deployment existed to avoid. This is the
+hinge that forces bullet 3.
+
+Engineering-feasible. The cost is not the build; it is a second production estate with its
+own release train, on-call rota, penetration test and audit, forever.
+
+**2. Routing to China-approved models — genuinely the easiest of the three, in one layer
+of three.**
+
+- **Routing is a configuration change.** Every model call passes the gateway by design, and
+  the architecture states in terms that swapping a model is configuration and never code.
+  This is the single most favourable fact in the whole assessment, and it is good design
+  paying off rather than luck.
+- **Capability is not a configuration change.** The product leans on frontier behaviour:
+  multi-step tool-calling agents, long-context reading of 10-Ks and analyst reports, and
+  structured extraction. The bar is concrete — the existing Claude skill for non-GAAP
+  adjustments runs at roughly 70–80% accuracy and degrades as sector conditions accumulate
+  in the prompt. Whether a registered Chinese model clears that bar is **not currently
+  knowable, because the golden evaluation dataset does not exist.** It is an open item
+  needing Bain analyst time.
+- **The non-LLM AI services do not route through the gateway at all.** Content Safety is
+  the prompt-injection *control*, not a test. Document Intelligence parses the filings.
+  Foundry evaluations run the groundedness judges. The Microsoft Agent Framework does the
+  orchestration, and Andromeda's BGE-M3 embedding and reranker do retrieval. Each needs a
+  China-available equivalent or a custom build. This is the part the bullet omits and it is
+  plausibly the larger half of the work.
+
+One clean consequence: **build the golden dataset regardless.** It is already required for
+the global product, and it is the only thing that converts "would a Chinese model be good
+enough" from an opinion into a measurement. Low regret either way.
+
+**3. A manual data upload — mechanically easy, and the one that quietly changes the
+product.**
+
+The upload path is not alien to the design; partners already upload financials for private
+companies, and hard gates already block on missing critical input. An upload-first mode is
+that existing path widened. Three things it does not solve:
+
+- **Licensing, which it does not touch.** Exporting CapIQ, LSEG or FRWD content and
+  re-uploading it into a China-hosted system is still redistribution of licensed data into
+  mainland China. The vendor contract governs the data, not the transport. A manual step
+  moves the question rather than answering it. **This has the longest lead time of anything
+  here and can kill the idea independently of any engineering, so it is the item to start
+  first.**
+- **The value proposition.** Two to three days compressed to roughly thirty minutes *is*
+  the business case. Reinstating a human research step returns a partially automated tool.
+  That may still be worth building, but leadership should be told it is a different product
+  with a different payback, not the same product with a manual input.
+- **Provenance.** Transparency is a hard requirement: every figure drillable to source,
+  reasoning and confidence. A hand-assembled package can carry that, but only if the upload
+  schema *forces* per-figure source, as-of date and licence flag, and the structural
+  invariants validate uploaded packages as strictly as fetched ones. That is real build
+  work. Skipped, the drill-down guarantee quietly degrades into trusting the analyst who
+  built the pack.
+
+MNPI handling also sharpens here, because a person is now assembling and moving client
+financials by hand.
+
+### What survives a fork unchanged
+
+Not everything is rebuilt, and the reusable part is the valuable part.
+
+| Component | Why it ports |
+| --------- | ------------ |
+| **Calculation engine** | A closed expression grammar with no imports, no network and no file access, deterministic and re-derivable from pinned inputs plus a trace. Indifferent to cloud and to model. It is also the one component the architecture identifies as reusable across Bain |
+| **Containerisation** | Every component is packaged as a container from day one, specifically so that moving to Andromeda is configuration rather than redesign. That same property is what makes *any* relocation tractable |
+| **Frontend, content model, deck composition** | Model-agnostic and cloud-agnostic by construction |
+
+What does not port: identity, data acquisition, the AI services layer, and the managed
+substrate underneath all of it.
+
+Preserving the first two costs nothing extra and is worth insisting on in review whether
+or not China ever happens.
+
+### The reframe that actually answers CdV's question
+
+Every blocker above is a **Bain platform** problem, not an Opportunity Catalyst problem:
+China-resident compute, a registered model gateway, a China-legal data path, a China
+identity tenant. Every Reinvention tool will hit the identical four in the identical order.
+
+So "can Reinvention tools operate in China" resolves to **"does Bain intend to stand up a
+China-resident AI platform?"** If Andromeda ever gains a China instance, every tool
+inherits the answer for free. If it does not, each team pays the full cost alone and
+arrives at a worse result than a shared one.
+
+**Recommendation: scope the vetting as a platform question with Opportunity Catalyst as
+the worked example, not as an Opportunity Catalyst build.** It is cheaper, it is the answer
+CdV actually needs across several efforts at once, and it stops each team improvising its
+own.
+
+### What would have to be true, with owners
+
+Ordered by lead time, not by engineering sequence. The first two are answerable by
+correspondence in weeks with zero engineering, and either can make the rest moot.
+
+| # | Must be true | Owner | Note |
+| - | ------------ | ----- | ---- |
+| 1 | A China-resident Bain AI platform exists or is planned, with a timeline | TSG / Andromeda | Blocks everything downstream. Cheapest possible next step is a one-page feasibility check |
+| 2 | Vendor licences permit use into mainland China | Each source owner: CapIQ, LSEG, FRWD, plus IRIS, AURA and ARC for whether their content may leave the global tenant | Longest lead time. Start now. Not solved by manual upload |
+| 3 | A registered Chinese model clears the quality bar | Bain analyst time for the golden dataset, then measurement | Unanswerable until the dataset exists. Build it anyway |
+| 4 | China-available equivalents exist for the non-LLM AI services | TSG with StatusNeo | Content safety, document parsing, embeddings and reranker, agent orchestration, evaluation harness |
+| 5 | An identity path exists for a China instance | Bain security | A decision, not a lookup. Security Design is empty |
+| 6 | The target state is confirmed compliant | Legal / Angie Wang | A China instance calling only registered models over China-resident data plausibly clears both rules, but that determination is Legal's, not ours |
+
+**Sequencing:** answer 1 and 2 before committing engineering to any of it. Both are
+correspondence, both are fast, and either coming back negative saves the entire programme
+of work.
+
+**Sizing, honestly:** bullet 2's routing layer is days. Bullets 1 and 3 done properly are
+comparable in effort to standing the product up a second time, plus permanent duplicated
+operations. A credible number is not available until items 1, 2 and 4 are answered, and
+any figure offered before then would be invented.
+
 ## Recommendation
 
 **Mainland China: recommend decline, and record it as an explicit scope exclusion rather
