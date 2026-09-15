@@ -119,6 +119,18 @@ failures rather than opening a new one. A 401 or 403 in that notice means the
 recurs. Create a replacement at
 <https://id.atlassian.com/manage-profile/security/api-tokens>.
 
+Before the update is sent, `tools/drift.py` checks whether this distilled layer has
+fallen behind the mirror: new pages not yet referenced in `context/`, page counts here
+that no longer match, model providers named in prose with no recorded ruling, pages
+changed since the standing agenda's *Last full review* date, and pages filed outside the
+OI3.0 tree. It is silent when there is nothing to report, and its output appears in the
+briefing under **Knowledge base drift**.
+
+**The scan finds staleness; it cannot fix it.** Clearing a drift finding means reading
+the pages and updating `context/`, then moving the *Last full review against the mirror*
+date in `context/standing-agenda.md`. That date is what the staleness check measures
+against, so moving it without doing the reading disables the check.
+
 The run fires at **06:07 Singapore** so the daily briefing is waiting by 07:00 even when
 GitHub schedules it late. In UTC that is `22:07` on the *previous* calendar day, so run
 timestamps in the Actions tab look a day behind; the briefing itself is dated in

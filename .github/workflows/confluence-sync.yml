@@ -111,6 +111,10 @@ jobs:
             if [ "${CHANGED:-0}" = "1" ]; then base="HEAD~1"; else base="HEAD"; fi
             python3 tools/digest.py "$base" HEAD
             echo
+            # Runs before the update is sent. Reports where context/ has fallen
+            # behind the mirror; silent when it has not.
+            python3 tools/drift.py
+            echo
             echo "---"
             echo
             echo "[Sync commit]($GITHUB_SERVER_URL/$REPO/commit/$(git rev-parse HEAD)) · [Workflow run]($RUN_URL)"
