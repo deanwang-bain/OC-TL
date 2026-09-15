@@ -124,6 +124,14 @@ POSITION = re.compile(
 # which is what needs a Tech Lead ruling. Plain "Build" is our own code.
 NEEDS_RULING = ("OSS", "Buy", "licence", "license", "Adopt")
 
+# External model and data providers that carry a governance question wherever they
+# appear. The table scan below only sees declared positions; a provider named in
+# prose — as OpenAI was in the peer selection spec — would otherwise pass unnoticed.
+PROVIDERS = [
+    "OpenAI", "ChatGPT", "GPT-4", "GPT-5", "Gemini", "Vertex AI", "Bedrock",
+    "Mistral", "Cohere", "Hugging Face", "Perplexity", "web search",
+]
+
 
 def load_register() -> dict:
     try:
@@ -188,6 +196,22 @@ def third_party_changes(paths: list[str]) -> list[str]:
                     f"to *{position}* in {link(path)}"
                 )
     return lines
+
+
+def providers_in_prose(paths: list[str]) -> list[str]:
+    """External providers named in page text rather than in a position table."""
+    register = {name.lower() for name in load_register()}
+    found: list[str] = []
+    for path in sorted(paths):
+        if not os.path.exists(path):
+            continue
+        body = body_of(path)
+        for provider in PROVIDERS:
+            if provider.lower() in register:
+                continue  # already ruled on
+            if re.search(rf"\b{re.escape(provider)}\b", body, re.I):
+                found.append(f"- **{provider}** named in {link(path)}")
+    return found
 
 
 def standing_agenda() -> list[str]:
@@ -311,6 +335,7 @@ def main() -> int:
             flagged.append((path, flags))
 
     dependencies = third_party_changes(added + modified)
+    dependencies += providers_in_prose(added + modified)
     if dependencies:
         out.append("## Third-party dependencies to rule on")
         out.append("")

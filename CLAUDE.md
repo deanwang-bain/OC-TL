@@ -60,7 +60,8 @@ and most decision-dense source is
 page where they disagree.
 
 Third-party and open-source positions are tracked in `tools/known_tools.json`; the daily
-digest flags anything new or repositioned as needing a ruling.
+digest flags anything new or repositioned as needing a ruling, and separately flags
+external model or data providers named in prose rather than in a position table.
 
 Delivery runs in **two-week Scrum cycles**.
 
@@ -126,8 +127,8 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 71 pages, **54 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
-empty**. The empty set still includes every high-level design page this role reviews
+Of 77 pages, **60 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
+empty**. Six pages were added in September and the empty set did not shrink. The empty set still includes every high-level design page this role reviews
 against: Security Design, NFR Design Choices, Observability, Endpoints & Interfaces
 Design, and Deployment Design (CI/CD). Reviews touching those areas rest on judgment, not
 written policy — say so explicitly rather than presenting a standard that does not exist.

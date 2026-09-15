@@ -7,8 +7,10 @@ Each entry: what is unknown, why it matters, who can answer, and what is blocked
 
 ## Undocumented architecture areas
 
-Of 71 pages, **54 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
-empty.** The distinction matters: an attachment-backed page is documented, just not in
+Of 77 pages, **60 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
+empty.** *(Recounted 2026-09-15.)* Six pages were added during September and the empty
+set did not shrink by one: the same ten pages are still blank, including all five
+high-level design pages. The distinction matters: an attachment-backed page is documented, just not in
 prose, while an empty page means the decision has not been written down anywhere.
 
 **Corrected 2026-09-02.** Earlier counts said 13 empty. Three of those — GLS Feature Set,
@@ -29,6 +31,7 @@ reviews against is blank. Reviews in these areas rest on judgment, not policy.
 | [Endpoints & Interfaces Design](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md) | No API contract standard | Reviewing FastAPI surface changes |
 | [Deployment Design (CI/CD)](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md) | No documented pipeline or environment topology | Release and rollback decisions |
 | [LSEG](../confluence/oi30/data-requirements/data-sources-summary/lseg-19618889872.md) | Integration undocumented, unlike its sibling sources | LSEG integration review |
+| ~~Bain Taxonomy Mapping~~ | **Resolved September.** The page now carries text plus `Bain_Taxonomy_-_Cost_bar_reference.xlsx`, and the [cost bar meeting notes](../confluence/oi30/data-requirements/cost-bar-split/meeting-notes-19799244847.md) make the Bain L1–L4 taxonomy the master structure | — |
 | [Jobs to be done](../confluence/oi30/overview/jobs-to-be-done-19619577898.md) | Feature trade-offs lack a stated yardstick | Prioritisation calls |
 
 Three further empty pages — [Architecture](../confluence/oi30/architecture-19589234692.md),
@@ -73,12 +76,22 @@ decks.
 | ~~Two different architectures~~ | **Resolved.** Architecture Layers documents two deliberate consumption patterns over one headless layer: deterministic via FastAPI, open-ended via FastMCP/MCP. The React app and the agent swarm are both clients, not rival designs |
 | ~~Two different AI SDKs~~ | **Resolved by ADR-008:** Microsoft Agent Framework, with Foundry Workflows and Prompt flow rejected on cited retirement dates. Technical Stack and the architecture diagram are stale and should be marked superseded |
 | **Hosting: resolved, but inconsistently** | Technology Choices sets an Azure-first rubric with Azure Front Door; the technical architecture diagram still lists Bedrock / Vertex / MS Foundry. The page is newer and more specific — the diagram should be corrected |
+| **OpenAI named as the peer-search model** | [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) specifies *"OpenAI-powered search"* to identify peer candidates. Technology Choices sets an **Azure managed-first** rubric with **Azure AI Foundry** for models and a gateway through which *"every model call passes"*; ADR-008 selects **Microsoft Agent Framework**. OpenAI appears in no technology table and in `tools/known_tools.json` not at all. It also sits against the Andromeda note that the model gateway means *"no data leaving Bain"* |
+| **Web search as a data fallback** | The same page triggers web search where CapIQ lacks a field. Not in any technology position table, and it puts target-company queries to an external service |
 | **Security split exists only in a diagram** | The app-level (StatusNeo) vs infra-level (Bain) RACI is drawn in the technical architecture SVG but written on no page, including the empty Security Design page |
+
+## Housekeeping
+
+| Item | Detail |
+| ---- | ------ |
+| **An orphan page sits outside the tree** | [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) is filed at the space root rather than under OI3.0, so it does not appear in the page hierarchy alongside the rest. Worth moving — it is the most detailed implementation spec in the space |
 
 ## Product and scope
 
 | Question | Why it matters |
 | -------- | -------------- |
 | MVP is still "to be signed off" | Scope may move under active development |
-| Two per-screen data requirement pages are still marked *update in progress* | Analysis and Output & Deck Builder. **Screen 03 Case for Change dropped the marker on 2026-09-01** and should now be treated as stable |
+| ~~Per-screen data requirements unstable~~ | **Resolved.** All six screens dropped the *update in progress* marker — Screen 03 on 2026-09-01, Screens 04 and 05 during the week of 2026-09-08. Treat the whole set as stable |
+| **CapIQ API access is still unavailable** | [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) works around it for sprints 1 and 2 using CapIQ *Excel extracts* converted to Parquet. The rate-limit question is deferred, not answered |
+| **Peer selection weights are illustrative** | The six-bucket weights are marked directional, and user-set custom weights are explicitly *"not to be allowed now"*. Expect them to move before they are final |
 | ADR-001 to ADR-009 are "Accepted, pending Bain architect review" | Rulings may still change under review |

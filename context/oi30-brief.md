@@ -244,6 +244,73 @@ rather than rebuilding.
 Note the **GLS** variant: a distinct version alongside MVP and post-MVP, with its own
 acceptance bar. Its feature set page is empty.
 
+## Peer selection — the first capability specified end to end
+
+[Peer Selection Capability](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070)
+(new, September) is the most concrete implementation spec in the space, and the first to
+describe an algorithm rather than a requirement.
+
+**Sprint 1 and 2 work around missing CapIQ API access.** Existing CapIQ *Excel extracts*
+are converted into a **Parquet dataset indexed by CapIQ ID** rather than waiting for the
+API. That is consistent with ADR-009's per-run analytical store, and it means the CapIQ
+rate-limit question is deferred rather than answered.
+
+Six weighted peer-selection buckets, with deliberately simple arithmetic
+(`bucket weight = importance points ÷ total points`):
+
+| Bucket | Weight |
+| ------ | ------ |
+| Business Model Similarity | 30% |
+| Revenue Scale | 20% |
+| Regional Footprint | 20% |
+| Product / Service Mix | 10% |
+| End-Market Similarity | 10% |
+| Growth & Maturity | 10% |
+
+Weights are explicitly **illustrative**, and the page states that user-set custom weights
+are **not to be allowed for now**. Web search is a selective fallback where CapIQ lacks a
+field, "minimizing unnecessary web-search cost and latency".
+
+**The page names OpenAI-powered search for peer candidate identification.** See
+`open-questions.md` — this is unreconciled with the Azure-first rubric and ADR-008.
+
+## Financial data access
+
+[Data Contacts](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19817627730)
+(new, September) records the first hard numbers on data acquisition. Contacts are
+**Abishek Soni** (TSR Automation) and **Kritik Ajmani** (Tech Team Lead, TSR).
+
+- **S&P MCP is the primary route** for financial data. CapIQ and VCC are reference points
+  for understanding calculations, with VCC currently giving "the strongest answers".
+- **10-K extraction takes three API steps per company** — search, identify the filing,
+  download — processed one company at a time at **5–10 seconds per call**, with a limit of
+  roughly **6,000 companies per day**.
+- Filing structure varies by geography and sector: US is consistent, EU and APAC less so.
+  Revenue extraction is easy; **cost analysis is harder and often needs assumptions**.
+- The existing approach "is **not yet repeatable at scale**". The team offers to share its
+  framework and lessons learned.
+
+These are the first concrete throughput figures anywhere in the space, and they should
+inform the NFR page whenever it is written.
+
+## Cost bar and taxonomy
+
+[Cost bar split](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19792560136) and its
+[meeting notes](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19799244847) settle
+several things that were previously open:
+
+- **Bain taxonomy (L1–L4) becomes the master structure**, aligned to how content is tagged
+  in IRIS/Glean. Breakdown stops at whatever level stays meaningful and evidence-backed —
+  L4 is not required.
+- **Business units are limited to publicly reported segments.** No product, channel or
+  operating-model segments that are not publicly reported, to avoid excessive assumptions.
+  Parent cost structure is the fallback where BU detail is missing.
+- Check for an **existing CapIQ → Bain taxonomy mapping** before building one; where none
+  exists, use **fuzzy or LLM-assisted matching plus business validation** rather than
+  manual row-by-row review.
+- V1 anchors on **cost buckets** with drill-down into value levers. **AI transformation is
+  explicitly in scope** as a lever, following user interviews.
+
 ## Data
 
 Upstream sources: **VCC, CapIQ, IRIS, LSEG, Expert Search**.
@@ -257,6 +324,43 @@ progress*, so treat them as unstable.
 Confidential-data handling has its own page; check it before any review touching data
 persistence or export.
 ([Confidential data](../confluence/oi30/roadmap-business-requirements/confidential-data-19689340995.md))
+
+## Design requirements from September user testing
+
+[Design requirements cont.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031)
+captures usability requirements from September 2026 sessions with six partners — Mark,
+Andrew, Klaus, Alyson, Saverio and Andrea. It **supplements rather than replaces** the
+core design requirements of 16 July.
+
+Requirement groups 17 to 21, each mapped to a design principle:
+
+- **Calculation transparency** — every bucket and sub-lever shows the full breakdown:
+  Bain experience range, peer benchmark range, and how they converge. Partners can drill
+  into any range for the full evidence stack.
+- **Case studies** — IRIS surfaces 2–3 relevant Bain case studies per bucket, and full
+  transformation stories rather than case titles.
+- **Value realisation** — indicative timelines per opportunity: quick win (0–6 months),
+  medium term (6–18), structural (18–36).
+- **AI as a lever** — where AI enables a lever rather than merely powering the analysis,
+  it is tagged as such.
+- **Sector KPIs** — sector-specific KPI sets with explicit lever-to-KPI mapping.
+
+Two items carry named owners: realisation timelines are **pending Stephanie's
+confirmation**, and the Operational Excellence lever taxonomy is **to be confirmed with
+Scott Daubin**.
+
+## Scope after GLS
+
+[Post-GLS Feature Set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19800162379)
+(new) splits nine initiatives out of the GLS demo scope: Technical Foundations, Scaling,
+Cost Efficiency, Business Unit Handling, Data & Coverage Expansion, OI Lifecycle &
+Versioning, Output Iteration & Editing, Collaboration & Governance, and a UX feedback
+stream.
+
+**This answers a finding from the ADR review.** Approval flows and real-time
+collaboration are listed post-GLS, so ADR-004's client-writes-state pattern does not have
+to account for two concurrent viewers at MVP. Finding S4 in
+`reviews/2026-09-01-adr-001-to-009.md` is resolved by scope rather than by design.
 
 ## Delivery
 
