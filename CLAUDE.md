@@ -74,6 +74,7 @@ Delivery runs in **two-week Scrum cycles**.
 | `reviews/` | Code review records, one file per review |
 | `requests/` | Technical requests and their recommendations, plus `REGISTER.md` |
 | `decisions/` | Tech Lead decision log for rulings made here, distinct from Confluence ADRs |
+| `roles/` | Role definitions and JDs for positions OI 3.0 needs that do not exist yet |
 | `checklists/` | Standards applied during reviews and triage |
 | `tools/` | Workspace tooling, including the Confluence sync |
 

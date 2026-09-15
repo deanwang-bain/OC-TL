@@ -140,7 +140,38 @@ Still open, and now dated rather than merely open:
 
 **Ask: name an owner for demo readiness, distinct from MVP delivery.**
 
-### 8. ADR-001 to ADR-009 — two structural findings still open
+### 8. Nobody runs OI 3.0 after it is built
+
+The programme is funded and staffed to build. Nothing in the space says who operates the
+result — no page mentions hypercare, handover, service levels or support, and the four
+empty pages that would normally carry it (NFR, Observability, Deployment CI/CD, Security)
+are the same four blocking item 4.
+
+The failure mode here is not downtime. A tool that is down sends a partner back to the COE
+team. A tool that is **quietly stale** renders a superseded benchmark with a confidence
+badge and a provenance trail attached, in front of a CEO. Uptime monitoring does not see
+that, and no one is currently accountable for it.
+
+Recommendation in `decisions/003`: one accountable Bain FTE owning the service, with
+execution capacity in a contracted StatusNeo run pod and a budgeted surge envelope —
+roughly 5.3–5.8 FTE-e in total, of which **1.0 is new permanent Bain headcount**. JD in
+`roles/lead-engineer-platform-owner-oi.md`, written so that person joins the build as lead
+developer rather than inheriting it cold.
+
+Two things make it impossible to cost as it stands: the **availability target** (§13 item
+3, undefined) decides between business-hours support and an out-of-hours rota, which is the
+difference between one FTE and three; and the **Observability page is blank**, so there is
+no defined signal set for a run team to watch and no definition of "degraded".
+
+One further dependency worth naming: the unowned **golden dataset** is not only a build
+gap. Without it loop 3 has no baseline, so the run team cannot safely accept a model
+version change — and model deprecations arrive on the provider's schedule, not ours.
+
+**Ask: agree the run model in principle and open the FTE role now — a lead developer hired
+after GLS inherits the calculation engine cold. Set the availability target, and name an
+owner for the Observability page.**
+
+### 9. ADR-001 to ADR-009 — two structural findings still open
 
 Full review in `reviews/2026-09-01-adr-001-to-009.md`. Outcome **approve with comments**.
 
