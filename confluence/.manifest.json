@@ -379,11 +379,21 @@
     "19809534070": {
       "path": "peer-selection-capability-19809534070.md",
       "title": "Peer Selection Capability",
-      "version": 7
+      "version": 8
     },
     "19817627730": {
       "path": "oi30/data-contacts-19817627730.md",
       "title": "Data Contacts",
+      "version": 1
+    },
+    "19838042157": {
+      "path": "oi30/sprint-1-retrospective-19838042157.md",
+      "title": "Sprint 1 Retrospective",
+      "version": 1
+    },
+    "19839025154": {
+      "path": "oi30/architecture/data-architecture/data-source-catalogue-19839025154.md",
+      "title": "Data Source Catalogue",
       "version": 1
     }
   }

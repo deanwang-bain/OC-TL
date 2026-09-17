@@ -2,8 +2,8 @@
 title: "Peer Selection Capability"
 confluence_id: 19809534070
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070
-version: 7
-updated: 2026-09-10T09:39:17.849Z
+version: 8
+updated: 2026-09-16T11:00:20.422Z
 ---
 
 # Peer Selection Capability
@@ -12,7 +12,7 @@ updated: 2026-09-10T09:39:17.849Z
 
 ## **Overall Approach (for sprint 1 & 2, before API access)**
 
-Due to CapIQ data availability, for now, we can proceed with the **existing CapIQ Excel extracts, ** converting them into a **Parquet-based dataset indexed by CapIQ ID** rather than waiting for API access or building a full taxonomy upfront. The workflow has two stages: **(1) identify the most relevant peer candidates within the CapIQ universe using OpenAI-powered search**, and **(2) consolidate available CapIQ fields into a fixed set of peer-selection buckets aligned with the latest Figma UI/UX, then calculate a comparable peer score and rank them by relevance in a descending order**. The underlying metrics remain dynamic: **CapIQ is the primary data source**, and where required information for a specific company/bucket is missing or insufficient, the engine selectively triggers **web search as a fallback**. This keeps the methodology consistent while minimizing unnecessary web-search cost and latency.
+Due to CapIQ data availability, for now, we can proceed with the **existing CapIQ Excel extracts, ** converting them into a **Parquet-based dataset indexed by CapIQ ID** rather than waiting for API access or building a full taxonomy upfront. The workflow has two stages: **(1) identify the most relevant peer candidates within the CapIQ universe using GenAI-powered search**, and **(2) consolidate available CapIQ fields into a fixed set of peer-selection buckets aligned with the latest Figma UI/UX, then calculate a comparable peer score and rank them by relevance in a descending order**. The underlying metrics remain dynamic: **CapIQ is the primary data source**, and where required information for a specific company/bucket is missing or insufficient, the engine selectively triggers **web search as a fallback**. This keeps the methodology consistent while minimizing unnecessary web-search cost and latency.
 
 *Output: Top N (user input) peer recommendations on the user with justification on the rationale for selection*
 
