@@ -1,7 +1,7 @@
 ---
 id: 001
 date: 2026-08-31
-status: proposed
+status: proposed — adopted in practice, pending formal sign-off
 ---
 
 # 001 — One repository, a small number of independently deployable services
@@ -73,6 +73,18 @@ Domains from
 [Domain Architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19705004114)
 remain module boundaries inside a service — CQRS handlers and bounded domains do not
 each need a deployment.
+
+## What actually happened
+
+Sprint 1 completed **OC3-61 "Monorepo and service scaffolding"**
+([Sprint 1 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19838042157)),
+which is this recommendation. The monorepo exists and the foundation is built on it.
+
+That settles the repository half by fact rather than by ruling. The **service-boundary
+half is not settled** — nothing yet says who may write which tables in the shared
+operational store, which is finding B1 of the ADR review. A monorepo makes that
+violation easy and makes it enforceable in code review, so the rule is worth writing
+down now rather than after the boundary has been crossed.
 
 ## Consequences
 

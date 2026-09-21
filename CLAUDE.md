@@ -1,4 +1,9 @@
-# OC-TL — Tech Lead workspace for OI 3.0
+# OC-TL — Tech Lead workspace for OI 3.0 / OC 3.0
+
+**Naming.** September artefacts call the product **Opportunity Catalyst (OC 3.0)** — the
+Jira board is `OC3`, tickets are `OC3-nn`. The Confluence space key is still `OI30` and
+older pages still say Opportunity Indicator, so both names are live and neither is
+wrong. No page records the change.
 
 ## What this project is for
 
@@ -139,8 +144,8 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 77 pages, **60 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
-empty**. Six pages were added in September and the empty set did not shrink. The empty set still includes every high-level design page this role reviews
+Of 79 pages, **62 carry text, 8 hold only an attachment or diagram, and 9 are genuinely
+empty**. LSEG was filled on 17 September, the first reduction in the empty set. The empty set still includes every high-level design page this role reviews
 against: Security Design, NFR Design Choices, Observability, Endpoints & Interfaces
 Design, and Deployment Design (CI/CD). Reviews touching those areas rest on judgment, not
 written policy — say so explicitly rather than presenting a standard that does not exist.

@@ -1,7 +1,19 @@
-# OI 3.0 — Tech Lead brief
+# OI 3.0 / OC 3.0 — Tech Lead brief
 
 Distilled from the OI30 mirror. Every claim links to its source page. When this
 disagrees with `confluence/`, the mirror wins — and this file needs updating.
+
+## Naming: the product is now Opportunity Catalyst
+
+As of September the artefacts say **Opportunity Catalyst (OC 3.0)**, not Opportunity
+Indicator. The Jira board is **OC3** and tickets are **OC3-nn**
+([Sprint 1 Retrospective](../confluence/oi30/sprint-1-retrospective-19838042157.md));
+the new [Data Source Catalogue](../confluence/oi30/architecture/data-architecture/data-source-catalogue-19839025154.md)
+speaks of "Opportunity Catalyst data" and its workbook is "OpCat end-to-end data map".
+
+The Confluence space key is still `OI30` and most older pages still say Opportunity
+Indicator, so **both names are live**. This repository's own name, OC-TL, matches the
+new one. No page announces the change, so treat it as observed rather than ruled.
 
 ## The product
 
@@ -267,12 +279,23 @@ Six weighted peer-selection buckets, with deliberately simple arithmetic
 | End-Market Similarity | 10% |
 | Growth & Maturity | 10% |
 
-Weights are explicitly **illustrative**, and the page states that user-set custom weights
-are **not to be allowed for now**. Web search is a selective fallback where CapIQ lacks a
-field, "minimizing unnecessary web-search cost and latency".
+**Rewritten 20 September (v7 → v10), and two things changed.**
 
-**The page names OpenAI-powered search for peer candidate identification.** See
-`open-questions.md` — this is unreconciled with the Azure-first rubric and ADR-008.
+*User weighting is now allowed.* The earlier text said custom weights were "not to be
+allowed now"; the page now says users "can define which buckets they want to prioritize",
+with unselected criteria **deprioritised rather than ignored** so the comparison stays
+balanced. Weights remain defaults rather than fixed.
+
+*OpenAI is no longer named.* Peer discovery is now described as combining "a
+deterministic CapIQ-based approach and GenAI/web search ranking, followed by enrichment
+and reranking". The explicit provider is gone; **"GenAI" is unspecified and web search
+remains**, so the governance question narrows rather than closes — see
+`open-questions.md`.
+
+The framing also shifted from a sprint workaround ("before API access") to a durable
+"methodology overview" designed to be reusable across companies, sectors and future
+CapIQ datasets. The current CapIQ **Excel** files still provide the initial field set, so
+the API dependency has not gone away — it has been designed around.
 
 ## Financial data access
 
@@ -310,6 +333,22 @@ several things that were previously open:
   manual row-by-row review.
 - V1 anchors on **cost buckets** with drill-down into value levers. **AI transformation is
   explicitly in scope** as a lever, following user interviews.
+
+## Data source governance
+
+[Data Source Catalogue](../confluence/oi30/architecture/data-architecture/data-source-catalogue-19839025154.md)
+(new, September) is the artefact several earlier gaps were waiting on. Its stated purpose
+is *"one agreed view of where Opportunity Catalyst data comes from, so that anyone using
+the platform's output can see what sits behind a number"*.
+
+Per source it records what it is, why it is needed, how it is obtained and how often,
+whether that is automated or manual today, **how sensitive it is, and what we are and
+aren't permitted to do with it**.
+
+That last item is precisely the licensing enforcement ADR-007 assigns to the evidence and
+provenance service. **The content lives in a SharePoint workbook, not in Confluence**, so
+it is outside the mirror and cannot be cited from here — worth pulling the permitted-use
+rules onto the page itself.
 
 ## Data
 
@@ -362,7 +401,47 @@ collaboration are listed post-GLS, so ADR-004's client-writes-state pattern does
 to account for two concurrent viewers at MVP. Finding S4 in
 `reviews/2026-09-01-adr-001-to-009.md` is resolved by scope rather than by design.
 
-## Delivery
+## Delivery — what Sprint 1 actually did
+
+[Sprint 1 Retrospective](../confluence/oi30/sprint-1-retrospective-19838042157.md)
+covers **1–14 September 2026**, the first hard evidence of delivery pace. Content is in
+`OC3_Sprint1_Retrospective.pptx`; the page itself is empty.
+
+| Measure | Value |
+| ------- | ----- |
+| Committed at sprint start | 22 |
+| Added mid-sprint | 28 |
+| Completed | 22 of 50 (**44%**) |
+| Of the committed 22, completed | **9** |
+| Scope growth during the sprint | **~127%**, with no agreed gate |
+
+**28 items carried into Sprint 2** — 9 in progress, 7 in review, 5 on hold or blocked, 7
+not started. The carryover includes data foundation items OC3-18, 42, 43 and 45.
+
+**What landed** is genuinely foundational: monorepo and service scaffolding (OC3-61),
+Experience BFF with Entra SSO (OC3-68), app shell and routing (OC3-69), a Bain-token
+library on Radix (OC3-71), an agent skeleton with standards (OC3-96), initial data
+ingestion (OC3-44), company search and disambiguation (OC3-77), and a file archive for
+Glean (OC3-103). A **technical debt register** was published in the sprint.
+
+**Four constraints absorbed the capacity**, and the first two are unresolved going into
+Sprint 2:
+
+1. **Developer environment migration** — the team is moving off VDI onto Bain laptops
+   because the VDI is *"materially slower for development work"*. Began in Sprint 1,
+   **not complete**.
+2. **Access provisioning** — Bain and Azure access was being granted in parallel with
+   delivery. OC3-2 (service provisioning) and OC3-48 (development environment and
+   access) **remain open**.
+3. **Unplanned feasibility work** — Andromeda and **think-cell** had to be assessed
+   mid-sprint, by the same people building.
+4. **Late design decisions** — user journeys and design elements arrived after build
+   began.
+
+The team's own "what to try next" list: get admin access so estimates are captured in
+Jira, track epics at programme level rather than on the board, name an owner and date
+per blocker, confirm journeys and designs ahead of the sprint that builds them, and
+finish the laptop migration.
 
 **Two-week Scrum cycles.**
 ([Ways of Working](../confluence/oi30/ways-of-working-19588612195.md))

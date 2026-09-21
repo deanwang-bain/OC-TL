@@ -7,10 +7,9 @@ Each entry: what is unknown, why it matters, who can answer, and what is blocked
 
 ## Undocumented architecture areas
 
-Of 77 pages, **60 carry text, 7 hold only an attachment or diagram, and 10 are genuinely
-empty.** *(Recounted 2026-09-15.)* Six pages were added during September and the empty
-set did not shrink by one: the same ten pages are still blank, including all five
-high-level design pages. The distinction matters: an attachment-backed page is documented, just not in
+Of 79 pages, **62 carry text, 8 hold only an attachment or diagram, and 9 are genuinely
+empty.** *(Recounted 2026-09-21.)* LSEG was filled during the week of 15 September, the
+first reduction in the empty set. **All five high-level design pages are still blank.** The distinction matters: an attachment-backed page is documented, just not in
 prose, while an empty page means the decision has not been written down anywhere.
 
 **Corrected 2026-09-02.** Earlier counts said 13 empty. Three of those — GLS Feature Set,
@@ -30,7 +29,7 @@ reviews against is blank. Reviews in these areas rest on judgment, not policy.
 | [Observability & Monitoring](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md) | No logging or alerting standard | Reviewing instrumentation in SN code |
 | [Endpoints & Interfaces Design](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md) | No API contract standard | Reviewing FastAPI surface changes |
 | [Deployment Design (CI/CD)](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md) | No documented pipeline or environment topology | Release and rollback decisions |
-| [LSEG](../confluence/oi30/data-requirements/data-sources-summary/lseg-19618889872.md) | Integration undocumented, unlike its sibling sources | LSEG integration review |
+| ~~LSEG~~ | **Partly resolved 2026-09-17.** The page now links example 10-K filings and a "10-K mapping (AMS)" tab in the OpCat end-to-end data map. Both are SharePoint, so outside the mirror, and the **persistence restrictions ADR-007 must enforce are still not written down** | Finding S6 of the ADR review stands |
 | ~~Bain Taxonomy Mapping~~ | **Resolved September.** The page now carries text plus `Bain_Taxonomy_-_Cost_bar_reference.xlsx`, and the [cost bar meeting notes](../confluence/oi30/data-requirements/cost-bar-split/meeting-notes-19799244847.md) make the Bain L1–L4 taxonomy the master structure | — |
 | [Jobs to be done](../confluence/oi30/overview/jobs-to-be-done-19619577898.md) | Feature trade-offs lack a stated yardstick | Prioritisation calls |
 
@@ -76,8 +75,9 @@ decks.
 | ~~Two different architectures~~ | **Resolved.** Architecture Layers documents two deliberate consumption patterns over one headless layer: deterministic via FastAPI, open-ended via FastMCP/MCP. The React app and the agent swarm are both clients, not rival designs |
 | ~~Two different AI SDKs~~ | **Resolved by ADR-008:** Microsoft Agent Framework, with Foundry Workflows and Prompt flow rejected on cited retirement dates. Technical Stack and the architecture diagram are stale and should be marked superseded |
 | **Hosting: resolved, but inconsistently** | Technology Choices sets an Azure-first rubric with Azure Front Door; the technical architecture diagram still lists Bedrock / Vertex / MS Foundry. The page is newer and more specific — the diagram should be corrected |
-| **OpenAI named as the peer-search model** | [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) specifies *"OpenAI-powered search"* to identify peer candidates. Technology Choices sets an **Azure managed-first** rubric with **Azure AI Foundry** for models and a gateway through which *"every model call passes"*; ADR-008 selects **Microsoft Agent Framework**. OpenAI appears in no technology table and in `tools/known_tools.json` not at all. It also sits against the Andromeda note that the model gateway means *"no data leaving Bain"* |
-| **Web search as a data fallback** | The same page triggers web search where CapIQ lacks a field. Not in any technology position table, and it puts target-company queries to an external service |
+| ~~OpenAI named as the peer-search model~~ | **Narrowed 2026-09-20.** The rewritten [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) no longer names OpenAI; peer discovery is now "a deterministic CapIQ-based approach and GenAI/web search ranking". The provider conflict is gone from the page — but **"GenAI" names nothing**, so which model serves it, and whether it routes through the Bain gateway, is still unanswered |
+| **Web search as a data fallback** | Still present in the rewritten page. Not in any technology position table, and it puts target-company queries to an external service |
+| **Two product names are live** | Artefacts now say **Opportunity Catalyst (OC 3.0)** — Jira board OC3, OC3-nn tickets, "OpCat" workbooks — while the space key and most pages still say Opportunity Indicator. No page records the change |
 | **Security split exists only in a diagram** | The app-level (StatusNeo) vs infra-level (Bain) RACI is drawn in the technical architecture SVG but written on no page, including the empty Security Design page |
 
 ## Housekeeping
@@ -93,5 +93,7 @@ decks.
 | MVP is still "to be signed off" | Scope may move under active development |
 | ~~Per-screen data requirements unstable~~ | **Resolved.** All six screens dropped the *update in progress* marker — Screen 03 on 2026-09-01, Screens 04 and 05 during the week of 2026-09-08. Treat the whole set as stable |
 | **CapIQ API access is still unavailable** | [Peer Selection Capability](../confluence/peer-selection-capability-19809534070.md) works around it for sprints 1 and 2 using CapIQ *Excel extracts* converted to Parquet. The rate-limit question is deferred, not answered |
-| **Peer selection weights are illustrative** | The six-bucket weights are marked directional, and user-set custom weights are explicitly *"not to be allowed now"*. Expect them to move before they are final |
+| ~~Peer selection weights are illustrative~~ | **Changed 2026-09-20.** Users may now prioritise buckets; unselected criteria are deprioritised rather than ignored. Weights are defaults, not fixed |
+| **Sprint 1 closed at 44%** | 22 of 50 items, with scope growing ~127% mid-sprint and no agreed gate. 28 items carried into Sprint 2 |
+| **Two delivery blockers are open into Sprint 2** | The VDI-to-laptop migration is incomplete, and OC3-2 (service provisioning) and OC3-48 (environment and access) remain open |
 | ADR-001 to ADR-009 are "Accepted, pending Bain architect review" | Rulings may still change under review |

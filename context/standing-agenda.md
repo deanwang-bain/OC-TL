@@ -9,175 +9,174 @@ matters is not. When an item is resolved, delete it and record the ruling in
 
 Format: `### N. Headline` — the finding, why it matters now, then **Ask:** in bold.
 
-*Last full review against the mirror: 2026-09-15.*
+*Last full review against the mirror: 2026-09-21.*
 
 ---
 
-### 1. Peer selection specifies OpenAI, which no technology decision allows
+### 1. Sprint 1 closed at 44%, and GLS is three to five weeks away
 
-[Peer Selection Capability](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070)
-— new in September, and the most detailed implementation spec in the space — identifies
-peer candidates using **"OpenAI-powered search"**, with **web search as a fallback** where
-CapIQ lacks a field.
+[Sprint 1 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19838042157)
+gives the first real delivery data, covering 1–14 September.
 
-Nothing else in the programme points there:
+| Measure | Value |
+| ------- | ----- |
+| Committed at sprint start | 22 |
+| Added mid-sprint | 28 |
+| Completed | 22 of 50 — **44%** |
+| Of the 22 committed, completed | **9** |
+| Scope growth during the sprint | **~127%, with no agreed gate** |
+| Carried into Sprint 2 | 28 items |
 
-| Source | Says |
-| ------ | ---- |
-| Technology Choices | **Azure managed services first**; models via **Azure AI Foundry**; *"every model call passes the gateway"* |
-| ADR-008 | **Microsoft Agent Framework** |
-| Andromeda page | The model gateway exists so there is *"no data leaving Bain"* |
+What landed is genuinely foundational — monorepo and scaffolding, BFF with Entra SSO,
+app shell, Radix token library, agent skeleton, initial ingestion, company search. That
+is a real first sprint. But **nine of twenty-two committed items finished**, and the
+demo is one or two sprints away.
 
-OpenAI appears in no technology position table. Web search is not there either. Both put
-target-company queries to an external service, which is a data-governance question before
-it is a technology one — particularly against the Partner-Private isolation tier that is
-supposed to evaporate on close with no training without opt-in.
+The team's own diagnosis is unsparing and correct: scope grew with no gate, environment
+and access work ran in parallel with delivery, design decisions arrived after build
+began, and unplanned feasibility work absorbed capacity.
 
-This may be a deliberate sprint-1 expedient, or wording that outran the decision. Either
-is fine; neither is recorded.
+**Ask: what is the demo-critical subset of Sprint 2, and what gets explicitly dropped to
+protect it? At 44% throughput, the scope has to come down rather than the hours go up.**
 
-**Ask: is OpenAI approved for peer search, and does it go through the Bain gateway? If it
-is a sprint-only expedient, say so on the page and name what replaces it.**
+### 2. Two delivery blockers are open going into Sprint 2
 
-### 2. The calculation hop is still specified two different ways
+Both named in the retro as constraints that absorbed Sprint 1 capacity, and neither is
+closed.
 
-Unchanged since 2026-09-01, and now roughly four to six weeks from GLS.
+1. **Developer environment migration.** The team is moving off VDI onto Bain laptops
+   because the VDI is *"materially slower for development work"*. Started in Sprint 1,
+   incomplete, *"continues to affect Sprint 2"*.
+2. **Access provisioning.** Bain and Azure access was being granted in parallel with
+   delivery. **OC3-2** (service provisioning) and **OC3-48** (development environment and
+   access) remain open, and the retro notes the dependency *"affected work beyond those
+   items"*.
+
+These are Bain-side to clear, not StatusNeo's. They are the cheapest available throughput
+gain before GLS — no design decisions, no architecture, just administration.
+
+**Ask: name an owner and a date for the laptop migration and for OC3-2 / OC3-48. Every
+day these stay open costs demo-critical capacity.**
+
+### 3. The calculation hop is still specified two different ways
+
+Unchanged since 2026-09-01, now three weeks old.
 
 [Technology Choices](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017)
-specifies **gRPC with protobuf** for the calculation hop. The
+specifies **gRPC with protobuf**. The
 [Agent Validation Test Plan](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323)
-specifies **plain REST over HTTP**, with gRPC, protobuf and buf *"excluded from MVP
-testing"*. This is the calculation engine — the component the page itself calls the most
-consequential build in the programme.
+specifies **plain REST over HTTP** and excludes gRPC from MVP testing. Neither page has
+moved.
 
-Two weeks have passed with neither page corrected.
+**Ask: which protocol, and who corrects the other page? This has been open three weeks
+on the component the programme calls its most consequential build.**
 
-**Ask: which protocol is being built, and who corrects the other page this week?**
+### 4. Five design pages are still blank, three weeks on
 
-### 3. CapIQ API access still is not there, and the workaround is now load-bearing
+Security Design, NFR Design Choices, Observability, Endpoints & Interfaces Design and
+Deployment Design (CI/CD). Eight pages were added across September; none of these five.
 
-The picture is clearer than it was, and worse in one respect.
+LSEG was filled on 17 September, which shows the backlog does move when someone owns a
+page. These five have no owner.
 
-**What is now known** — [Data Contacts](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19817627730)
-(new) records **S&P MCP as the primary route** for financial data, with hard numbers:
-10-K extraction takes **three API calls per company**, runs **one company at a time** at
-**5–10 seconds per call**, capped near **6,000 companies per day**. The team states the
-approach is *"not yet repeatable at scale"* and offers to share its framework. Contacts
-are Abishek Soni and Kritik Ajmani.
+Consequence for the demo: the 30-minute claim gets its first public airing at GLS with
+**no latency budget written anywhere**.
 
-**What is still missing** — CapIQ API access. Peer selection works around it for sprints
-1 and 2 using CapIQ **Excel extracts** converted to Parquet. So the rate-limit question
-that blocks the custom rate-limiting component is deferred rather than answered, and a
-manual extract now sits on the critical path to GLS.
+**Ask: assign Security Design and NFR. Much of the content already exists in the
+architecture diagram, so this is transcription rather than authorship.**
 
-These are also the first throughput figures anywhere in the programme, and the NFR page is
-still empty.
+### 5. Peer selection dropped OpenAI, but "GenAI" names nothing
 
-**Ask: who owns getting CapIQ API access, and what happens at GLS if the Excel extract is
-stale? Take the lessons-learned session TSR offered.**
+The [Peer Selection Capability](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070)
+page was rewritten on 20 September (v7 → v10). **OpenAI is no longer named** — peer
+discovery is now "a deterministic CapIQ-based approach and GenAI/web search ranking".
 
-### 4. Ten pages are still blank, and none of them moved in two weeks
+Good: the direct conflict with the Azure-first rubric and ADR-008 is gone from the page.
+Still open: **"GenAI" identifies no model and no route**, and web search remains as a
+fallback that sends target-company queries outside Bain. Neither appears in any
+technology position table.
 
-Six pages were added during September. The empty set did not shrink by one. Still blank:
-**Security Design, NFR Design Choices, Observability, Endpoints & Interfaces Design,
-Deployment Design (CI/CD)**, plus LSEG and Jobs to be Done.
+Two other changes worth noting. Custom weighting is now **allowed** — a reversal of
+"not to be allowed now" — with unselected criteria deprioritised rather than ignored.
+And the page reframed from a sprint workaround to a durable methodology, while still
+running on **CapIQ Excel extracts**, so the API dependency was designed around rather
+than resolved.
 
-These are the five pages every technical review leans on. The team demonstrably writes
-well when it writes — the ADRs, Technology Choices and the test plan are all strong — so
-this is a prioritisation gap, not a capability one.
+**Ask: name the model behind "GenAI" and confirm it routes through the Bain gateway.
+Confirm web search is acceptable for target-company queries.**
 
-**Ask: assign owners for Security Design and NFR. Those two gate the most and are the
-cheapest to write, since the content largely exists in the architecture diagram.**
-
-### 5. Open-source and third-party positions still need a ruling
+### 6. Open-source and third-party positions still need a ruling
 
 Technology Choices declares 66 Build / Adopt / Buy positions and remains **Draft for
-review**. Assessment in `requests/2026-08-31-third-party-and-oss-positions.md`. Now also
-add **OpenAI** and **web search** from item 1, neither of which is in any table.
+review** — unchanged in three weeks. Assessment in
+`requests/2026-08-31-third-party-and-oss-positions.md`.
 
 - **Approve as a block** — TanStack Query, Zustand, Radix, i18next, Vega-Lite, DuckDB,
-  Parquet, OpenTelemetry.
-- **Hold** — Zvec (obscure, needs licence and maintainer confirmed), CopilotKit (recorded
-  as "Buy, licence" but open-core, tier unstated, expensive to reverse), AG-Grid
-  Enterprise (rests on "existing Bain licence" — confirm it covers this), Datadog
-  (duplicates Azure Monitor), dbt, headless Chromium driver.
-- **Apache ECharts is a contradiction, not a risk** — the page rejects it in §2.1 because
-  a component library forces an Exhibit to be a rendering rather than a specification,
-  breaking ADR-006, then lists it in the frontend table.
+  Parquet, OpenTelemetry. Radix is already in production via OC3-71, so this is
+  ratifying a choice already shipped.
+- **Hold** — Zvec, CopilotKit, AG-Grid Enterprise, Datadog, dbt, headless Chromium
+  driver. Add **think-cell**, which surfaced in Sprint 1 as unplanned feasibility work.
+- **Apache ECharts is a contradiction** — rejected in §2.1 of the same page for breaking
+  ADR-006, then listed in the frontend table.
 
-**Ask: approve the block; assign the rest. And add a licence column — the table tests fit,
-rubric, reversibility and operability but never records the licence, which is what a
-third-party approval turns on.**
+**Ask: approve the block; assign the rest. And add a licence column.**
 
-### 6. Two topology rulings are still awaiting sign-off
+### 7. Two topology rulings — one is now settled by the build
 
-`decisions/001` and `decisions/002`, both **proposed** since 2026-08-31: one repository
-with three to six deployables, keeping the calculation engine separate from day one; and
-Container Apps with a thin pipeline rather than a VM.
+`decisions/001` and `decisions/002`, proposed since 2026-08-31.
 
-StatusNeo asked both questions directly and has had no answer for two weeks.
+**001 is effectively adopted.** Sprint 1 completed **OC3-61 "Monorepo and service
+scaffolding"**, which is the recommendation. Worth formalising so the rule — one
+repository, few deployables, calculation engine separate from day one — is on the record
+rather than inferred from a ticket title.
 
-**Ask: confirm both, or tell me what to change.**
+**002 is still open.** Container Apps with a thin pipeline versus a VM for GLS. With
+three to five weeks left and the environment migration unfinished, this needs closing
+now, not in demo week.
 
-### 7. GLS is four to six weeks out
-
-GLS is the **Global Leadership Summit, mid-to-late October**. Scope has firmed up:
-[Post-GLS Feature Set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19800162379)
-(new) moves nine initiatives out of the demo — Technical Foundations, Scaling, Cost
-Efficiency, Business Unit Handling, Data & Coverage Expansion, OI Lifecycle & Versioning,
-Output Iteration & Editing, Collaboration & Governance, UX feedback.
-
-Still open, and now dated rather than merely open:
-
-1. **The 30-minute claim gets its first public test** with no latency budget written down.
-   Time a full end-to-end run well before the week of the demo.
-2. **Peer selection depends on a manual CapIQ extract** — see item 3.
-3. **Demo target must be a public company.** A real client brings MNPI, and the test plan
-   forbids production documents in non-production environments. Nike is already used
-   throughout the screen specs.
-4. **Cold start** — set Container Apps minimum replicas to 1 for the demo window.
-5. **Live versus pre-baked**, with a recorded fallback either way.
-
-**Ask: name an owner for demo readiness, distinct from MVP delivery.**
+**Ask: confirm 001 as adopted, and rule on 002.**
 
 ### 8. ADR-001 to ADR-009 — two structural findings still open
 
-Full review in `reviews/2026-09-01-adr-001-to-009.md`. Outcome **approve with comments**.
+Full review in `reviews/2026-09-01-adr-001-to-009.md`, outcome **approve with comments**.
 
 1. **No ownership rule for the shared operational store.** ADR-001 decomposes by domain;
    ADR-009 puts claims, evidence bindings, content nodes, deck composition and peer sets
-   into one Azure SQL database, with nothing saying who may write which tables.
-2. **ADR-009 contradicts itself on chat turns** — listed in Context as needing
-   transactional read-write, then assigned to Redis, which it calls ephemeral.
-
-*Resolved since the review:* finding **S4** (ADR-004's client-writes-state pattern not
-accounting for concurrent viewers) is answered by scope — Post-GLS Feature Set puts
-real-time collaboration and approval flows after GLS, so MVP is single-viewer.
+   in one Azure SQL database with nothing saying who may write which tables. Now that
+   the monorepo exists, this is enforceable in code review — but only once the rule is
+   written.
+2. **ADR-009 contradicts itself on chat turns** — Context calls them transactional, the
+   decision table assigns them to Redis.
 
 **Network isolation remains the highest-leverage open item**, Bain-owned, leaving both
 ADR-008 and ADR-009 provisional.
 
-**Ask: rule on store ownership, fix the chat-turn contradiction, name an owner and date
-for network isolation.**
+**Ask: rule on store ownership, fix the chat-turn contradiction, name an owner for
+network isolation.**
 
 ---
 
 ## Recently settled — no longer worth standup time
 
-- **All six screen specs are stable.** Screens 04 and 05 dropped *update in progress*
-  during the week of 8 September; Screen 03 on 1 September.
-- **Bain taxonomy is settled.** Bain L1–L4 becomes the master structure, aligned to IRIS
-  and Glean tagging. Business units limited to publicly reported segments; parent cost
-  structure is the fallback. Breakdown stops where evidence stops — L4 is not required.
-- **Agent orchestration** is settled by ADR-008 (Microsoft Agent Framework). Only the
-  stale Technical Stack page and architecture diagram still need marking superseded.
+- **LSEG documented** (17 September) — example filings and a 10-K mapping tab, both in
+  SharePoint. Persistence restrictions still unwritten, so ADR review finding S6 stands.
+- **Data Source Catalogue published** — records per source what it is, how it is
+  obtained, how sensitive it is and what use is permitted. The content is a SharePoint
+  workbook rather than a page, so it is outside the mirror.
+- **Peer selection weighting** — users may now prioritise buckets.
+- **All six screen specs stable**; **Bain L1–L4 taxonomy** is the master structure.
+- **Agent orchestration** settled by ADR-008; only the stale pages need marking.
 
 ## Watch list
 
-- **Design requirements grew** — [Design requirements cont.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031)
-  adds requirement groups 17–21 from September user testing with six partners. Two carry
-  named owners: realisation timelines pending **Stephanie**, Operational Excellence lever
-  taxonomy to confirm with **Scott Daubin**.
-- **Security design still exists only as a colour band** in the technical architecture SVG.
-- **ADR-001 to ADR-009** remain "Accepted, pending Bain architect review".
+- **The product has been renamed.** Artefacts say **Opportunity Catalyst (OC 3.0)** —
+  Jira board OC3, OC3-nn tickets, "OpCat" workbooks — while the space key and most pages
+  still say Opportunity Indicator. No page records the change.
+- **A technical debt register was published in Sprint 1.** Not in the mirror; worth
+  pulling in, since it is the natural companion to code review.
+- **think-cell and Andromeda** consumed unplanned feasibility capacity in Sprint 1.
+  Neither has a recorded position.
+- **Jira cannot record the team's estimates** — no admin access, so there is no velocity
+  baseline to plan Sprint 2 against.
 - **Peer Selection Capability is filed outside the OI3.0 page tree**, at the space root.
+- **ADR-001 to ADR-009** remain "Accepted, pending Bain architect review".
