@@ -2,40 +2,62 @@
 title: "Peer Selection Capability"
 confluence_id: 19809534070
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070
-version: 8
-updated: 2026-09-16T11:00:20.422Z
+version: 10
+updated: 2026-09-20T14:18:46.974Z
 ---
 
 # Peer Selection Capability
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19809534070)
 
-## **Overall Approach (for sprint 1 & 2, before API access)**
+## **Peer selection methodology overview**
 
-Due to CapIQ data availability, for now, we can proceed with the **existing CapIQ Excel extracts, ** converting them into a **Parquet-based dataset indexed by CapIQ ID** rather than waiting for API access or building a full taxonomy upfront. The workflow has two stages: **(1) identify the most relevant peer candidates within the CapIQ universe using GenAI-powered search**, and **(2) consolidate available CapIQ fields into a fixed set of peer-selection buckets aligned with the latest Figma UI/UX, then calculate a comparable peer score and rank them by relevance in a descending order**. The underlying metrics remain dynamic: **CapIQ is the primary data source**, and where required information for a specific company/bucket is missing or insufficient, the engine selectively triggers **web search as a fallback**. This keeps the methodology consistent while minimizing unnecessary web-search cost and latency.
+The methodology is designed to be **reusable across different companies, sectors, and future CapIQ datasets**. The high-level peer-selection framework remains stable, while the specific underlying fields and evidence can evolve as richer data becomes available.
 
-*Output: Top N (user input) peer recommendations on the user with justification on the rationale for selection*
+- The framework uses six peer-selection buckets: Business Model Similarity, Revenue Scale, Product / Service Mix, End-Market Similarity, Regional Footprint, and Growth & Maturity.
+- Each bucket has a **default weight**, but users can define which buckets they want to prioritize.
+- Selected criteria receive more weight, while non-selected criteria are **deprioritized rather than ignored**, preserving a balanced comparison.
+- The current CapIQ Excel files provide the initial field set, but the numerical and categorical fields within each bucket can be enriched over time without changing the overall methodology.
+- Peer discovery combines a deterministic CapIQ-based approach andGenAI/web search ranking, followed by enrichment and reranking to produce the final peer set.
 
-Please take a look at the underlying logic below:
+For further context, please refer to “End-to-end workflow (diagram)” / “Practical application - Peer Selection & Ranking” chapters.
 
-## End-to-end workflow
+## End-to-end workflow (diagram)
 
-*IMPORTANT NOTE: THE WEIGHT IN THE ONE-PAGER CARRY AN ILLUSTRATIVE IMPORTANCE.*
+![image-20260920-141739.png](_attachments/19809534070/image-20260920-141739.png)
 
-*USER SETTING THE CUSTOM WEIGHTS NOT TO BE ALLOWED NOW.*
+## Practical application - Peer Selection & Ranking
 
-![image-20260910-092450.png](_attachments/19809534070/image-20260910-092450.png)
+## 1. Overall approach
 
-## A practical use-case with this system of peer selection & ranking
+The peer-selection methodology uses a **fixed six-bucket comparability framework**, while the underlying evidence, user priorities, and data sources remain dynamic.
 
-**Example target: Raksul Inc.**
-User asks: **“Find the 3 most relevant peers for Raksul.”**
+The six peer-selection buckets are:
 
-The methodology has a fixed peer-selection framework, while the criteria prioritized by the user, underlying metrics, and data sources are dynamic.
+1. Business Model Similarity
+1. Revenue Scale
+1. Product / Service Mix
+1. End-Market Similarity
+1. Regional Footprint
+1. Growth & Maturity
 
-**Default principle:** the six peer-selection buckets do not have equal importance. Each bucket starts with a simple relative importance factor - (weights are directional).
+The methodology now uses **two parallel peer-discovery approaches**:
 
-| Bucket  | Relative importance  | Starting weight  |
+**A. CapIQ deterministic peer selection**
+
+Uses structured CapIQ data and mapped hierarchical fields to calculate deterministic similarity scores across the six buckets.
+
+**B. LLM + web peer discovery**
+
+Uses the six high-level peer-selection buckets directly to identify relevant peers through web search. This route is not dependent on the exact CapIQ column structure.
+
+The two peer sets are subsequently **combined, enriched and reranked** to produce the final peer recommendation.
+
+# 2. Default weights
+
+The starting weights remain:
+
+| Bucket  | Relative importance  | Default weight  |
 |---|---|---|
 | Business Model Similarity  | 3x  | 30%  |
 | Revenue Scale  | 2x  | 20%  |
@@ -45,307 +67,106 @@ The methodology has a fixed peer-selection framework, while the criteria priorit
 | Growth & Maturity  | 1x  | 10%  |
 | **Total**  | **10x**  | **100%**  |
 
-The calculation is simply:
+These weights represent the default case when the user prioritizes **all six criteria**.
 
-**Bucket Weight = Bucket Importance Points ÷ Total Importance Points**
+# 3. Dynamic weighting based on user selection
+
+The user can select any combination of the six criteria.
+
+A criterion that is not selected is **not ignored**.
+
+Instead, it is **deprioritized by reducing its default weight by 50%**.
 
 For example:
 
-**Business Model = 3 ÷ 10 = 30%**
+- Business Model: 30% → 15%
+- Revenue: 20% → 10%
+- Product Mix: 10% → 5%
+- End Market: 10% → 5%
+- Regional Footprint: 20% → 10%
+- Growth & Maturity: 10% → 5%
 
-This provides differentiated starting weights without introducing a complicated weighting algorithm.
+The weight released from the non-selected criteria is redistributed across the criteria the user did select, **proportionally to their original default weights**.
 
-# 1. User defines the peer-selection context
+This ensures that:
 
-The user selects the target company and configures which peer-selection criteria matter most through the toggles in the Peer Set Selection Context screen.
+>
 
-The six available buckets are:
+User selection changes emphasis, not eligibility.
 
-1. Business Model Similarity
-1. Revenue Scale
-1. Product / Service Mix
-1. End-Market Similarity
-1. Regional Footprint
-1. Growth & Maturity
+All six dimensions continue to influence the final peer result.
 
-### Starting weights
+### Example: user selects only Business Model Similarity
 
-| Bucket  | User Selection  | Starting Weight  |
-|---|---|---|
-| Business Model  | ON  | 30%  |
-| Revenue Scale  | ON  | 20%  |
-| Product Mix  | ON  | 10%  |
-| End Markets  | ON  | 10%  |
-| Regional Footprint  | ON  | 20%  |
-| Growth & Maturity  | ON  | 10%  |
+All other buckets are reduced to 50% of their default weights:
 
-### What happens if the user switches a bucket OFF?
-
-A bucket switched OFF is **deprioritized, not ignored**.
-
-For the initial methodology, use a simple rule:
-
-**Deprioritized bucket = 5% residual weight**
-
-The remaining weight is redistributed proportionally across the buckets the user has prioritized.
-
-For example, if **End Markets** is switched OFF:
-
-| Bucket  | Treatment  | Adjusted Weight  |
-|---|---|---|
-| Business Model  | Priority  | 31.7%  |
-| Revenue Scale  | Priority  | 21.1%  |
-| Product Mix  | Priority  | 10.6%  |
-| End Markets  | Deprioritized  | 5.0%  |
-| Regional Footprint  | Priority  | 21.1%  |
-| Growth & Maturity  | Priority  | 10.6%  |
-| **Total**  |  | **100%**  |
-
-The objective is that a user choice changes the emphasis of peer selection without making one potentially useful dimension completely disappear.
-
-**Important:** Business Model continues to act as the eligibility gate regardless of its final ranking weight. Its toggle changes ranking emphasis, not the initial eligibility test.
-
-# 2. Build the target profile
-
-Start with the target's CapIQ ID and retrieve the latest available information from the CapIQ dataset.
-
-For Raksul, this could produce:
-
-| Bucket  | Example target information  |
+| Bucket  | Adjusted weight  |
 |---|---|
-| Business Model  | Online B2B commercial printing platform  |
-| Revenue Scale  | ~$440m revenue  |
-| Product Mix  | Printing, packaging, promotional products  |
-| End Markets  | SMEs, marketing teams, e-commerce businesses  |
-| Regional Footprint  | Primarily Japan  |
-| Growth & Maturity  | Strong historical growth; established/scaling market participant  |
+| Business Model Similarity  | **65%**  |
+| Revenue Scale  | 10%  |
+| Product / Service Mix  | 5%  |
+| End-Market Similarity  | 5%  |
+| Regional Footprint  | 10%  |
+| Growth & Maturity  | 5%  |
+| **Total**  | **100%**  |
 
-The comparison buckets are standardized, but the evidence underneath them does not need to come from one fixed field.
+Business Model therefore becomes significantly more important, but the other dimensions continue to act as safeguards against selecting peers that are clearly inappropriate on scale, geography, product mix or maturity.
 
-This gives us:
+If all six criteria are selected, no criteria are deprioritized and the model returns to the original **30 / 20 / 10 / 10 / 20 / 10** weights.
 
-**Fixed buckets + dynamic underlying metrics / evidence**
+# 4. User defines the peer-selection context
 
-### Important changes
+The process begins on the Target Setup screen.
 
-**Revenue Scale**
+The user provides:
 
-Revenue is assessed independently from profitability.
+- Target company
+- Requested number of peers
+- Peer-selection criteria / priorities
+- Geographic scope
 
-We intentionally do **not** use EBITDA margin or other profitability measures when deciding whether a company is an appropriate peer.
+The selected geographic scope is used to constrain the relevant candidate universe.
 
-This avoids selecting companies simply because they currently have similar profitability to the target, which could create survivorship bias and reduce the range of performance improvement opportunities identified later in Opportunity Catalyst.
+This is separate from **Regional Footprint similarity**, which assesses how comparable the operating footprints of the target and peer are.
 
-Revenue can come from:
+# 5. Path A: Deterministic CapIQ peer selection
 
-**CapIQ first → credible alternative source if CapIQ is insufficient**
+The first peer-discovery path uses CapIQ exclusively.
 
-For example, this could include company disclosures, investor materials, credible third-party estimates, or private-equity/company estimates for private businesses.
+## 5.1 Build target CapIQ profile
 
-**Regional Footprint**
+Start from the target company’s CapIQ ID and retrieve the structured fields mapped to the six peer-selection buckets.
 
-The question is not whether two companies are equally diversified.
+The exact CapIQ fields may evolve as the dataset becomes richer, but the six peer-selection buckets remain fixed.
 
-The question is:
+Conceptually:
 
-**“Do the companies operate in comparable geographic markets?”**
+**CapIQ fields → six standardized buckets → deterministic similarity scores**
 
-Country-level or broader regional information is sufficient.
+Examples include:
 
-For example:
+- Business descriptions and industry hierarchy → Business Model Similarity
+- Revenue → Revenue Scale
+- Business segments and segment revenue → Product / Service Mix
+- Target segment / relevant segment information → End-Market Similarity
+- Geographic segments and geographic revenue → Regional Footprint
+- Revenue growth, margins and development information → Growth & Maturity
 
-Japan
-North America
-Western Europe
-APAC
+## 5.2 Generate CapIQ candidate universe
 
-State-level or other sub-country detail is generally unnecessary.
+Apply:
 
-**End Markets**
+**Six bucketed comparability metrics + geographic scope**
 
-End-market information does not always require a dedicated structured CapIQ field.
+to the available CapIQ universe.
 
-Where appropriate, the system can derive useful evidence from the company's business description and other descriptive information.
+The objective is to generate a structured candidate list without requiring LLM interpretation.
 
-**Growth & Maturity**
+## 5.3 Deterministic bucket scoring
 
-Growth should not be assessed purely by comparing Revenue CAGR.
+Each candidate receives a score for the relevant structured CapIQ evidence.
 
-The bucket considers both:
-
-**Growth trajectory + company lifecycle / maturity**
-
-For example:
-
-Startup / early-stage
-Scaling / emerging
-Transitioning into profitability
-Established market participant
-Developed market leader
-Mature / low-growth business
-
-Historical revenue growth remains an important signal, but it is only one part of this bucket.
-
-# 3. Identify the candidate universe
-
-Search the CapIQ database first to create a broad pool of potentially relevant companies.
-
-Use available signals such as:
-
-**Industry + Sector + Business Description + Geography + Revenue Scale**
-
-The objective here is not to identify the final peers.
-
-It is simply to reduce the overall company universe to a manageable set of plausible candidates.
-
-For example:
-
-**10,000 companies → 75 potential candidates**
-
-These companies are still candidates, not peers.
-
-Where a specifically identified private company is not sufficiently covered by CapIQ, credible outside sources can later be used to populate missing information.
-
-# 4. Run the business-model eligibility check
-
-Before spending compute on full enrichment and scoring, determine whether each candidate fundamentally operates a comparable business.
-
-The core question is:
-
-**“Does this company actually operate a comparable business to Raksul?”**
-
-Use CapIQ information first, including the business description, supplemented by lightweight semantic/web validation where CapIQ is insufficient.
-
-Example:
-
-| Candidate  | Business  | Decision  |
-|---|---|---|
-| PrintBridge  | Online B2B printing  | ✓ Pass  |
-| PromoPress  | Printing + promotional products  | ✓ Pass  |
-| VistaWorks  | Online customized printing  | ✓ Pass  |
-| PackFlow  | Packaging + printing platform  | ✓ Pass  |
-| RailBuild  | Rail transportation  | ✕ Reject  |
-
-This prevents a company from becoming a peer simply because its revenue happens to resemble the target.
-
-For example:
-
-**75 candidates → 15 eligible candidates**
-
-Only these candidates proceed to detailed enrichment and scoring.
-
-Business Model therefore has **two roles**:
-
-1. **Eligibility gate** — fundamentally different companies are removed.
-
-1. **Ranking criterion** — among eligible companies, stronger business-model similarity receives more weight.
-
-# 5. Dynamically populate the peer-selection buckets
-
-Now the system evaluates the six peer-selection buckets for every eligible candidate, while respecting the user's priority settings.
-
-For every candidate and every bucket, it asks:
-
-**Do we have sufficient, relevant and recent information in CapIQ?**
-
-If yes → use CapIQ.
-
-If no → trigger targeted enrichment for that company and that specific bucket.
-
-Example:
-
-| Bucket  | CapIQ Availability  | System Action  |
-|---|---|---|
-| Business Model  | ✓ Strong  | Use CapIQ  |
-| Revenue Scale  | ✓ Strong  | Use CapIQ  |
-| Product Mix  | △ Weak  | → Targeted web search  |
-| End Markets  | △ Can derive from description  | → Use description / targeted search if needed  |
-| Regional Footprint  | ✓ Strong  | Use CapIQ  |
-| Growth & Maturity  | △ Partial  | → Enrich maturity / lifecycle evidence  |
-
-The web is therefore not queried for every company and every field.
-
-It acts as an intelligent fallback layer:
-
-**CapIQ first → available descriptions / structured evidence → targeted external source where required**
-
-This reduces unnecessary cost and latency while allowing the methodology to adapt to differences in data availability.
-
-# 6. Handle missing data
-
-After CapIQ and the targeted fallback have both been attempted, some information may still be unavailable.
-
-The rule remains:
-
-**Missing bucket = 0 points + Missing Data flag**
-
-We do not redistribute its weight simply because information cannot be found.
-
-For example, assume the default weights:
-
-| Bucket  | Weight  |
-|---|---|
-| Business Model  | 30%  |
-| Revenue Scale  | 20%  |
-| Product Mix  | 10%  |
-| End Markets  | 10%  |
-| Regional Footprint  | 20%  |
-| Growth & Maturity  | 10%  |
-
-If Revenue remains unavailable:
-
-**Revenue Scale Score = 0**
-
-Its **20% remains part of the calculation**.
-
-The other bucket weights do not increase.
-
-This prevents missing information from accidentally making the evidence we happen to have more important.
-
-# 7. Distinguish missing data from user choices
-
-This distinction remains critical.
-
-### User switches a bucket OFF
-
-The criterion is intentionally **deprioritized**.
-
-It remains part of the peer-selection model, but receives only a small residual weight.
-
-For the initial implementation:
-
-**Deprioritized bucket = 5%**
-
-The remaining weights are redistributed proportionally according to the original 3x / 2x / 1x importance ratios.
-
-### User keeps a bucket prioritized, but data cannot be found
-
-The criterion remains fully weighted.
-
-It receives:
-
-**0 points + Missing Data flag**
-
-Its weight is **not redistributed**.
-
-Example:
-
-| Bucket  | Status  | Weight  | Treatment  |
-|---|---|---|---|
-| Business Model  | ON + available  | 30%  | Score normally  |
-| Revenue Scale  | ON + missing  | 20%  | 0 + flag  |
-| Product Mix  | ON + available  | 10%  | Score normally  |
-| End Markets  | ON + available  | 10%  | Score normally  |
-| Regional Footprint  | ON + available  | 20%  | Score normally  |
-| Growth & Maturity  | ON + available  | 10%  | Score normally  |
-
-This keeps two concepts separate:
-
-**User preference ≠ Data availability**
-
-# 8. Convert evidence into simple similarity scores
-
-For available information, continue using the deliberately simple scoring scale:
+Use the existing simple similarity scale:
 
 | Score  | Meaning  |
 |---|---|
@@ -353,262 +174,378 @@ For available information, continue using the deliberately simple scoring scale:
 | 80  | Strong similarity  |
 | 50  | Moderate similarity  |
 | 20  | Weak similarity  |
-| 0  | No similarity or data unavailable*  |
+| 0  | No similarity / unavailable data  |
 
-The system separately retains the reason for a 0 so that **“not similar”** and **“missing data”** remain distinguishable.
-
-The underlying calculations can still be deterministic where appropriate.
+The underlying calculation should remain deterministic wherever possible.
 
 For example:
 
-### Revenue Scale
+**Revenue Scale**
 
-**Candidate Revenue ÷ Target Revenue → similarity band → score**
+Candidate Revenue ÷ Target Revenue
+→ similarity band
+→ bucket score
 
-Revenue only.
+**Product / Service Mix**
 
-Profitability is deliberately excluded from peer selection.
+Business-segment revenue overlap
+→ similarity band
+→ bucket score
 
-### Product Mix
+**Regional Footprint**
 
-**Product / service overlap → similarity band → score**
+Geographic exposure overlap
+→ similarity band
+→ bucket score
 
-### End Markets
+The adjusted user weights are then applied to the six bucket scores.
 
-**Customer / end-market overlap → similarity band → score**
+This produces:
 
-Evidence may come from structured fields or company descriptions.
+>
+
+**Peer Set A: CapIQ deterministic peers**
+
+The score and underlying field-level evidence remain fully traceable.
+
+# 6. Path B: LLM + web peer discovery
+
+The second path operates independently from the CapIQ candidate-selection engine.
+
+Instead of searching based on specific CapIQ fields, the LLM searches using the **meaning of the six high-level buckets**.
+
+For example:
+
+### Business Model Similarity
+
+Search for companies with comparable:
+
+- operating models
+- monetization models
+- value propositions
+- channel models
+- customer relationships
+- manufacturing / service structures
+
+### Product / Service Mix
+
+Search for companies offering comparable:
+
+- product categories
+- service categories
+- portfolio structure
+- segment mix
+
+### End-Market Similarity
+
+Search for companies serving comparable:
+
+- customer groups
+- industries
+- use cases
+- customer segments
 
 ### Regional Footprint
 
-**Country / regional operating-footprint overlap → similarity band → score**
-
-The objective is geographic comparability, not similarity in the degree of diversification.
+Search for companies operating across comparable markets.
 
 ### Growth & Maturity
 
-Use a combination of:
+Consider:
 
-**Growth trajectory + lifecycle stage**
+- growth trajectory
+- company lifecycle
+- market position
+- scaling versus established business characteristics
 
-For example, two companies could have different exact CAGR figures but still receive a high similarity score if both are established market leaders growing at comparable rates.
+The web-search methodology therefore searches for companies that are **conceptually comparable to the target**, rather than companies that merely happen to match a particular CapIQ field.
 
-Likewise, a rapidly growing startup and a rapidly growing mature market leader should not automatically receive a high score merely because their historical growth rates happen to match.
+This produces:
 
-The result is then mapped back to:
+>
 
-**0 / 20 / 50 / 80 / 100**
+**Peer Set B: LLM / web-discovered peers**
 
-This avoids false precision such as an unexplained AI-generated **73/100**.
+# 7. Validate and enrich web-discovered peers with CapIQ
 
-# 9. Apply differentiated weights
+Once Peer Set B has been identified, the system attempts to match each web-discovered company back to CapIQ.
 
-Instead of equal weighting, the starting methodology uses relative importance points:
+### Company available in CapIQ
 
-| Bucket  | Importance  | Weight  |
-|---|---|---|
-| Business Model  | 3x  | 30%  |
-| Revenue Scale  | 2x  | 20%  |
-| Product Mix  | 1x  | 10%  |
-| End Markets  | 1x  | 10%  |
-| Regional Footprint  | 2x  | 20%  |
-| Growth & Maturity  | 1x  | 10%  |
+If the company can be identified in CapIQ:
 
-The formula is:
+- retrieve the relevant structured CapIQ information;
+- populate the six buckets where available;
+- attach the CapIQ ID;
+- retain the web evidence that led to the peer being identified.
 
-**Weight = Importance Points ÷ Sum of Importance Points**
+The result becomes:
 
-Therefore:
+>
 
-**3 + 2 + 1 + 1 + 2 + 1 = 10**
+**LLM-discovered + CapIQ-enriched peer**
 
-Business Model:
+This is important because web search provides strong semantic discovery, while CapIQ provides standardized structured evidence for validation and comparison.
 
-**3 / 10 = 30%**
+## 7.1 Company not available in CapIQ
 
-Revenue:
+A company identified through web search should **not automatically be discarded simply because it cannot be located in CapIQ**.
 
-**2 / 10 = 20%**
+Instead:
 
-Product:
+>
 
-**1 / 10 = 10%**
+The user can upload a custom document for further validation.
 
-And so on.
+Examples could include:
 
-This makes the methodology easy to configure later.
+- company annual reports
+- investor presentations
+- company profiles
+- private-company information
+- other validated business documents
 
-For example, if we decide Business Model should become 4x rather than 3x, we only change its importance points and normalize the weights again.
+The uploaded evidence can then be used to validate the company across the six peer-selection buckets.
 
-# 10. Calculate score and data availability
+Such companies should remain clearly flagged as:
 
-Assume the default starting weights.
+>
 
-| Bucket  | Weight  | Peer A  | Peer B  |
-|---|---|---|---|
-| Business Model  | 30%  | 100  | 80  |
-| Revenue Scale  | 20%  | 0 ⚠ Missing  | 80  |
-| Product Mix  | 10%  | 100  | 80  |
-| End Markets  | 10%  | 80  | 80  |
-| Regional Footprint  | 20%  | 80  | 80  |
-| Growth & Maturity  | 10%  | 100  | 80  |
+**Web-discovered / non-CapIQ peer**
 
-### Peer A
+with the evidence source shown to the user.
 
-Weighted score:
+This is particularly relevant for private companies or companies with incomplete CapIQ coverage.
 
-**(100 × 30%)
+# 8. Combine Peer Set A and Peer Set B
 
-- (0 × 20%)
-- (100 × 10%)
-- (80 × 10%)
-- (80 × 20%)
-- (100 × 10%)**
+At this stage the system has two candidate pools:
 
-= **74**
+### Peer Set A
 
-Data availability: **5/6**
+Deterministically selected from CapIQ using structured fields.
 
-⚠ Revenue unavailable after CapIQ + targeted fallback.
+### Peer Set B
 
-### Peer B
+Semantically identified through LLM/web search and subsequently enriched with:
 
-**(80 × 30%)
+- CapIQ where available; or
+- user-provided validation documents where CapIQ is unavailable.
 
-- (80 × 20%)
-- (80 × 10%)
-- (80 × 10%)
-- (80 × 20%)
-- (80 × 10%)**
+The two pools are combined and duplicates are resolved.
 
-= **80**
+A company may therefore appear through both mechanisms.
 
-Data availability: **6/6**
+This is a useful signal rather than a problem:
 
-Peer B therefore ranks above Peer A.
+>
 
-This is intentional.
+A company independently identified by both CapIQ and web search has both structured and semantic evidence supporting its relevance.
 
-Peer A's strong scores in the available categories do not receive additional weight simply because Revenue is missing.
+# 9. LLM reranking
 
-# 11. Rank and return the requested peers
+The combined peer universe is passed to the reranker.
 
-Once every eligible candidate has:
+The reranker receives:
 
-Bucket scores
-Priority-adjusted weights
-Overall score
-Data-availability information
-Missing-data flags
+- Target-company information
+- Peer Set A
+- Peer Set B
+- CapIQ evidence
+- Web evidence
+- User-uploaded validation evidence where applicable
+- User-adjusted bucket weights
 
-…the system ranks candidates from highest to lowest.
+The reranker evaluates the combined evidence using the same six standardized peer-selection buckets.
 
-Example:
+Its purpose is **not to replace the deterministic CapIQ score**.
 
-| Rank  | Candidate  | Score  | Data Available  | Flag  |
-|---|---|---|---|---|
-| 1  | PrintBridge  | 94  | 6/6  | –  |
-| 2  | PromoPress  | 88  | 6/6  | –  |
-| 3  | PackFlow  | 78  | 5/6  | ⚠ 1 missing bucket  |
-| 4  | VistaWorks  | 76  | 6/6  | –  |
+Rather, it adds a second layer that can:
 
-If the user asks for three peers, return the **Top 3**.
+- identify peers missed by structured screening;
+- interpret narrative and qualitative evidence;
+- enrich the rationale behind CapIQ-selected peers;
+- resolve differences between structured and semantic evidence;
+- rerank the combined candidate pool according to the user’s priorities.
 
-The user therefore sees both:
+For example, a company may score strongly in CapIQ because of industry, revenue and geography, while web evidence shows that its actual operating model is materially different from the target.
 
-**How similar is this company?**
+Conversely, web search may identify an excellent business-model peer whose structured CapIQ classification differs slightly from the target.
 
-and
+The reranker allows both types of evidence to be considered.
 
-**How much evidence do we actually have behind that score?**
+# 10. Final peer output
 
-# The complete workflow in one view
+The final output contains:
+
+- Ranked Top N peers
+- Extended long list
+- Peer origin:
+  - CapIQ
+  - Web
+  - Both
+- Evidence sources
+- Six-bucket comparison
+- Data availability / missing-data flags
+- Rationale for selection
+
+The rationale should reflect the criteria the user prioritized.
+
+For example, if the user has strongly prioritized Business Model:
+
+>
+
+Strong peer because both companies operate comparable asset-light B2B platforms with similar customer propositions and channel structures. Revenue and geographic footprint are also reasonably comparable, although less influential in this selection.
+
+If Revenue + Regional Footprint are prioritized:
+
+>
+
+Strong peer because the company operates at a comparable revenue scale and has a highly similar North America / Europe / APAC footprint. Business-model similarity is positive but not the primary reason for its position.
+
+# 11. Missing data
+
+Missing information and user preference remain separate concepts.
+
+### User does not prioritize a criterion
+
+The criterion remains active, but:
+
+>
+
+**its default weight is reduced by 50%.**
+
+Its weight is not reduced to zero.
+
+### Data cannot be found
+
+The criterion retains its applicable adjusted weight.
+
+For the CapIQ deterministic score:
+
+>
+
+**Missing data = 0 + Missing Data flag**
+
+The weight is not redistributed simply because the evidence is missing.
+
+For the final combined workflow, the system can still attempt to obtain evidence through:
+
+- web search;
+- CapIQ enrichment;
+- user-uploaded documents.
+
+If the evidence remains unavailable after all applicable sources have been checked, the missing-data flag remains visible.
+
+# 12. End-to-end workflow
 
 ```
-USER SELECTS TARGET + NUMBER OF PEERS
-                    ↓
-        USER SETS CRITERIA / TOGGLES
-                    ↓
-         STARTING PRIORITY WEIGHTS
-      BM 30% | REV 20% | PRODUCT 10%
-      END 10% | REGION 20% | G&M 10%
-                    ↓
-       DEPRIORITIZED CATEGORY?
-             ↙             ↘
-           YES              NO
-            ↓                ↓
-       RETAIN AT 5%      KEEP PRIORITY
-       RESIDUAL WEIGHT      WEIGHT
-             ↘             ↙
-              NORMALIZE WEIGHTS
-                    ↓
-              TARGET CAPIQ PROFILE
-                    ↓
-          SEARCH CAPIQ PEER UNIVERSE
-                    ↓
-           BROAD CANDIDATE LIST
-                    ↓
-        BUSINESS MODEL ELIGIBILITY
-              ↙               ↘
-            FAIL              PASS
-              ↓                 ↓
-           REMOVE        ELIGIBLE CANDIDATES
-                               ↓
-                     CHECK SIX BUCKETS
-                               ↓
-                   ┌────────────┴────────────┐
-                   ↓                         ↓
-              SUFFICIENT                 MISSING /
-             CAPIQ DATA                  WEAK / STALE
-                   ↓                         ↓
-               USE CAPIQ              TARGETED FALLBACK
-                   │                         ↓
-                   │                   DATA FOUND?
-                   │                    ↙       ↘
-                   │                  YES       NO
-                   │                   ↓         ↓
-                   └──────────────→ USE DATA    0 + FLAG
-                               ↓
-                      SCORE SIX BUCKETS
-                       0 / 20 / 50 / 80 / 100
-                               ↓
-                    APPLY PRIORITY WEIGHTS
-                               ↓
-                  NO REDISTRIBUTION FOR
-                       MISSING DATA
-                               ↓
-                 FINAL SCORE + DATA AVAILABILITY
-                               ↓
-                        RANK CANDIDATES
-                               ↓
-                          RETURN TOP N
+TARGET SETUP
+Target company
++ Number of peers
++ Comparability criteria
++ Geographic scope
+        |
+        v
+------------------------------------------------
+|                                              |
+|                                              |
+v                                              v
+
+PATH A                                        PATH B
+
+CAPIQ                                         LLM / WEB SEARCH
+6 bucketed structured metrics                6 high-level buckets
++ geographic scope                           + geographic scope
+        |                                              |
+        v                                              v
+Candidate universe                            Web candidate universe
+        |                                              |
+        v                                              v
+Deterministic scoring                         Peer Set B
+        |                                              |
+        v                                              v
+Peer Set A                                    CAPIQ MATCH?
+                                                       |
+                                              +--------+--------+
+                                              |                 |
+                                             YES                NO
+                                              |                 |
+                                              v                 v
+                                       Add CapIQ evidence   User may upload
+                                                          validation document
+                                              |                 |
+                                              +--------+--------+
+                                                       |
+                                                       v
+
+                             COMBINE PEER SET A + PEER SET B
+                                           |
+                                           v
+                                   REMOVE DUPLICATES
+                                           |
+                                           v
+                                      LLM RERANKER
+                                           |
+                        Target + all peers + evidence
+                             + adjusted user weights
+                                           |
+                                           v
+                                   FINAL PEER SET
+                                      + LONG LIST
+                                      + RATIONALE
 ```
 
 # Key rules
 
-**Fixed framework, dynamic execution.**
-The six available peer-selection buckets are standardized, while user priorities, underlying metrics, evidence, and data sources can change dynamically.
+### Fixed buckets, dynamic evidence
 
-**Business Model matters most.**
-It remains the mandatory eligibility gate and starts with the highest ranking weight at **30%**.
+The six peer-selection buckets remain fixed.
 
-**Revenue Scale, not profitability.**
-Revenue similarity is useful for identifying economically comparable businesses. Profitability is deliberately excluded so peer selection does not bias the later opportunity-identification process toward companies already performing similarly.
+The exact structured fields, web evidence and validation sources underneath them can evolve.
 
-**Regional Footprint, not diversification.**
-We compare where companies operate at country or broader regional level rather than whether they are equally diversified.
+### CapIQ and web search are complementary
 
-**Growth includes maturity.**
-Growth rate is only one signal. The methodology also considers whether the company is a startup, scaling business, emerging profitable company, established player, or mature market leader.
+Web search is **not simply a fallback for missing CapIQ information**.
 
-**Priority ≠ exclusion.**
-A criterion switched OFF by the user is deprioritized to a small residual weight rather than completely removed from the methodology.
+Both approaches independently contribute to candidate discovery.
 
-**Missing ≠ deprioritized.**
-If a prioritized criterion cannot be populated after available source fallbacks, it receives **0 + Missing Data flag**. Its weight is not redistributed.
+### Structured search + semantic search
 
-**CapIQ first, targeted fallback second.**
-CapIQ remains the preferred data source. External evidence is used selectively when CapIQ information is missing, weak, stale, or insufficient—particularly for qualitative categories or private-company revenue.
+CapIQ provides:
 
-**Simple scoring, explainable ranking.**
-Each bucket uses the same **0 / 20 / 50 / 80 / 100** similarity scale, and the final score is the weighted sum of those bucket scores.
+- scale
+- standardization
+- deterministic calculation
+- traceability
+
+Web search provides:
+
+- semantic business-model understanding
+- qualitative evidence
+- discovery beyond structured classifications
+- broader private-company coverage
+
+### User priority ≠ exclusion
+
+Not-selected criteria remain part of the model at **50% of their default weight**.
+
+### Missing ≠ deprioritized
+
+Missing evidence does not change the applicable criterion weight.
+
+### Web-only peers can remain eligible
+
+A company does not need to exist in CapIQ to remain a potential peer.
+
+Where CapIQ coverage is unavailable, user-uploaded documents can provide additional validation.
+
+### Reranking is the final synthesis layer
+
+The reranker brings together:
+
+>
+
+**structured CapIQ similarity + semantic web discovery + user priorities**
+
+to generate the final peer set.
