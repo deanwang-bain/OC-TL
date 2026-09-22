@@ -5,13 +5,16 @@
 
 ---
 
-## Summary
+## TL;DR
 
-- **Mainland China: the tool cannot be used today.** Three independent blockers, any one of which is sufficient on its own.
-- **Hong Kong: not blocked, but not cleared either.** The data question is satisfied; the AI question depends on a model-routing decision that has never been written down.
-- **Localisation is feasible, but it is a second product, not a setting.** None of the proposed workarounds is a dead end. Together they amount to building and operating a separate China version.
-- **There is precedent.** Sage went through China-specific development to localise, so the firm has walked this path before. A China engineering team can be mobilised if leadership wants to pursue it.
-- **The useful question is firm-wide, not tool-specific.** Every blocker below is a Bain platform problem that any Reinvention tool will hit identically.
+- **Mainland China: no, not today.** Three independent blockers, any one of which is enough on its own — the AI cannot run on approved models, the tool is hosted outside China, and nothing in the product enforces either rule.
+- **Hong Kong: probably yes, but needs clearance first.** The data side is already satisfied. The AI side depends on a single decision about which models we call that has never been written down.
+- **Localisation is possible, but it is a second product, not a setting.** None of the proposed workarounds is a dead end. Together they mean building and operating a separate China version of the tool.
+- **There is precedent and there is capacity.** Sage went through China-specific development to localise, and a China engineering team can be mobilised. Resourcing is not the binding constraint.
+- **Two questions answer most of this, and neither needs engineering:** does Bain plan a China-hosted AI platform, and do our data vendor licences permit use into mainland China. A "no" to either ends the discussion. **Do not commit build effort before both come back.**
+- **This is a firm-wide question wearing a tool-shaped disguise.** Every blocker below is a Bain platform problem that any Reinvention tool will hit identically.
+
+**What this page asks for:** confirm mainland China as an explicit scope exclusion for GLS and the MVP, and decide whether to commission a localisation feasibility study.
 
 ---
 
