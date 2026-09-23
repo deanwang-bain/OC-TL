@@ -51,6 +51,7 @@ Content exists but carries no prose, so it will not turn up in a search. Open th
 | [Sprint 1 stories](../confluence/oi30/mvp-sprint-map/sprint-1-stories-dependencies-and-decisions-19763003424.md) | `OI3-Sprint_1_planning.xlsx` |
 | [Success metrics](../confluence/oi30/overview/success-metrics-19618758856.md) | `image-20260712-213758.png` |
 | [Onboarding tracker](../confluence/oi30/ways-of-working/onboarding-statusneo/onboarding-tracker-19705593880.md) | `image-20260807-111345.png` |
+| [Architecture Assessment Tracker](../confluence/oi30/architecture/architecture-assessment-tracker-19853082681.md) | `OppCat_Architecture_Assessment_Tracker_Reviewed.xlsx`, `AI_Architecture_Requirements_v2.1.xlsx` — added 2026-09-22, flagged "empty" by the drift check but only attachment-only, same pattern as Bain Taxonomy/GLS/Sprint 1 before it. Both attachments are themselves largely unfilled templates (Summary sheet shows 0 of 180 requirements addressed as of 29 July), so the assessment process has not actually started, not merely gone unmirrored |
 
 Attachments live in `confluence/_attachments/<page_id>/`. A diagram or spreadsheet cannot
 state a threshold or a rule precisely, so where one is the sole source for a decision,
@@ -66,6 +67,8 @@ decks.
 | Question | Status |
 | -------- | ------ |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
+| **MCP interface: decided in principle, ungoverned in practice** | The VCC meeting rules OI 3.0 "must expose its own MCP Server" as "a data provider to other Bain systems in future." But the governance checklist that would gate that exposure — `AI_Architecture_Requirements_v2.1.xlsx` rows TA-AI-MCP-01 through 08, attached to [Architecture Assessment Tracker](../confluence/oi30/architecture/architecture-assessment-tracker-19853082681.md) — is unfilled, and Security Design (empty) sets none of the controls. Yes in principle, no completed review. Surfaced 2026-09-23, see `requests/2026-09-23-production-approval-confirmations.md` |
+| **Confidential data page still unresolved** | [Confidential data](../confluence/oi30/roadmap-business-requirements/confidential-data-19689340995.md) reads only "To be decided how to treat it?", despite the VCC meeting's working assumption that all Partner uploads are red by default. This is the specific page a formal data-sensitivity rating would need to cite, and it does not yet support one |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
 ## Conflicts to resolve
@@ -79,6 +82,8 @@ decks.
 | **Web search as a data fallback** | Still present in the rewritten page. Not in any technology position table, and it puts target-company queries to an external service |
 | **Two product names are live** | Artefacts now say **Opportunity Catalyst (OC 3.0)** — Jira board OC3, OC3-nn tickets, "OpCat" workbooks — while the space key and most pages still say Opportunity Indicator. No page records the change |
 | **Security split exists only in a diagram** | The app-level (StatusNeo) vs infra-level (Bain) RACI is drawn in the technical architecture SVG but written on no page, including the empty Security Design page |
+| **Training on Partner input, ruled two ways** | The [VCC overview meeting](../confluence/oi30/meeting-summaries/vcc-overview-meeting-19696746551.md) rules that red (confidential) data — the default class for all Partner uploads — is "never used for model training." The technical-architecture diagram describes an in-scope learning pipeline (SFT on golden cases, RLVR, implicit RLHF from partner edits) writing to per-Partner LoRA adapters, gated by "no training w/o opt-in." A blanket no and an opt-in-gated yes are not the same rule, and neither Security Design nor NFR (both empty) reconciles them. Surfaced 2026-09-23 answering a production-approval questionnaire — see `requests/2026-09-23-production-approval-confirmations.md` |
+| **Two components named "model gateway"** | [Technology Choices](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md) §4 names **API Management GenAI gateway** as the adopted route to every model call. [Andromeda](../confluence/oi30/ways-of-working/onboarding-statusneo/andromeda-bains-agentic-ai-platform-19691733117.md) separately offers a **"Model gateway — governed access, no data leaving Bain"** for the same job (running Claude Sonnet/Opus). Never stated whether these are one component under two names or two competing ones. Surfaced 2026-09-23, same source as above |
 
 ## Housekeeping
 
