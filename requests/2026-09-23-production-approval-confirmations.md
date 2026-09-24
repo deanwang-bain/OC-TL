@@ -137,6 +137,44 @@ New gaps and conflicts surfaced here that were not yet in `context/open-question
 have been added there (see below) so they don't need re-discovering next time this comes
 up.
 
+## Round 2 — reviewer follow-ups (2026-09-24)
+
+The submitted answers came back with per-item adequacy ratings and reviewer groups
+attached. Sharper asks, addressed in order:
+
+**1 (still blocks approval).** The reviewer caught something the source material itself
+gets wrong: the VCC meeting writes "red (confidential)" as if the two were the same
+thing, but Bain's scheme has **Red = Restricted** and **Confidential = Orange** as
+distinct, non-overlapping levels — added to `context/open-questions.md`. Which one
+actually applies to Partner uploads has not been ratified either way; that ratification,
+plus a decision on the self-assessed **Low** risk rating, is the Sponsor/Technical Lead's
+call, not something to infer from documentation that itself conflates the two terms.
+Given Partner uploads are high-sensitivity and the output reaches client-facing decks,
+the risk-rating direction (Low vs. High) deserves the same scrutiny the reviewer gave
+it — but the number to record is a decision, not a lookup.
+
+**2.** Reviewer flagged a real contradiction: "no infrastructure-level access" for
+StatusNeo doesn't square with StatusNeo also being named as the one provisioning the
+environment (round 1, item 5/6 answer). Account type (e.g., Entra guest/B2B vs.
+contractor) and the specific list of data systems reached "as required" are not written
+down anywhere in the mirror — this is a genuine gap, not a documentation-lookup miss.
+
+**6.** GitHub Actions is confirmed for the release pipeline (Bain's own Architecture
+Assessment Tracker no longer marks this TBD as of this round). Glean access is approved
+in principle, but *what the approved access covers* (which content, read-only vs.
+broader) is still unstated in onboarding — same gap as round 1, now sharpened to "scope
+of grant" rather than "is it approved."
+
+**7 — corrected.** The Tech Lead confirms model traffic is routed through **Portkey**,
+Bain's standard AI gateway — not the API Management/Azure AI Foundry path this document
+originally cited from Technology Choices. Portkey appears nowhere in the OI30 mirror;
+Technology Choices §4 and the Andromeda page are both stale on this point and should be
+corrected to name it. See the updated `context/open-questions.md` entry.
+
+**8.** Datadog and Pendo are confirmed as answered. Two follow-ups remain genuinely open:
+SharePoint retention/purge policy for the Parquet interim store, and the specific usage
+data Pendo collects — neither is written down; Engineering needs to supply both.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
