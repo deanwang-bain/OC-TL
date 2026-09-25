@@ -2,8 +2,8 @@
 title: "Design requirements (Cont.)"
 confluence_id: 19808256031
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031
-version: 6
-updated: 2026-09-08T09:00:40.528Z
+version: 7
+updated: 2026-09-24T09:45:35.769Z
 ---
 
 # Design requirements (Cont.)
@@ -37,3 +37,9 @@ Based on the [Design Principles]design principles: **Partner judgment**, **Radic
 | 21.2  | Work from an agreed lever taxonomy  | The lever structure under each bucket — especially Operational Excellence — is aligned to Bain's standard taxonomy. To be confirmed with **Scott Daubin**  | **Partner judgment**  | Confirmed lever taxonomy pe  | To schedule a call with Scott  |
 | Data export and workings  |
 | 22.1  | Download peer data to review the workings offline  | Partner can export the full peer dataset — all companies, all metrics, and all adjustments made — as an Excel file or HTML table.  | **Partner judgment** **Radical transparency**  | Peer data export (Excel or HTML table)  |  |
+| Onboarding guide  |
+| 23.1  |  |  |  |  |  |
+| TSR  |
+|  |  |  |  |  |  |
+| Credentials, expert search  |
+|  |  |  |  |  |  |
