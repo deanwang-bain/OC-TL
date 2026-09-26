@@ -2,8 +2,8 @@
 title: "Design requirements (Cont.)"
 confluence_id: 19808256031
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031
-version: 7
-updated: 2026-09-24T09:45:35.769Z
+version: 8
+updated: 2026-09-25T06:58:44.593Z
 ---
 
 # Design requirements (Cont.)
@@ -40,6 +40,6 @@ Based on the [Design Principles]design principles: **Partner judgment**, **Radic
 | Onboarding guide  |
 | 23.1  |  |  |  |  |  |
 | TSR  |
-|  |  |  |  |  |  |
+| 24.1  |  |  |  |  |  |
 | Credentials, expert search  |
-|  |  |  |  |  |  |
+| 25.1  |  |  |  |  |  |
