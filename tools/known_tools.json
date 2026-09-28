@@ -1,9 +1,5 @@
 {
   "tools": {
-    "#": {
-      "concern": "",
-      "position": "Build"
-    },
     "A2A over HTTPS": {
       "concern": "Agent delegation",
       "position": "Adopt"

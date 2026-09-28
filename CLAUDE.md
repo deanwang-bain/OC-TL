@@ -144,7 +144,7 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 79 pages, **62 carry text, 8 hold only an attachment or diagram, and 9 are genuinely
+Of 85 pages, **67 carry text, 9 hold only an attachment or diagram, and 9 are genuinely
 empty**. LSEG was filled on 17 September, the first reduction in the empty set. The empty set still includes every high-level design page this role reviews
 against: Security Design, NFR Design Choices, Observability, Endpoints & Interfaces
 Design, and Deployment Design (CI/CD). Reviews touching those areas rest on judgment, not

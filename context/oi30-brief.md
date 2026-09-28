@@ -288,9 +288,70 @@ balanced. Weights remain defaults rather than fixed.
 
 *OpenAI is no longer named.* Peer discovery is now described as combining "a
 deterministic CapIQ-based approach and GenAI/web search ranking, followed by enrichment
-and reranking". The explicit provider is gone; **"GenAI" is unspecified and web search
-remains**, so the governance question narrows rather than closes — see
-`open-questions.md`.
+and reranking".
+
+### What "GenAI" actually is — answered by the engineering pages
+
+[Present working — Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+(21 September) documents the running backend behind that sentence, and it is the most
+specific implementation description anywhere in the space. `POST /peers/discover` fans
+out into two branches that run side by side and **neither of which ever raises**:
+
+| Branch | What it does | Survivors |
+| ------ | ------------ | --------- |
+| **Agent** | `foundry.ask_agent` proposes peer names → `parse_candidates` (capped at 25) → each name shortlisted against our snapshot → a **second** Foundry call picks one `cap_id` or null → `resolve` drops fabricated IDs | 25 → 18 |
+| **Deterministic** | vector the target on the criteria columns → `candidate_pool` filtered to same sector and region → rank by distance | 500 → 47 → 20 |
+
+Merged by `cap_id` (agent entries win and keep their flag) → **31** → first `analysis_limit`
+of 10 → `analyse_pair`, **one Foundry call per peer**, on a thread pool of 8 → rerank by
+comparability. Peers past the limit stay **unanalysed, not dropped**. HTTP 503 only when
+*both* branches fail.
+
+**So "GenAI" is Azure AI Foundry**, which Technology Choices already records as *Adopt*.
+The provider conflict is closed. Two narrower questions replace it: which model Foundry
+serves, and whether these calls traverse the API Management GenAI gateway that §7 makes
+the single egress point.
+
+**Web search is `serpapi`** — stated outright on the Future Scope page. That one has no
+position anywhere, and it is how target-company names leave Bain.
+
+The matching engine is documented to a level that is rare and genuinely useful for
+review: **BM25 over character 3–4 grams on the name, word tokens on location and sector**;
+weights name 0.50 / business 0.35 / location 0.15, **renormalised over the parts that
+actually matched**; `b = 0.5` rather than the textbook 0.75, and the page says that was
+**measured, not chosen by taste**. Embeddings are used on `business_model` only, at
+`match_semantic_weight = 0.6` — *"a company name is a label, not a concept"*. The
+deterministic side uses **no model and no network**, so it is reproducible.
+
+One design note worth carrying into review: the match scores are **min-max normalised per
+query**, so the top hit always returns 1.000 *even when the company is absent from the
+snapshot*. That is precisely why the second Foundry call exists — `match()` supplies
+recall, the model decides identity, and null is an allowed answer. It is a sound split,
+and it means any future attempt to replace that call with a score threshold will
+reintroduce the bug it was built to avoid.
+
+### The proposed successor, and where it contradicts the ruling page
+
+[Future Scope — With ai search](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+proposes moving document handling from chat-time processing to an **event-driven ingestion
+pipeline**: upload → Event Grid → queue → Azure AI Document Intelligence → chunk by
+section → embed (`text-embedding-3-small`) → **Azure AI Search**, one index filtered by
+`project_id` and `user_id`, hybrid keyword + vector with the semantic reranker. Parse
+failures dead-letter rather than vanish; extracted JSON is kept so re-chunking never
+re-runs the expensive step.
+
+**The engineering reasoning is good** — tables do not survive naive chunking, blob cannot
+serve a filtered hybrid query, a 200-page filing cannot block an upload response. But two
+of its choices contradict decisions already recorded in Technology Choices:
+
+- **§4.2 decided against a vector store**, at MVP *and* at north star, because AI Search
+  "would mean building the embedding pipeline the native path exists to avoid". The
+  decision is revisitable — AI Search is named as the first candidate — but the trigger is
+  *"measured retrieval quality against a fixed evaluation set, not a hunch"*, and no
+  measurement is cited.
+- **§6 chose Service Bus explicitly over Event Grid**, for both commands and events.
+
+Neither page acknowledges the other. See `open-questions.md`.
 
 The framing also shifted from a sprint workaround ("before API access") to a durable
 "methodology overview" designed to be reusable across companies, sectors and future
@@ -387,6 +448,82 @@ Requirement groups 17 to 21, each mapped to a design principle:
 Two items carry named owners: realisation timelines are **pending Stephanie's
 confirmation**, and the Operational Excellence lever taxonomy is **to be confirmed with
 Scott Daubin**.
+
+## The ARC architecture assessment — 249 MUSTs, none answered
+
+[Architecture Assessment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681)
+(22 September) is an empty page carrying two workbooks. It is the formal Bain architecture
+governance gate, and it is the most consequential thing to arrive in the space this month.
+
+| Workbook | Requirements | MUST | Responses recorded |
+| -------- | ------------ | ---- | ------------------ |
+| `OppCat_Architecture_Assessment_Tracker_Reviewed.xlsx` (ARC v2) | 180 | 136 | **0** |
+| `AI_Architecture_Requirements_v2.1.xlsx` | 133 | 113 | **0** |
+
+**ARC v2** spans Technical Architecture (65), Application Design (28), Code Quality (40)
+and Software Development Principles (47). A reviewer pass on 22 September classified every
+row and **re-prioritised 51 of them** — 14 MUST→SHOULD, 13 MUST→CONDITIONAL — on the
+argument that the framework mandates patterns rather than outcomes (microservices, Istio,
+Kafka, circuit breakers, RDBMS-to-NoSQL portability). That reclassification is defensible
+and worth defending: **53 of 180 rows are marked "Questionable Requirement"**, and 33 more
+are **External Dependency**, owned by Bain/TSG rather than the delivery team.
+
+But the columns that matter — Design response, Arch/Engineering response, Status, Owner —
+are **empty in all 180 rows**. The Summary sheet computes it without comment:
+*MUST requirements 136, MUST not yet Addressed 136.* The Action Items sheet is still a
+template stub, so the "Concerns and Disagreements" list has not been started either.
+
+**The AI requirements workbook is the more interesting half**, and it is newer ground:
+Model Serving & Abstraction, RAG & AI Data Architecture, Tools, Skills, MCP Servers &
+Connectors, and twelve Agentic sections covering control, delegated identity, memory,
+sandboxing, multi-agent systems and governance. Several map directly onto decisions this
+workspace has already reviewed:
+
+- **TA-AI-MOD-01** requires a model gateway so the provider can be swapped without
+  touching business logic — Technology Choices already has this (API Management GenAI
+  gateway), and the China assessment confirms it pays off.
+- **TA-AI-RAG-DA-04** requires retrieval to respect source-document access control. The
+  Future Scope pipeline filters on `project_id` and `user_id`, which is folder scoping,
+  **not document ACL inheritance**.
+- **TA-AI-MCP-04** requires MCP responses to be treated as data, never instructions.
+- **TA-AI-TUL-03** requires a reviewable tool catalogue with risk classification and owner.
+
+None of it is answerable from the five blank high-level design pages. **Security Design,
+NFR, Observability, Endpoints and Deployment are precisely the evidence this assessment
+asks for**, which makes those five blanks a gate on a governance milestone rather than
+only a review inconvenience.
+
+## Greater China — mainland excluded, Hong Kong conditional
+
+[Opportunity Catalyst in Greater China](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082640)
+(22 September) is a full regional assessment, and the first page in the space to reckon
+with where the product may legally run.
+
+- **Mainland China: no.** Bain's regional AI guidance requires global-LLM features to be
+  off for internal users and clients alike; only locally registered models are permitted.
+  The page notes the guidance was written for Signal / NGGS, a client-deployed product,
+  and that Opportunity Catalyst is an internal tool whose output is a deck — which removes
+  the *reason* behind the rule but not the rule. It treats it as binding until its owner
+  says otherwise, which is the right call.
+- **Hong Kong: yes, with case-by-case clearance.** HK-billed cases default to Bain Global
+  Cloud, so no extra consent is needed — but OpenAI- and Claude-backed features must still
+  be off, and *which models the tool actually calls has never been written down*.
+- **Nothing in the product enforces any of this.** The planned pre-flight check keys on
+  where the *target company* sits, not on billing entity or user location, so it would not
+  stop a mainland case analysing a US company.
+
+The page's own recommendation is the cheap part: **record mainland as an explicit scope
+exclusion** for the demo and MVP rather than letting it be discovered mid-case, and ask
+StatusNeo to widen the pre-flight check's inputs now, while it is still unbuilt.
+
+Two findings here matter beyond China. First, **the calculation engine and the
+containerised packaging are named as the parts that carry over unchanged** to any
+relocation — independent confirmation of `decisions/001`'s reasoning for keeping the
+calculation engine separate from day one. Second, **the quality benchmark does not
+exist**, and the page is blunt that without it "would a China-approved model be good
+enough" is unanswerable. The current extraction skill is cited at **70–80% accuracy,
+degrading as sector conditions accumulate** — the first accuracy figure recorded anywhere
+in the space.
 
 ## Scope after GLS
 

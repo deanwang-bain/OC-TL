@@ -37,6 +37,31 @@ PROVIDERS = [
     "Mistral", "Cohere", "Hugging Face", "Perplexity",
 ]
 
+# Named services and libraries whose appearance is a Build/Adopt/Buy question. Unlike
+# PROVIDERS these are checked against the position register rather than against our
+# notes, because the question is "has this been ruled on", not "have we mentioned it".
+#
+# This list exists because `serpapi` reached the running peer-discovery backend and was
+# found by reading a page, not by any check. PROVIDERS could never have caught it: it is
+# not a model vendor. Add a name here whenever a service turns up in the space with no
+# recorded position -- the cost of a wrong guess is one line in a briefing.
+SERVICES = [
+    "Azure AI Search", "Event Grid", "Storage Queues", "serpapi", "SerpApi",
+    "Bing Search", "Tavily", "Algolia", "Elasticsearch", "OpenSearch",
+    "Pinecone", "Weaviate", "Qdrant", "Chroma", "pgvector", "Cosmos DiskANN",
+    "Kafka", "Istio", "Hystrix", "think-cell", "Andromeda", "Snowflake",
+    "Databricks", "LangChain", "LlamaIndex", "Semantic Kernel",
+]
+
+# Embedding and model identifiers carry a provider implicitly, so a bare model name in
+# prose is a provider question even when no vendor is named beside it.
+MODEL_IDS = [
+    r"text-embedding-3-(?:small|large)", r"gpt-4[a-z0-9.-]*", r"gpt-5[a-z0-9.-]*",
+    # Anchored on the family names so prose like "Claude-backed features" does not match.
+    r"claude-(?:opus|sonnet|haiku|fable|instant|[0-9])[a-z0-9.-]*",
+    r"o[34]-mini", r"text-embedding-ada-002",
+]
+
 
 def pages() -> list[str]:
     found = []
@@ -215,6 +240,39 @@ def main() -> int:
                             + (f" and {len(paths) - 1} other page(s)" if len(paths) > 1 else ""))
         findings.append("")
 
+    # 3b. Named services and model identifiers with no recorded Build/Adopt/Buy
+    #     position. Checked against the register rather than the notes: writing about
+    #     a service in `context/` is not the same as ruling on it, and the whole point
+    #     of the register is to be the place a ruling lives.
+    service_hits: dict[str, list[str]] = {}
+    for path in (changed_since(reviewed) if reviewed else []):
+        text = body(path)
+        for name in SERVICES:
+            if name.lower() in register:
+                continue
+            if re.search(rf"\b{re.escape(name)}\b", text, re.I):
+                service_hits.setdefault(name, []).append(path)
+        for pattern in MODEL_IDS:
+            for found in set(m.group(0) for m in re.finditer(pattern, text, re.I)):
+                if found.lower() not in register:
+                    service_hits.setdefault(found, []).append(path)
+    # Fold case variants of the same name together (serpapi / SerpApi).
+    folded: dict[str, list[str]] = {}
+    for name, paths in service_hits.items():
+        key = next((k for k in folded if k.lower() == name.lower()), name)
+        folded.setdefault(key, []).extend(p for p in paths if p not in folded.get(key, []))
+    if folded:
+        findings.append(
+            "**Service or model named in a changed page with no position in "
+            "`tools/known_tools.json`:**"
+        )
+        findings.append("")
+        for name, paths in sorted(folded.items(), key=lambda kv: kv[0].lower()):
+            uniq = sorted(set(paths))
+            findings.append(f"- **{name}** — {link(uniq[0])}"
+                            + (f" and {len(uniq) - 1} other page(s)" if len(uniq) > 1 else ""))
+        findings.append("")
+
     # 4. Pages edited since the agenda last claimed to be current. Not drift by
     #    itself, but it is what makes an agenda item quietly go out of date.
     if reviewed:
@@ -238,10 +296,16 @@ def main() -> int:
 
     # 5. Pages filed outside the OI3.0 tree, which do not appear in the hierarchy
     #    and are easy to miss when reading the space by navigation.
+    #
+    #    Only the ones we have not already written down. A page filed at the space root
+    #    is a Confluence-side problem this workspace cannot fix, so once it is recorded
+    #    in `context/` it is a tracked condition, not drift -- and repeating it every
+    #    morning trains the reader to skim the section that is supposed to be rare.
     root_page = re.compile(rf"^{re.escape(MIRROR)}/oi30-\d+\.md$")
     orphans = [
         p for p in all_pages
         if not p.startswith(f"{MIRROR}/oi30/") and not root_page.match(p)
+        and page_id(p) not in notes
     ]
     if orphans:
         findings.append("**Page(s) filed outside the OI3.0 tree**, so absent from the page hierarchy:")
