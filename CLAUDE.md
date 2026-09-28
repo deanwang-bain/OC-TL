@@ -92,8 +92,9 @@ guess — several architecture pages are still empty (see below).
 **Prefer the mirror over the connector.** `confluence/` is greppable, always available,
 and works when the Atlassian connector does not. Read `confluence/INDEX.md` first.
 
-**Keep `context/` current.** It is the distilled layer over 71 raw pages, and it only
-stays useful if it is updated when the mirror changes materially.
+**Keep `context/` current.** It is the distilled layer over the raw pages, and it only
+stays useful if it is updated when the mirror changes materially. `tools/drift.py` is
+what tells you it has slipped.
 
 ## The Confluence mirror
 
@@ -126,10 +127,16 @@ recurs. Create a replacement at
 
 Before the update is sent, `tools/drift.py` checks whether this distilled layer has
 fallen behind the mirror: new pages not yet referenced in `context/`, page counts here
-that no longer match, model providers named in prose with no recorded ruling, pages
+that no longer match, model providers named in prose with no recorded ruling, **named
+services and model identifiers with no position in `tools/known_tools.json`**, pages
 changed since the standing agenda's *Last full review* date, and pages filed outside the
-OI3.0 tree. It is silent when there is nothing to report, and its output appears in the
-briefing under **Knowledge base drift**.
+OI3.0 tree that are not already recorded in `context/`. It is silent when there is
+nothing to report, and its output appears in the briefing under **Knowledge base drift**.
+
+The service check exists because `serpapi` reached the running peer-discovery backend and
+was found by reading a page, not by any check — the provider list only knew model vendors,
+and a search API is not one. When a service turns up with no recorded position, add its
+name to `SERVICES` in `tools/drift.py`.
 
 **The scan finds staleness; it cannot fix it.** Clearing a drift finding means reading
 the pages and updating `context/`, then moving the *Last full review against the mirror*
