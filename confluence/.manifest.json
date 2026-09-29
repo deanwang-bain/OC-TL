@@ -19,7 +19,7 @@
     "19589234692": {
       "path": "oi30/architecture-19589234692.md",
       "title": "Architecture",
-      "version": 2
+      "version": 3
     },
     "19611680776": {
       "path": "oi30/data-requirements-19611680776.md",
@@ -404,7 +404,7 @@
     "19849412714": {
       "path": "future-scope-with-ai-search-19849412714.md",
       "title": "Future Scope-- With ai search.",
-      "version": 1
+      "version": 2
     },
     "19849445516": {
       "path": "to-be-delete-19849445516.md",
@@ -424,6 +424,16 @@
     "19853082681": {
       "path": "oi30/architecture/architecture-assessment-tracker-19853082681.md",
       "title": "Architecture Assessment Tracker",
+      "version": 1
+    },
+    "19874021403": {
+      "path": "oi30/security-scan-reports-19874021403.md",
+      "title": "Security Scan Reports",
+      "version": 1
+    },
+    "19875168265": {
+      "path": "oi30/meeting-summaries/sprint-3-planning-session-19875168265.md",
+      "title": "Sprint 3 planning session",
       "version": 1
     }
   }

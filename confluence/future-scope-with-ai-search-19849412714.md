@@ -2,8 +2,8 @@
 title: "Future Scope-- With ai search."
 confluence_id: 19849412714
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714
-version: 1
-updated: 2026-09-21T06:05:54.717Z
+version: 2
+updated: 2026-09-28T11:28:58.446Z
 ---
 
 # Future Scope-- With ai search.
