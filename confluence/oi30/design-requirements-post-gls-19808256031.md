@@ -1,12 +1,12 @@
 ---
-title: "Design requirements (Cont.)"
+title: "Design requirements (Post GLS)"
 confluence_id: 19808256031
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031
-version: 8
-updated: 2026-09-25T06:58:44.593Z
+version: 9
+updated: 2026-10-01T03:45:28.611Z
 ---
 
-# Design requirements (Cont.)
+# Design requirements (Post GLS)
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031)
 
@@ -38,8 +38,15 @@ Based on the [Design Principles]design principles: **Partner judgment**, **Radic
 | Data export and workings  |
 | 22.1  | Download peer data to review the workings offline  | Partner can export the full peer dataset — all companies, all metrics, and all adjustments made — as an Excel file or HTML table.  | **Partner judgment** **Radical transparency**  | Peer data export (Excel or HTML table)  |  |
 | Onboarding guide  |
-| 23.1  |  |  |  |  |  |
+| 23.1  | Get up to speed on the tool quickly without needing a training session  | A lightweight in-tool onboarding guide  | **Thought partner**  | Onboarding walkthrough  | We have the concept design ready.  |
 | TSR  |
-| 24.1  |  |  |  |  |  |
+| 24.1  | Understand the target's TSR performance as context for the opportunity  | Analysis surfaces the target's TSR trajectory vs. peers and vs. sector index Acts as a supporting exhibit that contextualises the urgency of the opportunity and strengthens the case for change narrative.  | **Radical transparency** **Thought partner**  | TSR performance chart vs. peer set  |  |
+| 24.2  | See how TSR underperformance maps to specific operational gaps  | TSR underperformance is linked to the relevant levers in the analysis so the partner can explain why the stock is lagging and what the operational fix is.  | **Radical transparency** **Thought partner**  | TSR-to-lever linkage annotation  |  |
+| 24.3  | Use TSR data to strengthen the activist defence or urgency narrative  | Where the Case for Change angle selected is activist defence or below-peer performance, the TSR exhibit is automatically promoted into the case for change narrative and the output deck.  | **Thought partner** **Partner judgment**  | TSR narrative integration into Case for Change  |  |
+| 24.4  | See TSR in the context of the full peer set, not just as an isolated chart  | TSR chart shows all peers ranked, with Nike's position highlighted, so the relative underperformance is immediately legible without requiring explanation.  | **Transparency**  | Peer-ranked TSR comparison chart  |  |
 | Credentials, expert search  |
-| 25.1  |  |  |  |  |  |
+| 25.1  | Find relevant Bain credentials for this sector and lever without leaving the tool  | Partner can search for Bain credentials by sector, capability, or lever type directly from the tool  | **Thought partner**  | Credential search via Sage  |  |
+| 25.2  | Find the right Bain expert for this client conversation  | Partner can search for internal Bain experts by sector, capability, or lever so the right person can be pulled in before a first meeting.  | **Thought partner**  | Expert search via Sage  |  |
+| 25.3  | Have the most relevant credentials surfaced automatically, not just on search  | Based on the sector tag, the target, and the levers selected, the tool proactively surfaces the top 3-5 most relevant Bain credentials without the partner needing to search.  | **Thought partner**  | Auto-surfaced credential recommendations  |  |
+| 25.4  | Add a Bain credential directly into the output deck from the search results  | Partner can drag a credential slide from the search results directly into the deck builder, without needing to switch screens or manually locate the slide in the library.  | **Thought partner**  | Drag-to-deck from credential search results  |  |
+| 25.5  | Know when a credential has already been used in a prior OI for this client  | Credential panel flags cases that have already been presented to this client in a previous engagement, so the partner avoids repeating materials the client has already seen.  | **Radical transparency**  | Prior presentation flag on credential slide  | Feasibility to be discussed  |

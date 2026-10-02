@@ -372,9 +372,9 @@
       "version": 2
     },
     "19808256031": {
-      "path": "oi30/design-requirements-cont-19808256031.md",
-      "title": "Design requirements (Cont.)",
-      "version": 8
+      "path": "oi30/design-requirements-post-gls-19808256031.md",
+      "title": "Design requirements (Post GLS)",
+      "version": 9
     },
     "19809534070": {
       "path": "peer-selection-capability-19809534070.md",
@@ -444,11 +444,16 @@
     "19883524168": {
       "path": "oi30/roadmap-business-requirements/partner-interviews-19883524168.md",
       "title": "Partner Interviews",
-      "version": 4
+      "version": 6
     },
     "19883720705": {
       "path": "oi30/sprint-retrospectives/sprint-2-19883720705.md",
       "title": "Sprint 2",
+      "version": 2
+    },
+    "19888046107": {
+      "path": "cost-bar-normalization-methodology-19888046107.md",
+      "title": "Cost Bar & Normalization methodology",
       "version": 2
     }
   }
