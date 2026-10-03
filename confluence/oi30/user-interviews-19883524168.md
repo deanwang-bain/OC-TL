@@ -1,12 +1,12 @@
 ---
-title: "Partner Interviews"
+title: "User Interviews"
 confluence_id: 19883524168
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883524168
-version: 6
-updated: 2026-10-01T08:47:10.335Z
+version: 8
+updated: 2026-10-02T08:53:27.292Z
 ---
 
-# Partner Interviews
+# User Interviews
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883524168)
 
@@ -25,6 +25,7 @@ updated: 2026-10-01T08:47:10.335Z
 | Timm Wotka  | Practice Senior Manager  | Munich  | **Wed, 15 Jul** 1:30 PM IST/ 4:00 PM SGT  | [Recording](https://bain.zoom.us/rec/share/RuxHh3wnudHYuozW7d05w3kV_lyuZdCJ0tXRDnW1zBkXw0s7bOOYTpnVcxTftLDr.T8cAuLTCsUtJYkAZ)  | jZ.yk!4y  |
 | Saverio Calderoni  | AP  | Rome  | **Thu, 16 Jul** 2:30 PM IST/ 5:00 PM SGT  | [Recording](https://bain.zoom.us/rec/share/OQRb7UqZUm7AgvJ34xImRTj99gWsFF5ey2QFwe2i0a3Z44N7CxmZZoN0qQ-dvHeJ.MIXuecjI9QB2NgIr)  | 72suB@1g  |
 | Timm Wotka  | Practice Senior Manager  | Munich  | **Wed, 5 Aug** 2:30PM IST / 5:00 PM SGT  | [Recording](https://bain.zoom.us/rec/share/y-gPPhz3oKKqqZCmQYGmZM4IOn76RRCbU3CmBZRMUFvVHNoC5l_FkS1w29jXIgis.MTe99ijY8tcVeujW)  | '=7U.#gwJ  |
+| Chung Yen Wong  | Partner  | Singapore  | 20 Aug  | Hallway testing  |  |
 | Andrew Mintz & Mark Krafft  | Partner  | Andrew: New York City / Mark: Washington DC  | **Wed, 2 Sep** 5:30 AM IST/ 8:00 AM SGT  |  |  |
 | Klaus Kremers  | Partner  | Berlin  | **Wed, 2 Sep** 3:00 PM IST / 5:30 PM SGT  | [Recording](https://bain.zoom.us/rec/share/pxBmhNQwIlJ4OvrdcehAjrxOGTxjlDojeI0OMwQTEaY_crAkZgKTU0qkkTtk8p1r.JbGedC5fL7MkwIfL)  | 4fUH9A$$  |
 | Alyson Thompson  | Partner  | London  | **Thu, 3 Sep** 1:30 IST / 4:00 PM SGT  |  |  |
