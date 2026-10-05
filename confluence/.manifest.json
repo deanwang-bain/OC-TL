@@ -229,7 +229,7 @@
     "19705233507": {
       "path": "oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md",
       "title": "Deployment Design (AI, Compute, Data, Components - CI/CD)",
-      "version": 1
+      "version": 2
     },
     "19705397258": {
       "path": "oi30/architecture/opportunity-indicator-architecture-high-level-19705397258.md",
@@ -455,6 +455,21 @@
       "path": "cost-bar-normalization-methodology-19888046107.md",
       "title": "Cost Bar & Normalization methodology",
       "version": 2
+    },
+    "19899351139": {
+      "path": "oi30/architecture/document-upload-indexing-and-parsing-with-real-time-progress-architecture-19899351139.md",
+      "title": "Document Upload, Indexing, and Parsing with real-time progress Architecture",
+      "version": 1
+    },
+    "19899809824": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/chat-assistant-architecture-19899809824.md",
+      "title": "Chat Assistant Architecture",
+      "version": 3
+    },
+    "19899842692": {
+      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/chat-assistant-architecture/dev-streaming-and-chat-agent-checks-summary-19899842692.md",
+      "title": "Dev streaming and chat-agent checks: summary",
+      "version": 1
     }
   }
 }
