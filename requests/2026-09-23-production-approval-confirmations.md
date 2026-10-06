@@ -220,16 +220,16 @@ consistent with Iris case data's classification in Round 3's taxonomy. Treating 
 as Yellow/Green because CapIQ and public filings are low-sensitivity would be answering
 from the wrong tier.
 
-**Is Glean access scoped to client-prep data types, or broader?** As documented today,
-**broader**. The [Data Sources summary](../confluence/oi30/data-requirements/data-sources-summary-19619676163.md)
-describes the Iris-via-Glean grant's magnitude as **"Full Bain content library"**, and the
-separate Bain/Client Relationship Mapping row (same Glean API, "sandbox access TBD") as
-**"Bain client portfolio"** — both describe the full corpus, not a subset scoped to
-client-prep content. Sandbox access is still TBD, so this may narrow before launch, but
-the design as written is not scoped. Recommend this be an explicit ask to the KM owner:
-scope the grant to the content types Screens 01–05 actually retrieve (target-company
-cases, account relationship data, comparable OI studies, ARC benchmarks) rather than
-leaving it at full-library breadth by default.
+**Is Glean access scoped to client-prep data types, or broader?** Sandbox access itself is
+now confirmed (per the Tech Lead, 2026-10-06) — the mirror's [Data Sources summary](../confluence/oi30/data-requirements/data-sources-summary-19619676163.md)
+is stale on this point, still marking it "sandbox access TBD." Scope is a separate
+question and, as documented, is **broader than client-prep data types**: the same page
+describes the Iris-via-Glean grant's magnitude as "Full Bain content library," and the
+Bain/Client Relationship Mapping row (same Glean API) as "Bain client portfolio" — both
+the full corpus, not a subset. Recommend this be an explicit ask to the KM owner now that
+access itself is unblocked: scope the grant to the content types Screens 01–05 actually
+retrieve (target-company cases, account relationship data, comparable OI studies, ARC
+benchmarks) rather than leaving it at full-library breadth by default.
 
 ## Sign-off
 
