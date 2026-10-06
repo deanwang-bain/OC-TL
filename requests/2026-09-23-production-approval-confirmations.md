@@ -175,6 +175,37 @@ corrected to name it. See the updated `context/open-questions.md` entry.
 SharePoint retention/purge policy for the Parquet interim store, and the specific usage
 data Pendo collects — neither is written down; Engineering needs to supply both.
 
+## Round 3 — data types and client scope (2026-10-06)
+
+A reviewer asked two further questions directly, not tied to one of the original 8 items:
+
+**What document/data types are intended to be uploaded.** Per the
+[Data Sources summary](../confluence/oi30/data-requirements/data-sources-summary-19619676163.md)
+and [Screen 01: Target Setup](../confluence/oi30/data-requirements/data-requirements-per-screen/screen-01-target-setup-19710967811.md):
+public/third-party data (CapIQ financials, SEC EDGAR 10-K/10-Q, LSEG/Refinitiv analyst
+reports and consensus estimates, public earnings-call transcripts, Glassdoor/Fishbowl);
+Partner-uploaded documents (adjusted financials, analyst/industry reports, factor decks,
+RFPs, client briefs — sensitivity depends on what the Partner actually uploads); and
+internal Bain content read via Glean/Iris (past case summaries, account relationship
+mapping, ARC cost-lever benchmarks, expert-interview notes — Bain's own confidential
+content, not client-provided).
+
+On classification: a third taxonomy has now entered the conversation (Yellow/Green/
+Orange), alongside the VCC meeting's generic red/orange/green and the prior round's
+Red=Restricted/Confidential=Orange. Logged in `context/open-questions.md`. Whichever
+scheme is ratified, the Partner-upload path is the one to classify against, since it can
+carry client-shared content the public sources never would.
+
+**Prospective vs. existing clients.** Both, by design — not an open question. The
+[Vision](../confluence/oi30/overview/vision-19617939629.md) page's lead use case is "a
+first discussion with a client" (no existing relationship required to resolve a target),
+while [requirement 7.2](../confluence/oi30/roadmap-business-requirements/requirements-the-high-level-principles-19665354783.md)
+has the agent use "existing client context... to inform peer selection and narrative"
+when a relationship exists. Screen 01's Account Relationship Card (key account partner,
+past Bain cases) renders conditionally after target resolution — it is not a gate, so a
+target with no prior Bain relationship resolves and proceeds identically, just without
+that card populated.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
