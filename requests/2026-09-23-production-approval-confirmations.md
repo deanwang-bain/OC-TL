@@ -206,6 +206,31 @@ past Bain cases) renders conditionally after target resolution — it is not a g
 target with no prior Bain relationship resolves and proceeds identically, just without
 that card populated.
 
+## Round 4 — confidentiality determination and Glean scope (2026-10-06)
+
+Two follow-ups embedded in the reviewer's notes on Round 3, both answerable now:
+
+**Does any of this data include client-specific confidential information, and what
+classification should the tool carry?** Yes. Two of the three tiers from Round 3 can
+carry it: Partner-uploaded documents (client-shared financials, RFPs, briefs) and the
+Iris/Sage case and relationship data (past engagement detail, account history) are both
+client-specific by nature, not public. The tool's classification should be set by its
+most sensitive input, not averaged across sources — **Orange (Confidential) at minimum**,
+consistent with Iris case data's classification in Round 3's taxonomy. Treating the tool
+as Yellow/Green because CapIQ and public filings are low-sensitivity would be answering
+from the wrong tier.
+
+**Is Glean access scoped to client-prep data types, or broader?** As documented today,
+**broader**. The [Data Sources summary](../confluence/oi30/data-requirements/data-sources-summary-19619676163.md)
+describes the Iris-via-Glean grant's magnitude as **"Full Bain content library"**, and the
+separate Bain/Client Relationship Mapping row (same Glean API, "sandbox access TBD") as
+**"Bain client portfolio"** — both describe the full corpus, not a subset scoped to
+client-prep content. Sandbox access is still TBD, so this may narrow before launch, but
+the design as written is not scoped. Recommend this be an explicit ask to the KM owner:
+scope the grant to the content types Screens 01–05 actually retrieve (target-company
+cases, account relationship data, comparable OI studies, ARC benchmarks) rather than
+leaving it at full-library breadth by default.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
