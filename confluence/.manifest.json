@@ -187,57 +187,57 @@
       "version": 2
     },
     "19704512648": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack-19704512648.md",
       "title": "Technical Stack",
       "version": 1
     },
     "19704905798": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/nfr-non-functional-design-choices-19704905798.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/nfr-non-functional-design-choices-19704905798.md",
       "title": "NFR (Non-Functional) Design Choices",
       "version": 1
     },
     "19704938600": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/endpoints-interfaces-design-19704938600.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/endpoints-interfaces-design-19704938600.md",
       "title": "Endpoints & Interfaces Design",
       "version": 1
     },
     "19705004106": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/architecture-layers-19705004106.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/architecture-layers-19705004106.md",
       "title": "Architecture Layers",
       "version": 1
     },
     "19705004114": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/domain-architecture-19705004114.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/domain-architecture-19705004114.md",
       "title": "Domain Architecture",
       "version": 1
     },
     "19705069661": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/data-management-layer-19705069661.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/data-management-layer-19705069661.md",
       "title": "Data Management Layer",
       "version": 1
     },
     "19705135241": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/logical-application-flows-19705135241.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/logical-application-flows-19705135241.md",
       "title": "Logical Application Flows",
       "version": 2
     },
     "19705167996": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/security-design-processing-ai-and-data-19705167996.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/security-design-processing-ai-and-data-19705167996.md",
       "title": "Security Design (Processing, AI and Data)",
       "version": 1
     },
     "19705233507": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd-19705233507.md",
       "title": "Deployment Design (AI, Compute, Data, Components - CI/CD)",
-      "version": 2
+      "version": 3
     },
     "19705397258": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level-19705397258.md",
-      "title": "Opportunity-Indicator Architecture (high Level)",
-      "version": 9
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level-19705397258.md",
+      "title": "Opportunity-Catalyst Architecture (high Level)",
+      "version": 10
     },
     "19705430028": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/observability-logging-notification-monitoring-design-19705430028.md",
       "title": "Observability, Logging, Notification & Monitoring Design",
       "version": 1
     },
@@ -302,9 +302,9 @@
       "version": 1
     },
     "19727482890": {
-      "path": "oi30/data-requirements/data-sources-from-current-oi-19727482890.md",
-      "title": "Data sources from Current OI",
-      "version": 5
+      "path": "oi30/data-requirements/data-sources-from-current-oc-19727482890.md",
+      "title": "Data sources from Current OC",
+      "version": 6
     },
     "19735543865": {
       "path": "oi30/meeting-summaries/workshop-data-calculations-19735543865.md",
@@ -312,7 +312,7 @@
       "version": 2
     },
     "19751338017": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack/technology-choices-19751338017.md",
       "title": "Technology Choices",
       "version": 1
     },
@@ -354,7 +354,7 @@
     "19765133323": {
       "path": "oi30/architecture/agent-validation-test-plan-19765133323.md",
       "title": "Agent_Validation_Test_Plan",
-      "version": 1
+      "version": 2
     },
     "19792560136": {
       "path": "oi30/data-requirements/cost-bar-split-19792560136.md",
@@ -462,14 +462,19 @@
       "version": 1
     },
     "19899809824": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/chat-assistant-architecture-19899809824.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/chat-assistant-architecture-19899809824.md",
       "title": "Chat Assistant Architecture",
       "version": 3
     },
     "19899842692": {
-      "path": "oi30/architecture/opportunity-indicator-architecture-high-level/chat-assistant-architecture/dev-streaming-and-chat-agent-checks-summary-19899842692.md",
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/chat-assistant-architecture/dev-streaming-and-chat-agent-checks-summary-19899842692.md",
       "title": "Dev streaming and chat-agent checks: summary",
       "version": 1
+    },
+    "19909279789": {
+      "path": "oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd/oc-dev-staging-gls-deployment-tracker-19909279789.md",
+      "title": "OC Dev-Staging (GLS) Deployment Tracker",
+      "version": 3
     }
   }
 }

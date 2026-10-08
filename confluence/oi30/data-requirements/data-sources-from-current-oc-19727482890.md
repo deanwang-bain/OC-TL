@@ -1,12 +1,12 @@
 ---
-title: "Data sources from Current OI"
+title: "Data sources from Current OC"
 confluence_id: 19727482890
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19727482890
-version: 5
-updated: 2026-08-31T05:20:37.699Z
+version: 6
+updated: 2026-10-07T13:50:45.580Z
 ---
 
-# Data sources from Current OI
+# Data sources from Current OC
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19727482890)
 

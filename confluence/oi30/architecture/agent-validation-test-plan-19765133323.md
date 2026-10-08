@@ -2,8 +2,8 @@
 title: "Agent_Validation_Test_Plan"
 confluence_id: 19765133323
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323
-version: 1
-updated: 2026-08-26T07:22:48.250Z
+version: 2
+updated: 2026-10-07T13:47:17.612Z
 ---
 
 # Agent_Validation_Test_Plan
@@ -13,7 +13,7 @@ updated: 2026-08-26T07:22:48.250Z
 **AGENT VALIDATION**
 **TEST PLAN**
 
-**Opportunity Indicator 3.0**
+**Opportunity Catalyst 3.0**
 
 *Expanded “speaking document” edition*
 
@@ -22,7 +22,7 @@ updated: 2026-08-26T07:22:48.250Z
 | **Document field**  | **Value**  |
 | Document purpose  | Define the complete test strategy, coverage model, measurements, tooling, execution model, non-functional strategy and release evidence for validating agents.  |
 | Primary focus  | Agent orchestration, tool use, evidence/trace integrity, groundedness, faithfulness, deterministic calculation boundaries, regression, security, auditability, performance and operational quality.  |
-| Source basis  | Attached Opportunity Indicator 3.0 Testing Architecture and the existing Agent Validation Test Plan.  |
+| Source basis  | Attached Opportunity Catalyst 3.0 Testing Architecture and the existing Agent Validation Test Plan.  |
 | Intended use  | Release-governing reference (“Bible”) for planning, execution, coverage reporting, triage and sign-off.  |
 | Status  | Updated draft for architecture/test-strategy review.  |
 | Governance note  | Where the source architecture does not prescribe a numeric threshold or owner, this document defines a practical measurement method and marks the actual release threshold/owner for approval rather than silently inventing policy.  |
@@ -79,7 +79,7 @@ The supplied architecture explicitly states that a conventional single test pyra
 
 ![att_0_for_19765133323.png](../../_attachments/19765133323/att_0_for_19765133323.png)
 
-Figure 1 — Supplied Opportunity Indicator 3.0 testing architecture used as the source for this plan.
+Figure 1 — Supplied Opportunity Catalyst 3.0 testing architecture used as the source for this plan.
 
 | **Principle 1 — protect deterministic boundaries** If the same inputs and pinned definition versions should produce the same result, use exact assertions. A mismatch is a defect, never a model fluctuation. This applies especially to calculation logic, data constraints, contracts and infrastructure policy.  |
 

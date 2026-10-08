@@ -1,12 +1,12 @@
 ---
-title: "Opportunity-Indicator Architecture (high Level)"
+title: "Opportunity-Catalyst Architecture (high Level)"
 confluence_id: 19705397258
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19705397258
-version: 9
-updated: 2026-08-07T10:13:45.853Z
+version: 10
+updated: 2026-10-07T13:47:41.946Z
 ---
 
-# Opportunity-Indicator Architecture (high Level)
+# Opportunity-Catalyst Architecture (high Level)
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19705397258)
 
