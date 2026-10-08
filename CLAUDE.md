@@ -1,9 +1,16 @@
 # OC-TL — Tech Lead workspace for OI 3.0 / OC 3.0
 
-**Naming.** September artefacts call the product **Opportunity Catalyst (OC 3.0)** — the
-Jira board is `OC3`, tickets are `OC3-nn`. The Confluence space key is still `OI30` and
-older pages still say Opportunity Indicator, so both names are live and neither is
-wrong. No page records the change.
+**Naming.** The product is **Opportunity Catalyst (OC 3.0)**; the architecture tree in
+Confluence was renamed to match on 4 October, and the repositories are
+`nextgen-opportunity-catalyst-core` and `-ui`. The Confluence space key is still `OI30`
+and older pages still say Opportunity Indicator, so both names are live.
+
+**The Jira board is `OI3`, and tickets are `OI3-nn`.** The Sprint 1 retrospective deck
+calls it `OC3` and renumbers every ticket to `OC3-nn`, which is where an earlier version
+of this file took its claim from — that was wrong. The same ticket appears in the Sprint 1
+deck as `OC3-48` and in the Sprint 2 deck as `OI3-48`, both labelled "development
+environment and access". Every other artefact, including the October deployment tracker
+(`feat/OI3-212-gls-backend`), uses `OI3`. Cite `OI3-nn`.
 
 ## What this project is for
 
@@ -59,9 +66,9 @@ Stack is a cloud-native headless architecture on **Azure**: React / TypeScript /
 frontend, FastAPI for deterministic REST and FastMCP for agent-driven access, with
 business rules and calculations deliberately kept out of the client. The authoritative
 and most decision-dense source is
-[Technology Choices](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md)
+[Technology Choices](confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack/technology-choices-19751338017.md)
 — prefer it over the older
-[Technical Stack](confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md)
+[Technical Stack](confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack-19704512648.md)
 page where they disagree.
 
 Third-party and open-source positions are tracked in `tools/known_tools.json`; the daily
@@ -151,10 +158,11 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 85 pages, **67 carry text, 9 hold only an attachment or diagram, and 9 are genuinely
-empty**. LSEG was filled on 17 September, the first reduction in the empty set. The empty set still includes every high-level design page this role reviews
-against: Security Design, NFR Design Choices, Observability, Endpoints & Interfaces
-Design, and Deployment Design (CI/CD). Reviews touching those areas rest on judgment, not
+Of 95 pages, **76 carry text, 12 hold only an attachment or diagram, and 7 are genuinely
+empty**. Deployment Design was filled on 7 October — the first of the five high-level
+design pages to move. **Four still carry nothing**: Security Design, NFR Design Choices,
+Observability, and Endpoints & Interfaces Design. Reviews touching those areas rest on
+judgment, not
 written policy — say so explicitly rather than presenting a standard that does not exist.
 
 **A page that looks empty may not be.** Several carry their content as an attached
@@ -169,3 +177,10 @@ decision depends on one. The full breakdown is in
 
 The mirror flattens Confluence's page-level permissions into repo access. Keep scope to
 `OI30` and do not widen it without checking first.
+
+**Pages sometimes carry credentials, and the mirror copies them.** The
+[User Interviews](confluence/oi30/user-interviews-19883524168.md) page lists Zoom
+recording passcodes in plain text beside each partner interview, so they are now in git
+history. Nothing here can redact a page — the fix is on the Confluence side. When a page
+like this appears, raise it rather than quietly mirroring it, and never repeat a
+credential into `context/`, a review, or a briefing.

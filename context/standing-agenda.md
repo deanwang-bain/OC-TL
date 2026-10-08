@@ -9,219 +9,206 @@ matters is not. When an item is resolved, delete it and record the ruling in
 
 Format: `### N. Headline` — the finding, why it matters now, then **Ask:** in bold.
 
-*Last full review against the mirror: 2026-09-28.*
+*Last full review against the mirror: 2026-10-08.*
 
 ---
 
-### 1. The ARC architecture assessment has 249 MUST requirements and zero answers
+### 1. Two items are blocked on my review, not on build effort
 
-[Architecture Assessment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681),
-published 22 September, looks like an empty page. It carries two workbooks that together
-are the formal Bain architecture governance gate.
+The Sprint 2 retrospective names ten spillover items and classifies each. Two sit in
+review *"waiting on review capacity, not build effort"*:
 
-| Workbook | Requirements | MUST | Responses recorded |
-| -------- | ------------ | ---- | ------------------ |
-| ARC v2 tracker | 180 | 136 | **0** |
-| AI Architecture Requirements v2.1 | 133 | 113 | **0** |
+- **OI3-21** — security and governance
+- **OI3-27** — architecture decision records
 
-A reviewer pass on 22 September did real work: every row classified, **51 re-prioritised**
-(14 MUST→SHOULD, 13 MUST→CONDITIONAL) on the argument that the framework mandates
-patterns rather than outcomes — microservices, Istio, Kafka, circuit breakers, database
-portability. **That reclassification is defensible and worth defending.** 53 rows are
-marked *Questionable Requirement*; 33 more are *External Dependency* owned by Bain/TSG.
+Both are mine. They have been open since Sprint 1, and they are on a list the team is
+being asked to explain. The ADR review in `reviews/2026-09-01-adr-001-to-009.md` is
+written; what is missing is the ruling on its two structural findings (item 8).
 
-But Design response, Arch/Engineering response, Status and Owner are empty in **all 180
-rows**, and all 133 AI rows. The Summary sheet states it plainly: *MUST requirements 136,
-MUST not yet Addressed 136.*
+**Ask: nothing — this one is on me. Clearing OI3-21 and OI3-27 is the first thing to do
+this week, before asking anyone else for dates.**
 
-**This is not separable from item 2.** The evidence the assessment asks for is exactly
-what the five blank high-level design pages would contain — Security Design, NFR,
-Observability, Endpoints, Deployment. Those blanks have been a review inconvenience for a
-month; they are now blocking a governance milestone.
+### 2. Sprint 2 hit 83%, and the reason it did is the thing to protect
 
-**Ask: who owns the response, and is this gated before or after GLS? If before, it needs
-an owner this week. Much of the answer already exists in Technology Choices and the ADRs
-and needs transcribing into the tracker, not inventing — but 249 rows is not a
-spare-afternoon job, and nobody has started.**
+[Sprint 2 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883720705),
+15–27 September.
 
-### 2. Five design pages are still blank, and they are now on the critical path
+| Measure | Sprint 1 | Sprint 2 |
+| ------- | -------- | -------- |
+| Items completed | 22 | **48** |
+| Completion rate | 44% | **83%** |
+| Of those committed | 9 of 22 | **36 of 45** |
+| Scope added mid-sprint | ~127% | **29%** |
+| Carried over | 28 | **10** |
 
-Security Design, NFR Design Choices, Observability, Endpoints & Interfaces Design and
-Deployment Design (CI/CD). Six pages were added in the week of 22 September; none of these
-five. They have had no owner since the space was created.
+Both sprints are counted on the same basis, so this is a real improvement: the team
+doubled its commitment *and* raised the hit rate, and 12 of 13 mid-sprint additions
+finished inside the sprint.
 
-What changed is the consequence. Previously: reviews in these areas rest on judgment
-rather than policy. Now: **they are the evidence base for item 1**, and the 30-minute
-claim gets its first public airing at GLS with **no latency budget written anywhere**.
+**The burn profile is the part worth reading.** Remaining work fell from 43 to 36 across
+all of week two, then from 36 to 11 in the final three days — around 25 items, more than
+half the sprint's output, closing once **AI platform access arrived on the last day of
+the sprint**. The throughput is genuine; it was also gated on one access grant, and would
+have looked entirely different had that grant slipped a week.
 
-**Ask: assign Security Design and NFR to named people this week. Both are largely
-transcription — the content exists in the architecture diagram and Technology Choices.**
+The team's own fix is the right one: *raise platform access requests a sprint ahead of
+the work.*
 
-### 3. Sprint 1 closed at 44%, and GLS is two to four weeks away
+**Ask: congratulate the team on this properly — it is a large, real improvement. Then ask
+what Sprint 3 depends on that has not been requested yet, because that is the question
+Sprint 2 answered the hard way.**
 
-[Sprint 1 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19838042157)
-covers 1–14 September.
+### 3. Four design pages are still blank, and the ARC assessment needs them
 
-| Measure | Value |
-| ------- | ----- |
-| Committed at sprint start | 22 |
-| Added mid-sprint | 28 |
-| Completed | 22 of 50 — **44%** |
-| Of the 22 committed, completed | **9** |
-| Scope growth during the sprint | **~127%, with no agreed gate** |
-| Carried into Sprint 2 | 28 items |
+Security Design, NFR Design Choices, Observability, and Endpoints & Interfaces Design.
+**Deployment Design was filled on 7 October** — the first of the five to move, and proof
+these get written when someone owns one.
 
-What landed is genuinely foundational — monorepo and scaffolding, BFF with Entra SSO, app
-shell, Radix token library, agent skeleton, initial ingestion, company search. The team's
-own diagnosis is unsparing and correct: scope grew with no gate, environment and access
-work ran in parallel with delivery, design decisions arrived after build began.
+Still unanswered behind them: the
+[Architecture Assessment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681)
+carries **313 requirements, 249 of them MUST, with zero responses** across both ARC v2
+and the AI Architecture v2.1 workbook. The evidence it asks for is exactly what these
+four pages would contain.
 
-Sprint 1 data is now two weeks stale and Sprint 2 should have closed. **There is no Sprint
-2 retrospective in the space yet.**
+And the gap now has a concrete cost: the chat assistant streams over SSE, the ingestion
+design says a 200-page filing "takes minutes", and **the 30-minute end-to-end claim still
+has no latency budget written anywhere**. GLS demos that claim this month.
 
-**Ask: what is the demo-critical subset, and what is explicitly dropped to protect it? And
-publish the Sprint 2 retro — at 44% throughput, the second data point is what tells us
-whether the first was a start-up cost or a trend.**
+**Ask: assign Security Design and NFR to named people this week. Deployment Design shows
+it takes one owner and a few days.**
 
-### 4. Two delivery blockers are open, and both are Bain's to clear
+### 4. Azure AI Search is built, and the ruling page still forbids it
 
-Named in the retro as constraints that absorbed Sprint 1 capacity. Neither is closed.
+The [Document Upload architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19899351139)
+(4 October) marks itself **Authoritative** and records `srch-oi-dev-gwc-nonprod-1` as
+**EXISTS** — Basic tier, 2 replicas, Entra-only auth — with `idx-case-documents` to be
+created. Access was granted to the team on the last day of Sprint 2.
 
-1. **Developer environment migration.** The team is moving off VDI onto Bain laptops
-   because the VDI is *"materially slower for development work"*. Started in Sprint 1,
-   incomplete, *"continues to affect Sprint 2"*.
-2. **Access provisioning.** **OC3-2** (service provisioning) and **OC3-48** (development
-   environment and access) remain open; the retro notes the dependency *"affected work
-   beyond those items"*.
+[Technology Choices](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017) §4.2
+says *"Do not add a vector store at MVP or at north star, unless retrieval quality is
+measured to be insufficient"*, with one revisit trigger: *"measured retrieval quality
+against a fixed evaluation set, not a hunch."* **The page is still version 1, dated 21
+August.** No evaluation is cited anywhere.
 
-These are the cheapest available throughput gain before GLS — no design decisions, no
-architecture, just administration.
+**The build is probably right** — a filtered hybrid query is not something SharePoint's
+native index does, and the new design is careful work. The problem is that the decision
+record now describes a system that does not exist, which makes it useless as a reference
+for the next decision.
 
-**Ask: name an owner and a date for each. Every day these stay open costs demo-critical
-capacity, and they have now been open across two sprints.**
+One good sign: the same page uses **Service Bus**, not Event Grid, which quietly brings
+it back in line with §6 and resolves the conflict the September proposal opened.
 
-### 5. The backend runs on a search vendor nobody has approved
+**Ask: update §4.2 to record what was actually decided and why. If the evaluation was
+run, cite it; if it was not, say the decision was taken on design grounds. Either is
+fine — leaving the page contradicting the running system is not.**
 
-The engineering pages published 21 September answer a question that has been open for
-weeks — and open a sharper one.
+### 5. The GLS staging environment is good work with three unconfirmed answers
 
-**Answered: "GenAI" is Azure AI Foundry.**
-[Present working — Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
-shows `foundry.ask_agent` called twice per discovery plus once per analysed peer. Foundry
-is already *Adopt* in Technology Choices, so the provider conflict that has sat on this
-agenda since 1 September is **closed**.
+[OC Dev-Staging (GLS) Deployment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19909279789)
+(7 October) stands staging up as a **second Container Apps environment** —
+`acae-oppcat-stg-gwc-nonprod-1`, own subnet, own identities, Terraform-provisioned,
+deployed from GitHub Environments with OIDC. **This settles `decisions/002`: Container
+Apps, not a VM, and with more pipeline than that recommendation thought affordable.**
 
-**Opened: web search is `serpapi`.**
-[Future Scope](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714) states it
-outright — *"web search runs through a serpapi engine"*. serpapi is a commercial
-third-party API, and it is how **target-company names leave Bain**. It appears in no
-position table, no ADR, and not in the new Data Source Catalogue.
+Seventeen questions, answered the same day, each with a recommendation, a named decider
+and a rationale. Where corners were cut they were written down rather than smoothed over.
+This is the standard other pages should be held to.
 
-**Ask: rule on serpapi, or name what replaces it. And confirm the Foundry calls traverse
-the API Management GenAI gateway — §7 makes that the single egress point, and the
-implementation pages do not mention it.**
+Three things still open:
 
-### 6. The proposed ingestion pipeline contradicts two rulings on the same page it cites
+1. **Three answers say "Angel to confirm"** — Q7 audit blob container, Q10 new staging
+   identities, Q15 whether the shared App Service plan carries a third app.
+2. **The narrative agent does not exist yet.** Narrative blocks show "unavailable" until
+   the agent team builds it, and it is on the demo path.
+3. **GLS will run on a POC Foundry account**, `poc-swc-oi-sweden-test`, accepted "for now"
+   with a proper one planned before the partner rollout.
 
-[Future Scope — With ai search](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
-proposes event-driven ingestion: upload → Event Grid → queue → Document Intelligence →
-chunk → embed → **Azure AI Search**, hybrid query, filtered by `project_id` and `user_id`.
+**Ask: get Angel's three confirmations closed, and confirm the POC Foundry account carries
+the quota and support the demo needs. Also: who owns the narrative agent, and by when?**
 
-**The engineering reasoning is sound.** Filing tables do not survive naive chunking, blob
-cannot serve a filtered hybrid query, and a 200-page parse cannot block an upload. Document
-Intelligence is already *Adopt*. But two choices sit against
-[Technology Choices](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017):
+### 6. A model availability fact is splitting the system across two regions
 
-- **§4.2 decided against a vector store** at MVP *and* north star, because AI Search
-  "would mean building the embedding pipeline the native path exists to avoid". It is
-  revisitable — AI Search is named the first candidate — but the trigger is **"measured
-  retrieval quality against a fixed evaluation set, not a hunch"**, and no measurement is
-  cited.
-- **§6 chose Service Bus explicitly over Event Grid**, for commands and events both.
+Everything runs in **Germany West Central** except the Foundry agents, which run in
+**Sweden Central** *because `gpt-5.2` is only offered there* (owner, 2026-10-01).
 
-Neither page mentions the other. This is the pattern worth naming: a good proposal that
-did not check the ruling page.
+The design handles this well — document content, extraction, embedding and the index all
+stay in Germany, and because Germany cannot host Azure models at all, the embedding model
+runs as a Container App inside the environment with weights baked into the image. That is
+a sound answer to a real constraint.
 
-**Ask: run the retrieval evaluation §4.2 requires before committing to AI Search — that is
-the gate the decision already set. And use Service Bus for the ingestion event unless
-someone wants to reopen §6 deliberately.**
+But two governance threads run through it and neither has a position recorded:
 
-### 7. Mainland China should be recorded as a scope exclusion now, not discovered later
+- **`gpt-5.2` and `gpt-4.1`** are now named models. Neither is in a position table, and
+  the Greater China assessment separately records that OpenAI-backed features must be off
+  in that region.
+- **The embedding model is "to be chosen"**, with packaging explicitly either an
+  off-the-shelf **Hugging Face text-embeddings-inference** image or a governed wrapper.
+  That is a Build/Adopt decision with licence and provenance consequences.
 
-[Opportunity Catalyst in Greater China](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082640)
-(22 September) concludes **mainland is blocked** — global LLMs must be off for internal
-users and clients alike — and **Hong Kong needs case-by-case clearance**. The platform is
-sized for ~2,300 partners, which includes Greater China offices, so this gets asked the
-first time one of them opens the tool.
+**Ask: record positions for gpt-5.2, gpt-4.1 and whatever the embedding model turns out
+to be. The top-n evaluation that picks it is the right moment to write the ruling.**
 
-Nothing in the product enforces it. The planned pre-flight check keys on where the
-*target company* sits, not on billing entity or user location, so it would not stop a
-mainland case analysing a US company.
+### 7. The backend runs on a search vendor nobody has approved
 
-**Ask: write mainland China into the GLS and MVP scope as an explicit exclusion, and ask
-StatusNeo to widen the pre-flight check's inputs to billing entity and user location.
-Cheap now, expensive after it is built.**
+Unchanged since 21 September. [Future Scope](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+states that *"web search runs through a **serpapi** engine"*. serpapi is a commercial
+third-party API and it is how **target-company names leave Bain**. It appears in no
+position table, no ADR and not in the Data Source Catalogue.
 
-### 8. Open-source and third-party positions still need a ruling
+The deployment tracker adds a second instance: the narrative agent *"calls only the model
+and web search"*, with web search as the model's built-in tool.
+
+**Ask: rule on serpapi, or name what replaces it. Web search is now in two independent
+paths and still has no recorded position.**
+
+### 8. ADR-001 to ADR-009 — two structural findings, now enforceable
+
+Full review in `reviews/2026-09-01-adr-001-to-009.md`, outcome **approve with comments**.
+This is OI3-27, one of the two items in item 1.
+
+1. **No ownership rule for the shared operational store.** ADR-001 decomposes by domain;
+   ADR-009 puts claims, evidence bindings, content nodes, deck composition and peer sets
+   in one Azure SQL database with nothing saying who may write which tables. The monorepo
+   exists and staging now has per-environment identities and separated blob containers —
+   the discipline is clearly there, so this is a good moment to write the rule down.
+2. **ADR-009 contradicts itself on chat turns** — Context calls them transactional, the
+   decision table assigns them to Redis. Staging runs GLS data in Redis database 1 with
+   **no persistence**, which makes the question concrete rather than theoretical.
+
+**Ask: rule on store ownership and fix the chat-turn contradiction — then OI3-27 closes.**
+
+### 9. Open-source and third-party positions still need a ruling
 
 Technology Choices declares 66 Build / Adopt / Buy positions and remains **Draft for
-review** — unchanged in four weeks. Assessment in
+review** — unchanged in six weeks, and now demonstrably behind the build. Assessment in
 `requests/2026-08-31-third-party-and-oss-positions.md`.
 
 - **Approve as a block** — TanStack Query, Zustand, Radix, i18next, Vega-Lite, DuckDB,
-  Parquet, OpenTelemetry. Radix is already in production via OC3-71, so this ratifies a
-  choice already shipped.
+  Parquet, OpenTelemetry.
 - **Hold** — Zvec, CopilotKit, AG-Grid Enterprise, Datadog, dbt, headless Chromium driver.
-- **Add to the register** — **serpapi** (item 5), **Azure AI Search** and **Event Grid**
-  (item 6), **think-cell** and **Andromeda** (unplanned Sprint 1 feasibility work). None
-  of the five has a recorded position.
+- **Add to the register** — **serpapi**, **Azure AI Search**, **gpt-5.2**, **gpt-4.1**,
+  the **embedding model**, **think-cell** (OI3-54, open since Sprint 1) and **Andromeda**.
 - **Apache ECharts is a contradiction** — rejected in §2.1 of the same page for breaking
   ADR-006, then listed in the frontend table.
 
 **Ask: approve the block; assign the rest. And add a licence column.**
 
-### 9. Two topology rulings — one settled by the build, one still open
+### 10. Three data foundation items left Sprint 2 without completing
 
-`decisions/001` and `decisions/002`, proposed since 2026-08-31.
+OI3-18, OI3-43 and OI3-65 were removed from the sprint rather than finished, and moved to
+the general backlog. The retro's own words: they *"still require close follow-up to not
+become another blocker for the GLS scope."*
 
-**001 is effectively adopted.** Sprint 1 completed **OC3-61 "Monorepo and service
-scaffolding"**. The China assessment independently confirms the reasoning: it names the
-**calculation engine and containerised packaging** as the components that carry over
-unchanged to any relocation, which is the argument for keeping the engine separate from
-day one. Worth formalising so the rule is on the record rather than inferred.
-
-**002 is still open.** Container Apps with a thin pipeline versus a VM for GLS. With two
-to four weeks left and the environment migration unfinished, this needed closing a week
-ago.
-
-**Ask: confirm 001 as adopted, and rule on 002 this week.**
-
-### 10. ADR-001 to ADR-009 — two structural findings still open
-
-Full review in `reviews/2026-09-01-adr-001-to-009.md`, outcome **approve with comments**.
-
-1. **No ownership rule for the shared operational store.** ADR-001 decomposes by domain;
-   ADR-009 puts claims, evidence bindings, content nodes, deck composition and peer sets
-   in one Azure SQL database with nothing saying who may write which tables. The monorepo
-   now exists, so this is enforceable in code review — but only once the rule is written.
-2. **ADR-009 contradicts itself on chat turns** — Context calls them transactional, the
-   decision table assigns them to Redis.
-
-**Network isolation remains the highest-leverage open item**, Bain-owned, leaving both
-ADR-008 and ADR-009 provisional.
-
-**Ask: rule on store ownership, fix the chat-turn contradiction, name an owner for
-network isolation.**
+**Ask: who owns these now, and are any of them on the GLS path?**
 
 ### 11. The calculation hop is still specified two different ways
 
-Unchanged since 2026-09-01, now four weeks old.
+Unchanged since 2026-09-01, now five weeks old.
 
 [Technology Choices](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017)
 specifies **gRPC with protobuf**. The
 [Agent Validation Test Plan](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323)
-specifies **plain REST over HTTP** and excludes gRPC from MVP testing. Neither page has
-moved.
+specifies **plain REST over HTTP** and excludes gRPC from MVP testing.
 
 **Ask: which protocol, and who corrects the other page?**
 
@@ -229,37 +216,32 @@ moved.
 
 ## Recently settled — no longer worth standup time
 
-- **"GenAI" is Azure AI Foundry** — answered by the engineering pages, 21 September. The
-  OpenAI provider conflict that opened on 1 September is closed. The residue (which model,
-  and gateway routing) is folded into item 5.
-- **The peer-matching algorithm is now documented to review standard** — BM25 over
-  character 3–4 grams on the name, measured `b = 0.5`, embeddings on `business_model`
-  only, deterministic side using no model and no network.
-- **LSEG documented** (17 September). Persistence restrictions still unwritten, so ADR
-  review finding S6 stands.
-- **Data Source Catalogue published** — per source, sensitivity and permitted use. Content
-  is a SharePoint workbook, so outside the mirror.
-- **Peer selection weighting** — users may now prioritise buckets.
-- **All six screen specs stable**; **Bain L1–L4 taxonomy** is the master structure.
+- **`decisions/002` is adopted** — Container Apps with Terraform and GitHub Environments,
+  not a VM. Worth formalising; no longer worth debating.
+- **Deployment Design is written** — first of the five blank design pages to move.
+- **Estimates reach Jira from Sprint 3** — two sprints ran on issue count because the
+  board was configured for story points and changing it needed admin access.
+- **Event Grid vs Service Bus** — the authoritative ingestion design uses Service Bus,
+  agreeing with §6. Only the un-retracted Future Scope page still says otherwise.
+- **"GenAI" is Azure AI Foundry** — answered by the September engineering pages.
+- **The product rename reached the architecture tree** on 4 October.
 
 ## Watch list
 
-- **Design requirements grew again** — [Design requirements (Cont.)](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031)
-  reached v8 on 25 September, from September user testing with Mark, Andrew, Klaus,
-  Alyson, Saverio and Andrea. Two named dependencies: realisation timelines pending
-  **Stephanie**, Operational Excellence lever taxonomy pending **Scott Daubin**.
-- **The extraction skill runs at 70–80% accuracy** and degrades as sector conditions
-  accumulate — the first accuracy figure recorded anywhere in the space, and it appears in
-  the China assessment rather than in any quality or NFR page.
-- **The quality benchmark does not exist.** Required for the global product regardless;
-  it is also the only thing that would make the China model question answerable.
-- **Five pages now sit outside the OI3.0 tree**, including both engineering pages and two
-  titled "to be delete" that hold real design rationale.
-- **The product has been renamed** to **Opportunity Catalyst (OC 3.0)** — Jira board OC3,
-  "OpCat" workbooks — while the space key and most pages still say Opportunity Indicator.
-  No page records the change.
-- **A technical debt register was published in Sprint 1.** Not in the mirror; worth pulling
-  in, since it is the natural companion to code review.
-- **Jira cannot record the team's estimates** — no admin access, so there is no velocity
-  baseline to plan against.
+- **The Jira board is `OI3`, not `OC3`.** The Sprint 1 deck relabels every ticket to
+  `OC3-nn`; nothing else does. `OC3-48` and `OI3-48` are the same ticket. An earlier
+  version of `CLAUDE.md` recorded `OC3` as fact — corrected 2026-10-08.
+- **Zoom passcodes are in the mirror.** The [User Interviews](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883524168)
+  page lists recording passwords in plain text beside nine partner interviews, so they are
+  now in this repo's git history. The fix is on the Confluence side.
+- **Sprint 3 planning exists only as nine video files**, ~91 MB, no written summary. The
+  decisions taken there are not searchable.
+- **Shared Postgres compute** is accepted only until the 50+ partner rollout, late
+  November or early December.
+- **Five items have been open since Sprint 1** — OI3-21, OI3-27, OI3-48, OI3-54, OI3-82.
+- **Two items are blocked on vendor limits** — OI3-82 rate and quota, OI3-147 Data Access
+  Service. The retro suggests escalating vendor rate limits as a single ask.
+- **A technical debt register exists** and is still not in the mirror.
+- **Six pages sit outside the OI3.0 tree**, including both engineering pages, the cost bar
+  methodology, and two titled "to be delete" that hold real design rationale.
 - **ADR-001 to ADR-009** remain "Accepted, pending Bain architect review".

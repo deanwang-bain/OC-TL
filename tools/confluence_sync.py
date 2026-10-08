@@ -42,7 +42,7 @@ MAX_RETRIES = 5
 # Bump when the markdown output changes. Pages are normally skipped while their
 # Confluence version is unchanged, which would otherwise leave the whole mirror
 # frozen at the old rendering; a bump forces one full rewrite.
-CONVERTER_VERSION = 5
+CONVERTER_VERSION = 6
 
 
 class ConfluenceError(RuntimeError):
@@ -171,7 +171,21 @@ BLOCK_TAGS = {"p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "tr"
 HEADINGS = {f"h{n}": "#" * n for n in range(1, 7)}
 # Confluence wraps rich content in ac:-namespaced macro tags. A few carry content
 # worth keeping; the rest are chrome that would only add noise to the mirror.
-SKIP_CONTENT = {"ac:parameter", "ac:emoticon"}
+#
+# The adf-* tags come from the newer ADF extensions (tabs, panels, expands). An
+# extension carries its real body in `ac:adf-content` and a second, flattened
+# rendering of the same body in `ac:adf-fallback`, for clients that cannot render
+# the extension. Emitting both duplicated every tab of the GLS deployment tracker,
+# and `ac:adf-attribute` spilled the extension's own parameters -- local ids, the
+# extension key, the tab titles -- into the page as a run of unreadable text.
+# Keep the content, drop the fallback and the parameters.
+SKIP_CONTENT = {
+    "ac:parameter",
+    "ac:emoticon",
+    "ac:adf-fallback",
+    "ac:adf-attribute",
+    "ac:adf-parameter",
+}
 
 # Macros that render as a visual or generated block. They carry no text, so
 # without a placeholder the page mirrors as blank and a reader cannot tell an

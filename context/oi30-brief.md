@@ -6,14 +6,23 @@ disagrees with `confluence/`, the mirror wins — and this file needs updating.
 ## Naming: the product is now Opportunity Catalyst
 
 As of September the artefacts say **Opportunity Catalyst (OC 3.0)**, not Opportunity
-Indicator. The Jira board is **OC3** and tickets are **OC3-nn**
-([Sprint 1 Retrospective](../confluence/oi30/sprint-1-retrospective-19838042157.md));
-the new [Data Source Catalogue](../confluence/oi30/architecture/data-architecture/data-source-catalogue-19839025154.md)
+Indicator, and on **4 October the Confluence architecture tree was renamed to match** —
+*Opportunity-Catalyst Architecture (high Level)*. The repositories are
+`Bain/nextgen-opportunity-catalyst-core` and `-ui`; the
+[Data Source Catalogue](../confluence/oi30/architecture/data-architecture/data-source-catalogue-19839025154.md)
 speaks of "Opportunity Catalyst data" and its workbook is "OpCat end-to-end data map".
 
-The Confluence space key is still `OI30` and most older pages still say Opportunity
-Indicator, so **both names are live**. This repository's own name, OC-TL, matches the
-new one. No page announces the change, so treat it as observed rather than ruled.
+**The Jira board, however, is `OI3`, and tickets are `OI3-nn`.** *(Corrected 2026-10-08;
+this file previously said `OC3`.)* The
+[Sprint 1 Retrospective](../confluence/oi30/sprint-retrospectives/sprint-1-19882705010.md)
+deck is the only artefact that writes `OC3-nn`, and it renumbers tickets that appear
+elsewhere under `OI3` — `OC3-48` in that deck is `OI3-48` in the Sprint 2 deck, both
+"development environment and access". The October deployment tracker builds from
+`feat/OI3-212-gls-backend`. Cite `OI3-nn`.
+
+The Confluence space key is still `OI30` and many older pages still say Opportunity
+Indicator, so **both product names are live**. This repository's own name, OC-TL, matches
+the new one. No page announces the change, so treat it as observed rather than ruled.
 
 ## The product
 
@@ -105,7 +114,7 @@ undecided rather than settled.
 Cloud-native, **headless** architecture. Technology choices map to distinct capability
 layers: client experience, interfaces, deterministic processing, data management,
 AI/agent services, security, infrastructure.
-([Technical Stack](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack-19704512648.md))
+([Technical Stack](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack-19704512648.md))
 
 **Frontend** — React 18, TypeScript, Vite, TanStack Query, AG Grid, Apache ECharts,
 React Router v6, TailwindCSS, Bain Design System, Okta React SDK, AI SDK (ai-sdk.dev).
@@ -127,7 +136,7 @@ persistence topology.
 
 ### The two interface patterns, and how the views reconcile
 
-[Architecture Layers](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/architecture-layers-19705004106.md)
+[Architecture Layers](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/architecture-layers-19705004106.md)
 resolves most of what looked like a contradiction between the written stack and the
 diagrams. The client reaches the platform two ways, by design:
 
@@ -153,7 +162,7 @@ cannot be right. Flag it rather than assuming either.
 
 ## Technology choices
 
-[Technology Choices](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/technical-stack/technology-choices-19751338017.md)
+[Technology Choices](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/technical-stack/technology-choices-19751338017.md)
 is the most decision-dense page in the space. Status: **Draft for review**.
 
 The governing rubric is **Azure managed services first, custom build only where
@@ -214,7 +223,7 @@ approval **rather than silently inventing policy.**
 
 The backend is organised around the **lifecycle of an opportunity assessment**, not
 around screens or technical components
-([Domain Architecture](../confluence/oi30/architecture/opportunity-indicator-architecture-high-level/domain-architecture-19705004114.md)):
+([Domain Architecture](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/domain-architecture-19705004114.md)):
 
 **Company Universe → Financial & Market Evidence → Indicators & Signals → Peer Context →
 Opportunity Assessment → Research & Collaboration → Outputs**
@@ -540,9 +549,13 @@ to account for two concurrent viewers at MVP. Finding S4 in
 
 ## Delivery — what Sprint 1 actually did
 
-[Sprint 1 Retrospective](../confluence/oi30/sprint-1-retrospective-19838042157.md)
+[Sprint 1 Retrospective](../confluence/oi30/sprint-retrospectives/sprint-1-19882705010.md)
 covers **1–14 September 2026**, the first hard evidence of delivery pace. Content is in
 `OC3_Sprint1_Retrospective.pptx`; the page itself is empty.
+
+*Ticket prefixes below are quoted as the Sprint 1 deck writes them. That deck is the only
+artefact that uses `OC3-`; the live Jira key is `OI3`, so `OC3-48` here and `OI3-48` in
+the Sprint 2 deck are the same ticket. See the naming note in `CLAUDE.md`.*
 
 | Measure | Value |
 | ------- | ----- |
@@ -582,6 +595,143 @@ finish the laptop migration.
 
 **Two-week Scrum cycles.**
 ([Ways of Working](../confluence/oi30/ways-of-working-19588612195.md))
+
+## Delivery — Sprint 2 nearly doubled the throughput
+
+[Sprint 2 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883720705)
+covers **15–27 September**. Like Sprint 1 the page is empty and the content is the
+attached deck, `Opportunity_Catalyst_Sprint2_Retrospective.pptx`.
+
+| Measure | Sprint 1 | Sprint 2 |
+| ------- | -------- | -------- |
+| Items completed | 22 | **48** |
+| Completion rate | 44% | **83%** |
+| Of those committed | 9 of 22 | **36 of 45** |
+| Scope added mid-sprint | ~127% | **29%** |
+| Carried over | 28 | **10** |
+
+**This is a real change, not a counting artefact** — the deck states both sprints are
+counted on the same basis, delivery items only, epics excluded. The team doubled its
+commitment *and* raised the hit rate. Additions stopped becoming carryover: 12 of the 13
+items added mid-sprint finished inside the sprint, against 15 of 28 carrying over in
+Sprint 1. Most of the Sprint 1 backlog cleared, including the data foundation items.
+
+**Read the burn profile before celebrating.** Remaining work fell from 43 to 36 across
+the whole second week, then from 36 to 11 in the final three days — *"around 25 items,
+more than half the sprint's output, reach Done once AI platform access arrives."* Access
+to AI Search and document parsing landed **on the last day of the sprint**. The throughput
+is real, but it was gated on an access grant, and the same shape would look very different
+had the grant slipped a week.
+
+**Five items have now been open since Sprint 1**: OI3-21 security and governance, OI3-27
+architecture decision records, OI3-48 development environment and access, OI3-54
+think-cell licence, OI3-82 rate and quota management. Of the ten spillover items, seven
+are under way, in review, or blocked externally; two are blocked on vendor limits
+(OI3-82, OI3-147 Data Access Service) and two sit in review for want of **review
+capacity, not build effort** — OI3-21 and OI3-27, both of which are this role's queue.
+
+**Three data foundation items were removed rather than completed** — OI3-18, OI3-43,
+OI3-65 — and moved to the general backlog, with the retro warning they "still require
+close follow-up to not become another blocker for the GLS scope."
+
+**Estimates finally reach Jira from Sprint 3.** The team had been estimating in hours
+while the board was configured for story points, and fixing it needed admin access. Two
+sprints ran on issue count alone; burndown and velocity become meaningful from Sprint 3.
+
+## The GLS staging environment — `decisions/002` settled by the build
+
+[OC Dev-Staging (GLS) Deployment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19909279789)
+(7 October) is the most operationally specific page in the space, and it answers the
+question `decisions/002` has been asking since 31 August.
+
+**It is Container Apps with a real pipeline, not a VM.** Staging is a second Container
+Apps environment, `acae-oppcat-stg-gwc-nonprod-1`, in its own subnet, serving
+`stg.opcat-nonprod.bain.io` from the GLS branches, stood up through Terraform with GitHub
+Environments and OIDC federated credentials. The shortcut was available and was not taken.
+
+Three apps only: `experience-bff` with GLS mode on, its own `bff-session-redis`, and
+`audit-service`. Shared with dev: the Front Door profile and WAF, the VNet, the Postgres
+server (separate database), Key Vault and Log Analytics. Separated per environment: blob
+containers, queues, identities.
+
+**Seventeen questions, answered the same day, with reasoning recorded.** The quality of
+this page is worth noting in review: each question carries a recommendation, a named
+decider, and the answer. Several answers overrode the recommendation on sound grounds —
+Q5 took a new `OC_DEPLOYMENT_TIER=staging` value over reusing `development` *"so logs and
+refusals name the real environment"*, and shipped the BFF change the same day.
+
+**What the scoping surfaced is more useful than the plan**: `audit-service` will not start
+in a deployed tier without blob sealing, so staging needs its own container; it also
+requires a case-service address that staging does not have, handled by a non-resolving
+placeholder recorded as a known gap; the release tooling accepts only the dev database;
+database roles are server-wide, so staging reuses dev's role names and passwords for this
+phase. Each is written down as a gap rather than smoothed over.
+
+**Three things to watch.**
+
+1. **Three answers are still "Angel to confirm"** — Q7 (audit blob container), Q10 (new
+   staging identities), Q15 (whether the shared App Service plan carries a third app).
+   Q15 has the sharpest reasoning on the page and the least confirmation.
+2. **Shared Postgres compute is accepted "for now"**, to be revisited before the 50+
+   partner rollout in late November or early December.
+3. **The narrative agent does not exist yet** — narrative blocks show "unavailable" until
+   the agent team builds it, and it is on the critical path for the demo.
+
+## Document ingestion — the authoritative design, and where it overtook the ruling page
+
+[Document Upload, Indexing, and Parsing](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19899351139)
+(4 October) marks itself **Authoritative** and supersedes the September Future Scope
+proposal. The shape: upload → Service Bus (`document-upload`, then a separate
+`document-ingest` queue) → Document Intelligence layout model → chunk → embed →
+**Azure AI Search**, index `idx-case-documents`, every search filtered to one case.
+
+Three things in it matter beyond the mechanics.
+
+**Azure AI Search is built.** `srch-oi-dev-gwc-nonprod-1` is recorded as **EXISTS** —
+Basic tier, 2 replicas, Entra-only auth. Technology Choices §4.2 still says *"do not add
+a vector store at MVP or at north star"* and is still version 1, dated 21 August. The
+revisit trigger it set — measured retrieval quality against a fixed evaluation set — does
+not appear to have been run. **The architecture moved and the ruling page did not follow.**
+
+**It uses Service Bus, not Event Grid.** This quietly resolves the conflict the September
+Future Scope page opened with §6. The authoritative design now agrees with the ruling
+page; Future Scope was never retracted, so the two proposals still disagree with each
+other.
+
+**Embeddings run in-house because of geography.** Germany West Central cannot host Azure
+models, so the embedding model runs as a Container App, `embedding-service`, weights baked
+into the image at a pinned revision, pulled through `docker.bain.dev`, nothing downloaded
+at start-up. *"Document content never leaves Germany for embedding."* The model itself is
+**still to be chosen**, by top-n evaluation on the real document workload — which is the
+measured-quality discipline §4.2 asked for, applied to the model rather than to the
+decision to have an index at all.
+
+The page is careful about the things that usually go wrong: vectors from different models
+cannot be compared, so each index records the model and revision that produced it and a
+model change means re-embedding into a new index; the search tool, not the model, applies
+the case filter; a parse failure dead-letters with the reason surfaced to the user rather
+than disappearing.
+
+**Residency is now a design constraint with a named cause.** Everything runs in Germany
+West Central **except the Foundry agents, which run in Sweden Central because `gpt-5.2` is
+only offered there** (owner, 2026-10-01). A model availability fact is driving a
+cross-region split of a client-data system. Both the dev and planned staging Foundry
+projects sit under `poc-swc-oi-sweden-test` — a POC account, accepted "for now", with a
+proper one planned before the partner rollout.
+
+## Live streams to the browser
+
+[Chat Assistant Architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19899809824)
+(4 October) separates two SSE streams deliberately: **Stream A, the case stream**, carries
+what the platform's services did to a case; **Stream B, the agent stream**, carries what
+the assistant is doing in response to chat. *"The services never write to the agent's
+stream, and the agent never writes to the case stream."* One owner each, which is the
+right call for both reasoning and authorisation.
+
+Worth holding against the still-blank NFR page: this is a streaming design with no written
+latency budget anywhere.
+
+## Delivery — how the work is run
 
 SN writes the application code; Bain holds product and architecture ownership. The
 MVP sprint map is an explicit *draft based on initial scope assumptions*, and the MVP

@@ -1,7 +1,7 @@
 ---
 id: 002
 date: 2026-08-31
-status: proposed
+status: proposed — adopted in practice, pending formal sign-off
 ---
 
 # 002 — Container Apps with a thin pipeline, not a VM, for GLS
@@ -15,6 +15,32 @@ The instinct behind the question is sound: GLS has a date, and pipeline work is 
 product work. But the question bundles two things — **which platform** and **how much
 pipeline** — and they have different answers. The platform is already decided and decided
 for a capability reason; the pipeline scope is genuinely adjustable.
+
+## What actually happened
+
+**Adopted, and more thoroughly than this recommendation asked for.** The
+[OC Dev-Staging (GLS) Deployment Tracker](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd/oc-dev-staging-gls-deployment-tracker-19909279789.md),
+settled by Dipesh and Angel on 2026-10-07, stands GLS staging up as a second **Container
+Apps** environment — `acae-oppcat-stg-gwc-nonprod-1`, its own subnet, its own identities,
+serving `stg.opcat-nonprod.bain.io` behind the shared Front Door profile and WAF.
+
+The VM option was not taken.
+
+This recommendation argued for cutting pipeline scope rather than platform. The team cut
+less than that: staging is provisioned through **Terraform**, deployed from **GitHub
+Environments with OIDC federated credentials**, and the core deploy workflow already
+offered `staging` as a target, so the pipeline cost turned out to be lower than the
+question assumed. Where corners were cut, they were cut and *recorded* — shared Postgres
+compute "accepted for now, revisit before the 50+ partner rollout", server-wide database
+roles reused for this phase, a POC Foundry account rather than a proper one.
+
+That is the better outcome than the one proposed here, and it validates the reasoning:
+the platform was never the expensive part.
+
+**Still worth formalising**, because the rule this establishes — demo environments are
+real environments, provisioned the same way — is currently inferable only from one
+tracker page.
+
 
 ## Decision
 
