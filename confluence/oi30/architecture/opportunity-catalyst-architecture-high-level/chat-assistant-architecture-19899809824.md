@@ -44,8 +44,6 @@ Two kinds of live information flow to the browser, and they are kept deliberatel
 - **Messaging.** Azure Service Bus carries events reliably between services; Redis carries small "something new" signals so live connections wake up quickly.
 - **Microsoft Foundry agents.** The chat assistant (Assistant Orchestration) and the peer discovery agent. Each has its own identity in Microsoft Entra ID.
 
-native-tabscom.atlassian.confluence.nativeTabsgoh0foStream A: case activityw682riStream B: agent chatfalsedefault053a2446-6432-43c1-92ea-94e1f35c3312
-
 The numbers match the blue markers on the diagram.
 
 1. **A1.** When a user opens a case, the browser opens one live connection for that case through Front Door to the Experience BFF.

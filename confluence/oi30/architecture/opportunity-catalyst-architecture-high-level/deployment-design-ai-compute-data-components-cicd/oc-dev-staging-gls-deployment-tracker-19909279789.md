@@ -51,8 +51,6 @@ This page records the decisions, tracks every change by workstream, and holds th
 
 ## Tracker
 
-native-tabscom.atlassian.confluence.nativeTabseozrilAngel (DevOps)7rcfyvTSG (raised by Angel)qfc602Agent team (Foundry)ir3gh2Dipeshfalsedefault753073c6-1fee-4ce1-a4df-4296d26a3d05
-
 #### Terraform
 
 | Step  | Change  | Waits for  | Status  | Notes  |
