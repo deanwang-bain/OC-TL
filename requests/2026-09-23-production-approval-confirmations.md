@@ -231,6 +231,69 @@ access itself is unblocked: scope the grant to the content types Screens 01–05
 retrieve (target-company cases, account relationship data, comparable OI studies, ARC
 benchmarks) rather than leaving it at full-library breadth by default.
 
+## Round 5 — technical sign-off gate, 7 items (2026-10-13)
+
+A sharper, more technical round arrived with its own item numbering (2, 5–11). Two of
+these surface real conflicts the mirror hasn't recorded before, not just missing detail.
+
+**2 — Vendor access, Managed Access model.** Confirmed: the StatusNeo/Bain ownership
+split (StatusNeo owns application/agent logic; Bain owns DevOps, cloud infra, CI/CD) is
+documented in Andromeda. **Not yet confirmed**: whether the specific "Managed Access"
+pattern asked for — named third-party Entra ID per engineer, Bain-managed device or VDI
+only — is what is actually deployed. No access matrix exists in the mirror naming the
+data systems reached. This needs IT/onboarding to answer directly, not a documentation
+lookup.
+
+**5 — Web filter template and Cloudflare.** This is now a potential **wrong-product**
+finding, not a missing detail. Technology Choices adopts Front Door Premium with WAF;
+Cloudflare is never named anywhere in the mirror. If Cloudflare is genuinely Bain's
+standard edge, Front Door needs to go through Infrastructure as a formal deviation
+decision rather than stand as the default. Logged in `context/open-questions.md`. The
+template name and the list of public web addresses are both unrecorded — Engineering
+needs to supply both regardless of which product is used.
+
+**6 — IaC tool and Glean reference.** GitHub Actions is confirmed and fine for the
+release pipeline. The IaC tool (HCP Terraform vs. CloudLaunch-Env0) is named nowhere in
+the mirror — CloudLaunch appears once, for provisioning a Snowflake instance, not as a
+general IaC choice. For Glean: sandbox access is confirmed (Round 4), but the approver's
+name and a citable reference for the in-principle approval, plus the exact content the
+read-only grant covers, are still unrecorded.
+
+**7 — Portkey configuration and Foundry's approval status.** The actual Portkey config
+and the specific models behind it are not documented anywhere and need to come from
+Engineering directly. Separately: Azure AI Foundry's platform approval was **never
+closed out** — the VCC meeting's own action item to validate it against Bain's approved
+platform list has no recorded resolution, and Technology Choices adopts it regardless.
+Logged as its own conflict in `context/open-questions.md`. Technology Choices and the
+Andromeda page both need updating once Portkey and the approved model platform are
+confirmed.
+
+**8 — Data store and retention.** Unchanged from Round 2: Datadog is confirmed primary.
+SharePoint retention/purge policy and the Pendo usage-data scope are still unrecorded —
+Engineering to supply.
+
+**9 — Diagrams.** A plain system overview plus a data-flow diagram labelling each
+information category by classification is a reasonable ask given Round 4 set the
+baseline at Confidential. This is a new artifact to produce, not a documentation lookup
+— can draft one from the data sources and classification bands already established
+across Rounds 3–4 (CapIQ/public filings = low; Iris case and relationship data = Orange;
+Partner uploads = Orange) if useful, flagged as a draft pending Engineering's
+authoritative version.
+
+**10 — Out-of-date documents.** Identifiable from the mirror: the data-platform
+statement (superseded Technical Stack names Snowflake as a current enterprise
+analytical platform; Technology Choices has it as north-star only, Parquet at MVP — the
+same staleness already flagged for ADR-008), and the gateway/model statements from item
+7 above (Technology Choices and Andromeda both need the Portkey correction). The
+**login** and **calculation** statements referenced aren't identifiable from the mirror
+as currently searched — need the specific page/statement cited before a correction can
+be drafted.
+
+**11 — Personal cloud accounts.** Acknowledged as an action item, not a documentation
+question: protocol testing needs to move off personal Azure accounts onto a Bain-owned
+sandbox. This is a commitment to execute, not something the mirror can confirm has
+already happened.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
