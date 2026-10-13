@@ -294,6 +294,49 @@ question: protocol testing needs to move off personal Azure accounts onto a Bain
 sandbox. This is a commitment to execute, not something the mirror can confirm has
 already happened.
 
+## Round 6 — adequacy follow-ups on items 2–8 (2026-10-13)
+
+A reviewer scored each item and gave item-specific follow-ups. Items 3 and 4 are closed;
+2, 5, 6, 7, 8 need another pass, addressing the follow-up text directly rather than the
+original question.
+
+**3 — Closed.** No further answer needed. If a learning capability is added later, it
+goes back through Archie (the TRA-linked governance gate named in the technical
+architecture diagram) before it can proceed — noted for future reference, not acted on
+now.
+
+**4 — Closed.** No further answer needed. Publishing the MCP interface externally is
+explicitly out of scope for this review and will need its own review when it happens.
+
+**2 — the contradiction, specifically.** The reviewer is right that "no
+infrastructure-level access" and "StatusNeo is provisioning" (our Round 1/2 answer to
+item 5) can't both be true as stated. Proposed reconciliation, pending IT confirmation:
+StatusNeo engineers hold named, third-party-marked Entra ID guest (B2B) accounts with no
+standing Azure portal or subscription-level access; "provisioning" means StatusNeo
+submits infrastructure-as-code changes through the Bain-owned CI/CD pipeline, which Bain
+reviews and applies — so StatusNeo never holds infrastructure credentials directly, only
+pipeline-mediated change requests. This is a proposed clarification, not yet a confirmed
+operational fact — flagged as such. The specific data-systems list is still outstanding.
+
+**5 — Infrastructure sign-off and the template.** Two distinct asks: (a) formal sign-off
+from the Infrastructure team to continue using Front Door Premium WAF instead of
+Cloudflare (Bain's stated standard edge) — this is being sought now, not yet obtained;
+(b) the WAF template name, and confirmation of whether an env0 template was used —
+neither is confirmed; Engineering to supply.
+
+**6 — Glean's approved access scope.** Still the one open piece: what content the
+approved, confirmed Glean access actually covers. Access itself has been confirmed since
+Round 4 — only the scope is outstanding, pending the KM owner.
+
+**7 — Portkey, restated.** The response on file for this item still reads "Azure API
+Management, GenAI gateway pattern," which is the pre-correction answer from before Round
+2. Replacing it: model traffic routes through **Portkey**, Bain's approved AI gateway —
+Technology Choices' API Management framing is what needs correcting, not what's in use.
+
+**8 — SharePoint retention.** Still outstanding: what data is held in the SharePoint
+interim store, how long it remains, and when it's purged. Not yet defined; Engineering
+to supply.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
