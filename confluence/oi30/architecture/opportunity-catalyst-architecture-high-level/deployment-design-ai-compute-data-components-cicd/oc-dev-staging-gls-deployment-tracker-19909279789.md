@@ -2,8 +2,8 @@
 title: "OC Dev-Staging (GLS) Deployment Tracker"
 confluence_id: 19909279789
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19909279789
-version: 3
-updated: 2026-10-07T14:42:51.017Z
+version: 4
+updated: 2026-10-13T09:12:09.466Z
 ---
 
 # OC Dev-Staging (GLS) Deployment Tracker
@@ -99,7 +99,7 @@ The staging database is created by setup SQL (Dipesh), like dev's; no Terraform 
 | Step  | Change  | Waits for  | Status  | Notes  |
 |---|---|---|---|---|
 | 1  | Add redirect URIs `<https://stg.opcat-nonprod.bain.io/bff/v1/auth/callback`> and `<https://stg.opcat-nonprod.bain.io/signed-out`> to the SSO app "Opportunity Catalyst - Dev"  | Nothing; can be filed now  | To do  | On the SSO app, not the Entra API app. Bundle dev's `<https://dev.opcat-nonprod.bain.io/signed-out`,> still unconfirmed. No front-channel logout URL  |
-| 2  | `User.Access` on the Entra API app (S2S tokens) for the staging chat-assistant agent's identity  | The agent team's first deploy of the staging chat-assistant  | To do  | The agent identity exists only after that deploy. The narrative agent needs no ticket  |
+| 2  | `User.Access` on the Entra API app (client Id `b992bd0f-a1a4-484e-8007-e700ef467d1e`) (S2S tokens) for the staging chat-assistant agent's identity  | The agent team's first deploy of the staging chat-assistant  | To do  | The agent identity exists only after that deploy. The narrative agent needs no ticket Agent Identity: `3b2bf7ee-8e45-4122-a123-fa6f9aa9e685`  |
 
 | Step  | Change  | Waits for  | Status  | Notes  |
 |---|---|---|---|---|
