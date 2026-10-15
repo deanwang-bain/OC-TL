@@ -2,17 +2,17 @@
 title: "High Level Requirements"
 confluence_id: 19693240474
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19693240474
-version: 3
-updated: 2026-08-05T13:36:23.708Z
+version: 4
+updated: 2026-10-14T08:51:47.631Z
 ---
 
 # High Level Requirements
 
 [View in Confluence](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19693240474)
 
-## What is OI3.0?
+## What is OpCat?
 
-OI 3.0 will evolve the current 48-72 hour, expert-intensive Opportunity Indicator process beyond current analytical capabilities (both from a data processing and hypothesis generation perspective) with a partner-led, self-service and collaborative product that delivers a CEO-ready initial point of view in less than 30 minutes, while preserving expert judgement, traceability and enterprise controls.
+OpCat will evolve the current 48-72 hour, expert-intensive Opportunity Indicator process beyond current analytical capabilities (both from a data processing and hypothesis generation perspective) with a partner-led, self-service and collaborative product that delivers a CEO-ready initial point of view in less than 30 minutes, while preserving expert judgement, traceability and enterprise controls.
 
 ## Requirements
 
@@ -56,7 +56,7 @@ OI 3.0 will evolve the current 48-72 hour, expert-intensive Opportunity Indicato
 
 **Cost efficient industry scaling:**
 
-- Design architecture of OI 3.0 **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
+- Design architecture of OpCat **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
 - Build a common core with industry-specific adaptations where needed (e.g., FS specific vs. Manufacturing/Energy close enough for model to learn)
 
 **Natural-language investigation: **Allow users to ask questions, inspect evidence, refine assumptions, change benchmarks and customise the storyline through chat.
@@ -67,6 +67,6 @@ OI 3.0 will evolve the current 48-72 hour, expert-intensive Opportunity Indicato
 
 **Traceability and responsible AI: **Clearly distinguish sourced facts, calculations, AI synthesis, user-authored content and manual overrides, with source-level evidence.
 
-**Scalable architecture: **design the OI3.0 for scale, ensure architecture allows to add new data sources easily, ensure the solid data foundations, ensure the calculations framework is robust and can be evolved in the future to deepen the analysis.
+**Scalable architecture: **design the OpCat for scale, ensure architecture allows to add new data sources easily, ensure the solid data foundations, ensure the calculations framework is robust and can be evolved in the future to deepen the analysis.
 
 **AI Agents learning & adaptation: **with use of the system, ensure the AI is learning and deepening the knowledge.

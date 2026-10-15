@@ -2,8 +2,8 @@
 title: "Design requirements & components"
 confluence_id: 19627835552
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19627835552
-version: 5
-updated: 2026-07-17T03:08:46.386Z
+version: 6
+updated: 2026-10-14T08:48:43.095Z
 ---
 
 # Design requirements & components
@@ -22,13 +22,13 @@ Based on the [Design Principles]design principles: **Partner judgment**, **Radic
 | **#**  | **User need**  | **Design Requirement**  | **Design Principle**  | **Design Component**  | **Feedback**  |
 |---|---|---|---|---|---|
 |  1. Dashboard & portfolio   |  |
-| 1.1  | See all my active OIs  | Show all active OIs with size of prize, stage, and last-updated timestamp  | **Modular flow**  | Portfolio grid cards  |  |
+| 1.1  | See all my active OpCat sessions  | Show all active OpCat sessions with size of prize, stage, and last-updated timestamp  | **Modular flow**  | Portfolio grid cards  |  |
 | 1.2  | Know which proj needs my attention  | Show clear status indicator (e.g., input needed)  | **Partner judgement**  | Status badge  |  |
 | 1.3  | Start a new analysis  | Start a new proj  | **Modular flow**  | Entry point  |  |
 | 1.4  | Be pulled back into the tool by what changed while I was away  | Dashboard mental model is a “feed” not a static workspace, frequency of updates to be evolved over time post-mvp  | **Thought partner**  | Feed, activity strip, signal notifications  |  |
 |  1. Collaboration   |  |
 | 2.1  | Share analysis with my team without rebuilding it  | Partner can invite collaborators to a project at the point of creation  | **Co-creation**  | Share / invite modal  |  |
-| 2.2  | Work on the same OI with another partner simultaneously  | Collaborators can view and contribute to the same project simultaneously  | **Co-creation**  | Multi-user presence indicator  |  |
+| 2.2  | Work on the same OpCat session with another partner simultaneously  | Collaborators can view and contribute to the same project simultaneously  | **Co-creation**  | Multi-user presence indicator  |  |
 | 2.3  | Know who has touched what in a shared project  | Display who else is working on a project and what changes they have made  | **Co-creation**  | Change log / collaborator activity trail  |  |
 |  1. Non-linear, modular nav   |  |
 | 3.1  | Go back and adjust my peer set mid-analysis without losing my work  | Partner can return to any prior step and re-run only the affected modules  | **Modular flow** **Partner judgement**  | Non-linear module grid  |  |
@@ -45,10 +45,10 @@ Based on the [Design Principles]design principles: **Partner judgment**, **Radic
 | 5.3b  | Upload a P&L when structured databases have no data on a company  | Provide a templated P&L upload as the primary fallback when external databases are insufficient. (The template shall be strict at MVP for accuracy, with progressive relaxation post-MVP to accept varied structures and document types)  | **Partner judgement**  | Templated P&L upload  |  |
 | 5.4  | See confidence update live as I add data  | Confidence score updates dynamically when partner uploads documents or changes peers  | **Radical transparency** **Modular flow**  | Live confidence score recalculation  |  |
 |  1. Peer set quality   |  |
-| 6.1  | Understand why each peer was included in the set  | Suggested peer set shows the rationale for each peer (e.g., "Adidas — suggested by CapIQ + 10-K + past OI").  | **Radical transparency**  | Peer set card with source rationale  |  |
+| 6.1  | Understand why each peer was included in the set  | Suggested peer set shows the rationale for each peer (e.g., "Adidas — suggested by CapIQ + 10-K + past OpCat session").  | **Radical transparency**  | Peer set card with source rationale  |  |
 | 6.2  | Use the data source I trust most (TBD Post-MVP)  | Partner can set a data source preference (e.g., CapIQ vs. Crunchbase) per project or as a default  | **Partner judgement**  | Data source preference picker  |  |
 |  1. Bain relationship context   |  |
-| 7.1  | Know who at Bain owns this client before I start the analysis  | On target entry, tool surfaces Bain relationship data: billing partner, active cases, past OIs  | **Radical transparency** **Thought partner**  | Bain relationship context modal  |  |
+| 7.1  | Know who at Bain owns this client before I start the analysis  | On target entry, tool surfaces Bain relationship data: billing partner, active cases, past OpCat session  | **Radical transparency** **Thought partner**  | Bain relationship context modal  |  |
 | 7.2  | Use existing client context to inform peer selection and narrative  | Relationship context is an input to peer set and narrative framing, not just a read-only display  | **Thought partner**  | Relationship-informed peer and narrative inputs  |  |
 | 7.3  | Access past case materials and selling decks without leaving the tool (TBD Post-MVP)  | Full Sage integration allows access to client heads, case materials, and selling decks in-context  | **Thought partner**  | Sage integration panel (Post-MVP)  |  |
 |  1. Confidential document handling   |  |

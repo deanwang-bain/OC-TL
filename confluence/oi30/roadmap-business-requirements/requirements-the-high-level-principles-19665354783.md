@@ -2,8 +2,8 @@
 title: "Requirements - the high level principles"
 confluence_id: 19665354783
 confluence_url: https://bainco.atlassian.net/wiki/spaces/OI30/pages/19665354783
-version: 1
-updated: 2026-07-26T20:36:04.631Z
+version: 2
+updated: 2026-10-14T08:50:18.270Z
 ---
 
 # Requirements - the high level principles
@@ -12,7 +12,7 @@ updated: 2026-07-26T20:36:04.631Z
 
 1. **Product strategy**
 
-- Design architecture of OI 3.0 **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
+- Design architecture of OpCat **to scale across all industries** from the start (testing with selected one industry, clear path to **scale across all in cost efficient way**).
 - Build a common core with industry-specific adaptations where needed (e.g., FS specific vs. Manufacturing/Energy close enough for model to learn)
   - Agree quality stage gates
 - Ensure natural language experience on the UI.
