@@ -115,3 +115,18 @@ decks.
 | **The ARC architecture assessment is unanswered** | [Architecture Assessment Tracker](../confluence/oi30/architecture/architecture-assessment-tracker-19853082681.md), published 22 September, carries **313 requirements across two frameworks (ARC v2 and AI Architecture v2.1), 249 of them MUST, with zero responses recorded.** The reviewer pass reclassified priorities; nobody has answered a single requirement |
 | **Mainland China is out of scope, but not written as such** | [Opportunity Catalyst in Greater China](../confluence/oi30/roadmap-business-requirements/opportunity-catalyst-in-greater-china-19853082640.md) concludes mainland is blocked and Hong Kong needs case-by-case clearance. The recommendation is to record mainland as an **explicit scope exclusion** for the demo and MVP — that has not been done on any scope page |
 | ADR-001 to ADR-009 are "Accepted, pending Bain architect review" | Rulings may still change under review |
+
+## GLS demo (core repo snapshot, read 2026-10-15)
+
+Background in [gls-mode.md](gls-mode.md); runbook in
+[the review](../reviews/2026-10-15-core-repo-gls-demo-path.md).
+
+| Question | Why it matters |
+| -------- | -------------- |
+| **Which build did the 14 October tester use?** | The core repo zip holds the GLS spec but not `services/experience-bff/src/gls/`, the SPA, or the golden data. Behaviour claims in the runbook rest on the spec and on the tester's notes, not on a run |
+| **How does golden data reach the dev environment?** | The spec says this is "decided separately" and outside the contract. Without it every screen returns `503 golden_not_loaded` |
+| **Is Redis persistence (A9) on for the demo environment?** | Cases live only in Redis. A restart empties the dashboard with no error. Owner item A9 is parked |
+| **Which golden companies are USD, with all four buckets sized and a cash side?** | The docs name no company by design. Two companies hide Commercial Excellence, and some buckets start unticked. Needs a look at the loaded data |
+| **Why did the tested case show "Output is not available yet"?** | Output narrative is built at Analysis confirm. A seeded case may never have had it. Unconfirmed |
+| **Are the three tester errors (Size of prize, Operational Excellence size, Case for Change chat) reproducible?** | Not explained by the spec. Raise with SN as defects |
+| **Charts sort order, % beside $, combined SG&A benchmark** | Tester asks. None are in the spec, so they are gaps for SN, not bugs |
