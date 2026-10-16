@@ -1,56 +1,75 @@
-# GLS: items for the team
+# GLS walkthrough: running notes (14 Oct, completed case)
 
-From partner feedback on the 14 October walkthrough of a completed case, checked against the GLS design documents. Each item says whether it is a defect, a gap against the design, a change to the design, or a label.
+Notes in the order of the screens. Tags: **[bug]** broken, **[gap]** not in the design, **[design]** needs a decision, **[label]** wording. Items marked "by design" were checked against the GLS docs.
 
-## 1. Defects: please investigate
+## Overall
 
-| Item | What was seen |
-| ---- | ------------- |
-| Size of prize click | Clicking "Size of prize" opens an error screen |
-| Recommended size | Opening the recommended size inside Operational Excellence errors |
-| Case for change chat | Chat inside Case for change returned an error |
-| Output not available | Opening an opportunity showed a blank screen reading "output is not available yet", though other tabs filled in. Output text is built when Analysis is confirmed, so the seeded case may never have had it built |
-| Leadership signal text | The first and last signal sentences in a card are cut off mid-sentence |
+- Need to start from scratch on one company in the demo, and also have a completed case ready so the answer is quick to show. **[design]** Plan is two cases, because Confirm locks a case.
+- Everything looks view only. Need to make live changes and see them flow into the output. **[design]** By design after Confirm: Analysis becomes read-only and the case moves to Output. Edits are possible on an unconfirmed case.
+- Currency and date are not obvious anywhere. **[label]**
 
-## 2. Gaps against the design: the design does not cover these
+## Landing page / Your Opportunities
 
-| Item | Request |
-| ---- | ------- |
-| Chart order | Sort benchmark charts best to worst, by default or on request, on every metric |
-| Percentages beside dollars | Show a % change for Bain experience and for size of prize, and a $ figure for the baseline |
-| Combined SG&A benchmark | Advertising and other G&A show "no peer benchmark". Benchmark at the combined SG&A level, and show it in Case for change too |
-| Benchmark per lever | Make it easy to see the target against peers on the related metric for each lever (gross margin for Ops, SG&A for SG&A, R&D for R&D) |
-| Sizing across methods | Allow impact to be shown as % cost reduction, margin bps or % revenue growth, with a description in the field, for example "5-20% cost reduction" |
-| Revenue projection | State the timeline the projection covers |
-| Method behind each number | Show how each Commercial Excellence number was reached, as Operations and SG&A do, with the target and peer data underneath |
+- Click an opportunity and the screen is blank: "output is not available yet". Other tabs open fine. **[bug]** Output text is built when Analysis is confirmed, so the seeded case may never have had it built.
+- "Analysis is view only" banner at the top of each tab. Is this demo-only? A partner should be able to go back and edit. **[label]** Confirmed-case lock, by design. Banner should say so.
+- Currency shown: is it the output currency? Can the partner pick one at setup? Which date is used for conversion? **[design]** Today each case keeps its own currency, no conversion, no choice. Show currency and as-of date on every screen.
+- Clicking "Size of prize" on the card goes to an error screen. **[bug]**
 
-## 3. Changes to the design: need a decision
+## Peers
 
-| Item | Request |
-| ---- | ------- |
-| Order of screens | Partner wants to see company performance and trends, backed by management and analyst commentary, before the case for change. And, in Analysis, the supporting benchmarks and Bain experience beside each target. Screens already move freely between stages 1 to 3, so this is about layout and links |
-| Executive summary | Add an overall summary above the framings of what the company faces, and what management says its strategic priorities are |
-| Leadership signals | Move above the sources. Make each expandable to the direct quote and the evidence behind it. Make the signals fuller |
-| Framings | Take management's stated priorities and investments into account, not only the numbers. For example: lower variable costs, more standard parts, a target cut in hybrid production costs |
-| Waterfall first | Lead Analysis with the waterfall, with the value table below it |
-| Edit after the fact | Partner expects to change outputs and see the result. Today a confirmed case is read-only by design. Decide whether that is acceptable for the demo and communicate it |
-| Currency | Let the partner choose currency at case setup, with the conversion date shown. Today each case keeps its own currency and no conversion is offered |
+- Data source says "OI engine". What is it? **[label]** It is the label for computed values and is the old product name. Rename. It appears all over the demo and distracts.
 
-## 4. Labels
+## Case for change
 
-| Item | Change |
-| ---- | ------ |
-| "OI engine" | Appears as a data source on Peers and elsewhere, and means nothing to a partner. Rename it |
-| "% uplift" | Rename to "Impact", with the metric described in the field |
-| Currency and date | Make the currency, and the date the data is as of, visible on every screen, not only in a label |
-| "Analysis is view only" | Explain on the banner that the case is confirmed and why, so it is not read as a demo-only limit |
+- EBIT margin vs peers: sort highest to lowest, by default or on request. Same for every other chart, best to worst. **[gap]**
+- Opportunity sizing sniff test: there are several ways to size, such as % cost reduction, bps of margin, % revenue growth. **[gap]**
+- "% uplift" should read "Impact", with a description in the field, e.g. "5-20% cost reduction". **[label]**
+- Missing a summary of what the company faces across the business, with a business unit and regional lens, and plain statements of what management says its strategic priorities are. **[design]** Business unit and regional lens are out of this version by design.
+- Leadership signals in each card start to get there, but they are thin and buried below the sources. Move them up. **[design]**
+- Add an overall summary above the framings. **[design]**
+- Make the signals fuller, or expandable to the direct quote and the proof behind it. **[design]**
+- First and last signal sentence is cut off: "The CFO says Honda will lift earnings power by strengthening its business structure rather than." **[bug]** Common across other themes too.
+- Framings are too math-led. Had to open the sources and read quotes to see that management is cutting variable costs, improving manufacturing efficiency and using more standard parts, and that one quote targets a 30% cut in hybrid production costs. Framings need to reflect stated priorities and investments. **[design]**
+- Theme > Benchmarking > Margin above median: same issues as above.
+- Analyst reports: are any loaded? Should be. **[design]** Analyst view is out of this version by design.
+- Error in chat inside Case for change. **[bug]**
 
-## 5. Not planned for this version
+## Analysis
 
-These were raised, and the design deliberately leaves them out. Worth saying so on stage rather than promising them:
+- Lead the visuals with the waterfall summary of value, with the value table below. **[design]**
+- Baseline needs the $ figure. **[gap]**
+- Bain experience needs the % change (cost reduction, revenue growth, whichever metric). **[gap]**
+- Size of prize needs a % change as well as the $. **[gap]**
+- Clicking "Size of prize" opens an error screen. **[bug]**
+- Where is the benchmarking of the target against peers on the related metric: gross margin for Ops, SG&A for SG&A, R&D for R&D? **[gap]** The lever worksheet charts the metric, but it is not easy to find.
 
-- Analyst reports and ratings
-- Business-unit and regional lens
-- Bain case studies and reference cases
-- Initiatives for each value lever, with timelines
-- Live market data and company search beyond the prepared companies
+### Operational Excellence (double click)
+
+- Recommended size: error on click. **[bug]**
+- Need more on how the numbers were reached. **[gap]**
+
+### SG&A Efficiency (double click)
+
+- "No peer benchmark" for advertising and other G&A. Should be able to benchmark at the combined SG&A level and show that. **[gap]** Peers often report SG&A as one line.
+- Show the same combined benchmark on Case for change, because a partner needs the underlying performance to buy into the narrative. **[gap]**
+
+### Commercial Excellence (double click)
+
+- Need more on how the numbers were reached, as for Ops and SG&A. **[gap]**
+- Revenue projection: state the timeline it covers. **[gap]**
+- Want the target and peer data underneath. **[gap]**
+- This is where the Bain experience should be defended with reference cases and research that shows the value. **[design]** Case studies and reference cases are out of this version by design.
+
+### Across the whole flow
+
+- Case for change comes before the analysis, but to accept the case for change a partner needs the company's performance and trends first, backed by management statements and analyst commentary. Bain experience matters less there. **[design]**
+- In Analysis, when getting comfortable with the $ targets, need the supporting benchmarks and Bain experience close by, plus evidence of real value from the company's situation, management reports and the industry. **[design]**
+
+## Output
+
+- Not available for this case. **[bug]**
+- Where are the initiatives for each value lever? **[design]** Recommended actions and timelines are out of this version by design. Example levers can be listed without timelines.
+
+## Not planned for this version (say so on stage)
+
+Analyst reports and ratings, business unit and regional lens, Bain case studies and reference cases, initiatives with timelines, live market data.
