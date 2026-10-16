@@ -449,7 +449,7 @@
     "19883720705": {
       "path": "oi30/sprint-retrospectives/sprint-2-19883720705.md",
       "title": "Sprint 2",
-      "version": 2
+      "version": 3
     },
     "19888046107": {
       "path": "cost-bar-normalization-methodology-19888046107.md",
@@ -479,6 +479,11 @@
     "19917373459": {
       "path": "oi30/meeting-summaries/sprint-4-planning-session-19917373459.md",
       "title": "Sprint 4 planning session",
+      "version": 1
+    },
+    "19933790220": {
+      "path": "oi30/sprint-retrospectives/sprint-3-19933790220.md",
+      "title": "Sprint 3",
       "version": 1
     }
   }
