@@ -137,24 +137,7 @@ Frozen at each case's date. No live data, no document upload, no analyst reports
 | Where are the initiatives per lever? | Not in GLS. The lever's example levers can be listed, with no timelines |
 | Can I see the benchmark behind each lever? | The lever worksheet shows the metric chart with median and top quartile. Bucket-level peer benchmarks only where peers report the line |
 
-## Should fix (for SN)
+## Shareable versions
 
-From the tester's list. None of these are spec gaps unless marked.
-
-- The three errors (Size of prize click, Operational Excellence size, Case for Change chat). Not explained by the spec.
-- Output unavailable for the seeded case.
-- Truncated leadership-signal sentences, and leadership signals sitting below the sources.
-- Sort benchmark charts best to worst by default. **Spec gap**: bars are served in a fixed order.
-- Show % beside $ for Bain experience and size of prize, and a $ baseline. **Spec gap.**
-- Combined SG&A benchmark where advertising and other G&A have no peer benchmark. **Spec gap**; the spec shows n/a with a reason as a principle (ruling F1).
-- Make the data date and currency prominent on every screen, not only in labels.
-- Rename the "OI engine" chip.
-
-## Open questions
-
-Added to `context/open-questions.md`:
-
-- Which build and environment did the tester use? The zip lacks the GLS code.
-- How does golden data reach the dev environment, and is it loaded for the demo?
-- Is Redis persistence (A9) on?
-- Which golden companies are USD with all four buckets sized and a cash side?
+- Demo runbook as a standalone file: [2026-10-15-gls-demo-path.md](2026-10-15-gls-demo-path.md)
+- Feedback for the SN team: [2026-10-15-gls-feedback-for-sn.md](2026-10-15-gls-feedback-for-sn.md)
