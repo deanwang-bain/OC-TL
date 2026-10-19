@@ -1,0 +1,1151 @@
+{
+ "meta": {
+  "as_of": "2026-10-19",
+  "currency": "USD",
+  "unit": "millions",
+  "audience": "CEO and executive committee",
+  "question": "Where is the value, and what would management recognise as its own agenda?",
+  "prepared_by": "Example team",
+  "cagr_years": 3,
+  "min_peers": 4
+ },
+ "companies": [
+  {
+   "id": "TGT",
+   "name": "Northwind Foods (synthetic)",
+   "short_name": "Northwind",
+   "role": "target",
+   "ticker": "TGT",
+   "currency": "USD",
+   "fiscal_year_end": "Dec"
+  },
+  {
+   "id": "PA",
+   "name": "Peer Alpha Foods",
+   "short_name": "Alpha",
+   "role": "peer",
+   "ticker": "PA",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Same categories, similar size, US-listed"
+  },
+  {
+   "id": "PB",
+   "name": "Peer Beta Brands",
+   "short_name": "Beta",
+   "role": "peer",
+   "ticker": "PB",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Packaged food, branded-led, similar channel mix"
+  },
+  {
+   "id": "PC",
+   "name": "Peer Gamma Group",
+   "short_name": "Gamma",
+   "role": "peer",
+   "ticker": "PC",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Overlapping snacks and sauces portfolio"
+  },
+  {
+   "id": "PD",
+   "name": "Peer Delta Co",
+   "short_name": "Delta",
+   "role": "peer",
+   "ticker": "PD",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Similar margin structure and route to market"
+  },
+  {
+   "id": "PE",
+   "name": "Peer Epsilon Foods",
+   "short_name": "Epsilon",
+   "role": "peer",
+   "ticker": "PE",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Comparable scale; more international"
+  },
+  {
+   "id": "PF",
+   "name": "Peer Zeta Holdings",
+   "short_name": "Zeta",
+   "role": "peer",
+   "ticker": "PF",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Frozen and meals overlap"
+  },
+  {
+   "id": "PG",
+   "name": "Peer Eta Brands",
+   "short_name": "Eta",
+   "role": "peer",
+   "ticker": "PG",
+   "currency": "USD",
+   "fiscal_year_end": "Dec",
+   "rationale": "Premium-skewed; included for top-quartile reference"
+  }
+ ],
+ "financials": {
+  "TGT": {
+   "FY2021": {
+    "revenue": {
+     "value": 27625,
+     "src": "s_TGT"
+    },
+    "cogs": {
+     "value": 18508,
+     "src": "s_TGT"
+    },
+    "sga": {
+     "value": 3867,
+     "src": "s_TGT"
+    },
+    "ebit": {
+     "value": 5249,
+     "src": "s_TGT"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_TGT"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 27072,
+     "src": "s_TGT"
+    },
+    "cogs": {
+     "value": 18138,
+     "src": "s_TGT"
+    },
+    "sga": {
+     "value": 3790,
+     "src": "s_TGT"
+    },
+    "ebit": {
+     "value": 5144,
+     "src": "s_TGT"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_TGT"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 26531,
+     "src": "s_TGT"
+    },
+    "cogs": {
+     "value": 17776,
+     "src": "s_TGT"
+    },
+    "sga": {
+     "value": 3714,
+     "src": "s_TGT"
+    },
+    "ebit": {
+     "value": 5041,
+     "src": "s_TGT"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_TGT"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 26000,
+     "src": "s_TGT"
+    },
+    "cogs": {
+     "value": 17420,
+     "src": "s_TGT"
+    },
+    "sga": {
+     "value": 3640,
+     "src": "s_TGT"
+    },
+    "ebit": {
+     "value": 4940,
+     "src": "s_TGT"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_TGT"
+    },
+    "receivables": {
+     "value": 2137,
+     "src": "s_TGT"
+    },
+    "inventory": {
+     "value": 2959,
+     "src": "s_TGT"
+    },
+    "payables": {
+     "value": 4534,
+     "src": "s_TGT"
+    }
+   }
+  },
+  "PA": {
+   "FY2021": {
+    "revenue": {
+     "value": 17388,
+     "src": "s_PA"
+    },
+    "cogs": {
+     "value": 11128,
+     "src": "s_PA"
+    },
+    "sga": {
+     "value": 2956,
+     "src": "s_PA"
+    },
+    "ebit": {
+     "value": 2782,
+     "src": "s_PA"
+    },
+    "rnd": {
+     "value": 174,
+     "src": "s_PA"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 17909,
+     "src": "s_PA"
+    },
+    "cogs": {
+     "value": 11462,
+     "src": "s_PA"
+    },
+    "sga": {
+     "value": 3045,
+     "src": "s_PA"
+    },
+    "ebit": {
+     "value": 2865,
+     "src": "s_PA"
+    },
+    "rnd": {
+     "value": 179,
+     "src": "s_PA"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 18447,
+     "src": "s_PA"
+    },
+    "cogs": {
+     "value": 11806,
+     "src": "s_PA"
+    },
+    "sga": {
+     "value": 3136,
+     "src": "s_PA"
+    },
+    "ebit": {
+     "value": 2951,
+     "src": "s_PA"
+    },
+    "rnd": {
+     "value": 184,
+     "src": "s_PA"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 19000,
+     "src": "s_PA"
+    },
+    "cogs": {
+     "value": 12160,
+     "src": "s_PA"
+    },
+    "sga": {
+     "value": 3230,
+     "src": "s_PA"
+    },
+    "ebit": {
+     "value": 3040,
+     "src": "s_PA"
+    },
+    "rnd": {
+     "value": 190,
+     "src": "s_PA"
+    },
+    "receivables": {
+     "value": 1301,
+     "src": "s_PA"
+    },
+    "inventory": {
+     "value": 1932,
+     "src": "s_PA"
+    },
+    "payables": {
+     "value": 2332,
+     "src": "s_PA"
+    }
+   }
+  },
+  "PB": {
+   "FY2021": {
+    "revenue": {
+     "value": 10798,
+     "src": "s_PB"
+    },
+    "cogs": {
+     "value": 6695,
+     "src": "s_PB"
+    },
+    "sga": {
+     "value": 2052,
+     "src": "s_PB"
+    },
+    "ebit": {
+     "value": 1836,
+     "src": "s_PB"
+    },
+    "rnd": {
+     "value": 130,
+     "src": "s_PB"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 11338,
+     "src": "s_PB"
+    },
+    "cogs": {
+     "value": 7029,
+     "src": "s_PB"
+    },
+    "sga": {
+     "value": 2154,
+     "src": "s_PB"
+    },
+    "ebit": {
+     "value": 1927,
+     "src": "s_PB"
+    },
+    "rnd": {
+     "value": 136,
+     "src": "s_PB"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 11905,
+     "src": "s_PB"
+    },
+    "cogs": {
+     "value": 7381,
+     "src": "s_PB"
+    },
+    "sga": {
+     "value": 2262,
+     "src": "s_PB"
+    },
+    "ebit": {
+     "value": 2024,
+     "src": "s_PB"
+    },
+    "rnd": {
+     "value": 143,
+     "src": "s_PB"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 12500,
+     "src": "s_PB"
+    },
+    "cogs": {
+     "value": 7750,
+     "src": "s_PB"
+    },
+    "sga": {
+     "value": 2375,
+     "src": "s_PB"
+    },
+    "ebit": {
+     "value": 2125,
+     "src": "s_PB"
+    },
+    "rnd": {
+     "value": 150,
+     "src": "s_PB"
+    },
+    "receivables": {
+     "value": 959,
+     "src": "s_PB"
+    },
+    "inventory": {
+     "value": 1168,
+     "src": "s_PB"
+    },
+    "payables": {
+     "value": 1592,
+     "src": "s_PB"
+    }
+   }
+  },
+  "PC": {
+   "FY2021": {
+    "revenue": {
+     "value": 8481,
+     "src": "s_PC"
+    },
+    "cogs": {
+     "value": 5852,
+     "src": "s_PC"
+    },
+    "sga": {
+     "value": 1272,
+     "src": "s_PC"
+    },
+    "ebit": {
+     "value": 1103,
+     "src": "s_PC"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PC"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 8651,
+     "src": "s_PC"
+    },
+    "cogs": {
+     "value": 5969,
+     "src": "s_PC"
+    },
+    "sga": {
+     "value": 1298,
+     "src": "s_PC"
+    },
+    "ebit": {
+     "value": 1125,
+     "src": "s_PC"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PC"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 8824,
+     "src": "s_PC"
+    },
+    "cogs": {
+     "value": 6088,
+     "src": "s_PC"
+    },
+    "sga": {
+     "value": 1324,
+     "src": "s_PC"
+    },
+    "ebit": {
+     "value": 1147,
+     "src": "s_PC"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PC"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 9000,
+     "src": "s_PC"
+    },
+    "cogs": {
+     "value": 6210,
+     "src": "s_PC"
+    },
+    "sga": {
+     "value": 1350,
+     "src": "s_PC"
+    },
+    "ebit": {
+     "value": 1170,
+     "src": "s_PC"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PC"
+    },
+    "receivables": {
+     "value": 740,
+     "src": "s_PC"
+    },
+    "inventory": {
+     "value": 1191,
+     "src": "s_PC"
+    },
+    "payables": {
+     "value": 1021,
+     "src": "s_PC"
+    }
+   }
+  },
+  "PD": {
+   "FY2021": {
+    "revenue": {
+     "value": 13335,
+     "src": "s_PD"
+    },
+    "cogs": {
+     "value": 8668,
+     "src": "s_PD"
+    },
+    "sga": {
+     "value": 2134,
+     "src": "s_PD"
+    },
+    "ebit": {
+     "value": 2400,
+     "src": "s_PD"
+    },
+    "rnd": {
+     "value": 107,
+     "src": "s_PD"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 13868,
+     "src": "s_PD"
+    },
+    "cogs": {
+     "value": 9014,
+     "src": "s_PD"
+    },
+    "sga": {
+     "value": 2219,
+     "src": "s_PD"
+    },
+    "ebit": {
+     "value": 2496,
+     "src": "s_PD"
+    },
+    "rnd": {
+     "value": 111,
+     "src": "s_PD"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 14423,
+     "src": "s_PD"
+    },
+    "cogs": {
+     "value": 9375,
+     "src": "s_PD"
+    },
+    "sga": {
+     "value": 2308,
+     "src": "s_PD"
+    },
+    "ebit": {
+     "value": 2596,
+     "src": "s_PD"
+    },
+    "rnd": {
+     "value": 115,
+     "src": "s_PD"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 15000,
+     "src": "s_PD"
+    },
+    "cogs": {
+     "value": 9750,
+     "src": "s_PD"
+    },
+    "sga": {
+     "value": 2400,
+     "src": "s_PD"
+    },
+    "ebit": {
+     "value": 2700,
+     "src": "s_PD"
+    },
+    "rnd": {
+     "value": 120,
+     "src": "s_PD"
+    },
+    "receivables": {
+     "value": 904,
+     "src": "s_PD"
+    },
+    "inventory": {
+     "value": 1336,
+     "src": "s_PD"
+    },
+    "payables": {
+     "value": 2137,
+     "src": "s_PD"
+    }
+   }
+  },
+  "PE": {
+   "FY2021": {
+    "revenue": {
+     "value": 9236,
+     "src": "s_PE"
+    },
+    "cogs": {
+     "value": 5541,
+     "src": "s_PE"
+    },
+    "sga": {
+     "value": 1940,
+     "src": "s_PE"
+    },
+    "ebit": {
+     "value": 1662,
+     "src": "s_PE"
+    },
+    "rnd": {
+     "value": 139,
+     "src": "s_PE"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 9790,
+     "src": "s_PE"
+    },
+    "cogs": {
+     "value": 5874,
+     "src": "s_PE"
+    },
+    "sga": {
+     "value": 2056,
+     "src": "s_PE"
+    },
+    "ebit": {
+     "value": 1762,
+     "src": "s_PE"
+    },
+    "rnd": {
+     "value": 147,
+     "src": "s_PE"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 10377,
+     "src": "s_PE"
+    },
+    "cogs": {
+     "value": 6226,
+     "src": "s_PE"
+    },
+    "sga": {
+     "value": 2179,
+     "src": "s_PE"
+    },
+    "ebit": {
+     "value": 1868,
+     "src": "s_PE"
+    },
+    "rnd": {
+     "value": 156,
+     "src": "s_PE"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 11000,
+     "src": "s_PE"
+    },
+    "cogs": {
+     "value": 6600,
+     "src": "s_PE"
+    },
+    "sga": {
+     "value": 2310,
+     "src": "s_PE"
+    },
+    "ebit": {
+     "value": 1980,
+     "src": "s_PE"
+    },
+    "rnd": {
+     "value": 165,
+     "src": "s_PE"
+    },
+    "receivables": {
+     "value": 1055,
+     "src": "s_PE"
+    },
+    "inventory": {
+     "value": 1175,
+     "src": "s_PE"
+    },
+    "payables": {
+     "value": 1302,
+     "src": "s_PE"
+    }
+   }
+  },
+  "PF": {
+   "FY2021": {
+    "revenue": {
+     "value": 6794,
+     "src": "s_PF"
+    },
+    "cogs": {
+     "value": 4892,
+     "src": "s_PF"
+    },
+    "sga": {
+     "value": 883,
+     "src": "s_PF"
+    },
+    "ebit": {
+     "value": 815,
+     "src": "s_PF"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PF"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 6862,
+     "src": "s_PF"
+    },
+    "cogs": {
+     "value": 4941,
+     "src": "s_PF"
+    },
+    "sga": {
+     "value": 892,
+     "src": "s_PF"
+    },
+    "ebit": {
+     "value": 823,
+     "src": "s_PF"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PF"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 6931,
+     "src": "s_PF"
+    },
+    "cogs": {
+     "value": 4990,
+     "src": "s_PF"
+    },
+    "sga": {
+     "value": 901,
+     "src": "s_PF"
+    },
+    "ebit": {
+     "value": 832,
+     "src": "s_PF"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PF"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 7000,
+     "src": "s_PF"
+    },
+    "cogs": {
+     "value": 5040,
+     "src": "s_PF"
+    },
+    "sga": {
+     "value": 910,
+     "src": "s_PF"
+    },
+    "ebit": {
+     "value": 840,
+     "src": "s_PF"
+    },
+    "rnd": {
+     "value": null,
+     "na_reason": "not disclosed separately",
+     "src": "s_PF"
+    },
+    "receivables": {
+     "value": 499,
+     "src": "s_PF"
+    },
+    "inventory": {
+     "value": 1036,
+     "src": "s_PF"
+    },
+    "payables": {
+     "value": 759,
+     "src": "s_PF"
+    }
+   }
+  },
+  "PG": {
+   "FY2021": {
+    "revenue": {
+     "value": 4763,
+     "src": "s_PG"
+    },
+    "cogs": {
+     "value": 2667,
+     "src": "s_PG"
+    },
+    "sga": {
+     "value": 1143,
+     "src": "s_PG"
+    },
+    "ebit": {
+     "value": 953,
+     "src": "s_PG"
+    },
+    "rnd": {
+     "value": 95,
+     "src": "s_PG"
+    }
+   },
+   "FY2022": {
+    "revenue": {
+     "value": 5144,
+     "src": "s_PG"
+    },
+    "cogs": {
+     "value": 2881,
+     "src": "s_PG"
+    },
+    "sga": {
+     "value": 1235,
+     "src": "s_PG"
+    },
+    "ebit": {
+     "value": 1029,
+     "src": "s_PG"
+    },
+    "rnd": {
+     "value": 103,
+     "src": "s_PG"
+    }
+   },
+   "FY2023": {
+    "revenue": {
+     "value": 5556,
+     "src": "s_PG"
+    },
+    "cogs": {
+     "value": 3111,
+     "src": "s_PG"
+    },
+    "sga": {
+     "value": 1333,
+     "src": "s_PG"
+    },
+    "ebit": {
+     "value": 1111,
+     "src": "s_PG"
+    },
+    "rnd": {
+     "value": 111,
+     "src": "s_PG"
+    }
+   },
+   "FY2024": {
+    "revenue": {
+     "value": 6000,
+     "src": "s_PG"
+    },
+    "cogs": {
+     "value": 3360,
+     "src": "s_PG"
+    },
+    "sga": {
+     "value": 1440,
+     "src": "s_PG"
+    },
+    "ebit": {
+     "value": 1200,
+     "src": "s_PG"
+    },
+    "rnd": {
+     "value": 120,
+     "src": "s_PG"
+    },
+    "receivables": {
+     "value": 329,
+     "src": "s_PG"
+    },
+    "inventory": {
+     "value": 442,
+     "src": "s_PG"
+    },
+    "payables": {
+     "value": 626,
+     "src": "s_PG"
+    }
+   }
+  }
+ },
+ "sources": [
+  {
+   "id": "s_TGT",
+   "title": "Northwind Foods (synthetic) annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/tgt-ar-2024"
+  },
+  {
+   "id": "s_PA",
+   "title": "Peer Alpha Foods annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pa-ar-2024"
+  },
+  {
+   "id": "s_PB",
+   "title": "Peer Beta Brands annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pb-ar-2024"
+  },
+  {
+   "id": "s_PC",
+   "title": "Peer Gamma Group annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pc-ar-2024"
+  },
+  {
+   "id": "s_PD",
+   "title": "Peer Delta Co annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pd-ar-2024"
+  },
+  {
+   "id": "s_PE",
+   "title": "Peer Epsilon Foods annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pe-ar-2024"
+  },
+  {
+   "id": "s_PF",
+   "title": "Peer Zeta Holdings annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pf-ar-2024"
+  },
+  {
+   "id": "s_PG",
+   "title": "Peer Eta Brands annual report FY2024 (synthetic)",
+   "publisher": "Company filing",
+   "date": "2025-02-15",
+   "locator": "Consolidated statements of income and balance sheet",
+   "url": "https://example.com/pg-ar-2024"
+  },
+  {
+   "id": "s_call",
+   "title": "Northwind Q4 FY2024 earnings call transcript (synthetic)",
+   "publisher": "Company IR",
+   "date": "2025-02-13",
+   "url": "https://example.com/northwind-q4-call"
+  },
+  {
+   "id": "s_inv",
+   "title": "Northwind investor day presentation (synthetic)",
+   "publisher": "Company IR",
+   "date": "2024-09-10",
+   "locator": "slides 14\u201322",
+   "url": "https://example.com/northwind-investor-day"
+  },
+  {
+   "id": "s_news",
+   "title": "Trade press: packaged food volumes under pressure (synthetic)",
+   "publisher": "Example Trade Journal",
+   "date": "2025-03-02",
+   "url": "https://example.com/trade-volumes"
+  }
+ ],
+ "signals": [
+  {
+   "id": "g1",
+   "kind": "management",
+   "speaker": "Chief Executive Officer",
+   "date": "2025-02-13",
+   "text": "Our priority for 2025 is returning the core brands to volume growth, and we are reinvesting productivity savings behind them.",
+   "verbatim": true,
+   "src": "s_call"
+  },
+  {
+   "id": "g2",
+   "kind": "management",
+   "speaker": "Chief Financial Officer",
+   "date": "2024-09-10",
+   "text": "We see a multi-year runway in procurement and network consolidation, and we expect overheads to grow slower than sales.",
+   "verbatim": true,
+   "src": "s_inv"
+  },
+  {
+   "id": "g3",
+   "kind": "management",
+   "speaker": "Chief Financial Officer",
+   "date": "2025-02-13",
+   "text": "Inventory is higher than we want after the system changeover; bringing it down is a 2025 cash priority.",
+   "verbatim": true,
+   "src": "s_call"
+  },
+  {
+   "id": "g4",
+   "kind": "industry",
+   "speaker": "Trade press",
+   "date": "2025-03-02",
+   "text": "Category volumes fell across the sector as shoppers traded down to private label.",
+   "verbatim": false,
+   "src": "s_news"
+  }
+ ],
+ "sizing": {
+  "horizon_years": 3,
+  "capture": 1.0
+ },
+ "narrative": {
+  "headline": "Northwind is among the most profitable of its peers but the slowest growing; the agenda management already describes, growth, overhead and inventory, is worth {{total.pnl}} of EBIT and {{total.cash}} of cash.",
+  "exec_summary": [
+   "EBIT margin is {{rating.ebit_margin}} at {{target.ebit_margin}} against a peer median of {{median.ebit_margin}}: this is not a profitability turnaround.",
+   "Revenue is shrinking ({{target.revenue_cagr}} a year) while peers grow at {{median.revenue_cagr}}: growth is the largest gap, worth {{bucket.commercial}} of EBIT by {{horizon.end}}.",
+   "Gross margin trails the median by {{gap.gross_margin}}, worth {{bucket.operations}}; management names procurement and network as the levers.",
+   "Inventory runs {{target.dio}} against {{median.dio}} for peers, and management calls it a cash priority."
+  ],
+  "situation": [
+   "Volumes are under pressure across the category as shoppers trade down, so peer growth is partly price.",
+   {
+    "text": "The company is mid-way through an ERP changeover that lifted inventory.",
+    "src": "s_call"
+   }
+  ],
+  "priorities": [
+   {
+    "text": "Return the core brands to volume growth",
+    "signals": [
+     "g1"
+    ]
+   },
+   {
+    "text": "Procurement and network consolidation; overhead growing slower than sales",
+    "signals": [
+     "g2"
+    ]
+   },
+   {
+    "text": "Bring inventory down after the system changeover",
+    "signals": [
+     "g3"
+    ]
+   }
+  ],
+  "framings": [
+   {
+    "title": "Growth is the gap, not margin",
+    "lens": "revenue_cagr",
+    "metrics": [
+     "revenue_cagr",
+     "ebit_margin"
+    ],
+    "lead": true,
+    "story": "Northwind ranks {{rank.revenue_cagr}} on growth while ranking {{rank.ebit_margin}} on EBIT margin. Closing half the growth gap is worth more than any cost lever, and it is the priority the CEO has stated.",
+    "signals": [
+     "g1"
+    ],
+    "readiness": "high",
+    "readiness_reason": "It restates management's own stated priority with peer evidence; low risk of push-back."
+   },
+   {
+    "title": "Cost of sales still trails peers despite a strong EBIT margin",
+    "lens": "gross_margin",
+    "metrics": [
+     "gross_margin",
+     "sga_pct"
+    ],
+    "story": "Gross margin of {{target.gross_margin}} sits below the {{median.gross_margin}} median; overheads are already lean at {{target.sga_pct}} of revenue, so the cost case is in cost of sales.",
+    "signals": [
+     "g2"
+    ],
+    "readiness": "moderate",
+    "readiness_reason": "Supported by the CFO's procurement comments, but the gap partly reflects portfolio mix."
+   },
+   {
+    "title": "Inventory is a one-off cash opportunity",
+    "lens": "dio",
+    "metrics": [
+     "dio",
+     "ccc"
+    ],
+    "story": "Inventory days of {{target.dio}} against a {{median.dio}} median tie up working capital; management already treats it as a priority.",
+    "signals": [
+     "g3"
+    ],
+    "readiness": "high",
+    "readiness_reason": "Management has raised it publicly; the case is sizing, not persuasion."
+   }
+  ],
+  "bucket_notes": {
+   "commercial": {
+    "text": "Peer growth is partly price; test volume against price before committing to the high end.",
+    "signals": [
+     "g4"
+    ]
+   },
+   "operations": "The CFO points to procurement and network consolidation, which is where a cost-of-sales gap usually sits."
+  },
+  "next_steps": [
+   "Split peer growth into price and volume from segment disclosures.",
+   "Check whether the gross-margin gap is mix: compare like-for-like categories.",
+   "Confirm the inventory build is the ERP changeover and not slower turns."
+  ],
+  "limitations": [
+   "All companies and figures on this example are synthetic."
+  ]
+ }
+}
