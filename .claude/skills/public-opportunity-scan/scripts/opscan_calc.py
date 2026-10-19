@@ -47,7 +47,8 @@ METRICS = [
 DIRECT = ["tsr", "organic_growth", "valuation"]
 METRIC = {m.key: m for m in METRICS}
 
-LINE_ITEMS = ["revenue", "cogs", "gross_profit", "sga", "rnd", "ebit", "receivables", "inventory", "payables"]
+LINE_ITEMS = ["revenue", "cogs", "gross_profit", "sga", "rnd", "ebit", "pretax_income", "net_interest_expense",
+              "receivables", "inventory", "payables"]
 # Ratios a company publishes itself, used only when the amounts behind them are not available
 REPORTED_RATIOS = ["ebit_margin", "gross_margin"]
 
@@ -67,12 +68,26 @@ def read_value(raw):
     if isinstance(raw, (int, float)):
         return float(raw), None, None
     if isinstance(raw, dict):
+        scale = float(raw.get("scale", 1.0))  # an item reported in thousands when the rest is in millions
+        if "parts" in raw:
+            # a line built from reported parts: selling + admin, segment operating profits, several cost lines
+            total, first_src = 0.0, None
+            for part in raw["parts"]:
+                v, src, reason = read_value(part)
+                if v is None:
+                    label = part.get("label", "a part") if isinstance(part, dict) else "a part"
+                    return None, src, raw.get("na_reason") or f"{label}: {reason}"
+                if src is None:
+                    raise CaseError(f"a part of {raw.get('label', 'a summed line')} has no source")
+                total += v
+                first_src = first_src or src
+            return total * scale, first_src, None
         v = raw.get("value")
         src = raw.get("src")
         reason = raw.get("na_reason")
         if v is None:
             return None, src, reason or "not reported"
-        return float(v), src, None
+        return float(v) * scale, src, None
     raise CaseError(f"unreadable value: {raw!r}")
 
 
@@ -204,6 +219,9 @@ def compute(case: dict) -> dict:
 
     # exclusions: {(company, metric): reason}
     exclusions = {(e["company"], e["metric"]): e.get("reason", "excluded") for e in case.get("exclusions", [])}
+    # metrics that mean nothing in this industry (inventory days in software), n/a for every company
+    not_applicable = meta.get("not_applicable", {})
+    company_info = {}
 
     # ---- per-company line items, latest period, converted to case currency
     rows = {}
@@ -214,10 +232,15 @@ def compute(case: dict) -> dict:
             warnings.append(f"{cid}: no financials")
             rows[cid] = {"periods": {}, "latest": None}
             continue
-        fx = c.get("fx_to_case")
-        if c.get("currency", currency) != currency and fx is None:
-            raise CaseError(f"{cid} reports in {c.get('currency')} but has no fx_to_case")
-        fx = float(fx) if fx is not None else 1.0
+        fx_raw = c.get("fx_to_case")
+        fx, _, _ = read_value(fx_raw) if fx_raw is not None else (None, None, None)
+        fx_missing = c.get("currency", currency) != currency and fx is None
+        if fx_missing:
+            if c.get("role") == "target":
+                raise CaseError(f"the target reports in {c.get('currency')}; set meta.currency to it")
+            # ratios do not need a rate; only this peer's revenue in the peer table is left unconverted
+            warnings.append(f"{cid}: no fx_to_case, so its amounts stay in {c.get('currency')} (ratios unaffected)")
+        fx = 1.0 if fx is None else float(fx)
         fx *= float(c.get("scale", 1.0))  # e.g. 0.001 when a company reports in thousands
         parsed = {}
         for p, items in periods.items():
@@ -242,8 +265,19 @@ def compute(case: dict) -> dict:
                     if src and src not in source_ids:
                         warnings.append(f"{cid} {p} reported {rk}: source {src!r} is not in sources[]")
                     parsed[p]["_ratios"][rk] = {"value": v, "src": src}
+            # EBIT from pretax income and net interest, when there is no operating-income line
+            if parsed[p]["ebit"]["value"] is None and parsed[p]["pretax_income"]["value"] is not None \
+                    and parsed[p]["net_interest_expense"]["value"] is not None:
+                parsed[p]["ebit"] = {"value": parsed[p]["pretax_income"]["value"] + parsed[p]["net_interest_expense"]["value"],
+                                     "src": parsed[p]["pretax_income"]["src"], "na_reason": None,
+                                     "derived": "pretax income plus net interest expense"}
         latest = max(parsed, key=year_of)
         rows[cid] = {"periods": parsed, "latest": latest}
+        rev_l = parsed[latest]["revenue"]["value"]
+        company_info[cid] = {"latest_period": short_period(latest), "revenue": rev_l,
+                             "revenue_currency": c.get("currency", currency) if fx_missing else currency,
+                             "fx_missing": fx_missing,
+                             "revenue_display": fmt_money(rev_l, c.get("currency", currency) if fx_missing else currency)}
 
     def li(cid, period, item):
         r = rows[cid]["periods"].get(period, {}).get(item)
@@ -262,6 +296,8 @@ def compute(case: dict) -> dict:
             continue
         rev = li(cid, latest, "revenue")
         cogs = li(cid, latest, "cogs")
+        rev_reason = rows[cid]["periods"][latest]["revenue"].get("na_reason") or "revenue not reported"
+        cogs_reason = rows[cid]["periods"][latest]["cogs"].get("na_reason") or "cost of sales not reported (costs by nature, or not split)"
 
         def ratio(num_item, denom, label):
             n = li(cid, latest, num_item)
@@ -279,20 +315,21 @@ def compute(case: dict) -> dict:
         vals = {}
         if rev:
             ebit = li(cid, latest, "ebit")
-            vals["ebit_margin"] = (ebit / rev, None) if ebit is not None else (None, "EBIT not reported")
-            vals["gross_margin"] = ((rev - cogs) / rev, None) if cogs is not None else (None, "cost of sales not reported (costs by nature, or not split)")
+            vals["ebit_margin"] = (ebit / rev, None) if ebit is not None else (
+                None, rows[cid]["periods"][latest]["ebit"].get("na_reason") or "EBIT not reported")
+            vals["gross_margin"] = ((rev - cogs) / rev, None) if cogs is not None else (None, cogs_reason)
             vals["sga_pct"] = ratio("sga", rev, "SG&A")
             vals["rnd_pct"] = ratio("rnd", rev, "R&D")
             vals["dso"] = days("receivables", rev, "receivables")
         else:
             for k in ("ebit_margin", "gross_margin", "sga_pct", "rnd_pct", "dso"):
-                vals[k] = (None, "revenue not reported")
+                vals[k] = (None, rev_reason)
         if cogs:
             vals["dio"] = days("inventory", cogs, "inventory")
             vals["dpo"] = days("payables", cogs, "payables")
         else:
-            vals["dio"] = (None, "cost of sales not reported")
-            vals["dpo"] = (None, "cost of sales not reported")
+            vals["dio"] = (None, cogs_reason)
+            vals["dpo"] = (None, cogs_reason)
         reported = rows[cid]["periods"][latest].get("_ratios", {})
         ratio_notes = {}
         for rk, rv in reported.items():
@@ -316,7 +353,7 @@ def compute(case: dict) -> dict:
                 r0, r1 = li(cid, start_p, "revenue"), li(cid, end_p, "revenue")
                 vals["revenue_cagr"] = ((r1 / r0) ** (1 / n) - 1, None)
                 cagr_label = f"{short_period(start_p)}–{short_period(end_p)}"
-                if n < cagr_years:
+                if n < cagr_years and (cid, "revenue_cagr") not in exclusions:
                     warnings.append(f"{cid}: growth over {n} year(s), not {cagr_years}")
             else:
                 vals["revenue_cagr"] = (None, "fewer than two years of revenue")
@@ -336,6 +373,11 @@ def compute(case: dict) -> dict:
         if c.get("tsr_window"):
             direct_period["tsr"] = c["tsr_window"]
 
+        for k, why in not_applicable.items():
+            vals[k] = (None, why)
+        if "dso" in not_applicable or "dio" in not_applicable or "dpo" in not_applicable:
+            if True:
+                vals["ccc"] = (None, "not meaningful here: " + "; ".join(not_applicable[k] for k in ("dso", "dio", "dpo") if k in not_applicable))
         for m in METRICS:
             v, reason = vals.get(m.key, (None, "not computed"))
             period = cagr_label if m.key == "revenue_cagr" else (
@@ -362,7 +404,8 @@ def compute(case: dict) -> dict:
               "rating": None, "rank": None, "rank_of": None, "gap_to_median": None, "gap_to_tq": None,
               "invalid_reason": None, "p25": None, "p75": None}
         if len(peer_vals) < min_peers:
-            st["invalid_reason"] = f"only {len(peer_vals)} peers report it (need {min_peers})"
+            st["invalid_reason"] = (not_applicable[m.key] if m.key in not_applicable else
+                                    f"only {len(peer_vals)} peer{'s report' if len(peer_vals) != 1 else ' reports'} it (need {min_peers})")
         else:
             vs = [v for _, v in peer_vals]
             st["median"] = statistics.median(vs)
@@ -397,6 +440,10 @@ def compute(case: dict) -> dict:
     horizon = int(sz.get("horizon_years", 3))
     capture = float(sz.get("capture", 1.0))
     size_rnd = bool(sz.get("size_rnd", False))
+    size_growth = bool(sz.get("size_growth", True))
+    cost_lever = sz.get("cost_lever", "split")
+    if cost_lever not in ("split", "ebit_margin"):
+        raise CaseError("sizing.cost_lever must be 'split' or 'ebit_margin'")
     practitioner = sz.get("practitioner_ranges", {})
 
     latest_t = rows[tid]["latest"]
@@ -493,7 +540,11 @@ def compute(case: dict) -> dict:
     a = {"id": "commercial", "name": "Commercial: revenue growth", "kind": "pnl", "metric": growth_key,
          "baseline": {"value": R, "display": fmt_money(R, currency), "label": "Revenue", "period": short_period(latest_t)},
          "target_value": t_cagr, "median": st["median"], "top_quartile": st["top_quartile"], "horizon_label": end_label}
-    if t_cagr is None or margin is None:
+    if not size_growth:
+        a["state"] = "na"
+        a["reason"] = sz.get("growth_note") or "growth not sized for this case"
+        finish(a, None, None, None)
+    elif t_cagr is None or margin is None:
         a["state"] = "na"
         a["reason"] = "growth or margin not available"
         finish(a, None, None, None)
@@ -529,8 +580,14 @@ def compute(case: dict) -> dict:
                        f"to {end_label}, times the {margin_label}.")
         finish(a, r_lo * margin, r_hi * margin, None)
 
-    cost_bucket("operations", "Operations: cost of sales", "gross_margin", C, "Cost of sales")
-    cost_bucket("sga", "SG&A efficiency", "sga_pct", SGA, "SG&A")
+    if cost_lever == "ebit_margin":
+        # One cost bucket on the EBIT-margin gap, for sets whose cost lines are not comparable
+        # (formats that trade gross margin against SG&A, costs by nature). Never alongside the split buckets.
+        costs = (R - EBIT) if EBIT is not None else None
+        cost_bucket("margin", "Cost and margin: EBIT-margin gap", "ebit_margin", costs, "Operating costs")
+    else:
+        cost_bucket("operations", "Operations: cost of sales", "gross_margin", C, "Cost of sales")
+        cost_bucket("sga", "SG&A efficiency", "sga_pct", SGA, "SG&A")
     if size_rnd:
         cost_bucket("rnd", "R&D efficiency", "rnd_pct", RND, "R&D")
 
@@ -647,10 +704,11 @@ def compute(case: dict) -> dict:
 
     return {
         "meta": {**meta, "currency": currency, "unit": unit, "horizon_years": horizon, "capture": capture,
-                 "growth_metric": growth_key,
+                 "growth_metric": growth_key, "cost_lever": cost_lever,
                  "horizon_end": end_label, "target_id": tid, "target_period": short_period(latest_t)},
         "metrics": [m.__dict__ for m in METRICS],
         "values": metric_values,
+        "companies": company_info,
         "stats": stats,
         "buckets": buckets,
         "totals": totals,

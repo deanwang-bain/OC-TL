@@ -43,6 +43,19 @@ State these limits on the poster (the method panel covers most of them):
 
 ## Workflow
 
+**Not for banks, insurers, asset managers or REITs.** Their economics do not run through cost of sales, SG&A and working capital, so the metrics here would mislead. Say so and stop rather than force them through.
+
+### 0. Plan the searches
+
+A scan takes roughly 45–60 web searches, and the budget can be shared with other work in the session, so spend them in this order and stop adding peers before you starve the signals:
+
+1. The target's latest annual income statement and balance sheet, and its prior years' revenue (4–6 searches).
+2. **The target's management signals**: latest results call, annual report letter, investor day (6–10 searches). These shape the framings, so they come before the seventh peer.
+3. Each peer's income statement, then balance sheet (4–6 searches each). Six well-documented peers beat nine thin ones.
+4. Outside view, organic growth and valuation if the budget allows.
+
+Search for a whole statement at once ("<company> 10-K FY2025 consolidated statements of operations net sales cost of sales selling general administrative operating income"), not one line at a time. When the annual figures will not surface, the next quarter's interim report often carries the full-year column. Keep your own numbers out of queries: search extracts sometimes echo them back as if confirmed.
+
 ### 1. Scope (ask nothing unless the company is ambiguous)
 
 Defaults: audience is the CEO and executive committee; question is "Where is the value, and what would management recognise as its own agenda?"; currency is the target's reporting currency, in millions; latest four fiscal years for revenue, latest year for everything else; growth over three years; sizing horizon three years. Use what the user gives you instead. Only ask when the target itself is unclear (two listed entities with the same name, a parent and a subsidiary).
@@ -59,7 +72,11 @@ Record each value as `{"value": 1234, "src": "s3"}` in millions of the company's
 
 Keep the target's own figures exactly as reported. Peers in another currency need `fx_to_case` with an FX source; ratios do not change, only the revenue shown in the peer table. A company reporting in thousands gets `"scale": 0.001`. Where a filing shows gross profit rather than cost of sales, record `gross_profit` and the script derives cost of sales; where only a published margin is available (no amounts), record it under `reported_ratios`.
 
-**Pick the EBIT basis before collecting.** If any company has large impairments, restructuring or other one-offs in the latest year, reported operating income will mislead (a target with a reported loss makes the growth bucket meaningless). Then use each company's own adjusted operating income for every company, set `meta.ebit_basis` to `"adjusted"`, and note definitions that differ (for example one peer also excluding amortisation).
+**Pick the EBIT basis before collecting.** If any company has large impairments, restructuring or other one-offs in the latest year, reported operating income will mislead (a target with a reported loss makes the growth bucket meaningless). Then use each company's own adjusted operating income where it publishes one: `meta.ebit_basis` is `"adjusted"` when every company does, `"mixed"` when some publish none and keep their reported figure. Give each company its `ebit_basis` text ("adjusted operating income", "reported: no adjusted measure published"); it prints in the peer table.
+
+One exception: in sectors where adjusted figures mainly remove stock-based compensation (software, internet), stay on reported operating income for everyone. The cost lines you benchmark include stock-based pay, so an adjusted EBIT base would not reconcile with them. `references/sources.md` has an industry table with the other sector rules (captive finance, retail formats, cyclicals, IFRS by nature, hyperinflation).
+
+**Build lines from reported parts, not by hand.** When a line is the sum of reported figures (selling plus admin, three segments' operating profit, several cost lines), record it as `{"parts": [...]}` and the script adds them. When there is no operating-income line, record `pretax_income` and `net_interest_expense` and the script derives EBIT. A peer without a cited FX rate can stay in: leave `fx_to_case` out and only its revenue column is shown unconverted.
 
 **Mark what you could not read.** When a page could not be opened and a figure or quote comes from a search-result extract, set `"checked": false` on that source. The poster then says how many sources need verifying, in the header and under Limitations. Never present search-extract figures as read from the document.
 
@@ -70,7 +87,7 @@ Keep the target's own figures exactly as reported. Peers in another currency nee
 
 ### 4. Collect signals
 
-Search the latest annual report letter, the last two earnings calls, any investor day and recent public news for what management says about priorities, targets, investments and problems. Record 6–12 signals. Quote verbatim, at most two sentences, with speaker, role, date and source; when you only have a search summary or a paraphrase, set `"verbatim": false` and it is labelled "summary". Add analyst or industry views from public news as `kind: "analyst"` or `"industry"`.
+(Collect the target's signals early, per step 0.) Search the latest annual report letter, the last two earnings calls, any investor day and recent public news for what management says about priorities, targets, investments and problems — forward-looking statements first, explanations of past results second. Record 6–12 signals. Quote verbatim, at most two sentences, with speaker, role, date and source; when you only have a search summary or a paraphrase, set `"verbatim": false` and it is labelled "summary". The quotes in a company's own results press release are the easiest to get verbatim, because newswires reproduce them word for word. Add analyst or industry views from public news as `kind: "analyst"` or `"industry"`. A signal used in several places prints in full once and as a pointer after that.
 
 A signal is evidence, never a number on a chart. Numbers inside a quote stay in the quote.
 
@@ -123,6 +140,8 @@ Give the user `poster.html` (opens in any browser; print to PDF at A1, or A3/A4 
 - **Working capital (cash, one-off)**: DSO, DIO and DPO day gaps × revenue or cost of sales ÷ 365.
 
 A bucket where the target already beats the top quartile shows "no gap" rather than disappearing, because that is a finding too.
+
+**When the cost lines are not comparable** (retail formats that trade gross margin against SG&A, peers reporting costs by nature, too few peers left after exclusions), set `sizing.cost_lever` to `"ebit_margin"`: one bucket sized on the EBIT-margin gap replaces the operations and SG&A buckets. Do this rather than leaving the biggest gap unsized. **In a cyclical industry** a three-year growth gap measures the cycle, not a lever; set `sizing.size_growth` to false with a `growth_note`, or use organic growth through a full cycle. **When a metric means nothing for the industry** (inventory days in software), list it in `meta.not_applicable` with the reason, and the chart is swapped for one that has data.
 
 ## Files
 

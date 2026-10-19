@@ -31,8 +31,9 @@ One JSON file holds everything the poster shows. `assets/case.example.json` is a
 | `min_peers` | 4 | Fewer peers reporting a metric makes its benchmark n/a |
 | `charts` | ebit_margin, revenue_cagr, gross_margin, sga_pct, ccc, rnd_pct | Which six charts appear (any metric key below). TSR replaces the last one when provided |
 | `fx_note` | none | Header chip, e.g. "Peer revenue at ECB rates of 30 Sep 2026" |
-| `ebit_basis` | `reported` | `adjusted` when every company's EBIT is its own adjusted operating income. Changes the header chip and the method text |
+| `ebit_basis` | `reported` | `adjusted` when every company's EBIT is its own adjusted operating income; `mixed` when some publish none and keep their reported figure. Changes the header chip and the method text |
 | `valuation_label` | "Valuation multiple" | Name of the `valuation` multiple, e.g. "Forward P/E" |
+| `not_applicable` | none | `{"dio": "software: no inventory", "dpo": "payables are opex and capex creditors"}`: the metric is n/a for every company with that reason; CCC follows; charts with no data are replaced |
 
 ## companies
 
@@ -51,7 +52,9 @@ One JSON file holds everything the poster shows. `assets/case.example.json` is a
 - `tsr` is optional and taken as published (not computed); give every company the same window or leave it out.
 - `organic_growth`: `{"value": -0.034, "src": "s2", "period": "FY25"}`, as the company reports it. Used for the growth chart and the commercial bucket when `sizing.growth_metric` is `organic_growth`.
 - `valuation`: `{"value": 9.1, "src": "s30", "period": "16 Oct 2026"}`. One multiple, same definition and date for every company. Adds the valuation-against-growth chart; never sized.
-- `scale`: multiplier to millions, e.g. `0.001` for a company that reports in thousands.
+- `scale`: multiplier to millions, e.g. `0.001` for a company that reports in thousands. A single value can carry its own `"scale"` when one statement uses a different unit.
+- `ebit_basis`: free text naming this company's EBIT, e.g. "adjusted operating income" or "reported: no adjusted measure published". Printed under its name in the peer table.
+- `fx_to_case` may be left out for a peer without a cited rate: its ratios still count, and its revenue shows unconverted.
 
 ## financials
 
@@ -80,6 +83,8 @@ One JSON file holds everything the poster shows. `assets/case.example.json` is a
 - `sga` is the combined selling, general and administrative line. If a company reports selling and admin separately, add them and say so in the source `locator`.
 - `ebit` is operating income as reported. If you use a company's adjusted operating income, do it for every company and set `meta.ebit_basis` to `adjusted`.
 - `gross_profit` may stand in for `cogs`: the script derives cost of sales as revenue less gross profit.
+- `pretax_income` plus `net_interest_expense` (interest expense less interest income, positive when a cost) stand in for `ebit` when a company has no operating-income line.
+- Any value can be a sum of reported parts: `{"parts": [{"label": "Selling", "value": 3100, "src": "s4"}, {"label": "Admin", "value": 1200, "src": "s4"}]}`. Each part needs its own source. Use it for split SG&A, segment operating profit, or cost lines without a subtotal.
 - `reported_ratios`: `{"ebit_margin": {"value": 0.113, "src": "s14"}}` (also `gross_margin`). Used only when the amounts behind the ratio are missing; the chart marks it †.
 - Other keys in a period are ignored, so you can keep audit fields (for example `ebit_reported`) beside the values.
 
@@ -120,6 +125,8 @@ Removes one company from one metric's benchmark. The company still shows in the 
 | `size_rnd` | false | Size R&D as a cost bucket |
 | `commercial_margin` | target EBIT margin | Margin applied to incremental revenue; a fraction, or `"ebit_margin"` |
 | `growth_metric` | `revenue_cagr` | `organic_growth` to size the commercial bucket on organic growth |
+| `size_growth` | true | false to leave the commercial bucket unsized (cyclical trough or peak, deal-distorted growth); give the reason in `growth_note` |
+| `cost_lever` | `split` | `ebit_margin` replaces the operations and SG&A buckets with one bucket on the EBIT-margin gap (id `margin`), for sets whose cost lines are not comparable |
 | `practitioner_ranges` | none | Optional second leg per bucket from a **public, cited** source: `{"sga": {"low_pct": 0.05, "high_pct": 0.10, "basis": "cost", "src": "s12"}}`. The opportunity becomes the larger of the peer and published legs at each end. Never fill this from memory |
 
 ## narrative
@@ -149,7 +156,7 @@ Removes one company from one metric's benchmark. The company still shows in the 
 
 ## Tokens
 
-Write `{{key}}` in any narrative text; the build replaces it with the formatted value and fails on an unknown key. Metric keys: `revenue_cagr`, `organic_growth`, `gross_margin`, `sga_pct`, `rnd_pct`, `ebit_margin`, `dso`, `dio`, `dpo`, `ccc`, `tsr`, `valuation`. Bucket ids: `commercial`, `operations`, `sga`, `rnd`, `working_capital`.
+Write `{{key}}` in any narrative text; the build replaces it with the formatted value and fails on an unknown key. Metric keys: `revenue_cagr`, `organic_growth`, `gross_margin`, `sga_pct`, `rnd_pct`, `ebit_margin`, `dso`, `dio`, `dpo`, `ccc`, `tsr`, `valuation`. Bucket ids: `commercial`, `operations`, `sga`, `rnd`, `margin` (with `cost_lever: "ebit_margin"`), `working_capital`.
 
 | Token | Gives |
 | --- | --- |

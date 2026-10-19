@@ -39,6 +39,7 @@ Low end closes the gap to the median, high end to the top quartile. Gaps are zer
 | Operations | gross-margin gap × R | ÷ cost of sales, and bps of margin |
 | SG&A | SG&A-% gap × R | ÷ SG&A, and bps of margin |
 | R&D (opt-in) | (target R&D % − peer median or lower quartile) × R | ÷ R&D, and bps |
+| Cost and margin (with `cost_lever: "ebit_margin"`, instead of Operations and SG&A) | EBIT-margin gap × R | ÷ operating costs (revenue less EBIT), and bps of margin |
 | Working capital | DSO gap × R ÷ 365 + DIO gap × cost of sales ÷ 365 + DPO gap × cost of sales ÷ 365 | days |
 
 - With a published `practitioner_ranges` leg, each end of the opportunity is the larger of the peer leg and the published leg (as OpCat does with Bain experience). Without one, the opportunity is the peer leg.
@@ -47,6 +48,8 @@ Low end closes the gap to the median, high end to the top quartile. Gaps are zer
 - Bridge: latest EBIT, plus each P&L bucket, to EBIT potential. Margin with the gaps closed divides by revenue plus the commercial bucket's incremental revenue.
 
 ## Known simplifications
+
+- With an adjusted EBIT basis, the cost-line gaps (gross margin, SG&A) are still on reported figures. Where the adjustments are mostly one-offs this is close enough; where they remove a recurring cost such as stock-based pay, the bridge would mix bases, which is why software stays on reported operating income.
 
 Say these when asked; the method panel prints the main ones.
 

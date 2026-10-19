@@ -98,7 +98,9 @@ class Renderer:
         if not rows:
             return '<p class="na">No company reports this metric.</p>'
         rows.sort(key=lambda r: r[1], reverse=(m.direction != "lower"))
-        row_h, bar_h, label_w, right_pad, top = 15, 9, 92, 44, 16
+        row_h, bar_h, label_w, top = 15, 9, 92, 16
+        longest = max(len(fmt_metric(r[1], m.unit) + (" (excl.) †" if r[3] else " †")) for r in rows)
+        right_pad = max(44, longest * 4.3 + 6)
         h = top + row_h * len(rows) + 6
         lo = min(0.0, min(r[1] for r in rows), st["median"] or 0, st["top_quartile"] or 0)
         hi = max(0.0, max(r[1] for r in rows), st["median"] or 0, st["top_quartile"] or 0)
@@ -109,7 +111,7 @@ class Renderer:
             return label_w + (v - lo) / span * plot_w
 
         T = TOKENS
-        parts = [f'<svg viewBox="0 0 {width} {h}" class="chart" role="img" aria-label="{esc(m.label)} by company">']
+        parts = [f'<svg viewBox="0 {-8} {width} {h + 8}" class="chart" role="img" aria-label="{esc(m.label)} by company">']
         x0 = x(0)
         for i, (cid, v, is_t, excl) in enumerate(rows):
             y = top + i * row_h + (row_h - bar_h) / 2
@@ -129,10 +131,25 @@ class Renderer:
                 xv = x(val)
                 parts.append(f'<line x1="{xv}" x2="{xv}" y1="{top - 2}" y2="{h - 4}" stroke="{color}" stroke-width="1.5"/>')
             xm, xq = x(st["median"]), x(st["top_quartile"])
-            # keep the two reference labels apart
+            med_txt = f'Median {fmt_metric(st["median"], m.unit)}'
+            tq_txt = f'Top quartile {fmt_metric(st["top_quartile"], m.unit)}'
+
+            def ref_anchor(xv, txt, prefer):
+                # keep a reference label inside the chart: flip its anchor when it would run off an edge
+                w = len(txt) * 4.0
+                if prefer == "start" and xv + w > width - 2:
+                    return "end"
+                if prefer == "end" and xv - w < label_w - 30:
+                    return "start"
+                return prefer
             left_first = xm <= xq
-            parts.append(f'<text x="{xm}" y="{top - 5}" text-anchor="{"end" if left_first else "start"}" class="ref">Median {esc(fmt_metric(st["median"], m.unit))}</text>')
-            parts.append(f'<text x="{xq}" y="{top - 5}" text-anchor="{"start" if left_first else "end"}" class="ref tq">Top quartile {esc(fmt_metric(st["top_quartile"], m.unit))}</text>')
+            am = ref_anchor(xm, med_txt, "end" if left_first else "start")
+            aq = ref_anchor(xq, tq_txt, "start" if left_first else "end")
+            yq = top - 5
+            if am == aq or (am == "start" and aq == "end"):
+                yq = top - 13  # the two labels would overlap: lift the top-quartile one a line
+            parts.append(f'<text x="{xm}" y="{top - 5}" text-anchor="{am}" class="ref">{esc(med_txt)}</text>')
+            parts.append(f'<text x="{xq}" y="{yq}" text-anchor="{aq}" class="ref tq">{esc(tq_txt)}</text>')
         parts.append("</svg>")
         out = "".join(parts)
         if any(vals[c][key].get("note") for c, *_ in rows):
@@ -155,23 +172,29 @@ class Renderer:
         return f'<path d="{d}" fill="{fill}"><title>{esc(title)}</title></path>'
 
     def segments(self, segs):
-        """Segment table: reported figures, each with its source."""
-        rows = []
+        """Segment table: reported figures, each with its source. Columns nobody filled are dropped."""
+        from opscan_calc import read_value
+        cols = [("revenue", "Revenue", lambda v: fmt_money(v, self.cur)), ("growth", "Growth", lambda v: fmt_metric(v, "pct")),
+                ("margin", "Margin", lambda v: fmt_metric(v, "pct"))]
+        parsed = []
         for sg in segs:
-            from opscan_calc import read_value
-            rv, rsrc, _ = read_value(sg.get("revenue"))
-            gv, gsrc, _ = read_value(sg.get("growth"))
-            mv, msrc, _ = read_value(sg.get("margin"))
-            for v, src, what in ((rv, rsrc, "revenue"), (gv, gsrc, "growth"), (mv, msrc, "margin")):
+            row = {}
+            for key, _, _ in cols:
+                v, src, _ = read_value(sg.get(key))
                 if v is not None and not src:
-                    self.typed_numbers.append((f"segment {sg.get('name')}", f"{what} without a source"))
-            cites = "".join(self.cite(x) for x in dict.fromkeys(x for x in (rsrc, gsrc, msrc) if x))
-            rows.append(f"<tr><td>{esc(sg.get('name', ''))}{cites}</td><td class='num'>{esc(fmt_money(rv, self.cur))}</td>"
-                        f"<td class='num'>{esc(fmt_metric(gv, 'pct'))}</td><td class='num'>{esc(fmt_metric(mv, 'pct'))}</td>"
-                        f"<td>{self.text(sg.get('note', ''), 'segments')}</td></tr>")
+                    self.missing.append(f"segment {sg.get('name')} {key}: value without a source")
+                row[key] = (v, src)
+            parsed.append((sg, row))
+        used = [c for c in cols if any(r[c[0]][0] is not None for _, r in parsed)]
+        rows = []
+        for sg, r in parsed:
+            cites = "".join(self.cite(x) for x in dict.fromkeys(src for v, src in r.values() if src))
+            cells = "".join(f"<td class='num'>{esc(fmt(r[k][0]))}</td>" for k, _, fmt in used)
+            rows.append(f"<tr><td>{esc(sg.get('name', ''))}{cites}</td>{cells}<td>{self.text(sg.get('note', ''), 'segments')}</td></tr>")
         per = segs[0].get("period", "") if segs else ""
-        return (f'<h3>Where the business sits{(" · " + esc(per)) if per else ""}</h3><table class="segs"><thead><tr><th>Segment</th><th>Revenue</th>'
-                f'<th>Growth</th><th>Margin</th><th></th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
+        head = "".join(f"<th>{lab}</th>" for _, lab, _ in used)
+        return (f'<h3>Where the business sits{(" · " + esc(per)) if per else ""}</h3><table class="segs"><thead><tr><th>Segment</th>{head}'
+                f'<th></th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
 
     def scatter(self, growth_key, width=300):
         """Valuation multiple against growth: what the market pays for growth."""
@@ -335,7 +358,8 @@ class Renderer:
             f"Latest fiscal year {meta['target_period']}",
             f"{len([c for c in self.case['companies'] if c.get('role') == 'peer'])} peers",
         ]
-        chips.append("EBIT: adjusted operating income" if cm.get("ebit_basis") == "adjusted" else "EBIT: reported operating income")
+        chips.append({"adjusted": "EBIT: adjusted operating income", "mixed": "EBIT: adjusted where published, else reported"}
+                     .get(cm.get("ebit_basis"), "EBIT: reported operating income"))
         if cm.get("fx_note"):
             chips.append(cm["fx_note"])
         unchecked = [x for x in self.sources if x.get("checked") is False]
@@ -344,9 +368,16 @@ class Renderer:
         b = self.a["bridge"]
         margin_tile = ""
         if b:
-            margin_tile = (f'<div class="tile"><div class="tl">EBIT margin</div><div class="tv">{esc(fmt_metric(b["latest"]["margin"], "pct"))}'
-                           f' → {esc(fmt_pct_range(b["target"]["margin_low"], b["target"]["margin_high"]))}</div>'
-                           f'<div class="ts">today → with the gaps closed</div></div>')
+            m0, m1 = b["latest"]["margin"], b["target"]["margin_high"]
+            if abs(m1 - m0) < 0.0005:
+                # only growth is sized, at today's margin: the margin cannot move, so show EBIT itself
+                margin_tile = (f'<div class="tile"><div class="tl">EBIT</div><div class="tv">{esc(b["latest"]["display"])}'
+                               f' → {esc(b["target"]["display"])}</div>'
+                               f'<div class="ts">today → with the gaps closed; margin unchanged at {esc(fmt_metric(m0, "pct"))}</div></div>')
+            else:
+                margin_tile = (f'<div class="tile"><div class="tl">EBIT margin</div><div class="tv">{esc(fmt_metric(m0, "pct"))}'
+                               f' → {esc(fmt_pct_range(b["target"]["margin_low"], b["target"]["margin_high"]))}</div>'
+                               f'<div class="ts">today → with the gaps closed</div></div>')
         return f"""
 <header class="hdr">
   <div class="hdr-main">
@@ -357,7 +388,7 @@ class Renderer:
     <div class="chips">{''.join(f'<span>{esc(c)}</span>' for c in chips)}</div>
   </div>
   <div class="tiles">
-    <div class="tile hero"><div class="tl">Recurring EBIT opportunity</div><div class="tv">{esc(t['pnl']['display'])}</div>
+    <div class="tile hero"><div class="tl">Recurring EBIT opportunity</div><div class="tv{' long' if len(t['pnl']['display']) > 11 else ''}">{esc(t['pnl']['display'])}</div>
       <div class="ts">a year by {esc(meta['horizon_end'])}, from {t['pnl']['count']} sized bucket{'s' if t['pnl']['count'] != 1 else ''}</div></div>
     <div class="tile"><div class="tl">One-off cash release</div><div class="tv">{esc(t['cash']['display'])}</div>
       <div class="ts">working capital; never added to EBIT</div></div>
@@ -404,6 +435,11 @@ class Renderer:
             return f'<p class="na">[missing signal {esc(gid)}]</p>'
         who = ", ".join(x for x in (g.get("speaker"), g.get("role")) if x)
         when = g.get("date", "")
+        shown = getattr(self, "_shown", set())
+        self._shown = shown
+        if gid in shown:
+            return f'<p class="sig-ref">See quote from {esc(who or "the source")}{(", " + esc(when)) if when else ""}{self.cite(g.get("src"))}</p>'
+        shown.add(gid)
         body = esc(g.get("text", ""))
         if g.get("verbatim", True):
             body = f"“{body}”"
@@ -420,20 +456,20 @@ class Renderer:
         vals = self.a["values"]
         for c in self.case["companies"]:
             cid = c["id"]
-            latest = None
-            fin = self.case["financials"].get(cid, {})
-            if fin:
-                from opscan_calc import year_of, read_value
-                lp = max(fin, key=year_of)
-                rv, _, _ = read_value(fin[lp].get("revenue"))
-                fx = c.get("fx_to_case") or 1.0
-                latest = (rv * fx if rv is not None else None, lp)
-            rev = fmt_money(latest[0], self.cur) if latest else "n/a"
+            info = self.a.get("companies", {}).get(cid)
+            rev = info["revenue_display"] if info else "n/a"
+            if info and info.get("fx_missing"):
+                rev += '<div class="basis">not converted</div>'
+                rev_html = True
+            else:
+                rev_html = False
             per = vals[cid]["ebit_margin"]["period"] or ""
             cls = ' class="is-target"' if cid == self.tid else ""
             why = "Target" if cid == self.tid else self.text(c.get("rationale", ""), f"rationale {cid}")
-            basis = f'<div class="basis">{esc(c["basis_note"])}</div>' if c.get("basis_note") else ""
-            out.append(f"<tr{cls}><td>{esc(c['name'])}{basis}</td><td class='num'>{esc(rev)}</td><td>{esc(per)}</td><td>{why}</td></tr>")
+            notes = [x for x in (c.get("basis_note"), (f"EBIT: {c['ebit_basis']}" if c.get("ebit_basis") else None)) if x]
+            basis = "".join(f'<div class="basis">{esc(x)}</div>' for x in notes)
+            rev_cell = rev if rev_html else esc(rev)
+            out.append(f"<tr{cls}><td>{esc(c['name'])}{basis}</td><td class='num'>{rev_cell}</td><td>{esc(per)}</td><td>{why}</td></tr>")
         out.append("</tbody></table>")
         growth_key = self.a["meta"].get("growth_metric", "revenue_cagr")
         keys = cm.get("charts") or ["ebit_margin", growth_key, "gross_margin", "sga_pct", "ccc", "rnd_pct"]
@@ -446,6 +482,10 @@ class Renderer:
                 if drop in keys:
                     keys[keys.index(drop)] = k
                     break
+        fallback = [k for k in ("dso", "dio", "dpo", "rnd_pct", "revenue_cagr", "organic_growth", "tsr", "ccc")
+                    if k not in keys and has(k)]
+        keys = [k if (k == "valuation_vs_growth" or has(k)) else (fallback.pop(0) if fallback else None) for k in keys]
+        keys = [k for k in keys if k]
         out.append('<div class="charts">')
         for k in keys:
             if k == "valuation_vs_growth":
@@ -503,7 +543,8 @@ class Renderer:
         meta = self.a["meta"]
         notes = nar.get("bucket_notes", {})
         out = ['<section class="col"><h2><span class="n">4</span>Size of prize</h2>']
-        out.append(f'<h3>EBIT bridge to {esc(meta["horizon_end"])}</h3>')
+        growth_sized = any(b["id"] == "commercial" and b["state"] == "sized" for b in self.a["buckets"])
+        out.append(f'<h3>EBIT bridge {"to " + esc(meta["horizon_end"]) if growth_sized else "on the latest year, with the gaps closed"}</h3>')
         out.append(self.waterfall())
         has_prac = any(b.get("practitioner") for b in self.a["buckets"])
         out.append('<table class="prize"><thead><tr><th>Bucket and gap to peers</th><th>Baseline</th>')
@@ -565,18 +606,23 @@ class Renderer:
         method = [
             "Every figure comes from a public filing, results release or investor presentation, listed below. Nothing is estimated to fill a gap: a missing value shows as n/a with its reason.",
             "Benchmarks are the median and top quartile of the peers that report the metric; the target is never in its own benchmark. Top quartile follows the metric's direction.",
-            ("EBIT is each company's own adjusted operating income, from its non-GAAP reconciliation; definitions differ and are noted where they matter."
-             if self.case.get("meta", {}).get("ebit_basis") == "adjusted" else
-             "EBIT is reported operating income unless a company note says otherwise.")
+            {"adjusted": "EBIT is each company's own adjusted operating income, from its non-GAAP reconciliation; definitions differ and are noted where they matter.",
+             "mixed": "EBIT is each company's adjusted operating income where it publishes one, and reported operating income otherwise; the peer table names the basis per company."}
+            .get(self.case.get("meta", {}).get("ebit_basis"), "EBIT is reported operating income unless a company note says otherwise.")
             + " Gross margin is revenue less cost of sales. SG&A is benchmarked as one combined line, because peers split it differently.",
             f"Sizing closes the gap to the peer median (low) and the top quartile (high), on the latest year's revenue{'' if cap == 1 else f', at a {cap:.0%} capture rate'}. Growth ({'organic, as each company reports it' if meta.get('growth_metric') == 'organic_growth' else 'reported revenue CAGR'}) compounds for {meta['horizon_years']} years to {meta['horizon_end']} and converts to EBIT at the stated margin. Cash is one-off and never added to EBIT.",
-            "Totals are the sum of the rows shown. This is a sniff test of where value may sit, not a commitment: it has no practitioner experience, case examples or management data behind it.",
+            ("Cost is sized as one EBIT-margin gap, because peers' cost lines are not comparable; it is never added to separate cost-of-sales or SG&A buckets. "
+             if meta.get("cost_lever") == "ebit_margin" else "") + "Totals are the sum of the rows shown. This is a sniff test of where value may sit, not a commitment: it has no practitioner experience, case examples or management data behind it.",
         ]
         out.append('<ul class="bul small">' + "".join(f"<li>{esc(x)}</li>" for x in method) + "</ul>")
         lim = list(nar.get("limitations", []))
         excl = self.case.get("exclusions", [])
         if excl:
-            lim += [f"{self.name(e['company'])} left out of the {METRIC[e['metric']].short} benchmark: {e.get('reason', '')}" for e in excl if e.get("metric") in METRIC]
+            grouped = {}
+            for e in excl:
+                if e.get("metric") in METRIC:
+                    grouped.setdefault((e["company"], e.get("reason", "")), []).append(METRIC[e["metric"]].short)
+            lim += [f"{self.name(c)} left out of the {', '.join(ms)} benchmark{'s' if len(ms) > 1 else ''}: {r}" for (c, r), ms in grouped.items()]
         unchecked = [x for x in self.sources if x.get("checked") is False]
         if unchecked:
             lim.append(f"{len(unchecked)} of {len(self.sources)} sources could not be opened and were read from search extracts (marked ◦ below). Check those figures and quotes against the documents before client use.")
@@ -641,6 +687,7 @@ h1{font-size:54pt;line-height:1;margin:2mm 0 3mm;font-weight:700;letter-spacing:
 .tl{font-size:11pt;color:var(--ink2);font-weight:600}
 .tv{font-size:24pt;font-weight:700;margin:1.5mm 0;white-space:nowrap}
 .tile.hero .tv{font-size:32pt;color:var(--target-dark)}
+.tile.hero .tv.long{font-size:24pt}
 .ts{font-size:9.5pt;color:var(--muted)}
 .grid{flex:1;display:grid;grid-template-columns:1.2fr 1.9fr 1.3fr 1.6fr 1fr;gap:8mm;min-height:0}
 .col{min-width:0;overflow:hidden;font-size:11pt;line-height:1.38}
@@ -660,6 +707,7 @@ p{margin:0 0 2mm}
 blockquote.sig{margin:0 0 1.8mm;padding:1.6mm 3mm;border-left:.8mm solid var(--target);background:var(--page);font-size:10pt;line-height:1.32}
 blockquote.sig-analyst,blockquote.sig-industry{border-left-color:var(--axis)}
 blockquote.sig footer{font-size:8.5pt;color:var(--muted);margin-top:.8mm}
+.sig-ref{font-size:8.5pt;color:var(--muted);margin:0 0 1.5mm;padding-left:3.8mm}
 .tag{display:inline-block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.06em;border:.25mm solid var(--axis);border-radius:1mm;padding:0 1mm;margin-right:1.5mm}
 .cite{color:var(--target-dark);font-size:7.5pt;margin-left:.5mm}
 table{border-collapse:collapse;width:100%%;font-size:9.5pt}
