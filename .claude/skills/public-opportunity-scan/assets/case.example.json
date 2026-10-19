@@ -7,7 +7,9 @@
   "question": "Where is the value, and what would management recognise as its own agenda?",
   "prepared_by": "Example team",
   "cagr_years": 3,
-  "min_peers": 4
+  "min_peers": 4,
+  "valuation_label": "Forward P/E",
+  "ebit_basis": "reported"
  },
  "companies": [
   {
@@ -17,7 +19,17 @@
    "role": "target",
    "ticker": "TGT",
    "currency": "USD",
-   "fiscal_year_end": "Dec"
+   "fiscal_year_end": "Dec",
+   "valuation": {
+    "value": 9.5,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": -0.03,
+    "src": "s_TGT",
+    "period": "FY24"
+   }
   },
   {
    "id": "PA",
@@ -27,7 +39,17 @@
    "ticker": "PA",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Same categories, similar size, US-listed"
+   "rationale": "Same categories, similar size, US-listed",
+   "valuation": {
+    "value": 14.0,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.025,
+    "src": "s_PA",
+    "period": "FY24"
+   }
   },
   {
    "id": "PB",
@@ -37,7 +59,17 @@
    "ticker": "PB",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Packaged food, branded-led, similar channel mix"
+   "rationale": "Packaged food, branded-led, similar channel mix",
+   "valuation": {
+    "value": 17.5,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.04,
+    "src": "s_PB",
+    "period": "FY24"
+   }
   },
   {
    "id": "PC",
@@ -47,7 +79,17 @@
    "ticker": "PC",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Overlapping snacks and sauces portfolio"
+   "rationale": "Overlapping snacks and sauces portfolio",
+   "valuation": {
+    "value": 11.0,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.015,
+    "src": "s_PC",
+    "period": "FY24"
+   }
   },
   {
    "id": "PD",
@@ -57,7 +99,17 @@
    "ticker": "PD",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Similar margin structure and route to market"
+   "rationale": "Similar margin structure and route to market",
+   "valuation": {
+    "value": 15.5,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.03,
+    "src": "s_PD",
+    "period": "FY24"
+   }
   },
   {
    "id": "PE",
@@ -67,7 +119,17 @@
    "ticker": "PE",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Comparable scale; more international"
+   "rationale": "Comparable scale; more international",
+   "valuation": {
+    "value": 19.0,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.05,
+    "src": "s_PE",
+    "period": "FY24"
+   }
   },
   {
    "id": "PF",
@@ -77,7 +139,17 @@
    "ticker": "PF",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Frozen and meals overlap"
+   "rationale": "Frozen and meals overlap",
+   "valuation": {
+    "value": 10.5,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.005,
+    "src": "s_PF",
+    "period": "FY24"
+   }
   },
   {
    "id": "PG",
@@ -87,7 +159,17 @@
    "ticker": "PG",
    "currency": "USD",
    "fiscal_year_end": "Dec",
-   "rationale": "Premium-skewed; included for top-quartile reference"
+   "rationale": "Premium-skewed; included for top-quartile reference",
+   "valuation": {
+    "value": 24.0,
+    "src": "s_mkt",
+    "period": "30 Sep 2026"
+   },
+   "organic_growth": {
+    "value": 0.07,
+    "src": "s_PG",
+    "period": "FY24"
+   }
   }
  ],
  "financials": {
@@ -1006,6 +1088,13 @@
    "publisher": "Example Trade Journal",
    "date": "2025-03-02",
    "url": "https://example.com/trade-volumes"
+  },
+  {
+   "id": "s_mkt",
+   "title": "Share prices and consensus earnings, 30 Sep 2026 (synthetic)",
+   "publisher": "Exchange data",
+   "date": "2026-09-30",
+   "url": "https://example.com/market-data"
   }
  ],
  "signals": [
@@ -1048,13 +1137,14 @@
  ],
  "sizing": {
   "horizon_years": 3,
-  "capture": 1.0
+  "capture": 1.0,
+  "growth_metric": "organic_growth"
  },
  "narrative": {
   "headline": "Northwind is among the most profitable of its peers but the slowest growing; the agenda management already describes, growth, overhead and inventory, is worth {{total.pnl}} of EBIT and {{total.cash}} of cash.",
   "exec_summary": [
    "EBIT margin is {{rating.ebit_margin}} at {{target.ebit_margin}} against a peer median of {{median.ebit_margin}}: this is not a profitability turnaround.",
-   "Revenue is shrinking ({{target.revenue_cagr}} a year) while peers grow at {{median.revenue_cagr}}: growth is the largest gap, worth {{bucket.commercial}} of EBIT by {{horizon.end}}.",
+   "Organic sales fell {{target.organic_growth}} while peers grew {{median.organic_growth}}: growth is the largest gap, worth {{bucket.commercial}} of EBIT by {{horizon.end}}, and the market prices it at {{target.valuation}} against {{median.valuation}}.",
    "Gross margin trails the median by {{gap.gross_margin}}, worth {{bucket.operations}}; management names procurement and network as the levers.",
    "Inventory runs {{target.dio}} against {{median.dio}} for peers, and management calls it a cash priority."
   ],
@@ -1088,13 +1178,13 @@
   "framings": [
    {
     "title": "Growth is the gap, not margin",
-    "lens": "revenue_cagr",
+    "lens": "organic_growth",
     "metrics": [
-     "revenue_cagr",
-     "ebit_margin"
+     "organic_growth",
+     "valuation"
     ],
     "lead": true,
-    "story": "Northwind ranks {{rank.revenue_cagr}} on growth while ranking {{rank.ebit_margin}} on EBIT margin. Closing half the growth gap is worth more than any cost lever, and it is the priority the CEO has stated.",
+    "story": "Northwind ranks {{rank.organic_growth}} on organic growth and {{rank.valuation}} on valuation, while ranking {{rank.ebit_margin}} on EBIT margin. Closing half the growth gap is worth more than any cost lever, and it is the priority the CEO has stated.",
     "signals": [
      "g1"
     ],
@@ -1146,6 +1236,41 @@
   ],
   "limitations": [
    "All companies and figures on this example are synthetic."
+  ],
+  "segments": [
+   {
+    "name": "North America",
+    "period": "FY24",
+    "revenue": {
+     "value": 19500,
+     "src": "s_TGT"
+    },
+    "growth": {
+     "value": -0.045,
+     "src": "s_TGT"
+    },
+    "margin": {
+     "value": 0.21,
+     "src": "s_TGT"
+    },
+    "note": "Most of the decline"
+   },
+   {
+    "name": "International",
+    "revenue": {
+     "value": 6500,
+     "src": "s_TGT"
+    },
+    "growth": {
+     "value": 0.02,
+     "src": "s_TGT"
+    },
+    "margin": {
+     "value": 0.14,
+     "src": "s_TGT"
+    },
+    "note": "Growing, lower margin"
+   }
   ]
  }
 }

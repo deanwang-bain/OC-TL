@@ -16,6 +16,8 @@ Everything here is implemented in `scripts/opscan_calc.py`. This file is for exp
 | `dpo` | trade payables ÷ cost of sales × 365 | higher |
 | `ccc` | DSO + DIO − DPO | lower |
 | `tsr` | as published, same window for all | higher |
+| `organic_growth` | as published by each company, latest year | higher |
+| `valuation` | as published or from market data, one definition and date | higher (shown, not sized) |
 
 Balance-sheet items are year-end values, not averages, because averages need a second balance sheet per company and add little to a sniff test.
 
@@ -33,7 +35,7 @@ Low end closes the gap to the median, high end to the top quartile. Gaps are zer
 
 | Bucket | Opportunity | Shown as % |
 | --- | --- | --- |
-| Commercial | R × [(1 + g + Δ)^h − (1 + g)^h] × margin, where R is revenue, g the target's CAGR, Δ the CAGR gap, h the horizon, margin the target's EBIT margin unless set | incremental revenue ÷ revenue the target would reach on its own trend, and the year |
+| Commercial | R × [(1 + g + Δ)^h − (1 + g)^h] × margin, where R is revenue, g the target's growth (revenue CAGR, or organic growth when `sizing.growth_metric` says so), Δ the gap to the benchmark, h the horizon, margin the target's EBIT margin unless set | incremental revenue ÷ revenue the target would reach on its own trend, and the year |
 | Operations | gross-margin gap × R | ÷ cost of sales, and bps of margin |
 | SG&A | SG&A-% gap × R | ÷ SG&A, and bps of margin |
 | R&D (opt-in) | (target R&D % − peer median or lower quartile) × R | ÷ R&D, and bps |

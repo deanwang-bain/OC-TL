@@ -40,10 +40,16 @@ METRICS = [
     Metric("dpo", "Days payables outstanding", "DPO", "higher", "days"),
     Metric("ccc", "Cash conversion cycle", "CCC", "lower", "days"),
     Metric("tsr", "Total shareholder return", "TSR", "higher", "pct"),
+    Metric("organic_growth", "Organic growth", "Organic growth", "higher", "pct"),
+    Metric("valuation", "Valuation multiple", "Multiple", "higher", "x"),
 ]
+# Metrics taken as published, per company, rather than computed from line items
+DIRECT = ["tsr", "organic_growth", "valuation"]
 METRIC = {m.key: m for m in METRICS}
 
-LINE_ITEMS = ["revenue", "cogs", "sga", "rnd", "ebit", "receivables", "inventory", "payables"]
+LINE_ITEMS = ["revenue", "cogs", "gross_profit", "sga", "rnd", "ebit", "receivables", "inventory", "payables"]
+# Ratios a company publishes itself, used only when the amounts behind them are not available
+REPORTED_RATIOS = ["ebit_margin", "gross_margin"]
 
 
 class CaseError(ValueError):
@@ -109,6 +115,8 @@ def fmt_money(v, currency, unit="millions"):
 def fmt_range(lo, hi, currency):
     if lo is None:
         return "n/a"
+    if hi is not None and abs(lo) < 1e-9 < hi:
+        return f"up to {fmt_money(hi, currency)}"
     if hi is None or abs(hi - lo) < 1e-9:
         return fmt_money(lo, currency)
     a, b = fmt_money(lo, currency), fmt_money(hi, currency)
@@ -124,6 +132,8 @@ def fmt_metric(v, unit):
         return "n/a"
     if unit == "pct":
         return f"{v * 100:.1f}%"
+    if unit == "x":
+        return f"{v:.1f}x"
     return f"{v:.0f} days"
 
 
@@ -208,6 +218,7 @@ def compute(case: dict) -> dict:
         if c.get("currency", currency) != currency and fx is None:
             raise CaseError(f"{cid} reports in {c.get('currency')} but has no fx_to_case")
         fx = float(fx) if fx is not None else 1.0
+        fx *= float(c.get("scale", 1.0))  # e.g. 0.001 when a company reports in thousands
         parsed = {}
         for p, items in periods.items():
             parsed[p] = {}
@@ -218,6 +229,19 @@ def compute(case: dict) -> dict:
                 if v is not None and src is None:
                     warnings.append(f"{cid} {p} {li}: value has no source")
                 parsed[p][li] = {"value": v * fx if v is not None else None, "src": src, "na_reason": reason}
+            # cost of sales from gross profit, when that is what the filing shows
+            if parsed[p]["cogs"]["value"] is None and parsed[p]["gross_profit"]["value"] is not None \
+                    and parsed[p]["revenue"]["value"] is not None:
+                parsed[p]["cogs"] = {"value": parsed[p]["revenue"]["value"] - parsed[p]["gross_profit"]["value"],
+                                     "src": parsed[p]["gross_profit"]["src"], "na_reason": None,
+                                     "derived": "revenue less gross profit"}
+            parsed[p]["_ratios"] = {}
+            for rk in REPORTED_RATIOS:
+                v, src, _ = read_value((items.get("reported_ratios") or {}).get(rk))
+                if v is not None:
+                    if src and src not in source_ids:
+                        warnings.append(f"{cid} {p} reported {rk}: source {src!r} is not in sources[]")
+                    parsed[p]["_ratios"][rk] = {"value": v, "src": src}
         latest = max(parsed, key=year_of)
         rows[cid] = {"periods": parsed, "latest": latest}
 
@@ -269,6 +293,12 @@ def compute(case: dict) -> dict:
         else:
             vals["dio"] = (None, "cost of sales not reported")
             vals["dpo"] = (None, "cost of sales not reported")
+        reported = rows[cid]["periods"][latest].get("_ratios", {})
+        ratio_notes = {}
+        for rk, rv in reported.items():
+            if vals.get(rk, (None,))[0] is None:
+                vals[rk] = (rv["value"], None)
+                ratio_notes[rk] = "margin as published by the company; amounts not available"
         if all(vals.get(k, (None,))[0] is not None for k in ("dso", "dio", "dpo")):
             vals["ccc"] = (vals["dso"][0] + vals["dio"][0] - vals["dpo"][0], None)
         else:
@@ -293,14 +323,27 @@ def compute(case: dict) -> dict:
         else:
             vals["revenue_cagr"] = (None, "fewer than two years of revenue")
 
-        tsr_v, tsr_src, tsr_reason = read_value(c.get("tsr"))
-        vals["tsr"] = (tsr_v, None if tsr_v is not None else (tsr_reason if c.get("tsr") is not None else "not provided"))
+        direct_period = {}
+        for dk in DIRECT:
+            raw = c.get(dk)
+            dv, dsrc, dreason = read_value(raw)
+            if dv is not None and dsrc is None:
+                warnings.append(f"{cid} {dk}: value has no source")
+            if dsrc and dsrc not in source_ids:
+                warnings.append(f"{cid} {dk}: source {dsrc!r} is not in sources[]")
+            vals[dk] = (dv, None if dv is not None else (dreason if raw is not None else "not provided"))
+            direct_period[dk] = (raw or {}).get("period") if isinstance(raw, dict) else None
+        if c.get("tsr_window"):
+            direct_period["tsr"] = c["tsr_window"]
 
         for m in METRICS:
             v, reason = vals.get(m.key, (None, "not computed"))
-            period = cagr_label if m.key == "revenue_cagr" else (c.get("tsr_window") if m.key == "tsr" else short_period(latest))
+            period = cagr_label if m.key == "revenue_cagr" else (
+                direct_period.get(m.key) if m.key in DIRECT else short_period(latest))
             ex = exclusions.get((cid, m.key))
             entry = {"value": v, "period": period, "na_reason": reason, "display": fmt_metric(v, m.unit)}
+            if m.key in ratio_notes:
+                entry["note"] = ratio_notes[m.key]
             if ex:
                 entry["excluded"] = ex
             out[m.key] = entry
@@ -344,6 +387,9 @@ def compute(case: dict) -> dict:
                 sign = 1 if m.direction == "higher" else -1
                 st["gap_to_median"] = max(0.0, sign * (st["median"] - tv))
                 st["gap_to_tq"] = max(0.0, sign * (st["top_quartile"] - tv))
+        periods = sorted({metric_values[c["id"]][m.key]["period"] for c in companies
+                          if metric_values[c["id"]][m.key]["value"] is not None and metric_values[c["id"]][m.key]["period"]})
+        st["periods"] = periods
         stats[m.key] = st
 
     # ---- sizing
@@ -361,6 +407,8 @@ def compute(case: dict) -> dict:
     EBIT = li(tid, latest_t, "ebit")
     if R is None:
         raise CaseError("target has no latest revenue")
+    if EBIT is not None and EBIT <= 0:
+        warnings.append("target EBIT is zero or negative on this basis; consider meta.ebit_basis 'adjusted' for every company")
     end_label = f"FY{str(year_of(latest_t) + horizon)[2:]}"
 
     def prac_leg(bucket_id, baseline):
@@ -418,7 +466,8 @@ def compute(case: dict) -> dict:
             # sized only on request (R&D): lower treated as better, against the lower quartile
             g_med, g_tq = max(0.0, tv - st["median"]), max(0.0, tv - st["p25"])
             st = {**st, "rating": "above peer median" if g_med > 0 else "at or below peer median"}
-        b["gap_display"] = f"{fmt_pp(g_med)} to median · {fmt_pp(g_tq)} to top quartile"
+        b["gap_display"] = (f"{fmt_pp(g_med)} to median · {fmt_pp(g_tq)} to top quartile" if g_med > 0
+                            else f"above median · {fmt_pp(g_tq)} to top quartile")
         if g_tq <= 0 and not prac:
             b["state"] = "no_gap"
             b["reason"] = f"already {st['rating']} on {METRIC[metric_key].short}"
@@ -428,9 +477,12 @@ def compute(case: dict) -> dict:
             b["note"] = "above the peer median; the range is the gap to the top quartile only"
         return finish(b, g_med * R, g_tq * R, baseline, prac)
 
-    # A. Commercial: grow at the benchmark CAGR instead of the target's own
-    st = stats["revenue_cagr"]
-    t_cagr = metric_values[tid]["revenue_cagr"]["value"]
+    # A. Commercial: grow at the benchmark rate instead of the target's own
+    growth_key = sz.get("growth_metric", "revenue_cagr")
+    if growth_key not in ("revenue_cagr", "organic_growth"):
+        raise CaseError("sizing.growth_metric must be 'revenue_cagr' or 'organic_growth'")
+    st = stats[growth_key]
+    t_cagr = metric_values[tid][growth_key]["value"]
     margin = sz.get("commercial_margin")
     if margin is None or margin == "ebit_margin":
         margin = metric_values[tid]["ebit_margin"]["value"]
@@ -438,12 +490,17 @@ def compute(case: dict) -> dict:
     else:
         margin = float(margin)
         margin_label = "margin set in the case file"
-    a = {"id": "commercial", "name": "Commercial: revenue growth", "kind": "pnl", "metric": "revenue_cagr",
+    a = {"id": "commercial", "name": "Commercial: revenue growth", "kind": "pnl", "metric": growth_key,
          "baseline": {"value": R, "display": fmt_money(R, currency), "label": "Revenue", "period": short_period(latest_t)},
          "target_value": t_cagr, "median": st["median"], "top_quartile": st["top_quartile"], "horizon_label": end_label}
     if t_cagr is None or margin is None:
         a["state"] = "na"
         a["reason"] = "growth or margin not available"
+        finish(a, None, None, None)
+    elif margin <= 0:
+        a["state"] = "na"
+        a["reason"] = "target EBIT margin is zero or negative; use an adjusted EBIT basis or set sizing.commercial_margin"
+        warnings.append(a["reason"])
         finish(a, None, None, None)
     elif st["invalid_reason"]:
         a["state"] = "na"
@@ -465,8 +522,10 @@ def compute(case: dict) -> dict:
                                     "display": fmt_range(r_lo * capture, r_hi * capture, currency),
                                     "pct_display": fmt_pct_range(r_lo / base_rev, r_hi / base_rev)}
         a["margin_applied"] = {"value": margin, "label": margin_label}
-        a["gap_display"] = f"{fmt_pp(st['gap_to_median'])} a year to median · {fmt_pp(st['gap_to_tq'])} to top quartile"
-        a["method"] = (f"Revenue grown at the benchmark CAGR instead of the target's own, for {horizon} years "
+        a["gap_display"] = (f"{fmt_pp(st['gap_to_median'])} a year to median · {fmt_pp(st['gap_to_tq'])} to top quartile"
+                            if st["gap_to_median"] > 0 else f"above median · {fmt_pp(st['gap_to_tq'])} a year to top quartile")
+        basis = "organic growth rate" if growth_key == "organic_growth" else "revenue CAGR"
+        a["method"] = (f"Revenue grown at the benchmark {basis} instead of the target's own, for {horizon} years "
                        f"to {end_label}, times the {margin_label}.")
         finish(a, r_lo * margin, r_hi * margin, None)
 
@@ -493,8 +552,11 @@ def compute(case: dict) -> dict:
         else:
             per_day = denom / 365
             lo, hi = stx["gap_to_median"] * per_day * capture, stx["gap_to_tq"] * per_day * capture
+            word = "longer" if key == "dpo" else "shorter"
+            gd = (f"{stx['gap_to_median']:.0f}–{stx['gap_to_tq']:.0f} days {word}" if stx["gap_to_median"] > 0
+                  else f"up to {stx['gap_to_tq']:.0f} days {word}")
             lever.update(state="sized", low=lo, high=hi, display=fmt_range(lo, hi, currency),
-                         gap_display=f"{stx['gap_to_median']:.0f}–{stx['gap_to_tq']:.0f} days {'longer' if key == 'dpo' else 'shorter'}",
+                         gap_display=gd,
                          method=f"gap in days × {denom_label} ÷ 365")
         nwc_levers.append(lever)
     sized_levers = [lv for lv in nwc_levers if lv["state"] == "sized"]
@@ -564,7 +626,7 @@ def compute(case: dict) -> dict:
             put(f"rank.{m.key}", stm["rank"], f"{stm['rank']} of {stm['rank_of']}")
         if stm["gap_to_median"] is not None:
             g = stm["gap_to_median"]
-            put(f"gap.{m.key}", g, fmt_pp(g).lstrip("+") if m.unit == "pct" else f"{g:.0f} days")
+            put(f"gap.{m.key}", g, fmt_pp(g).lstrip("+") if m.unit == "pct" else (f"{g:.1f}x" if m.unit == "x" else f"{g:.0f} days"))
         for c in companies:
             v = metric_values[c["id"]][m.key]
             put(f"{c['id']}.{m.key}", v["value"], v["display"])
@@ -585,6 +647,7 @@ def compute(case: dict) -> dict:
 
     return {
         "meta": {**meta, "currency": currency, "unit": unit, "horizon_years": horizon, "capture": capture,
+                 "growth_metric": growth_key,
                  "horizon_end": end_label, "target_id": tid, "target_period": short_period(latest_t)},
         "metrics": [m.__dict__ for m in METRICS],
         "values": metric_values,

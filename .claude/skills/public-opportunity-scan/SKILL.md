@@ -57,7 +57,16 @@ Read `references/case-schema.md` for the file format and `references/sources.md`
 
 Record each value as `{"value": 1234, "src": "s3"}` in millions of the company's reporting currency; record a gap as `{"value": null, "na_reason": "costs reported by nature; no cost of sales"}`. Add each document to `sources` once, with title, publisher, date, URL and the statement or page.
 
-Keep the target's own figures exactly as reported. Peers in another currency need `fx_to_case` with an FX source; ratios do not change, only the revenue shown in the peer table.
+Keep the target's own figures exactly as reported. Peers in another currency need `fx_to_case` with an FX source; ratios do not change, only the revenue shown in the peer table. A company reporting in thousands gets `"scale": 0.001`. Where a filing shows gross profit rather than cost of sales, record `gross_profit` and the script derives cost of sales; where only a published margin is available (no amounts), record it under `reported_ratios`.
+
+**Pick the EBIT basis before collecting.** If any company has large impairments, restructuring or other one-offs in the latest year, reported operating income will mislead (a target with a reported loss makes the growth bucket meaningless). Then use each company's own adjusted operating income for every company, set `meta.ebit_basis` to `"adjusted"`, and note definitions that differ (for example one peer also excluding amortisation).
+
+**Mark what you could not read.** When a page could not be opened and a figure or quote comes from a search-result extract, set `"checked": false` on that source. The poster then says how many sources need verifying, in the header and under Limitations. Never present search-extract figures as read from the document.
+
+**Optional, when public and comparable across the set** (they make the poster much stronger, so look for them):
+- `organic_growth` per company, as each company reports it. Reported CAGR is distorted by acquisitions and disposals; when organic figures exist for most of the set, set `sizing.growth_metric` to `"organic_growth"`.
+- `valuation` per company: a multiple such as forward P/E or EV/EBIT, all on the same definition and date, with its market-data source, and `meta.valuation_label`. This adds a "what the market pays for growth" scatter, which is often the clearest way into a CEO conversation. It is shown, never sized.
+- `narrative.segments`: the target's reported segments with revenue, growth and margin, each with its source.
 
 ### 4. Collect signals
 
@@ -85,7 +94,7 @@ The `narrative` block (schema in `references/case-schema.md`) fills the poster. 
 - priorities: up to 4, each with 1–2 signals
 - framings: 3–4, ranked; each has a `lens` metric, 1–3 `metrics`, a story that joins the gap to a stated priority, 0–2 signals, and a client readiness level with its reason; mark one `lead`
 - bucket_notes: why the value is real, per sized bucket, citing signals
-- next_steps: up to 4 things to test with the client or in diligence
+- next_steps: up to 4 questions to test with management (printed under that heading); sharp hypotheses beat generic to-dos
 - limitations: anything specific to this case (a peer on a different basis, a restated year)
 
 Client readiness is your judgement, not a score: high when the framing restates management's own agenda with evidence, low when it contradicts what management has said publicly. Always give the reason.
@@ -107,7 +116,7 @@ Give the user `poster.html` (opens in any browser; print to PDF at A1, or A3/A4 
 
 `references/method.md` has the formulas. In short, each bucket closes the target's gap to the peer median (low end) and to the top quartile (high end), on the latest year:
 
-- **Commercial**: grow at the benchmark revenue CAGR instead of the target's own for the horizon, times the target's EBIT margin.
+- **Commercial**: grow at the benchmark growth rate (revenue CAGR, or organic growth when set) instead of the target's own for the horizon, times the target's EBIT margin.
 - **Operations**: gross-margin gap × revenue.
 - **SG&A**: SG&A-% gap × revenue.
 - **R&D**: off by default, because lower R&D is not always better; turn on with `sizing.size_rnd` only when the user asks.

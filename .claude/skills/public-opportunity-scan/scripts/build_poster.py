@@ -33,6 +33,23 @@ TOKENS = {
 esc = html.escape
 
 
+def nice_ticks(lo, hi, n=4):
+    """Round tick values covering lo..hi, about n intervals."""
+    import math
+    span = (hi - lo) or 1.0
+    raw = span / n
+    mag = 10 ** math.floor(math.log10(raw))
+    step = next(m * mag for m in (1, 2, 2.5, 5, 10) if m * mag >= raw)
+    start = math.floor(lo / step) * step
+    ticks, v = [], start
+    while True:
+        ticks.append(round(v, 10))
+        if v >= hi - step * 1e-9:
+            break
+        v += step
+    return ticks
+
+
 class Renderer:
     def __init__(self, case, analysis):
         self.case = case
@@ -104,7 +121,7 @@ class Renderer:
                 label = label[:16] + "…"
             parts.append(f'<text x="{label_w - 4}" y="{y + bar_h - 1.5}" text-anchor="end" class="lab"{weight}>{esc(label)}</text>')
             tip = max(x(v), x0) + 3
-            vtxt = fmt_metric(v, m.unit) + (" (excl.)" if excl else "")
+            vtxt = fmt_metric(v, m.unit) + (" (excl.)" if excl else "") + (" †" if vals[cid][key].get("note") else "")
             parts.append(f'<text x="{tip}" y="{y + bar_h - 1.5}" class="val"{weight}>{esc(vtxt)}</text>')
         parts.append(f'<line x1="{x0}" x2="{x0}" y1="{top - 2}" y2="{h - 4}" stroke="{T["axis"]}" stroke-width="1"/>')
         if st["median"] is not None:
@@ -118,10 +135,14 @@ class Renderer:
             parts.append(f'<text x="{xq}" y="{top - 5}" text-anchor="{"start" if left_first else "end"}" class="ref tq">Top quartile {esc(fmt_metric(st["top_quartile"], m.unit))}</text>')
         parts.append("</svg>")
         out = "".join(parts)
+        if any(vals[c][key].get("note") for c, *_ in rows):
+            out_note = '<p class="chart-na">† margin as published by the company; the amounts behind it are not available</p>'
+        else:
+            out_note = ""
         if na_rows:
             items = "; ".join(f"{esc(self.name(c))} ({esc(r or 'not reported')})" for c, r in na_rows)
             out += f'<p class="chart-na">n/a: {items}</p>'
-        return out
+        return out + out_note
 
     @staticmethod
     def _hbar(xa, xb, y, h, fill, title):
@@ -132,6 +153,84 @@ class Renderer:
         else:
             d = (f"M{xa},{y} H{xb + r} Q{xb},{y} {xb},{y + r} V{y + h - r} Q{xb},{y + h} {xb + r},{y + h} H{xa} Z")
         return f'<path d="{d}" fill="{fill}"><title>{esc(title)}</title></path>'
+
+    def segments(self, segs):
+        """Segment table: reported figures, each with its source."""
+        rows = []
+        for sg in segs:
+            from opscan_calc import read_value
+            rv, rsrc, _ = read_value(sg.get("revenue"))
+            gv, gsrc, _ = read_value(sg.get("growth"))
+            mv, msrc, _ = read_value(sg.get("margin"))
+            for v, src, what in ((rv, rsrc, "revenue"), (gv, gsrc, "growth"), (mv, msrc, "margin")):
+                if v is not None and not src:
+                    self.typed_numbers.append((f"segment {sg.get('name')}", f"{what} without a source"))
+            cites = "".join(self.cite(x) for x in dict.fromkeys(x for x in (rsrc, gsrc, msrc) if x))
+            rows.append(f"<tr><td>{esc(sg.get('name', ''))}{cites}</td><td class='num'>{esc(fmt_money(rv, self.cur))}</td>"
+                        f"<td class='num'>{esc(fmt_metric(gv, 'pct'))}</td><td class='num'>{esc(fmt_metric(mv, 'pct'))}</td>"
+                        f"<td>{self.text(sg.get('note', ''), 'segments')}</td></tr>")
+        per = segs[0].get("period", "") if segs else ""
+        return (f'<h3>Where the business sits{(" · " + esc(per)) if per else ""}</h3><table class="segs"><thead><tr><th>Segment</th><th>Revenue</th>'
+                f'<th>Growth</th><th>Margin</th><th></th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
+
+    def scatter(self, growth_key, width=300):
+        """Valuation multiple against growth: what the market pays for growth."""
+        T = TOKENS
+        vals = self.a["values"]
+        pts = [(cid, vals[cid][growth_key]["value"], vals[cid]["valuation"]["value"]) for cid in self.companies
+               if vals[cid][growth_key]["value"] is not None and vals[cid]["valuation"]["value"] is not None]
+        label = self.case.get("meta", {}).get("valuation_label", "Valuation multiple")
+        head = (f'<figure class="fig"><figcaption><strong>{esc(label)} against {esc(METRIC[growth_key].label.lower())}</strong><br>'
+                f'<span class="sub">what the market pays for growth · market data as dated in sources</span></figcaption>')
+        if len(pts) < 4:
+            return head + '<p class="na">Fewer than four companies have both figures.</p></figure>'
+        h, l, r, t, b = 200, 30, 12, 12, 26
+        xs, ys = [p[1] for p in pts], [p[2] for p in pts]
+        xt = nice_ticks(min(xs + [0.0]), max(xs + [0.0]))
+        yt = nice_ticks(0.0, max(ys) * 1.05)
+        x_lo, x_hi = min(xt[0], min(xs)), max(xt[-1], max(xs))
+        y_lo, y_hi = 0.0, max(yt[-1], max(ys))
+
+        def X(v):
+            return l + (v - x_lo) / (x_hi - x_lo) * (width - l - r)
+
+        def Y(v):
+            return t + (1 - (v - y_lo) / (y_hi - y_lo)) * (h - t - b)
+
+        parts = [f'<svg viewBox="0 0 {width} {h}" class="chart" role="img" aria-label="{esc(label)} against growth">']
+        for yv in yt:
+            parts.append(f'<line x1="{l}" x2="{width - r}" y1="{Y(yv)}" y2="{Y(yv)}" stroke="{T["grid"]}"/>'
+                         f'<text x="{l - 4}" y="{Y(yv) + 3}" text-anchor="end" class="lab">{yv:.0f}x</text>')
+        parts.append(f'<line x1="{X(0)}" x2="{X(0)}" y1="{t}" y2="{h - b}" stroke="{T["axis"]}"/>')
+        for xv in xt:
+            parts.append(f'<text x="{X(xv)}" y="{h - b + 11}" text-anchor="middle" class="lab">{xv * 100:.0f}%</text>')
+        parts.append(f'<text x="{(l + width - r) / 2}" y="{h - 3}" text-anchor="middle" class="lab">{esc(METRIC[growth_key].short)}</text>')
+        placed = []
+
+        def place(xa, ya, text_w, anchor):
+            x1 = xa - text_w if anchor == "end" else xa
+            for dy in (0, -9, 9, -18, 18, -27, 27):
+                y1 = ya + dy
+                if all(not (x1 < bx2 and x1 + text_w > bx1 and abs(y1 - by) < 9) for bx1, bx2, by in placed):
+                    placed.append((x1, x1 + text_w, y1))
+                    return y1
+            placed.append((x1, x1 + text_w, ya))
+            return ya
+
+        for cid, gx, vy in sorted(pts, key=lambda p: (p[0] != self.tid, -p[2])):
+            is_t = cid == self.tid
+            fill = T["target"] if is_t else T["peer"]
+            rad = 4.5 if is_t else 3.5
+            parts.append(f'<circle cx="{X(gx)}" cy="{Y(vy)}" r="{rad}" fill="{fill}" stroke="{T["surface"]}" stroke-width="2">'
+                         f'<title>{esc(self.name(cid))}: {esc(fmt_metric(gx, "pct"))}, {vy:.1f}x</title></circle>')
+            anchor = "end" if X(gx) > width - 70 else "start"
+            dx = -6 if anchor == "end" else 6
+            w = ' font-weight="700"' if is_t else ""
+            txt = f"{self.name(cid)} {vy:.1f}x"
+            ly = place(X(gx) + dx, Y(vy) + 3, len(txt) * 4.4, anchor)
+            parts.append(f'<text x="{X(gx) + dx}" y="{ly}" text-anchor="{anchor}" class="val"{w}>{esc(txt)}</text>')
+        parts.append("</svg>")
+        return head + "".join(parts) + "</figure>"
 
     def waterfall(self, width=340):
         b = self.a["bridge"]
@@ -202,9 +301,9 @@ class Renderer:
         out = []
         if sized:
             top_v = max(lv["high"] for lv in sized) * 1.05
-            label_w, row_h, bar_h = 104, 18, 10
+            label_w, row_h, bar_h = 132, 18, 10
             h = row_h * len(sized) + 6
-            plot_w = width - label_w - 70
+            plot_w = width - label_w - 62
             parts = [f'<svg viewBox="0 0 {width} {h}" class="chart" role="img" aria-label="Working-capital release">']
             for i, lv in enumerate(sized):
                 y0 = 3 + i * row_h + (row_h - bar_h) / 2
@@ -236,8 +335,12 @@ class Renderer:
             f"Latest fiscal year {meta['target_period']}",
             f"{len([c for c in self.case['companies'] if c.get('role') == 'peer'])} peers",
         ]
+        chips.append("EBIT: adjusted operating income" if cm.get("ebit_basis") == "adjusted" else "EBIT: reported operating income")
         if cm.get("fx_note"):
             chips.append(cm["fx_note"])
+        unchecked = [x for x in self.sources if x.get("checked") is False]
+        if unchecked:
+            chips.append(f"{len(unchecked)} of {len(self.sources)} sources read from search extracts: verify before client use")
         b = self.a["bridge"]
         margin_tile = ""
         if b:
@@ -277,6 +380,8 @@ class Renderer:
                 else:
                     out.append(f"<li>{self.text(x, 'situation')}</li>")
             out.append("</ul>")
+        if nar.get("segments"):
+            out.append(self.segments(nar["segments"]))
         if nar.get("priorities"):
             out.append('<h3>What management says it is prioritising</h3>')
             for p in nar["priorities"]:
@@ -330,11 +435,22 @@ class Renderer:
             basis = f'<div class="basis">{esc(c["basis_note"])}</div>' if c.get("basis_note") else ""
             out.append(f"<tr{cls}><td>{esc(c['name'])}{basis}</td><td class='num'>{esc(rev)}</td><td>{esc(per)}</td><td>{why}</td></tr>")
         out.append("</tbody></table>")
-        keys = cm.get("charts") or ["ebit_margin", "revenue_cagr", "gross_margin", "sga_pct", "ccc", "rnd_pct"]
-        if any(self.a["values"][c["id"]]["tsr"]["value"] is not None for c in self.case["companies"]) and "tsr" not in keys:
-            keys = keys[:5] + ["tsr"]
+        growth_key = self.a["meta"].get("growth_metric", "revenue_cagr")
+        keys = cm.get("charts") or ["ebit_margin", growth_key, "gross_margin", "sga_pct", "ccc", "rnd_pct"]
+
+        def has(k):
+            return sum(self.a["values"][c["id"]][k]["value"] is not None for c in self.case["companies"]) >= 3
+        extras = [k for k in ("valuation_vs_growth", "tsr") if k not in keys and has("valuation" if k == "valuation_vs_growth" else k)]
+        for k in extras:
+            for drop in ("rnd_pct", "ccc"):
+                if drop in keys:
+                    keys[keys.index(drop)] = k
+                    break
         out.append('<div class="charts">')
         for k in keys:
+            if k == "valuation_vs_growth":
+                out.append(self.scatter(growth_key))
+                continue
             m = METRIC[k]
             st = self.a["stats"][k]
             dirn = {"higher": "higher is better", "lower": "lower is better", "context": "context only, not rated"}[m.direction]
@@ -343,7 +459,8 @@ class Renderer:
                 rating = f'<span class="chip chip-{st["rating"].replace(" ", "-")}">{esc(st["rating"])} · {st["rank"]} of {st["rank_of"]}</span>'
             elif st.get("invalid_reason"):
                 rating = f'<span class="chip">benchmark n/a: {esc(st["invalid_reason"])}</span>'
-            per = self.a["values"][self.tid][k]["period"] or ""
+            periods = st.get("periods") or []
+            per = periods[0] if len(periods) == 1 else (f"latest FY each ({periods[0]} to {periods[-1]})" if periods else "")
             out.append(f'<figure class="fig"><figcaption><strong>{esc(m.label)}</strong> {rating}<br><span class="sub">{esc(dirn)} · {esc(per)} · sorted best to worst</span></figcaption>{self.bar_chart(k)}</figure>')
         out.append("</div>")
         out.append(self.appendix())
@@ -434,7 +551,7 @@ class Renderer:
                     out.append(f'<dt>{esc(names.get(bid, bid))}</dt><dd>{self.text(note, "bucket_notes")}</dd>')
             out.append("</dl>")
         if nar.get("next_steps"):
-            out.append('<h3>To test next</h3><ul class="bul">')
+            out.append('<h3>Questions to test with management</h3><ul class="bul">')
             out += [f"<li>{self.text(x, 'next_steps')}</li>" for x in nar["next_steps"]]
             out.append("</ul>")
         out.append("</section>")
@@ -448,8 +565,11 @@ class Renderer:
         method = [
             "Every figure comes from a public filing, results release or investor presentation, listed below. Nothing is estimated to fill a gap: a missing value shows as n/a with its reason.",
             "Benchmarks are the median and top quartile of the peers that report the metric; the target is never in its own benchmark. Top quartile follows the metric's direction.",
-            "EBIT is reported operating income unless a company note says otherwise. Gross margin is revenue less cost of sales. SG&A is benchmarked as one combined line, because peers split it differently.",
-            f"Sizing closes the gap to the peer median (low) and the top quartile (high), on the latest year's revenue{'' if cap == 1 else f', at a {cap:.0%} capture rate'}. Growth compounds for {meta['horizon_years']} years to {meta['horizon_end']} and converts to EBIT at the stated margin. Cash is one-off and never added to EBIT.",
+            ("EBIT is each company's own adjusted operating income, from its non-GAAP reconciliation; definitions differ and are noted where they matter."
+             if self.case.get("meta", {}).get("ebit_basis") == "adjusted" else
+             "EBIT is reported operating income unless a company note says otherwise.")
+            + " Gross margin is revenue less cost of sales. SG&A is benchmarked as one combined line, because peers split it differently.",
+            f"Sizing closes the gap to the peer median (low) and the top quartile (high), on the latest year's revenue{'' if cap == 1 else f', at a {cap:.0%} capture rate'}. Growth ({'organic, as each company reports it' if meta.get('growth_metric') == 'organic_growth' else 'reported revenue CAGR'}) compounds for {meta['horizon_years']} years to {meta['horizon_end']} and converts to EBIT at the stated margin. Cash is one-off and never added to EBIT.",
             "Totals are the sum of the rows shown. This is a sniff test of where value may sit, not a commitment: it has no practitioner experience, case examples or management data behind it.",
         ]
         out.append('<ul class="bul small">' + "".join(f"<li>{esc(x)}</li>" for x in method) + "</ul>")
@@ -457,21 +577,26 @@ class Renderer:
         excl = self.case.get("exclusions", [])
         if excl:
             lim += [f"{self.name(e['company'])} left out of the {METRIC[e['metric']].short} benchmark: {e.get('reason', '')}" for e in excl if e.get("metric") in METRIC]
+        unchecked = [x for x in self.sources if x.get("checked") is False]
+        if unchecked:
+            lim.append(f"{len(unchecked)} of {len(self.sources)} sources could not be opened and were read from search extracts (marked ◦ below). Check those figures and quotes against the documents before client use.")
         if lim:
             out.append('<h3>Limitations</h3><ul class="bul small">' + "".join(f"<li>{self.text(x, 'limitations')}</li>" for x in lim) + "</ul>")
-        out.append('<h3>Sources</h3><ol class="sources">')
+        two = " two" if len(self.sources) > 14 else ""
+        out.append(f'<h3>Sources</h3><ol class="sources{two}">')
         for s in self.sources:
             bits = [s.get("publisher"), s.get("date"), s.get("locator")]
             meta_line = " · ".join(esc(b) for b in bits if b)
             url = s.get("url", "")
             link = f'<a href="{esc(url)}">{esc(url)}</a>' if url else ""
-            out.append(f'<li><strong>{esc(s.get("title", ""))}</strong> {meta_line}<br>{link}</li>')
+            mark = "◦ " if s.get("checked") is False else ""
+            out.append(f'<li>{mark}<strong>{esc(s.get("title", ""))}</strong> {meta_line}<br>{link}</li>')
         out.append("</ol>")
         out.append("</section>")
         return "".join(out)
 
     def appendix(self):
-        keys = ["revenue_cagr", "gross_margin", "sga_pct", "ebit_margin", "dso", "dio", "dpo"]
+        keys = [self.a["meta"].get("growth_metric", "revenue_cagr"), "gross_margin", "sga_pct", "ebit_margin", "dso", "dio", "dpo"]
         head = "".join(f"<th>{esc(METRIC[k].short)}</th>" for k in keys)
         rows = []
         for c in self.case["companies"]:
@@ -545,6 +670,7 @@ tr.is-target td{background:#eef4fc;font-weight:600}
 tr.tot td{border-top:.4mm solid var(--ink);border-bottom:none;font-weight:600}
 .basis{font-size:8pt;color:var(--muted);font-weight:400}
 .peers td:last-child{font-size:8.5pt;color:var(--ink2)}
+.segs{margin-bottom:2mm}.segs td:last-child{font-size:8.5pt;color:var(--ink2)}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:4mm 6mm;margin-top:3mm}
 .fig{margin:0}
 figcaption{font-size:10.5pt;margin-bottom:1mm;line-height:1.3}
@@ -583,7 +709,8 @@ figcaption .sub{font-size:8.5pt;color:var(--muted)}
 .na{color:var(--muted);font-size:9pt}
 .method{font-size:9.5pt}
 .sources{padding-left:5mm;margin:0;font-size:7.6pt;line-height:1.3;word-break:break-word}
-.sources li{margin-bottom:.9mm}
+.sources li{margin-bottom:.9mm;break-inside:avoid}
+.sources.two{columns:2;column-gap:4mm;font-size:7pt}
 .sources a{color:var(--ink2);text-decoration:none}
 .appx{font-size:7.6pt}
 .appx td,.appx th{padding:.6mm 1mm}
