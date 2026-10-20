@@ -1,0 +1,13 @@
+{
+  "_comment": "The pointer to the full Opportunity Catalyst that every poster carries. Change opcat_url to the production address once it is confirmed; the development address is a placeholder. A case can override any field under meta.teaser.",
+  "enabled": true,
+  "product": "Opportunity Catalyst",
+  "opcat_url": "https://dev.opcat-nonprod.bain.io/",
+  "compare_url": "https://claude.ai/artifact/JV1cYypSyve1ZjEp5vSkDe",
+  "compare_label": "What the full version adds",
+  "adds": [
+    "Bain experience ranges by lever, beside the peer benchmark",
+    "Live changes to peers, levers and assumptions, with every change logged and undoable",
+    "Every number drillable to its formula, inputs, peers and adjustments"
+  ]
+}

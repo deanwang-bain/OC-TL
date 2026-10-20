@@ -30,6 +30,7 @@ One JSON file holds everything the poster shows. `assets/case.example.json` is a
 | `cagr_years` | 3 | Revenue growth window |
 | `min_peers` | 4 | Fewer peers reporting a metric makes its benchmark n/a |
 | `charts` | ebit_margin, revenue_cagr, gross_margin, sga_pct, ccc, rnd_pct | Which six charts appear (any metric key below). TSR replaces the last one when provided |
+| `teaser` | from `assets/teaser.json` | The Opportunity Catalyst band. An object overrides fields of `assets/teaser.json` (for example a different `opcat_url`); `false` removes the band, only when the user asks |
 | `fx_note` | none | Header chip, e.g. "Peer revenue at ECB rates of 30 Sep 2026" |
 | `ebit_basis` | `reported` | `adjusted` when every company's EBIT is its own adjusted operating income; `mixed` when some publish none and keep their reported figure. Changes the header chip and the method text |
 | `valuation_label` | "Valuation multiple" | Name of the `valuation` multiple, e.g. "Forward P/E" |

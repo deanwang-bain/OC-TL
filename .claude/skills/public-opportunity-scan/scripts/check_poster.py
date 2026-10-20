@@ -52,12 +52,24 @@ def main():
     m = re.search(r'data-overflow="([^"]*)"', dom.stdout)
     over = [x for x in (m.group(1).split("|") if m else []) if x]
     png = a.png or os.path.splitext(a.poster)[0] + ".png"
-    subprocess.run(base + ["--window-size=3179,2245", f"--screenshot={os.path.abspath(png)}", url],
+    # a taller window than the sheet: headless screenshots lose the bottom of the viewport otherwise
+    subprocess.run(base + ["--window-size=3179,2400", f"--screenshot={os.path.abspath(png)}", url],
                    capture_output=True, text=True, timeout=120)
     print(f"screenshot: {png}")
+    # the real test of "one sheet": print to PDF and count pages
+    pdf = os.path.splitext(png)[0] + ".pdf"
+    subprocess.run(base + ["--no-pdf-header-footer", f"--print-to-pdf={os.path.abspath(pdf)}", url],
+                   capture_output=True, text=True, timeout=120)
+    pages = None
+    if os.path.exists(pdf):
+        pages = len(re.findall(rb"/Type\s*/Page[^s]", open(pdf, "rb").read()))
+        print(f"pdf: {pdf} ({pages} page{'s' if pages != 1 else ''})")
     if m is None:
         print("could not read the overflow check from the page; look at the screenshot")
         return 3
+    if pages and pages > 1:
+        print("overflow: the print runs to more than one A1 page; shorten the content, then rebuild")
+        return 1
     if over:
         print("overflow: these columns run past the sheet: " + "; ".join(over))
         print("shorten their text, drop a chart, or cut quotes, then rebuild")

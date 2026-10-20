@@ -32,6 +32,35 @@ TOKENS = {
 
 esc = html.escape
 
+TEASER_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "assets", "teaser.json")
+
+
+def load_teaser(case):
+    """The pointer to the full Opportunity Catalyst. assets/teaser.json, overridden by meta.teaser."""
+    try:
+        cfg = json.load(open(TEASER_FILE, encoding="utf-8"))
+    except (OSError, ValueError):
+        cfg = {"enabled": False}
+    over = case.get("meta", {}).get("teaser")
+    if over is False:
+        return None
+    if isinstance(over, dict):
+        cfg = {**cfg, **over}
+    return cfg if cfg.get("enabled", True) and cfg.get("opcat_url") else None
+
+
+def qr_svg(url):
+    """An inline QR code for a printed poster, when the optional segno package is installed."""
+    try:
+        import segno
+    except ImportError:
+        return ""
+    return segno.make(url, error="m").svg_inline(scale=1, border=0, dark="#0b0b0b", light=None)
+
+
+def bare(url):
+    return re.sub(r"^https?://", "", url).rstrip("/")
+
 
 def nice_ticks(lo, hi, n=4):
     """Round tick values covering lo..hi, about n intervals."""
@@ -654,9 +683,28 @@ class Renderer:
         return (f'<h3>Data table</h3><table class="appx"><thead><tr><th></th>{head}</tr></thead><tbody>{"".join(rows)}'
                 f'<tr class="tot"><td>Peer median</td>{med}</tr></tbody></table>')
 
+    def teaser(self):
+        t = load_teaser(self.case)
+        if not t:
+            return ""
+        product = esc(t.get("product", "Opportunity Catalyst"))
+        o_url, c_url = t["opcat_url"], t.get("compare_url")
+        adds = "".join(f"<li>{esc(x)}</li>" for x in t.get("adds", [])[:3])
+        o_qr, c_qr = qr_svg(o_url), (qr_svg(c_url) if c_url else "")
+        compare = ""
+        if c_url:
+            compare = (f'<div class="tz-link">{f"<div class=qr>{c_qr}</div>" if c_qr else ""}<div><div class="tz-k">{esc(t.get("compare_label", "What the full version adds"))}</div>'
+                       f'<a href="{esc(c_url)}">{esc(bare(c_url))}</a></div></div>')
+        return (f'<aside class="teaser"><div class="tz-main"><div class="tz-k">Public-data teaser</div>'
+                f'<p class="tz-line">Refer to <a href="{esc(o_url)}">{esc(bare(o_url))}</a> for the full {product} experience.</p>'
+                f'{"<ul>" + adds + "</ul>" if adds else ""}</div>'
+                f'<div class="tz-link">{f"<div class=qr>{o_qr}</div>" if o_qr else ""}<div><div class="tz-k">{product}</div>'
+                f'<a href="{esc(o_url)}">{esc(bare(o_url))}</a></div></div>{compare}</aside>')
+
     def render(self):
-        body = (self.header() + '<main class="grid">' + self.col_situation() + self.col_performance()
-                + self.col_case() + self.col_prize() + self.col_method() + "</main>")
+        grid_cls = "grid many-sources" if len(self.sources) > 20 else "grid"
+        body = (self.header() + f'<main class="{grid_cls}">' + self.col_situation() + self.col_performance()
+                + self.col_case() + self.col_prize() + self.col_method() + "</main>" + self.teaser())
         cm = self.case.get("meta", {})
         footer = (f'<footer class="ftr"><span>Prepared {esc(cm.get("prepared_on", cm.get("as_of", "")))}'
                   f'{(" by " + esc(cm["prepared_by"])) if cm.get("prepared_by") else ""}</span>'
@@ -690,6 +738,7 @@ h1{font-size:54pt;line-height:1;margin:2mm 0 3mm;font-weight:700;letter-spacing:
 .tile.hero .tv.long{font-size:24pt}
 .ts{font-size:9.5pt;color:var(--muted)}
 .grid{flex:1;display:grid;grid-template-columns:1.2fr 1.9fr 1.3fr 1.6fr 1fr;gap:8mm;min-height:0}
+.grid.many-sources{grid-template-columns:1.15fr 1.8fr 1.25fr 1.5fr 1.3fr}
 .col{min-width:0;overflow:hidden;font-size:11pt;line-height:1.38}
 .col.over{outline:1mm dashed var(--bad)}
 h2{font-size:19pt;margin:0 0 3mm;display:flex;align-items:center;gap:3mm;border-bottom:.3mm solid var(--grid);padding-bottom:2mm}
@@ -763,6 +812,15 @@ figcaption .sub{font-size:8.5pt;color:var(--muted)}
 .appx{font-size:7.6pt}
 .appx td,.appx th{padding:.6mm 1mm}
 .ftr{display:flex;justify-content:space-between;font-size:8.5pt;color:var(--muted);border-top:.3mm solid var(--grid);padding-top:2mm}
+.teaser{display:flex;gap:10mm;align-items:center;border:.5mm solid var(--target);border-radius:3mm;padding:3.5mm 6mm;background:#f2f6fc}
+.tz-main{flex:1;min-width:0}
+.tz-k{font-size:9pt;letter-spacing:.08em;text-transform:uppercase;color:var(--target-dark);font-weight:700}
+.tz-line{font-size:15pt;font-weight:600;margin:1mm 0 1.5mm}
+.teaser a{color:var(--target-dark);text-decoration:none;font-weight:700}
+.teaser ul{display:flex;flex-wrap:wrap;gap:1mm 8mm;margin:0;padding-left:4.5mm;font-size:10pt;color:var(--ink2)}
+.tz-link{display:flex;gap:3mm;align-items:center;font-size:10.5pt;max-width:95mm}
+.tz-link a{word-break:break-all}
+.qr svg{width:26mm;height:26mm;display:block}
 @media screen{body{padding:0}.sheet{box-shadow:0 2px 18px rgba(0,0,0,.12)}}
 @media print{html,body{background:none}.stage{transform:none!important}.col.over{outline:none}}
 """ % TOKENS
