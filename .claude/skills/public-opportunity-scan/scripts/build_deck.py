@@ -99,6 +99,10 @@ class Content:
         bv = self.a["values"][self.tid][best[0]]["display"]
         wv = self.a["values"][self.tid][worst[0]]["display"]
         if best[1]["rating"] == worst[1]["rating"]:
+            if len(rated) == 2:
+                (k1, _), (k2, _) = rated
+                return (f"{self.name} is {best[1]['rating']} on {label_in_sentence(METRIC[k1].label)} ({self.a['values'][self.tid][k1]['display']}) "
+                        f"and on {label_in_sentence(METRIC[k2].label)} ({self.a['values'][self.tid][k2]['display']})")
             return f"{self.name} is {best[1]['rating']} on {label_in_sentence(METRIC[best[0]].label)} ({bv}) and across the other benchmarks"
         return (f"{self.name} is {best[1]['rating']} on {label_in_sentence(METRIC[best[0]].label)} ({bv}) "
                 f"but {worst[1]['rating']} on {label_in_sentence(METRIC[worst[0]].label)} ({wv})")
@@ -176,8 +180,10 @@ class Content:
         nwc = next(b for b in a["buckets"] if b["id"] == "working_capital")
         lev = "; ".join(f"{lv['label']} {lv['gap_display']}" for lv in nwc["levers"] if lv["state"] == "sized") or nwc.get("reason", "")
         rows.append(["One-off cash: working capital", "", lev, t["cash"]["display"], "not added to EBIT"])
-        out["prize"] = {"title": (f"Closing the gaps to peers is worth {t['pnl']['display']} of recurring EBIT a year by {horizon}"
-                                  f" and {t['cash']['display']} of one-off cash"),
+        growth_sized = any(x["id"] == "commercial" and x["state"] == "sized" for x in a["buckets"])
+        when = f"a year by {horizon}" if growth_sized else "a year"
+        cash_clause = f" and {t['cash']['display']} of one-off cash" if t["cash"]["display"] != "n/a" else ""
+        out["prize"] = {"title": f"Closing the gaps to peers is worth {t['pnl']['display']} of recurring EBIT {when}{cash_clause}",
                         "headers": ["Bucket", "Baseline", "Gap to peers", "Opportunity", "As %"], "rows": rows,
                         "footnote": ("Note: low end closes the gap to the peer median, high end to the top quartile, on the latest year; "
                                      "recurring EBIT and one-off cash are never added\nSource: Company filings and results releases; "
@@ -197,7 +203,8 @@ class Content:
             title = f"EBIT could rise from {b['latest']['display']} to {b['target']['display']} as the gaps close (margin {m0} to {m1})"
         else:
             title = "No EBIT bridge: the target's EBIT is not reported on this basis"
-        out["bridge"] = {"title": title, "chart_header": f"EBIT bridge to {horizon} ({self.cur}M)",
+        bridge_head = f"EBIT bridge to {horizon}" if growth_sized else "EBIT bridge, latest year"
+        out["bridge"] = {"title": title, "chart_header": f"{bridge_head} ({self.cur} millions)",
                          "chart_text": "[Chart: waterfall, latest EBIT plus each sized bucket to EBIT potential, low end solid and high end light; data in chart-data.xlsx]",
                          "bullets": notes[: (5 if self.tight < 3 else 3)] or ["**Method:** each bucket closes the gap to the peer median (low) and top quartile (high)"]}
 
@@ -213,8 +220,16 @@ class Content:
         # sources (backup)
         src = [f"{i + 1}. {s.get('title', '')}" + (f" ({s.get('publisher')}, {s.get('date')})" if s.get("publisher") else "")
                for i, s in enumerate(self.sources)]
-        if len(src) > 11:
-            src = src[:10] + [f"…and {len(src) - 10} more, listed in case.json and on the poster"]
+        # keep the list inside the slide: about 1,100 characters, or 10 lines, whichever comes first
+        kept, used = [], 0
+        for line in src:
+            if len(kept) == 10 or used + len(line) > 1100:
+                break
+            kept.append(line)
+            used += max(len(line), 90)
+        if len(kept) < len(src):
+            kept.append(f"…and {len(src) - len(kept)} more, listed in case.json and on the poster")
+        src = kept
         caveat = (f"{self.unchecked} of {len(self.sources)} sources were read from search extracts; check them against the documents before client use"
                   if self.unchecked else "Figures as reported by each company for its own fiscal year")
         out["sources"] = {"title": "Every figure comes from a public filing, results release or management statement listed here",
