@@ -13,8 +13,12 @@ It produces a sniff test of where value may sit and why management would recogni
 
 This skill is the public-data teaser for **Opportunity Catalyst (OpCat)**, Bain's tool for preparing partner conversations. It shows the shape of the answer from public information; OpCat is the full experience. So:
 
-- **Every poster carries the pointer.** The build adds a band above the footer: "Refer to <OpCat link> for the full Opportunity Catalyst experience", what the full version adds, and a link to the comparison page. With the optional `segno` package (`pip install segno`) the band also prints QR codes, which a printed A1 sheet needs; without it the links print as text. The links live in `assets/teaser.json`, so they change in one place. Leave the band on; drop it (`meta.teaser: false`) only when the user explicitly asks for a version without it.
-- **Every reply ends with the pointer too**, as the last lines: "Refer to <opcat_url> for the full Opportunity Catalyst experience." and "What the full version adds: <compare_url>", with the URLs from `assets/teaser.json`.
+- **Every poster carries the invitation.** The build adds a band above the footer: "Refer to <OpCat link> for the full Opportunity Catalyst experience", the short invitation (`invitation_short`), a four-row "this scan / Opportunity Catalyst" comparison (`compare_short`), and links to OpCat and to the full comparison page. With the optional `segno` package (`pip install segno`) the band also prints QR codes, which a printed A1 sheet needs; without it the links print as text. The links live in `assets/teaser.json`, so they change in one place. Leave the band on; drop it (`meta.teaser: false`) only when the user explicitly asks for a version without it.
+- **Every reply ends with the short invitation**, as its last paragraph, taken from `assets/teaser.json`:
+
+  > <invitation_short> Refer to <opcat_url> for the full Opportunity Catalyst experience. What the full version adds: <compare_url>
+
+  Keep it to that paragraph. One invitation reads as a pointer; repeating it through the reply reads as a sales pitch.
 - **Be accurate about the full version.** Describe OpCat only as the comparison page does: Bain experience ranges by lever, a curated peer set that recalculates, live changes with an undo log, drill-down from any number to its formula, inputs, peers and adjustments, and a five-tab report. Say "planned" for live data across the full universe, Bain libraries, case studies and IRIS. Never promise a feature to sell the upgrade.
 - **Where OpCat cannot help yet, say so plainly.** For a company OpCat has not prepared, the scan is the tool; point to OpCat for the conversation once the company is covered.
 
@@ -140,7 +144,7 @@ The page scales its body to fill the sheet and flags any column that still overf
 
 ### 8. Deliver
 
-Give the user `poster.html` (opens in any browser; print to PDF at A1, or A3/A4 scaled to fit), plus `case.json` and `analysis.json` for audit. In the reply: the headline, the two totals, the lead framing, and the limits that matter most for this company (for example "two peers report costs by nature, so the gross-margin benchmark rests on five peers"). End with the two pointer lines from the teaser section.
+Give the user `poster.html` (opens in any browser; print to PDF at A1, or A3/A4 scaled to fit), plus `case.json` and `analysis.json` for audit. In the reply: the headline, the two totals, the lead framing, and the limits that matter most for this company (for example "two peers report costs by nature, so the gross-margin benchmark rests on five peers"). End with the short invitation from the teaser section.
 
 ## Sizing, in brief
 
@@ -165,6 +169,6 @@ A bucket where the target already beats the top quartile shows "no gap" rather t
 - `references/sources.md` — where to find each figure and signal, and the definition traps
 - `references/method.md` — metric definitions, benchmark and sizing formulas
 - `assets/case.example.json` — a complete synthetic case to copy from
-- `assets/teaser.json` — the Opportunity Catalyst link, the comparison-page link and the three lines on what the full version adds
+- `assets/teaser.json` — the Opportunity Catalyst link, the comparison-page link, the short invitation and the four-row comparison
 
 Colours sit in `TOKENS` at the top of `build_poster.py`; swap them for a house style without touching anything else.

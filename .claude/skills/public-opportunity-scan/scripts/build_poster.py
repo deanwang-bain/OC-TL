@@ -684,22 +684,31 @@ class Renderer:
                 f'<tr class="tot"><td>Peer median</td>{med}</tr></tbody></table>')
 
     def teaser(self):
+        """The invitation to the full Opportunity Catalyst: one line, a short comparison, and the two links."""
         t = load_teaser(self.case)
         if not t:
             return ""
         product = esc(t.get("product", "Opportunity Catalyst"))
         o_url, c_url = t["opcat_url"], t.get("compare_url")
-        adds = "".join(f"<li>{esc(x)}</li>" for x in t.get("adds", [])[:3])
-        o_qr, c_qr = qr_svg(o_url), (qr_svg(c_url) if c_url else "")
-        compare = ""
+        rows = t.get("compare_short") or []
+        if rows:
+            body = "".join(f"<tr><th>{esc(a)}</th><td>{esc(b)}</td><td class='tz-full'>{esc(c)}</td></tr>" for a, b, c in rows[:4])
+            compare_tbl = (f'<table class="tz-cmp"><thead><tr><th></th><th>This scan</th><th class="tz-full">{product}</th></tr></thead>'
+                           f'<tbody>{body}</tbody></table>')
+        else:
+            compare_tbl = "<ul>" + "".join(f"<li>{esc(x)}</li>" for x in t.get("adds", [])[:3]) + "</ul>"
+
+        def link(url, label):
+            qr = qr_svg(url)
+            return (f'<div class="tz-link">{f"<div class=qr>{qr}</div>" if qr else ""}<div><div class="tz-k">{esc(label)}</div>'
+                    f'<a href="{esc(url)}">{esc(bare(url))}</a></div></div>')
+        links = link(o_url, t.get("product", "Opportunity Catalyst"))
         if c_url:
-            compare = (f'<div class="tz-link">{f"<div class=qr>{c_qr}</div>" if c_qr else ""}<div><div class="tz-k">{esc(t.get("compare_label", "What the full version adds"))}</div>'
-                       f'<a href="{esc(c_url)}">{esc(bare(c_url))}</a></div></div>')
+            links += link(c_url, t.get("compare_label", "What the full version adds"))
+        invite = f'<p class="tz-sub">{esc(t["invitation_short"])}</p>' if t.get("invitation_short") else ""
         return (f'<aside class="teaser"><div class="tz-main"><div class="tz-k">Public-data teaser</div>'
                 f'<p class="tz-line">Refer to <a href="{esc(o_url)}">{esc(bare(o_url))}</a> for the full {product} experience.</p>'
-                f'{"<ul>" + adds + "</ul>" if adds else ""}</div>'
-                f'<div class="tz-link">{f"<div class=qr>{o_qr}</div>" if o_qr else ""}<div><div class="tz-k">{product}</div>'
-                f'<a href="{esc(o_url)}">{esc(bare(o_url))}</a></div></div>{compare}</aside>')
+                f'{invite}</div>{compare_tbl}<div class="tz-links">{links}</div></aside>')
 
     def render(self):
         grid_cls = "grid many-sources" if len(self.sources) > 20 else "grid"
@@ -812,15 +821,24 @@ figcaption .sub{font-size:8.5pt;color:var(--muted)}
 .appx{font-size:7.6pt}
 .appx td,.appx th{padding:.6mm 1mm}
 .ftr{display:flex;justify-content:space-between;font-size:8.5pt;color:var(--muted);border-top:.3mm solid var(--grid);padding-top:2mm}
-.teaser{display:flex;gap:10mm;align-items:center;border:.5mm solid var(--target);border-radius:3mm;padding:3.5mm 6mm;background:#f2f6fc}
-.tz-main{flex:1;min-width:0}
+.teaser{display:flex;gap:8mm;align-items:center;border:.5mm solid var(--target);border-radius:3mm;padding:3.5mm 6mm;background:#f2f6fc}
+.tz-main{flex:0 0 150mm;min-width:0}
 .tz-k{font-size:9pt;letter-spacing:.08em;text-transform:uppercase;color:var(--target-dark);font-weight:700}
-.tz-line{font-size:15pt;font-weight:600;margin:1mm 0 1.5mm}
+.tz-line{font-size:15pt;font-weight:600;margin:1mm 0 1.5mm;line-height:1.25}
+.tz-sub{font-size:10pt;color:var(--ink2);margin:0;line-height:1.35}
 .teaser a{color:var(--target-dark);text-decoration:none;font-weight:700}
-.teaser ul{display:flex;flex-wrap:wrap;gap:1mm 8mm;margin:0;padding-left:4.5mm;font-size:10pt;color:var(--ink2)}
-.tz-link{display:flex;gap:3mm;align-items:center;font-size:10.5pt;max-width:95mm}
+.teaser ul{margin:0;padding-left:4.5mm;font-size:10pt;color:var(--ink2)}
+.tz-cmp{flex:1;min-width:0;font-size:9.5pt;border-collapse:collapse}
+.tz-cmp th,.tz-cmp td{padding:.7mm 2mm;border-bottom:.2mm solid #d6e1f0;text-align:left;vertical-align:top}
+.tz-cmp thead th{font-size:8pt;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-bottom:.3mm solid var(--target)}
+.tz-cmp tbody th{font-weight:700;color:var(--ink);white-space:nowrap}
+.tz-cmp td{color:var(--ink2)}
+.tz-cmp .tz-full{color:var(--target-dark);font-weight:600}
+.tz-cmp thead .tz-full{color:var(--target-dark)}
+.tz-links{display:flex;flex-direction:column;gap:2.5mm;flex:0 0 auto}
+.tz-link{display:flex;gap:3mm;align-items:center;font-size:10pt;max-width:85mm}
 .tz-link a{word-break:break-all}
-.qr svg{width:26mm;height:26mm;display:block}
+.qr svg{width:22mm;height:22mm;display:block}
 @media screen{body{padding:0}.sheet{box-shadow:0 2px 18px rgba(0,0,0,.12)}}
 @media print{html,body{background:none}.stage{transform:none!important}.col.over{outline:none}}
 """ % TOKENS
