@@ -1,6 +1,6 @@
 ---
 name: public-opportunity-scan
-description: The public-data teaser for Opportunity Catalyst (OpCat). Build an outside-in opportunity scan of a listed company from public information only (annual reports, 10-K/20-F filings, results releases, earnings calls, investor days, public news), benchmark it against a peer set, size where the value sits (EBIT and working capital, with $ and %), tie it to what management says it is prioritising, and deliver one A1 poster as a print-ready HTML file. Use it whenever someone wants a case for change, size of prize, peer benchmarking, value-creation sniff test, "where is the value" view, partner or CEO conversation prep, pre-proposal outside-in, or an Opportunity Catalyst / OpCat style analysis on a public company, even if they never say "poster" or "skill", and even when they only name the company and a peer or two. Every poster points to the full Opportunity Catalyst.
+description: The public-data teaser for Opportunity Catalyst (OpCat). Build an outside-in opportunity scan of a listed company from public information only (annual reports, 10-K/20-F filings, results releases, earnings calls, investor days, public news), benchmark it against a peer set, size where the value sits (EBIT and working capital, with $ and %), tie it to what management says it is prioritising, and deliver it as an A1 poster (print-ready HTML) or a PowerPoint deck (Bain template when the bain-slides skill is available). Use it whenever someone wants a case for change, size of prize, peer benchmarking, value-creation sniff test, "where is the value" view, partner or CEO conversation prep, pre-proposal outside-in, or an Opportunity Catalyst / OpCat style analysis on a public company, even if they never say "poster" or "skill", and even when they only name the company and a peer or two. Every poster points to the full Opportunity Catalyst.
 ---
 
 # Public opportunity scan
@@ -71,7 +71,9 @@ A scan takes roughly 45–60 web searches, and the budget can be shared with oth
 
 Search for a whole statement at once ("<company> 10-K FY2025 consolidated statements of operations net sales cost of sales selling general administrative operating income"), not one line at a time. When the annual figures will not surface, the next quarter's interim report often carries the full-year column. Keep your own numbers out of queries: search extracts sometimes echo them back as if confirmed.
 
-### 1. Scope (ask nothing unless the company is ambiguous)
+### 1. Scope and output (ask at most one question)
+
+**Output.** Offer the two formats unless the request already names one: an **A1 poster** (one printable HTML sheet, the default) or a **PowerPoint deck** (eight slides on the Bain Core template, or a neutral template when the Bain slides skill is not available). Ask it as one question, together with the company if that is unclear; "both" is a fine answer, and both come from the same case file at no extra research cost.
 
 Defaults: audience is the CEO and executive committee; question is "Where is the value, and what would management recognise as its own agenda?"; currency is the target's reporting currency, in millions; latest four fiscal years for revenue, latest year for everything else; growth over three years; sizing horizon three years. Use what the user gives you instead. Only ask when the target itself is unclear (two listed entities with the same name, a parent and a subsidiary).
 
@@ -142,9 +144,22 @@ python scripts/check_poster.py poster.html        # fit check and a PNG screensh
 
 The page scales its body to fill the sheet and flags any column that still overflows. Look at the screenshot: label collisions, a chart with one bar, an n/a list longer than the chart. If a column overflows, cut text in that column rather than shrinking type. If no headless browser is available, the check says so; open the HTML and look.
 
+### 7b. Deck, when asked for
+
+```bash
+python scripts/build_deck.py case.json -o deck.pptx              # Bain template if bain-slides is found, else neutral
+python scripts/build_deck.py case.json -o deck.pptx --style neutral
+```
+
+The deck reads the same case file and the same calculation as the poster, so its numbers match it exactly. Slides: title; executive summary (the headline and `exec_summary`); performance against peers (EBIT-margin chart and a rated commentary); case for change (the first three framings, so write three); size-of-prize table with dollars and percentages; EBIT bridge with why the value is real; the Opportunity Catalyst invitation as a short comparison table, with both links in its footnote; and a backup slide of sources. A `chart-data.xlsx` with every chart's data lands beside the deck.
+
+- **Bain style** builds through the bain-slides skill's own pipeline (tested with v3.30), which places dashed chart placeholders rather than charts: the consultant pastes them from `chart-data.xlsx`, the way Bain decks carry think-cell charts. Titles state the finding, and the status sticker reads Preliminary when any source was read from a search extract. If the text is too long for a slide, the script shortens stories and quotes a step at a time and rebuilds. If the pipeline fails, say so and build `--style neutral`.
+- **Neutral style** uses native PowerPoint charts (a sorted bar chart and a waterfall), Arial, no branding.
+- Render it before delivering when LibreOffice is available (`soffice --headless --convert-to pdf deck.pptx`) and look at every page. Say "validates and renders; not yet opened in PowerPoint" when that is the state.
+
 ### 8. Deliver
 
-Give the user `poster.html` (opens in any browser; print to PDF at A1, or A3/A4 scaled to fit), plus `case.json` and `analysis.json` for audit. In the reply: the headline, the two totals, the lead framing, and the limits that matter most for this company (for example "two peers report costs by nature, so the gross-margin benchmark rests on five peers"). End with the short invitation from the teaser section.
+Give the user `poster.html` and/or `deck.pptx` with `chart-data.xlsx` (opens in any browser; print to PDF at A1, or A3/A4 scaled to fit), plus `case.json` and `analysis.json` for audit. In the reply: the headline, the two totals, the lead framing, and the limits that matter most for this company (for example "two peers report costs by nature, so the gross-margin benchmark rests on five peers"). End with the short invitation from the teaser section.
 
 ## Sizing, in brief
 
@@ -164,7 +179,8 @@ A bucket where the target already beats the top quartile shows "no gap" rather t
 
 - `scripts/build_poster.py` — computes and renders; the one command to run
 - `scripts/opscan_calc.py` — the calculations, metric definitions and token table
-- `scripts/check_poster.py` — fit check and screenshot through headless Chromium
+- `scripts/check_poster.py` — fit check, screenshot and one-page PDF through headless Chromium
+- `scripts/build_deck.py` — the PowerPoint deck (Bain or neutral) and `chart-data.xlsx`
 - `references/case-schema.md` — the case file, field by field, and the token list
 - `references/sources.md` — where to find each figure and signal, and the definition traps
 - `references/method.md` — metric definitions, benchmark and sizing formulas
