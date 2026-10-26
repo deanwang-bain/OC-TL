@@ -141,9 +141,9 @@ def legend_for(*parties: str) -> list[tuple[str, str]]:
 def leadership_row(y: float, extra: list[Node] | None = None) -> tuple[Group, list[Node]]:
     g = Group("lead", "Bain product leadership", 40, y, 0, 0, "bain")
     nodes = [
-        Node("pm", "Product Manager\nKasia Mrowca", 0, 0),
-        Node("tl", "Tech Lead\nDean Wang", 0, 0),
-        Node("arch", "Architect\nSandeep Uppal", 0, 0),
+        Node("pm", "Product Manager", 0, 0),
+        Node("tl", "Tech Lead", 0, 0),
+        Node("arch", "Architect", 0, 0),
     ] + (extra or [])
     x = g.x + 16
     for n in nodes:
@@ -160,15 +160,14 @@ def leadership_row(y: float, extra: list[Node] | None = None) -> tuple[Group, li
 
 def chart_today() -> Chart:
     c = Chart("01-today", "Today: Sprint 5, Support and Hardening", 1060, 0)
-    lead, ln = leadership_row(60, [Node("ux", "Designer\nJoanna Soh", 0, 0),
-                                   Node("tlb", "Tech Lead back-up\nMichelle Flood", 0, 0)])
+    lead, ln = leadership_row(60, [Node("ux", "Designer", 0, 0)])
     lead.x = (c.width - lead.w) / 2
     shift = lead.x - 40
     for n in ln:
         n.x += shift
     top = lead.y + lead.h + 60
     bain = Group("g_bain", "Bain", 40, top, 300, 0, "bain")
-    bn = column(bain, [("data", "Data pipeline\nSandeep, Siva"),
+    bn = column(bain, [("data", "Data pipeline\narchitecture and data leads"),
                        ("bcn0", "BCN\ngolden data set, OI domain")], "bain")
     tsg = Group("g_tsg", "Bain shared services", 40, 0, 300, 0, "tsg")
     tsg.y = bain.y + bain.h + 24
@@ -265,7 +264,7 @@ def chart_c() -> Chart:
 
 def chart_transition() -> Chart:
     c = Chart("05-transition-mid-january", "Transition in mid-January: Scenario 2 on Option C", 1060, 0)
-    tl = Node("tl", "Tech Lead\nDean Wang", 0, 60)
+    tl = Node("tl", "Tech Lead", 0, 60)
     tl.x = (c.width - tl.w) / 2
     le = Node("le", "Lead Engineer / Platform Owner\nnew Bain FTE", 0, tl.y + tl.h + 40, party="new", bold=True)
     le.x = (c.width - le.w) / 2

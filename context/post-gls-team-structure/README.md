@@ -2,7 +2,8 @@
 
 | File | What it is |
 | --- | --- |
-| `confluence-page.md` | Page body to paste into Confluence |
+| `lt-paper.html` | **Current version.** Leadership-team paper: decisions first, outcomes per option, recommendation highlighted. No names in the org charts. Published as a private artifact for LT circulation |
+| `confluence-page.md` | Earlier Confluence draft. Not being posted; kept for reference |
 | `diagrams/*.drawio.svg` | Six diagrams. Each is an SVG image with the draw.io model embedded, so it renders anywhere and opens editable in draw.io |
 | `../post-gls-team-structure-proposal.md` | Working version with fuller reasoning and workspace references. Not for publishing |
 
