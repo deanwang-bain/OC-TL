@@ -667,7 +667,6 @@ this role's. The other three from Sprint 2's five either closed or were removed.
 item for go/no-go"* — it joins peer selection to the Case for Change end to end.
 
 ## What GLS actually demonstrates
-
 [October Prototype (for GLS)](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19958562873),
 last updated 23 October, holds five interactive prototypes as HTML zips — **Nike**, a
 **Nike guided walkthrough** *"used for first-time user setup and live demos"*, and
@@ -680,6 +679,44 @@ lives in the prototypes. Second, the demo set is **four named companies against 
 data set**, not live sources — which is consistent with the capacity constraint above and
 should be stated plainly to anyone who sees the demo and asks what it would do for their
 client.
+
+## The golden data set, from the Sprint 4 planning recording
+
+*Source: frames from `Sprint4_Planning_2026-10-09_Part1of4.mp4`. The planning sessions
+are video with no written summary; the shared screen is the workbook
+`OI3-Sprint-4-Backlog-Coll…`, tabs **Overview · Sprint 4 stories · Sprint 3 spillover
+watch · Collation map · Notes**. This is the only place the Sprint 4 stories and their
+acceptance criteria are written down.*
+
+**The shape of the data set is concrete, and is stated nowhere in Confluence:**
+
+> **10 target companies and their peers — around 100 companies in total** — loaded from
+> the BCN documents, with **pre-calculated cost bars, levers, size of prize and
+> recommendations stored as each case's default**.
+
+That is the demo's whole universe, and it explains the architecture of the demo: the
+default journey shows BCN's validated results **without recalculation**. Recalculation
+only runs when the user changes something.
+
+Stories visible on screen, with their acceptance criteria:
+
+| Ref | Workstream | Story | Acceptance criteria worth noting |
+| --- | ---------- | ----- | -------------------------------- |
+| **S4-01** | Data (Golden Data Set) | Load the golden data set, including BCN's pre-calculated results | All 10 targets and ~100 peers loaded from BCN documents; load is repeatable and reloadable in minutes |
+| **S4-02** | Data (Golden Data Set) | Golden data set coverage check for recalculation | **Covers all ~100 companies, not only the 10 targets**; gap report by company and metric; companies with incomplete data are **flagged so they are not added as peers** |
+| **S4-51** | Data (Golden Data Set) | Data source attribute and journey level mapping | Carry-over from Sprint 3 |
+| **S4-52** | Data (Golden Data Set) | Validate the peer selection approach and finalise it with **Oliver, BCN and other stakeholders** | — |
+| **S4-12** | Calculation Engine | Recalculate cost bar benchmarks after a peer change | Follows the **BCN cost bar methodology as documented**; uses golden data set values; **peers with a missing metric are excluded** |
+
+One column on the sheet marks items **"Week 1 — to go/no-go"**, which is how the
+58-item sprint was split against the gate.
+
+**Why this matters for review.** The recalculation path is the interesting half: the
+default journey is pre-computed by BCN, so what the engine computes live is only the
+delta after a peer change. S4-02's coverage check exists because a peer with missing
+metrics would otherwise silently distort a benchmark — the fix is to exclude it and
+flag it, which is the right call and worth confirming it is visible to the user rather
+than silent.
 
 ## Delivery — Sprint 2 nearly doubled the throughput
 

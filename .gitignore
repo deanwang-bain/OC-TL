@@ -1,2 +1,7 @@
 __pycache__/
 *.py[cod]
+
+# Frames pulled out of meeting recordings by tools/video_frames.py. Regenerable
+# in one command, several MB per video, and only useful while being read -- the
+# findings belong in context/, not the stills. The .md index per video is kept.
+context/video-frames/*.png

@@ -22,6 +22,26 @@ is Michelle's. See
 **StatusNeo (SN)** writes the OI 3.0 application code. This workspace reviews their
 work; it does not contribute code to it.
 
+### Sprint 4 planning attendees, 9 October
+
+Read off the Teams roster in the recording — the planning sessions are the only
+artefact naming who is actually in the room. Roles are not stated there, so only the
+vendor markers below are from the source rather than inferred.
+
+| Name | Noted as |
+| ---- | -------- |
+| Giorgi Samadashvili | Presenting — ran the backlog walkthrough |
+| Dipesh Bhardwaj | Named throughout the GLS deployment tracker as decision-maker |
+| Carter, Oliver | **(Vendor)** — the "Oliver" in story S4-52, peer selection sign-off |
+| Bereznickis, Aleksandrs | **(Vendor)** |
+| Lakshay Grover | |
+| Nikolozi Metreveli | |
+| Abhinav Upadhyay | |
+| Mohammed Ashad Abbas | |
+
+**Angel** appears in the deployment tracker as the DevOps owner but not in this
+session. Surname not recorded anywhere in the mirror.
+
 ## System contacts
 
 | Name | Role | System |

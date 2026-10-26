@@ -185,11 +185,22 @@ read them:
 | `python3 tools/attachment_text.py --list` | What is readable, by type |
 | `python3 tools/attachment_text.py <file>` | pptx, xlsx, xlsm, docx, html, csv |
 | `python3 tools/diagram_text.py` | Refreshes the SVG text extracts in `context/diagrams/` |
+| `python3 tools/video_frames.py --list` | The 13 meeting recordings, with durations |
+| `python3 tools/video_frames.py <file.mp4>` | Scene-change frames into `context/video-frames/` |
 
 The sprint retrospectives are decks, the ARC assessment is two workbooks, and the GLS
 output sample is an HTML file — none of that is in prose anywhere. Raster diagrams (PNG)
 need a model that can see them; `context/diagrams/README.md` ranks the ones worth a pass
-and says which to skip. Video and PDF attachments cannot be read here at all.
+and says which to skip. PDF attachments cannot be read here at all.
+
+**The recordings are planning sessions, not demos.** All 13 `.mp4` files are the Sprint 3
+and Sprint 4 planning meetings, about three hours with no written summary. There is **no
+recording of the product or the GLS demo** anywhere in the space. There is also no
+speech-to-text here, so the tool takes the shared screen instead: `video_frames.py`
+extracts scene-change frames, which is where the Sprint 4 backlog and its acceptance
+criteria turned out to be. It needs ffmpeg — `pip install imageio-ffmpeg` — which nothing
+else in `tools/` requires and the daily sync never runs. Extracted frames are gitignored
+because they are regenerable and large; put what you learn in `context/` instead.
 
 Treat a genuinely empty page as **unknown, not as "no requirement"**, and flag it when a
 decision depends on one. The full breakdown is in
