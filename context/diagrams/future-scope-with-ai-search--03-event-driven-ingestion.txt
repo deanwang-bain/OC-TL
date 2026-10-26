@@ -1,0 +1,57 @@
+# 03-event-driven-ingestion.svg
+
+Diagram text extracted from `confluence/_attachments/19849412714/03-event-driven-ingestion.svg`.
+Page: [Future Scope-- With ai search.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+new file event
+Event
+Grid
+queue
+Document
+Intelligence
+blob
+chunk +
+embed
+Azure AI
+Search
+dead letter
+failed
+blob
+peers/
+raw
+web
+search
+metrics
+blob
+peers_dat
+a/raw
+user uploads
+filings, reports
+blob
+uploads
+RAG
+agent
+blob
+information
+chat engine
+peers, ranked
+peers, why, sources
+peer name to company
+new file
+new file
+new file
+input:
+preference, metrics, ids
+web
+search
+find
+peers
+params
+metrics + sources
+internet + capIQ
+peers

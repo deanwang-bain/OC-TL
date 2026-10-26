@@ -1,0 +1,30 @@
+# 02-company-match-plain-english.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/02-company-match-plain-english.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+User gives name, location
+or business
+Which details
+were given?
+Name and Ticker
+Country and Region
+Sector and Industry
+Spelling match, handles
+typos
+Word match
+Word match plus meaning
+match by AI
+Score each part from 0
+to 100
+Mix scores: Name 50,
+Business 35, Location 15
+Sort best first, tie
+broken by revenue
+Return top matches with
+score breakdown

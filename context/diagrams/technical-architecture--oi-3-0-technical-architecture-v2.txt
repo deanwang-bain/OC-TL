@@ -1,0 +1,101 @@
+# OI_3_0_Technical_Architecture_v2.svg
+
+Diagram text extracted from `confluence/_attachments/19619479668/OI_3_0_Technical_Architecture_v2.svg`.
+Page: [Technical Architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619479668)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+OI 3.0 — Technical Architecture
+Same layered view as the logical diagram. Yellow = StatusNeo-built app (app-level security) · green = Bain-owned infra (infra-level security). The band split = the security RACI line.
+1 · PRESENTATION / CLIENT
+Web app — chat-first UI
+Partner surfaces: composition · defensibility · time-travel
+SSE streaming channel
+token / block streaming during generation
+PPTX export / render service
+DOM → deck; layout is a renderer concern
+2 · APPLICATION SERVICES
+StatusNeo build · APP-LEVEL security (authN/Z at boundary, guardrails, provenance hooks, secure SDLC)
+Orchestrator
+Claude SDK · plans calls · streams SSE
+Pre-flight gate svc
+CoI · blocked-target · residency router
+Bounded agent runtime
+Research · IP · Benchmark · SoP · Skeptic · Persona · Composer · VoiceApply
+Eval Gate service
+pre-render gate · fail→loop
+Replay / Projection
+bridge over event store
+flow: SSE → Orchestrator → gate → agent runtime → Eval Gate → (pass) DOM / render · (fail) loop back to agents
+agents load the per-Partner adapter and call VCC + Bain IP + public connectors through the integration layer below
+3 · INTEGRATION & CONNECTORS
+VCC adapter
+thin · swappable backends
+backend switch = config flip
+contract-first VCC data-package schema
+VCC stubs + fixtures
+permanent in CI
+deterministic regression
++ outage resilience tests
+Glean / Sage connector
+Bain IP retrieval (Iris / ARC / cases)
+auth scopes · rate limits
+curation/indexing layer if needed
+Data-source connectors
+CapIQ · SEC EDGAR · LSEG
+feed public layer + vector store
+4 · DATA & MODEL STORES
+Typed DOM store
+Deck → … → Claim → Evidence
+content + structure only
+Append-only event store
+history · audit · training corpus
+deck = projection over events
+Vector store / per-sector RAG
+namespace-isolated indexes
+embeddings + eval suites
+Per-Partner adapter store
+LoRA weights / prefixes
+no cross-Partner flow
+5 · ML / EVAL PIPELINE
+Fine-tune pipeline
+SFT (golden cases) + RLVR + implicit RLHF from edits
+reads event store → writes adapter store
+Eval harness
+retrieval evals · regression suite · canary decks
+feeds Eval Gate thresholds
+6 · EXTERNAL SYSTEMS
+VCC runtime API / MCP — Umbrage
+critical-path dependency · runtime vs batch determines dynamism
+Bain IP — Iris / ARC / case clouds
+via Glean/Sage API surface
+Public data APIs
+CapIQ · SEC EDGAR · LSEG
+7 · PLATFORM & INFRA
+Bain-owned · INFRA-LEVEL security (VPC, IAM/KMS, IdP, SIEM, retention) · validated via TRA → Archie
+Hosting
+Bedrock / Vertex / MS Foundry
+TBC — not yet decided
+VPC / network perimeter
+network policy · segmentation
+Cloud IAM / KMS / secret store
+key management · secret provisioning
+Bain SSO / IdP
+enterprise auth · per-Partner identity
+SIEM / audit-log retention
+ingests app-level audit hooks
+Observability / monitoring
+SLOs (deferred to industrialization)
+request
+pass → write DOM
+agents call connectors
+VCC adapter → API
+stub = test backend
+replay reads event store
+fine-tune writes adapter store
+agents load per-Partner adapter
+binds up-stack: Bain SSO → client auth · Cloud KMS → app/adapter secrets · app-level audit hooks → SIEM
+solid = runtime call · dashed = security / learning binding

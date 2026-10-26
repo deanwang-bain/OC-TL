@@ -1,0 +1,106 @@
+# OI_3_0_Data_Architecture.svg
+
+Diagram text extracted from `confluence/_attachments/19619840013/OI_3_0_Data_Architecture.svg`.
+Page: [Data Architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619840013)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+OI 3.0 — Data Architecture
+Same layered view as the logical diagram. Top→bottom = sources → knowledge → runtime → state → learning. Solid = data flow · dashed = learning / promotion.
+1 · DATA SOURCES
+outside-in public data + Bain proprietary IP (via Glean / Sage)
+Public / outside-in
+CapIQ
+SEC EDGAR
+LSEG analyst
+reports
+Earnings
+transcripts
+Public leadership
+data
+Bain IP — via Glean / Sage API
+Iris content library
+ARC
+Case archives
+Expert network
+Bain-alumni signal
+2 · VCC DETERMINISTIC DATA PLANE
+Umbrage-owned · consumed at runtime for canonical calc only — never re-derived
+VCC Snowflake layer
+CapIQ + LSEG pipeline feed
+Calc + adjustment engine
+structured calculations · canonical numbers
+VCC data-package
+agreed schema (contract-first)
+3 · INGESTION & INDEXING
+RAG indexing + embeddings
+per sector · from unstructured sources
+Vector store
+namespace-isolated per sector (CPG · FS · Auto …)
+Structured lookups
+IP-retrieval over Iris / ARC / cases
+4 · KNOWLEDGE LAYERS
+3-tier isolation · one-way reads · curated promotion · per-Partner isolation that holds
+Public layer
+CapIQ · SEC EDGAR
+analyst notes
+earnings transcripts
+Partner-Private
+voice profile · edits · flags
+session-scoped context
+evaporates on close
+no training w/o opt-in
+Curation Gate
+KM-controlled
+explicit consent
+batch review
+approved patterns only
+Firm-Shared
+Iris content library
+ARC · case archives
+expert network
+Bain-alumni signal
+Per-sector RAG
+CPG · FS · Telco · Auto …
+namespace-isolated
+shared embeddings + prompts
++ eval suites
+Partner-Private → Curation Gate → Firm-Shared (opt-in promotion only)
+5 · AGENT RUNTIME
+Research · IP-Retrieval · Benchmark · SoP · Skeptic · Persona · Composer
+reads knowledge layers · calls VCC for canonical calc · writes claims with provenance
+layers read
+VCC canonical calc at runtime
+6 · STATE & PROVENANCE
+the DOM is Bain's IP in machine-readable form
+Typed DOM Store
+Deck → Section → Slide → Block → Claim (confidence, provenance_class) → Evidence
+also: SoPNode · Peer · Lever · VoiceProfile · ClusterPack · PersonaSet
+Provenance: every Claim carries ≥1 evidence_ref → source quote;
+confidence + provenance_class drive the Defensibility surface.
+Append-only Event Log
+DeckGenerated · BlockEdited · PeerSetChanged · SoPNodeRevised · EvalGatePassed/Failed …
+RLSignalEmitted { thumbs · edit_flag · edit_derived }
+one artifact, three jobs: history · audit · training corpus
+deck = projection over events (feeds replay / time-travel)
+runtime writes DOM
+7 · LEARNING CORPUS
+per-Partner · no cross-Partner gradient flow · Eval Gate provides the continuous quality signal
+RL signals
+edits · thumbs · peer changes
+(implicit RLHF + RLVR)
+Golden cases
+SFT training set
+Eval suites
+per sector · known-answer pairs
+canonical Bain questions
+Per-Partner Adapter (LoRA / prefix-tuning over shared base)
+3-signal path: SFT on golden cases + RLVR + implicit RLHF from edits
+strictly per-Partner — no cross-Partner gradient flow
+structured voice controls first; graduate to adapters once signal is sufficient
+event log → RL signals / golden cases
+adapter biases retrieval + voice (per-Partner)
+solid = data flow · dashed = learning / promotion

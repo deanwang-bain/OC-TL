@@ -1,0 +1,154 @@
+# 06-peer-discovery-four-stages.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/06-peer-discovery-four-stages.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+agent_error
+AND
+deterministic
+_error?
+HTTP 503 scores not
+built
+both failed
+at least one worked
+router counts
+agent_count and
+deterministic_count
+4 - analysis and reranking
+take the first
+analysis_limit peers, 10 -
+merge order decides who
+makes the cut
+analyse_many:
+ThreadPool, workers =
+min of analysis_workers
+8 and peer count
+analyse_pair per peer,
+one Foundry call
+analysis: comparability
+and per criterion scores
+analysis None,
+analysis_error set, costs
+only that peer
+attach analysis and
+analysis_error to every
+merged peer
+peers past the limit stay
+unanalysed, not dropped
+stable sort:
+has
+comparability?
+group 0: comparability
+high to low
+group 1: behind every
+analysed peer, merge
+order kept
+ranked peers
+ok
+failed
+yes
+no
+3 - merge, keyed by cap_id
+insert every agent peer,
+agent_recommended =
+true
+deterministic
+peer cap_id
+already
+present?
+insert new entry,
+agent_recommended =
+false
+keep the agent entry and
+its flag, add distance,
+similarity, shared_columns
+merged list, one entry per
+cap_id: agent peers first,
+deterministic-only after
+no
+yes, found by both
+2 - deterministic side: peers from the snapshot, never raises
+columns_for criteria:
+numerical and categorical
+columns
+vector target
+candidate_pool: filter on
+categorical columns
+rank by distance, keep
+max_peers
+deterministic peers with
+distance, similarity,
+shared_columns
+FileNotFoundError:
+company scores not built
+0 peers,
+deterministic_error set
+1 - agent side: peers from the web, never raises
+build_discovery_prompt:
+target, criteria, max_peers
+foundry.ask_agent call 1:
+search the web, propose
+names
+parse_can
+didates
+web peer names, deduped,
+capped at
+discovery_max_names 25
+scrape names from table
+rows or bullets
+FoundryError
+0 peers, agent_error set
+shortlist each name:
+matching.match, top 10
+snapshot rows
+build_resolution_prompt:
+numbered companies and
+their candidates
+foundry.ask_agent call 2:
+pick one cap_id or null
+per company
+parse_matches: company
+number to cap_id
+resolve: check
+every cap_id
+drop as fabricated
+name goes to unresolved
+skip, not a new peer
+accept, load its snapshot
+row
+agent peers plus
+unresolved names
+fenced JSON
+prose only
+nothing readable
+not on that shortlist
+agent answered null
+is the target or already taken
+valid and under max_peers
+Entry
+client
+POST /peers/discover
+with cap_id, criteria,
+max_peers
+router: discover_peers
+peer_discovery.discover
+get_compa
+ny cap_id
+HTTP 404 unknown
+cap_id
+target snapshot row,
+fails fast before any
+network call
+KeyError
+found
+HTTP 200
+PeerDiscoveryResponse:
+target, peers, unresolved,
+candidates, counts,
+agent_error,
+deterministic_error

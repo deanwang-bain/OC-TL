@@ -1,0 +1,113 @@
+# 05-peer-discovery-functions.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/05-peer-discovery-functions.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+client
+POST /peers/discover
+router: discover_peers
+peer_discovery.discover
+cap_id
+found?
+HTTP 404 unknown
+cap_id
+target snapshot row,
+before any network call
+fan
+out
+build_discovery_prompt
+Foundry call 1: search
+web, propose names
+parse_can
+didates
+scrape from table rows
+or bullets
+FoundryError,
+agent_error, 0 peers
+candidate names,
+deduped, cap 25
+shortlist each name via
+matching.match
+build_resolution_prompt
+Foundry call 2: pick
+cap_id or null
+parse_matches
+resolve: verify every cap_id
+drop as fabricated
+unresolved
+skip
+agent peers
+columns_for criteria
+vector target
+candidate_pool: filter
+categorical
+rank by distance, keep
+max_peers
+deterministic peers,
+distance and similarity
+scores not built,
+deterministic_error, 0
+peers
+merg
+ed
+agent peers first,
+agent_recommended true
+cap_id
+already
+present?
+add entry,
+agent_recommended false
+keep agent flag, add
+distance and similarity
+merged list, one entry per
+cap_id
+both
+errors
+set?
+HTTP 503 scores not
+built
+analysis_limit 10, merge
+order decides
+ThreadPool, 8 workers
+analyse_pair, one
+Foundry call per peer
+analysis None,
+analysis_error, that peer
+only
+comparability and
+criterion scores
+attach to every merged
+peer
+peers past the limit
+unanalysed, not dropped
+has
+comparabili
+ty?
+group 0, high to low
+group 1, merge order kept
+rank
+ed
+router counts agent and
+deterministic
+200
+PeerDiscoveryResponse
+no
+yes
+prose only
+unreadable
+fenced JSON
+answered null
+target or already taken
+valid, under max_peers
+no
+yes, both
+at least one worked
+failed
+ok
+yes
+no

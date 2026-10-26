@@ -1,0 +1,79 @@
+# 04-target-architecture.svg
+
+Diagram text extracted from `confluence/_attachments/19849412714/04-target-architecture.svg`.
+Page: [Future Scope-- With ai search.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+new file event - ingestion, runs on its own clock
+Event Grid
+BlobCreated on the
+project prefix
+queue
+Azure Document
+Intelligence
+layout model
+text
+tables
+key-value pairs
+page spans
+extracted json
+back to blob
+.../extracted/ — reparse
+is free
+chunk by section + embed
+text-embedding-3-small
+Azure AI Search
+one index
+filtered by project_id +
+user_id
+hybrid: keyword + vector
+dead letter + status on
+the record
+parse failed
+blob
+.../data/websearch/peers/raw/
+web search
+basic metrics per
+company
+blob<br>.../data/websearch/peers_data
+/raw/
+user uploads
+documents<br>filings,
+annual reports, decks
+blob<br>.../data/uplo
+ads/
+params
+documents path
+rag path
+append/rerank / reset
+index
+blob chat agent - RAG
+queries a ready index,
+does not chunk at chat
+time
+blob<br>.../data/websearch/peers
+_rag/
+recommendation engine
+peers, ranked
+peers found, with why
+and sources
+peer name
+get data and store
+to blob
+new file
+new file
+new file
+chat to it: metrics
+and sources
+internet peers +
+capIQ peers data
+input:
+user preference
+data metrics
+project id
+user id
+serpapi engine

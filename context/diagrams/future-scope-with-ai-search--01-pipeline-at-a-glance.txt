@@ -1,0 +1,23 @@
+# 01-pipeline-at-a-glance.svg
+
+Diagram text extracted from `confluence/_attachments/19849412714/01-pipeline-at-a-glance.svg`.
+Page: [Future Scope-- With ai search.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+📝 input
+preference + ids
+🔎 find peers
+🔎 get metrics
+🤖 RAG agent
+⚖️ recommend
+⭐ peers
+📄 new file
+🧾
+Document<br>Int
+elligence
+🔍 AI Search
+🗄️ blob storage
