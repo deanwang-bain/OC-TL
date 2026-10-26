@@ -394,6 +394,8 @@ class Renderer:
         unchecked = [x for x in self.sources if x.get("checked") is False]
         if unchecked:
             chips.append(f"{len(unchecked)} of {len(self.sources)} sources read from search extracts: verify before client use")
+        growth_sized = any(x["id"] == "commercial" and x["state"] == "sized" for x in self.a["buckets"])
+        when = f"a year by {esc(meta['horizon_end'])}" if growth_sized else "a year, on the latest year's figures"
         b = self.a["bridge"]
         margin_tile = ""
         if b:
@@ -418,7 +420,7 @@ class Renderer:
   </div>
   <div class="tiles">
     <div class="tile hero"><div class="tl">Recurring EBIT opportunity</div><div class="tv{' long' if len(t['pnl']['display']) > 11 else ''}">{esc(t['pnl']['display'])}</div>
-      <div class="ts">a year by {esc(meta['horizon_end'])}, from {t['pnl']['count']} sized bucket{'s' if t['pnl']['count'] != 1 else ''}</div></div>
+      <div class="ts">{when}, from {t['pnl']['count']} sized bucket{'s' if t['pnl']['count'] != 1 else ''}</div></div>
     <div class="tile"><div class="tl">One-off cash release</div><div class="tv">{esc(t['cash']['display'])}</div>
       <div class="ts">working capital; never added to EBIT</div></div>
     {margin_tile}

@@ -12,6 +12,7 @@ Download `public-opportunity-scan.skill` and add it in Claude under Settings →
 | --- | --- | --- |
 | Kraft Heinz | Packaged food | [poster (HTML)](samples/kraft-heinz/kraft-heinz-poster.html), [poster (A1 PDF)](samples/kraft-heinz/kraft-heinz-poster.pdf), [deck](samples/kraft-heinz/kraft-heinz-deck.pptx), [chart data](samples/kraft-heinz/chart-data.xlsx) |
 | Honda | Autos and motorcycles | [poster (HTML)](samples/honda/honda-poster.html), [poster (A1 PDF)](samples/honda/honda-poster.pdf), [deck](samples/honda/honda-deck.pptx), [chart data](samples/honda/chart-data.xlsx) |
+| Schneider Electric | Electrical equipment and automation | [poster (HTML)](samples/schneider/schneider-poster.html), [poster (A1 PDF)](samples/schneider/schneider-poster.pdf), [deck](samples/schneider/schneider-deck.pptx), [chart data](samples/schneider/chart-data.xlsx) |
 
 Decks are on the Bain Core template. Their charts are placeholders: paste them from `chart-data.xlsx`, as with think-cell.
 

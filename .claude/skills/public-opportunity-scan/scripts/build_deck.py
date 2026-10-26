@@ -55,6 +55,14 @@ def first_sentence(text, max_words=34):
     return head.rstrip(",;:") + "…"
 
 
+def short_header(text, limit=42):
+    """Keep the longest leading clause that fits the limit; a long header wraps into the status sticker."""
+    if len(text) <= limit:
+        return text
+    breaks = [m.start() for m in re.finditer(r"[,;:] ", text) if 12 < m.start() <= limit]
+    return text[:breaks[-1]] if breaks else text
+
+
 def label_in_sentence(label):
     """'Gross margin' -> 'gross margin', but 'EBIT margin' and 'SG&A as % of revenue' keep their capitals."""
     label = re.sub(r"\s*\([^)]*\)", "", label)  # "Revenue growth (CAGR)" reads as "revenue growth" in a sentence
@@ -153,13 +161,10 @@ class Content:
                     items.append(f"**Client readiness: {f['readiness']}** ({first_sentence(self.t(f.get('readiness_reason', '')), 14 if self.tight else 18).rstrip('.')})")
                 else:
                     items.append(f"**Client readiness: {f['readiness']}**")
-            header = self.t(f.get("title", ""))
-            if len(header) > 42:  # a two-line header runs into the status sticker; keep the first clause
-                cut = min([i for i in (header.find("; "), header.find(", "), header.find(": ")) if i > 12] or [len(header)])
-                header = header[:cut]
-            cols.append({"header": header, "items": items})
+            cols.append({"header": short_header(self.t(f.get("title", ""))), "items": items})
         lead = next((f for f in nar.get("framings", []) if f.get("lead")), (nar.get("framings") or [{}])[0])
-        out["cfc"] = {"title": f"The strongest framing for {self.name}: {self.t(lead.get('title', '')).rstrip('.').lower()}",
+        lead_t = short_header(self.t(lead.get("title", "")), 60).rstrip(".")
+        out["cfc"] = {"title": f"The strongest framing for {self.name}: {lead_t[0].lower() + lead_t[1:]}",
                       "cols": cols}
 
         # size of prize table
