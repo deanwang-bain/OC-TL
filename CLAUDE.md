@@ -1,16 +1,18 @@
 # OC-TL — Tech Lead workspace for OI 3.0 / OC 3.0
 
-**Naming.** The product is **Opportunity Catalyst (OC 3.0)**; the architecture tree in
-Confluence was renamed to match on 4 October, and the repositories are
-`nextgen-opportunity-catalyst-core` and `-ui`. The Confluence space key is still `OI30`
-and older pages still say Opportunity Indicator, so both names are live.
+**Naming.** The product is **Opportunity Catalyst**, and since late October the working
+name in the space is **OpCat**. The architecture tree was renamed on 4 October and the
+overview pages — Vision, High Level Requirements, Design requirements & components —
+were rewritten in the week of 19 October to say *OpCat* wherever they said *OI 3.0*.
+The space key is still `OI30` and the older architecture and data pages still say
+Opportunity Indicator, so all three names are live. Repositories are
+`nextgen-opportunity-catalyst-core` and `-ui`.
 
 **The Jira board is `OI3`, and tickets are `OI3-nn`.** The Sprint 1 retrospective deck
 calls it `OC3` and renumbers every ticket to `OC3-nn`, which is where an earlier version
 of this file took its claim from — that was wrong. The same ticket appears in the Sprint 1
-deck as `OC3-48` and in the Sprint 2 deck as `OI3-48`, both labelled "development
-environment and access". Every other artefact, including the October deployment tracker
-(`feat/OI3-212-gls-backend`), uses `OI3`. Cite `OI3-nn`.
+deck as `OC3-48` and in the Sprint 2 and 3 decks as `OI3-48`, all labelled "development
+environment and access". Every other artefact uses `OI3`. Cite `OI3-nn`.
 
 ## What this project is for
 
@@ -158,7 +160,7 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 95 pages, **76 carry text, 12 hold only an attachment or diagram, and 7 are genuinely
+Of 98 pages, **76 carry text, 15 hold only an attachment or diagram, and 7 are genuinely
 empty**. Deployment Design was filled on 7 October — the first of the five high-level
 design pages to move. **Four still carry nothing**: Security Design, NFR Design Choices,
 Observability, and Endpoints & Interfaces Design. Reviews touching those areas rest on

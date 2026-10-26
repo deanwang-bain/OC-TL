@@ -596,6 +596,91 @@ finish the laptop migration.
 **Two-week Scrum cycles.**
 ([Ways of Working](../confluence/oi30/ways-of-working-19588612195.md))
 
+## Delivery — Sprint 3 held the rate, and the plan to GLS was reshaped
+
+[Sprint 3 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19933790220)
+covers **28 September – 12 October**, and carries two decks: the retro and
+`OC3_Stakeholder_Update_Sprint3_final.pptx`, which is the clearer of the two on timeline.
+
+| Measure | Sprint 2 | Sprint 3 |
+| ------- | -------- | -------- |
+| Items completed | 48 | **27** |
+| Completion rate | 83% | **82%** |
+| Of those committed | 36 of 45 | **22 of 28** |
+| Scope added mid-sprint | 29% | **18%** |
+| Carried over | 10 | **6** |
+
+Fewer, larger items at a level completion rate. Two things genuinely improved: **all five
+mid-sprint additions completed**, and **no item ended the sprint blocked on a vendor** —
+the first sprint where that is true.
+
+**Estimates reached Jira for the first time**: about 450 hours at the start, roughly 370
+burned. Issue count is no longer the only measure.
+
+**The burn profile has not changed shape.** The line opened at ~450 hours, climbed to
+~485 by 1 October, and nothing burned down in the first four days. Platform and agent
+access was granted on **2 October**; remaining work then fell from ~470 to ~305 across six
+working days, and from **305 to 80 on the final day** — roughly 60% of the sprint's burn
+closing at close. This is the third consecutive sprint where most of the work lands in the
+last days, and the second where the trigger was an access grant arriving mid-sprint.
+
+**What landed**: the Case for Change screen, the GLS calculation engine, the golden data
+set (curated with BCN, delivered as JSON), the narrative agent, the chat assistant agent
+and its tool catalogue, the audit service on the service bus, document upload API, rate
+and quota management, a security scan framework, ADRs logged, and the analysis screen
+foundations **ahead of plan** — it was a stretch goal and is nearly done.
+
+### The plan to GLS was re-cut, deliberately
+
+The stakeholder deck sets this out plainly. The initial plan was four sprints of build
+with GLS at the end of Sprint 4. The revised plan is **three and a half sprints**, buying
+a **go/no-go decision one week before GLS** in exchange for one week less development.
+
+| | |
+| --- | --- |
+| Sprint 4 started | 12 October |
+| Go / no-go | week of **19 October** |
+| **GLS** | **26 October** |
+
+The stated trade-off: *"one week less development in exchange for a go/no-go decision a
+week before GLS and no last-minute deployments."* That is a sound call, and the team made
+it ahead of time rather than under pressure.
+
+**Sprint 4 is by far the heaviest: 58 committed items**, against 28, 45 and 22 in the
+sprints before it, with most needing to work by the end of week one. Analysis, output and
+chat were all pulled into week one. The retro flags the arithmetic itself: Sprint 3 burned
+~370 hours over two weeks, and Sprint 4's estimate *"should be checked against that rate
+now."*
+
+### Two constraints the retro names plainly
+
+**Capacity.** *"No data engineer was onboarded for the GLS sprints, and the full-stack
+developer due in Sprint 2 could not contribute for a full sprint."* The golden data set
+offsets the missing data engineer — but, in the retro's own words, *"not connecting live
+sources narrows the GLS functionality."*
+
+**Two items have now run three sprints**: **OI3-21** security and governance and
+**OI3-48** development environment and access. OI3-21 is in review, and review capacity is
+this role's. The other three from Sprint 2's five either closed or were removed.
+
+**OI3-221, the confirm peers API**, carried into Sprint 4 and is called out as *"the key
+item for go/no-go"* — it joins peer selection to the Case for Change end to end.
+
+## What GLS actually demonstrates
+
+[October Prototype (for GLS)](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19958562873),
+last updated 23 October, holds five interactive prototypes as HTML zips — **Nike**, a
+**Nike guided walkthrough** *"used for first-time user setup and live demos"*, and
+**Adobe, Beiersdorf and Honda** showing *"the tool generalizes beyond Nike across
+industries"* — plus a standalone Nike HTML export of the Output screen.
+
+Two things follow. First, **the Figma file is explicitly stale**: *"The Figma file is out
+of date. The current designs are the HTML links and zip files above."* Design truth now
+lives in the prototypes. Second, the demo set is **four named companies against the golden
+data set**, not live sources — which is consistent with the capacity constraint above and
+should be stated plainly to anyone who sees the demo and asks what it would do for their
+client.
+
 ## Delivery — Sprint 2 nearly doubled the throughput
 
 [Sprint 2 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19883720705)
