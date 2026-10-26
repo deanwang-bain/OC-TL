@@ -159,7 +159,7 @@ def leadership_row(y: float, extra: list[Node] | None = None) -> tuple[Group, li
 
 
 def chart_today() -> Chart:
-    c = Chart("01-today", "Today: Sprint 5, Support and Hardening", 1060, 0)
+    c = Chart("01-today", "From: today (Sprint 5, Support and Hardening)", 1060, 0)
     lead, ln = leadership_row(60, [Node("ux", "Designer", 0, 0)])
     lead.x = (c.width - lead.w) / 2
     shift = lead.x - 40
@@ -182,7 +182,7 @@ def chart_today() -> Chart:
     sn.h = max(half_l.h, half_r.h)
     c.groups = [lead, bain, tsg, sn]
     c.nodes = ln + bn + tn + sl + sr
-    c.edges = [Edge("tl", "g_sn", bend=0.65), Edge("arch", "g_bain", bend=0.3)]
+    c.edges = [Edge("lead", "g_sn"), Edge("lead", "g_bain")]
     c.legend = legend_for("bain", "sn", "tsg")
     c.height = max(tsg.y + tsg.h, sn.y + sn.h) + 70
     return c
@@ -203,7 +203,7 @@ def target_chart(name: str, title: str, pods: list[tuple[Group, list[tuple[str, 
     top = le.y + le.h + 50
     nodes = ln + [le]
     groups = [lead]
-    edges = [Edge("tl", "le")]
+    edges = [Edge("lead", "le")]
     for g, items in pods:
         g.y = top
         nodes += column(g, items, g.party)
@@ -248,7 +248,8 @@ def chart_b() -> Chart:
                         [(pod, items), (bcn, bitems)], SERVICES, [], ["bain", "new", "ngss", "bcn", "tsg"])
 
 
-def chart_c() -> Chart:
+def chart_c(name: str = "04-option-c-split",
+            title: str = "Option C (recommended): NGSS engineers, BCN owns data and content") -> Chart:
     ngss = Group("g_ngss", "NGSS: engineering and run", 40, 0, 360, 0, "ngss")
     nitems = [("c1", "App engineers: frontend, backend\nL3 fixes 0.8 + feature build"),
               ("c2", "Calc engine and agents\nengineer(s), model and\nprompt changes 0.4"),
@@ -257,16 +258,18 @@ def chart_c() -> Chart:
     bitems = [("c4", "Data engineer\ndata maintenance 0.6"),
               ("c5", "Analysts\ngolden data, output review 0.3"),
               ("c6", "Content changes\n0.5 to 0.1")]
-    return target_chart("04-option-c-split", "Option C (recommended): NGSS engineers, BCN owns data and content",
-                        [(ngss, nitems), (bcn, bitems)], SERVICES, [("stew", "g_bcn")],
+    return target_chart(name, title,
+                        [(ngss, nitems), (bcn, bitems)], SERVICES, [],
                         ["bain", "new", "ngss", "bcn", "tsg"])
 
 
 def chart_transition() -> Chart:
     c = Chart("05-transition-mid-january", "Transition in mid-January: Scenario 2 on Option C", 1060, 0)
-    tl = Node("tl", "Tech Lead", 0, 60)
-    tl.x = (c.width - tl.w) / 2
-    le = Node("le", "Lead Engineer / Platform Owner\nnew Bain FTE", 0, tl.y + tl.h + 40, party="new", bold=True)
+    lead, ln = leadership_row(60, [Node("stew", "Content steward", 0, 0)])
+    lead.x = (c.width - lead.w) / 2
+    for n in ln:
+        n.x += lead.x - 40
+    le = Node("le", "Lead Engineer / Platform Owner\nnew Bain FTE", 0, lead.y + lead.h + 40, party="new", bold=True)
     le.x = (c.width - le.w) / 2
     top = le.y + le.h + 50
     g1 = Group("g1", "Bain-led, StatusNeo shadows", 40, top, 320, 0, "bain")
@@ -276,9 +279,9 @@ def chart_transition() -> Chart:
     n2 = column(g2, [("t4", "Backend services"), ("t5", "Calc engine and grammar"), ("t6", "Agents")], "sn")
     g3 = Group("g3", "Handing over to TSG", 720, top, 300, 0, "tsg")
     n3 = column(g3, [("t7", "Terraform, CI/CD")], "tsg")
-    c.groups = [g1, g2, g3]
-    c.nodes = [tl, le] + n1 + n2 + n3
-    c.edges = [Edge("tl", "le"), Edge("le", "g1"), Edge("le", "g2"), Edge("le", "g3")]
+    c.groups = [lead, g1, g2, g3]
+    c.nodes = ln + [le] + n1 + n2 + n3
+    c.edges = [Edge("lead", "le"), Edge("le", "g1"), Edge("le", "g2"), Edge("le", "g3")]
     c.legend = legend_for("bain", "new", "sn", "tsg")
     c.height = max(g.y + g.h for g in c.groups) + 70
     return c
@@ -339,7 +342,11 @@ def chart_timeline() -> Chart:
     return c
 
 
-CHARTS = [chart_today, chart_a, chart_b, chart_c, chart_transition, chart_timeline]
+def chart_to() -> Chart:
+    return chart_c("07-to-end-state", "To: end state from mid-March 2027 (recommended, Option C)")
+
+
+CHARTS = [chart_today, chart_a, chart_b, chart_c, chart_transition, chart_timeline, chart_to]
 
 
 # ---------------------------------------------------------------------------
