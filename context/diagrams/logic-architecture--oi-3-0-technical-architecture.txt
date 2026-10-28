@@ -1,0 +1,188 @@
+# OI_3_0_Technical_Architecture.svg
+
+Diagram text extracted from `confluence/_attachments/19619840005/OI_3_0_Technical_Architecture.svg`.
+Page: [Logic Architecture](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619840005)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+OI 3.0 — Logical Technical Architecture
+Bands read top→bottom as the runtime flow. Solid = data/control at request time · dashed = learning / async hooks. Infra not shown.
+PARTNER EXPERIENCE
+chat-first · <30 min to a CEO-ready, defensible pack
+Composition surface
+Value Tree editor · SoP waterfall · lever library
+Live Disagreement box → re-runs SoP w/ constraint
+Generate input: target · sector hint
+Voice Profile switcher: hedging · density · jargon
+· don't-say · section order
+[ Bain-framework refinement · voice as axes ]
+Defensibility surface
+Eval-gate badge per slide
+Confidence chips (green / yellow / red) per claim
+Inline evidence chain (click claim → source quote)
+Skeptic dissent panel per slide
+[ defend every number in front of a CEO ]
+Time-travel surface
+Figma-style scrubber
+restore · branch · promote
+[ versioned event log ]
+Replay / Projection API
+<bridge> projects DOM state to the
+surfaces; applies restore/branch/promote
+deck = projection over events
+ORCHESTRATION + AGENT SWARM
+many specialized agents · sector depth · parallel where independent
+Orchestrator
+plans agent calls · streams SSE
+holds sector context
+routes counter-thesis re-runs
+entry point for every request
+Pre-flight gates
+Conflict-of-interest engine (active client?)
+Blocked-target list (firm/legal-managed)
+Data-residency router (EU target → EU)
+[ refusal / graceful degradation ]
+Sector micro-swarm router
+CPG · FS · Telco · Auto · Bldg Products …
+lazy-loaded per request, namespace-isolated
+sector switch = a different agent stack
+"shallow-across-all-sectors is impossible"
+Reasoning agents (parallel where independent)
+Research
+LLM + RAG over
+qualitative corpus
+IP-Retrieval
+structured Iris / ARC /
+case-cloud reads
+Benchmark
+peer set · KPI deltas
+calls VCC for calc
+SoP Composer
+bucket-aware · accepts counter-thesis
+param → enables Live Disagreement
+3-Takeaway Optimizer
+brutal focus on the headline slide
+(so-what discipline)
+Adversarial layer (always on)
+Skeptic Agent
+stress-tests every output · auto-writes a
+dissent record per slide · structural, not optional
+Multi-Persona Theatre
+CEO · CFO · COO · Activist · GC
+seeded from Bain-alumni signal on target
+Composition + Output
+Slide Composer
+writes Section · Slide · Block · Claim
+(confidence, provenance_class) → DOM
+Voice-Apply Agent
+rewrites block content only
+NO upstream re-run (edit ≠ reason)
+EVAL GATE
+pre-render · every slide
+• cite-coverage ≥ 70%
+• no orphan claims
+(≥1 evidence_ref each)
+• peer list whitelist
+match check
+• SoP balances to
+source EBITDA
+• defamation guardrail
+(named + negative →
+spawn verify sub-agent)
+fail → loop back to
+agents · else refuse
+pass → render DOM
+Flow: Orchestrator → gates → sector router → reasoning agents (∥) → adversarial → composition → EVAL GATE → render
+TWO-TIER ENGINE — deterministic substrate
+VCC Deterministic Substrate
+CapIQ pipe · structured calculations · adjustment engine · predefined flags · ARC structured lookups · canonical numbers. OI 3.0 calls VCC for calc — never duplicates the math. VCC is the kernel; OI 3.0 runs in user-space above it.
+CRITICAL PATH →
+DATA ISOLATION & KNOWLEDGE
+three layers · one-way reads · curated promotion · per-Partner isolation that holds
+Public
+CapIQ · SEC EDGAR
+analyst notes
+earnings transcripts
+public leadership data
+Partner-Private
+voice profile · edits · flags
+session-scoped context
+evaporates on close
+never trained on without
+explicit opt-in
+Curation Gate
+KM-controlled
+explicit consent · batch review
+approved patterns only
+NO continuous unsupervised
+cross-Partner learning
+Firm-Shared
+Iris content library
+ARC · case archives
+expert network
+Bain-alumni signal corpus
+Per-sector RAG indexes
+CPG · FS · Telco · Auto …
+namespace-isolated
+shared embeddings + prompts
++ eval suites per sector
+switch loads only that stack
+Partner-Private → Curation Gate → Firm-Shared (opt-in promotion only)
+STATE + LEARNING SUBSTRATE
+versioned event log · per-Partner adapter · "the DOM is Bain's IP in machine-readable form"
+DOM Store (typed, structured)
+Deck → Section → Slide → Block →
+Claim (confidence, provenance_class)
+→ Evidence
+also: SoPNode · Peer · Lever ·
+VoiceProfile · ClusterPack · PersonaSet
+Layout is a renderer concern;
+the DOM carries content + structure only.
+Shadow-IT Amnesty Ingester
+(one-time, on onboarding)
+Partner's wiki-coded prompt →
+seed VoiceProfile + don't-say +
+section order
+Append-only Event Log (per deck)
+DeckGenerated · BlockEdited · BlockLocked · BlockRegenerated
+PeerSetChanged · SoPNodeRevised · SkepticAcknowledged
+DisagreementSubmitted · VoiceProfileUpdated · ClusterPackChanged
+Frozen · RolledBackFromFrozen · Branched · BranchPromoted
+EvalGatePassed / Failed · SkepticDissentLogged · RLSignalEmitted
+deck = projection over events
+one artifact, three jobs: history · audit · training corpus
+RLSignal = { thumbs · edit_flag · edit_derived }
+feeds restore/branch/promote (Time-travel surface)
+and the per-Partner adapter (learning)
+Per-Partner Adapter
+LoRA / prefix-tuning over a shared base model
+trains from RLSignalEmitted events:
+BlockEdited → reward signal
+PeerSetChanged → negative reward on prior peer pick
+strictly per-Partner — no cross-Partner gradient flow
+3-signal training path (per vision):
+SFT on golden cases + RLVR + implicit RLHF from edits
+Eval Gate provides the continuous quality signal
+graduate to model adapters only once event-log
+signal is sufficient (structured voice controls first)
+PLATFORM FOOTHOLD — same DOM, new renderers
+"OI 3.0 is the first app, not the only app" (future / post-GLS)
+Live SoP Refresh
+in-engagement
+this-week's data feed
+Expert-Network Matcher
++ draft outreach
+Proposal Generator
+reuse DOM into pitch material
+Cross-Partner Pattern Intel
+anonymized · opt-in
+generate / counter-thesis
+pass → render DOM to surfaces
+canonical calc
+read (RAG / IP)
+Slide Composer writes Blocks/Claims → DOM · append event
+same DOM →
+per-Partner adapter biases the swarm (voice / peer priors)

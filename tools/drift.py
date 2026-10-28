@@ -35,6 +35,10 @@ MEDIA = r"_\[[^\]]*\]_|!\[[^\]]*\]\([^)]*\)|\[[^\]]*\]\([^)]*_attachments[^)]*\)
 PROVIDERS = [
     "OpenAI", "ChatGPT", "GPT-4", "GPT-5", "Gemini", "Vertex AI", "Bedrock",
     "Mistral", "Cohere", "Hugging Face", "Perplexity",
+    # Anthropic belongs here for the same reason as the rest: the programme's
+    # rubric is Azure-first, so any named external provider needs a ruling. The
+    # technical architecture SVG puts a "Claude SDK" in the orchestrator box.
+    "Anthropic", "Claude SDK",
 ]
 
 # Named services and libraries whose appearance is a Build/Adopt/Buy question. Unlike
@@ -127,6 +131,27 @@ def context_text() -> str:
                     if name.endswith(".md"):
                         chunks.append(open(os.path.join(root, name), encoding="utf-8").read())
     return "\n".join(chunks)
+
+
+def _svg_diagrams() -> list[tuple[str, str, list[str]]]:
+    """(path, page_id, text lines) for each SVG in the mirror, deduplicated.
+
+    Shares its extraction with `tools/diagram_text.py`; imported lazily so this
+    script keeps working if that file is missing.
+    """
+    try:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from diagram_text import diagrams, svg_text  # noqa: F401
+    except ImportError:
+        return []
+    seen, out = set(), []
+    for path, page_id, text in diagrams():
+        key = hash("\n".join(text))
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append((path, page_id, text))
+    return out
 
 
 def last_reviewed() -> str:
@@ -292,6 +317,30 @@ def main() -> int:
             f"**`{AGENDA}` has no 'Last full review against the mirror' date**, so "
             f"staleness cannot be measured. Add one when the agenda is next reviewed."
         )
+        findings.append("")
+
+    # 4b. Providers and services named inside SVG diagrams. Every other check
+    #     here reads prose, so a decision that exists only as a box on a diagram
+    #     is invisible to all of them. The technical architecture SVG names a
+    #     "Claude SDK" orchestrator -- against ADR-008's Microsoft Agent
+    #     Framework -- and sat unnoticed for months because no page says it.
+    diagram_hits: dict[str, list[str]] = {}
+    for svg_path, svg_page, text in _svg_diagrams():
+        blob = "\n".join(text)
+        for name in PROVIDERS + SERVICES:
+            if name.lower() in register or name.lower() in notes.lower():
+                continue
+            if re.search(rf"\b{re.escape(name)}\b", blob, re.I):
+                diagram_hits.setdefault(name, []).append(f"{svg_path} ({svg_page})")
+    if diagram_hits:
+        findings.append(
+            "**Named in a diagram but in no position table and nowhere in `context/`** "
+            "— diagram-only decisions:"
+        )
+        findings.append("")
+        for name, where in sorted(diagram_hits.items()):
+            findings.append(f"- **{name}** — `{where[0]}`"
+                            + (f" and {len(where) - 1} other diagram(s)" if len(where) > 1 else ""))
         findings.append("")
 
     # 5. Pages filed outside the OI3.0 tree, which do not appear in the hierarchy

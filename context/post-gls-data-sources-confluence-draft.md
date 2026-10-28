@@ -13,15 +13,15 @@
 
 ## Candidate post-GLS sources
 
-| Source | Why it looks post-GLS | Connection owner named in OI30 | Open approval or access item |
+| Source | What's needed post GLS | Connection owner named in OI30 | Open approval or access item |
 | --- | --- | --- | --- |
-| CapIQ (XpressFeed, or the API) | Replaced by the golden data set for GLS. API access is still unavailable. Sprints 1–2 worked around it with Excel extracts converted to Parquet | None | Rate limits and per-call cost unresolved |
-| LSEG (analyst reports, 10-K filings) | Replaced by the golden data set for GLS. The [LSEG page](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19618889872) links example filings, but the persistence restrictions that ADR-007 must enforce are not written down | None | Licence and persistence rules |
-| S&P MCP, TSR data, 10-K extraction at scale | Design requirements 24.1–24.4 need TSR data. [Data Contacts](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19817627730) says the current approach is "not yet repeatable at scale" | TSR Automation (Abishek Soni) and TSR tech team (Kritik Ajmani) | API access request and lessons-learned session still to be set up |
-| IRIS case studies and transformation stories (via Glean) | [Design requirements (Post GLS)](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031) items 18.1–18.3. Sprint 1 delivered only a file archive for Glean | None | Glean API sandbox access listed as "TBD" in [Data Sources summary](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619676163) |
-| Sage credential and expert search | Same design page, items 25.1–25.5. Item 25.5 (flag credentials already shown to the client) is marked "feasibility to be discussed" | None | Not recorded |
-| Bain/client relationship mapping (account head, past cases) | [Expert search integration](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19623641173): "in PEG it is Call2Cash", other systems still to be checked | None | System to be identified |
-| Aura, ARC Data, PEG expert interviews, FRWD (CPG benchmark), Glassdoor/Fishbowl | Marked `[CONFIRM INTERNALLY]` in Data Sources summary, with no date | None | Not recorded |
+| CapIQ (XpressFeed, or the API) | Replace the golden data set with live company financials. API access is still unavailable, and Sprints 1–2 worked around it with Excel extracts converted to Parquet | None | Rate limits and per-call cost unresolved |
+| LSEG (analyst reports, 10-K filings) | Replace the golden data set with live analyst reports and filings. The [LSEG page](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19618889872) links example filings, but the persistence restrictions that ADR-007 must enforce are not written down | None | Licence and persistence rules |
+| S&P MCP, TSR data, 10-K extraction at scale | Primary route for financial data, plus TSR data for design requirements 24.1–24.4. [Data Contacts](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19817627730) says the current approach is "not yet repeatable at scale" | TSR Automation (Abishek Soni) and TSR tech team (Kritik Ajmani) | API access request and lessons-learned session still to be set up |
+| IRIS case studies and transformation stories (via Glean) | Surface 2–3 Bain case studies per bucket, and full transformation stories, per [Design requirements (Post GLS)](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19808256031) items 18.1–18.3. Sprint 1 delivered only a file archive for Glean | None | Glean API sandbox access listed as "TBD" in [Data Sources summary](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19619676163) |
+| Sage credential and expert search | Search and auto-surface Bain credentials and experts, and drag a credential into the deck (design items 25.1–25.5). Item 25.5 (flag credentials already shown to the client) is marked "feasibility to be discussed" | None | Not recorded |
+| Bain/client relationship mapping (account head, past cases) | Pull account head and past-case data into the output. [Expert search integration](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19623641173) says "in PEG it is Call2Cash", with other systems still to be checked | None | System to be identified |
+| Aura, ARC Data, PEG expert interviews, FRWD (CPG benchmark), Glassdoor/Fishbowl | Decide whether each is wanted and how it connects. All are marked `[CONFIRM INTERNALLY]` in Data Sources summary, with no date | None | Not recorded |
 
 ## Already running without approval
 

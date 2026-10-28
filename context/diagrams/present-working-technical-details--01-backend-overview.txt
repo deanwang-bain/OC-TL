@@ -1,0 +1,37 @@
+# 01-backend-overview.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/01-backend-overview.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+user
+FastAPI<br>POST
+/peers/discover
+peer_discovery
+web search
+agent calls
+determintic search
+merge by cap_id
+analyse_many
+ThreadPool
+8 at a time
+analysis peer 1
+analysis peer 2
+analysis peer
+n to 10
+rerank by
+comparability
+- What this backend does — the two searches, the merge, the per-peer analysis,
+the ranking
+- Design rules —
+- Own-DB breadth — the deterministic search covers our own database
+- Web reach — the agent widens the search past our database
+- Verified IDs — every company the agent recommends is checked
+- Truth wins — we overwrite the agent where we hold the truth
+- Isolated calls — one analysis call per company
+- Concurrent — those calls run concurrently
+- Read-only runtime — nothing is written at request time

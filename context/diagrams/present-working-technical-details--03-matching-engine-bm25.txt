@@ -1,0 +1,141 @@
+# 03-matching-engine-bm25.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/03-matching-engine-bm25.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+Aggregation and response
+normalise each part score
+to 0..1
+weighted sum: name 0.50,
+business 0.35, location
+0.15
+renormalise weights over
+the parts that actually
+matched
+sort by score desc, tie-
+break on Revenue desc
+take top N rows
+attach part_scores and
+signals
+200 MatchResponse
+Per-part scoring
+fan out over the parts
+that were sent
+company_name: BM25
+over char 3-4 grams on
+Company Name and Ticker
+location: BM25 over
+word tokens on Region
+and Country
+business_model: BM25
+over word tokens on
+Sector and Industry
+Request validation
+POST
+/api/v1/search/match
+at least one
+part in
+payload?
+400 ValueError
+snapshot and
+indexes
+loaded?
+503 Service Unavailable
+no part given
+ok
+missing
+Startup — FastAPI lifespan
+app start
+lifespan enter
+load_companies: parquet
+to DataFrame, indexed
+by cap_id
+load_indexes: build one
+BM25 index per part
+ready to serve requests
+company_snapshot.parquet
+loaded
+Tests:
+100 companies sampled from 500, seed 777001
+business model scored by: BM25 only
+query style top-1 top-10 MRR ms
+------------------------------------------------------------
+full name 100% 100% 1.000 1.0
+short name 94% 100% 0.961 0.7
+mistyped name 93% 100% 0.951 0.6
+partial name 94% 100% 0.961 0.5
+name + location + industry 100% 100% 1.000 0.7
+location + industry only 64% 100% 0.802 0.5
+What an n-gram is
+A word is cut into overlapping character windows. Each word is padded with a space first, so word edges are distinct from the middle.
+character_grams("solarwinds", [3])
+[' so', 'sol', 'ola', 'lar', 'arw', 'rwi', 'win', 'ind', 'nds', 'ds ']
+The system uses sizes [3, 4] — match_gram_sizes in app/config.py:148 — so solarwinds becomes 19 grams, not 1 token.
+Why we do this
+A typo destroys a token but not the grams.
+solarwinds ' so','sol','ola','lar','arw','rwi','win','ind','nds','ds '
+solarwimds ' so','sol','ola','lar','arw','rwi','wim','imd','mds','ds '
+^^^^^^^^^^^^^^^^^ only these differ
+12 of 19 grams still match. Exact-token search would score zero. That is test_a_mistyped_name_still_matches.
+Partial typing works the same way. nordi produces 9 grams, 7 of which sit inside Nordic. So a search box gives useful results while the user is still typing.
+Spacing stops mattering. Someone types solar winds, the snapshot says SolarWinds. Word-level search finds nothing. Grams overlap heavily, so it lands. That is test_a_name_split_in_two_still_matches.
+Padding is the detail that makes it correct. ' no' is a prefix gram. Without the pad, nor inside Senorita would score the same as Nordic. The pad keeps "starts with" separate from "contains".
+Why n-grams only on the name
+match_gram_parts = ["name"]. Location and sector are deliberately excluded.
+Those two are short controlled lists. Grams blur their values together — india and australia share the gram ia , Materials and Utilities share ties. On a list of 20 countries that noise is worse than the typo tolerance is worth. So location and business are matched on whole words.
+Name is different. It is free text, high cardinality, and the thing people mistype.
+Why BM25 and not just "count the shared grams"
+Plain overlap counting fails in three ways. BM25 fixes each one.
+┌────────────────┬───────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+│ Problem │ What plain counting does │ What BM25 does │
+├────────────────┼───────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ Common grams │ ing, ion, co appear in thousands of names and dominate the count │ IDF weights them near zero, rare grams like rwi carry the match │
+├────────────────┼───────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ Repeated grams │ a name repeating a gram five times scores 5x │ k1 = 1.5 saturates it — the 2nd occurrence adds much less than the 1st │
+├────────────────┼───────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+│ Long names │ long names accumulate more grams and win by sheer length │ b normalises by document length │
+└────────────────┴───────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┘
+The formula, per term:
+score = IDF(t) × ( f(t,d) × (k1 + 1) ) / ( f(t,d) + k1 × (1 − b + b × len(d)/avg_len) )
+The b value is the tuned one. It is 0.5, not the textbook 0.75 — app/services/matching.py:47. Reason:
+"Capgemini Technology Services India Limited" long
+"Capgemini UK Plc" short
+Both contain every gram of capgemini. At b = 0.75 the longer one is punished for being long and drops below. At 0.5 they stay comparable. This was not a taste call — scripts/eval_match.py measures 0.5 as better than 0.75 on every query style.
+k1 = 1.5 is the standard value, left alone.
+Why not embeddings for the name
+An embedding captures meaning. A company name has no meaning to capture — SolarWinds is a label, not a concept. You want the string matched as written. Embeddings would happily pull in "other solar companies", which is wrong for a name lookup.
+The opposite holds for business_model. "network monitoring software" shares no word with "Systems Software", so BM25 alone cannot connect them. That is the one part where embeddings earn their place, at match_semantic_weight = 0.6.
+Weights for each param
+┌────────────────┬────────┬──────────────────────────────────────────────────────────────┐
+│ Part │ Weight │ Columns it is scored against │
+├────────────────┼────────┼──────────────────────────────────────────────────────────────┤
+│ name │ 0.50 │ Company Name, Exchange:Ticker │
+├────────────────┼────────┼──────────────────────────────────────────────────────────────┤
+│ business_model │ 0.35 │ Bain Sector, Bain Industry, Primary Sector, Primary Industry │
+├────────────────┼────────┼──────────────────────────────────────────────────────────────┤
+│ location │ 0.15 │ Region, Exchange Country/Region │
+└────────────────┴────────┴──────────────────────────────────────────────────────────────┘
+Why this order.
+- Name 0.50 — it is the only part that identifies one company. Sector and country identify a group. If someone types a name, that is the strongest intent signal they can give.
+- Business 0.35 — narrows from thousands to a few hundred. Real discriminating power, but never unique.
+- Location 0.15 — weakest. AMER covers a huge share of the snapshot. Given more weight it would start pulling wrong companies to the top just for sharing a country. It is a filter-ish signal, not an identifying one.
+These were tuned on scripts/eval_match.py, not picked by feel.
+Part not sent by the user
+┌─────────────────┬─────────────────────────────────────────┐
+│ Parts sent │ Effective weights │
+├─────────────────┼─────────────────────────────────────────┤
+│ all three │ name 0.50, business 0.35, location 0.15 │
+├─────────────────┼─────────────────────────────────────────┤
+│ name + business │ name 0.588, business 0.412 │
+├─────────────────┼─────────────────────────────────────────┤
+│ name + location │ name 0.769, location 0.231 │
+├─────────────────┼─────────────────────────────────────────┤
+│ business only │ business 1.000 │
+├─────────────────┼─────────────────────────────────────────┤
+│ nothing │ ValueError → 400 │
+└─────────────────┴─────────────────────────────────────────┘

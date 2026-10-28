@@ -1,0 +1,77 @@
+# 04-peer-discovery-funnel.svg
+
+Diagram text extracted from `confluence/_attachments/19849609338/04-peer-discovery-funnel.svg`.
+Page: [Present working-- Technical details](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849609338)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+client
+request: cap_id, criteria,
+max_peers
+payload valid and indexes
+loaded?
+400 or 503 error response
+load target snapshot
+row
+company_snapshot.parquet
+fan
+out
+foundry.ask_agent:
+propose peer names
+response
+parseable?
+candidate names
+scrape names from
+tables or bullets
+agent_error set, 0 peers
+resolve: drop fabricated
+cap_ids
+mer
+ge
+vector the target on the
+criteria columns
+candidate_pool: same sector and
+region
+rank by distance, keep
+max_peers
+merge by cap_id, agent
+peers first
+analysis_limit
+analyse_pair: one
+Foundry call per peer
+has
+comparabili
+ty?
+group 0: comparability
+high to low
+group 1: merge order kept
+ranked peers
+analyst pins or removes
+peers
+200
+PeerDiscovery
+Response
+200
+PeerDiscoveryR
+esponse
+counts and errors are
+always returned, never
+thrown
+no
+yes
+read once at startup
+fenced JSON
+prose only
+nothing readable
+25
+18
+500
+47
+20
+31
+10
+yes
+no

@@ -78,17 +78,38 @@ blockers. It is good engineering under a real constraint — **no data engineer 
 onboarded for the GLS sprints**, and the full-stack developer due in Sprint 2 could not
 contribute a full one.
 
+**Its shape, from the Sprint 4 planning recording**: **10 target companies and their
+peers, around 100 companies in total**, loaded from BCN documents, with cost bars,
+levers, size of prize and recommendations **pre-calculated and stored as each case's
+default**. The default journey shows BCN's validated results *without recalculation*; the
+engine only computes the delta after a user changes a peer.
+
 The retro states the cost plainly: *"not connecting live sources narrows the GLS
 functionality."*
 
 The [October prototype set](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19958562873)
 covers **Nike, Adobe, Beiersdorf and Honda** — chosen to show the tool generalises across
-industries. It does, across four curated companies.
+industries. It does, across four of the ten curated companies.
 
-**Ask: agree the sentence the team uses when someone at GLS asks "what would this do for
-my client?" Better to have one honest answer rehearsed than four improvised ones. And name
-the date the data engineer arrives, because live sources are the gap between this demo and
-the product.**
+**Ask: agree the sentence the team uses when someone asks "what would this do for my
+client?" Better one honest answer rehearsed than four improvised. And name the date the
+data engineer arrives, because live sources are the gap between this demo and the
+product.**
+
+### 4a. Two artefacts exist only inside a video, and no recording of the product exists
+
+All 13 recordings in the space are **planning sessions** — Sprint 3 and Sprint 4, about
+three hours. There is no demo recording, no walkthrough, no screen capture of the running
+product anywhere in OI30.
+
+Meanwhile the **Sprint 4 backlog workbook** — `OI3-Sprint-4-Backlog-Coll…`, carrying the
+58 stories, their acceptance criteria and the "Week 1 — to go/no-go" split — is shared on
+screen in that recording and **attached to no page**. The same is true of whatever was
+shown in Sprint 3 planning.
+
+**Ask: attach the Sprint 4 backlog workbook to Confluence, and record the GLS demo (or
+publish the walkthrough prototype as the canonical one). A three-hour video is not a
+record; the spreadsheet inside it is.**
 
 ### 5. Sprint 4 committed 58 items against the first measured rate we have
 

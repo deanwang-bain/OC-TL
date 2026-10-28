@@ -147,6 +147,12 @@ was found by reading a page, not by any check — the provider list only knew mo
 and a search API is not one. When a service turns up with no recorded position, add its
 name to `SERVICES` in `tools/drift.py`.
 
+**Diagrams are scanned too.** Every other check reads prose, so a decision drawn rather
+than written was invisible to all of them — the technical architecture SVG names a
+**Claude SDK** orchestrator, against ADR-008's Microsoft Agent Framework, and no page says
+so. The scan reads the text inside every SVG in the mirror and reports providers or
+services with no recorded position.
+
 **The scan finds staleness; it cannot fix it.** Clearing a drift finding means reading
 the pages and updating `context/`, then moving the *Last full review against the mirror*
 date in `context/standing-agenda.md`. That date is what the staleness check measures
@@ -170,6 +176,31 @@ written policy — say so explicitly rather than presenting a standard that does
 **A page that looks empty may not be.** Several carry their content as an attached
 spreadsheet or deck rather than prose. Always check
 `confluence/_attachments/<page_id>/` before calling a page undocumented.
+
+**Attachments are readable without leaving the repo.** The mirror links them; these
+read them:
+
+| Command | Covers |
+| ------- | ------ |
+| `python3 tools/attachment_text.py --list` | What is readable, by type |
+| `python3 tools/attachment_text.py <file>` | pptx, xlsx, xlsm, docx, html, csv |
+| `python3 tools/diagram_text.py` | Refreshes the SVG text extracts in `context/diagrams/` |
+| `python3 tools/video_frames.py --list` | The 13 meeting recordings, with durations |
+| `python3 tools/video_frames.py <file.mp4>` | Scene-change frames into `context/video-frames/` |
+
+The sprint retrospectives are decks, the ARC assessment is two workbooks, and the GLS
+output sample is an HTML file — none of that is in prose anywhere. Raster diagrams (PNG)
+need a model that can see them; `context/diagrams/README.md` ranks the ones worth a pass
+and says which to skip. PDF attachments cannot be read here at all.
+
+**The recordings are planning sessions, not demos.** All 13 `.mp4` files are the Sprint 3
+and Sprint 4 planning meetings, about three hours with no written summary. There is **no
+recording of the product or the GLS demo** anywhere in the space. There is also no
+speech-to-text here, so the tool takes the shared screen instead: `video_frames.py`
+extracts scene-change frames, which is where the Sprint 4 backlog and its acceptance
+criteria turned out to be. It needs ffmpeg — `pip install imageio-ffmpeg` — which nothing
+else in `tools/` requires and the daily sync never runs. Extracted frames are gitignored
+because they are regenerable and large; put what you learn in `context/` instead.
 
 Treat a genuinely empty page as **unknown, not as "no requirement"**, and flag it when a
 decision depends on one. The full breakdown is in

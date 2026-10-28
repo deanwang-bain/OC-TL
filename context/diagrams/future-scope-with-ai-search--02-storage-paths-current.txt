@@ -1,0 +1,71 @@
+# 02-storage-paths-current.svg
+
+Diagram text extracted from `confluence/_attachments/19849412714/02-storage-paths-current.svg`.
+Page: [Future Scope-- With ai search.](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
+
+Labels in document order. Layout and arrows are lost -- open the SVG
+itself when the relationships matter, not only the words.
+
+---
+
+web search
+blob
+storage
+it store, relevent data used
+for selecting peers, where,
+how it decided, sites the
+sources.
+peer name -- company name
+blob
+storage
+web search - get data and
+store to blob
+search internet and find
+the basic metrics for
+given company
+blob chat
+agent
+knowledge base
+blob chat agent (rag) -
+it download the files from
+blob and chunks and store to
+blob and then start talking
+to it.
+you ask it to refresh data
+for specfic
+floder(project/user)
+store index on blob storage
+blob storage
+chat to it - get the metrics
+and soures. Store the
+metrics
+recommendation
+engine
+internet peers+ capIQ
+peers data
+peers
+Storage:
+project id/uuid/
+username/user_id/data/websearch/peers/raw/
+Storage:
+project id/uuid/
+username/user_id/data/websearch/peers_dat
+a/raw/
+Storage:
+project id/uuid/
+username/user_id/data/websearch/peers_rag/
+input:
+1.blob documents path
+2.rag storage path
+3. param-
+append,rerank,reset
+index.
+web search
+input:
+user preference
+data metrics
+project id
+user id
+user preference
+based on user preference, internet
+research, i found these peers
