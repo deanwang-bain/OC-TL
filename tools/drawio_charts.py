@@ -31,17 +31,19 @@ PALETTE = {
     "bain": ("#dbe8f5", "#2f6a9e", "#13293d"),
     "new": ("#ffffff", "#2f6a9e", "#13293d"),
     "sn": ("#fbe3cf", "#b8641c", "#3d2208"),
-    "bcn": ("#dcefdc", "#3d8a3d", "#163316"),
-    "ngss": ("#e6e0f5", "#6a4fb0", "#251a40"),
-    "tsg": ("#ececec", "#6b6b6b", "#262626"),
+    "data": ("#dcefdc", "#3d8a3d", "#163316"),
+    "eng": ("#e6e0f5", "#6a4fb0", "#251a40"),
+    "team": ("#e6e0f5", "#6a4fb0", "#251a40"),
+    "shared": ("#ececec", "#6b6b6b", "#262626"),
     "neutral": ("#ffffff", "#9aa3ad", "#262626"),
 }
 GROUP_FILL = {
     "bain": "#f2f7fc",
     "sn": "#fdf4ec",
-    "bcn": "#f1f8f1",
-    "ngss": "#f5f2fb",
-    "tsg": "#f7f7f7",
+    "data": "#f1f8f1",
+    "eng": "#f5f2fb",
+    "team": "#f5f2fb",
+    "shared": "#f7f7f7",
     "neutral": "#fafafa",
 }
 
@@ -130,10 +132,11 @@ def legend_for(*parties: str) -> list[tuple[str, str]]:
     names = {
         "bain": "Bain (existing)",
         "new": "New Bain hire",
-        "sn": "StatusNeo",
-        "bcn": "BCN",
-        "ngss": "NGSS",
-        "tsg": "Bain shared service",
+        "sn": "StatusNeo (external)",
+        "eng": "Engineering and run",
+        "team": "Dedicated OpCat team",
+        "data": "Data and content",
+        "shared": "Bain shared service",
     }
     return [(p, names[p]) for p in parties]
 
@@ -168,11 +171,11 @@ def chart_today() -> Chart:
     top = lead.y + lead.h + 60
     bain = Group("g_bain", "Bain", 40, top, 300, 0, "bain")
     bn = column(bain, [("data", "Data pipeline\narchitecture and data leads"),
-                       ("bcn0", "BCN\ngolden data set, OI domain")], "bain")
-    tsg = Group("g_tsg", "Bain shared services", 40, 0, 300, 0, "tsg")
-    tsg.y = bain.y + bain.h + 24
-    tn = column(tsg, [("tsg0", "TSG / Andromeda\ninfra templates, MCP")], "tsg")
-    sn = Group("g_sn", "StatusNeo delivery squad", 380, top, 640, 0, "sn")
+                       ("dom", "Domain analysts\ngolden data set, OI methodology")], "bain")
+    plat = Group("g_plat", "Bain shared platform", 40, 0, 300, 0, "shared")
+    plat.y = bain.y + bain.h + 24
+    pn = column(plat, [("plat0", "Andromeda platform\ninfra templates, MCP")], "shared")
+    sn = Group("g_sn", "StatusNeo delivery squad (external)", 380, top, 640, 0, "sn")
     left = [("snfe", "Frontend and BFF"), ("snbe", "Backend services"), ("sncalc", "Calc engine and grammar")]
     right = [("snag", "Agents: peer, narrative, chat"), ("snops", "Infra-as-code, CI/CD"), ("snqa", "QA")]
     half_l = Group("tmp", "", sn.x, top, sn.w / 2, 0, "sn")
@@ -180,17 +183,16 @@ def chart_today() -> Chart:
     sl = column(half_l, left, "sn", width=270)
     sr = column(half_r, right, "sn", width=270)
     sn.h = max(half_l.h, half_r.h)
-    c.groups = [lead, bain, tsg, sn]
-    c.nodes = ln + bn + tn + sl + sr
+    c.groups = [lead, bain, plat, sn]
+    c.nodes = ln + bn + pn + sl + sr
     c.edges = [Edge("lead", "g_sn"), Edge("lead", "g_bain")]
-    c.legend = legend_for("bain", "sn", "tsg")
-    c.height = max(tsg.y + tsg.h, sn.y + sn.h) + 70
+    c.legend = legend_for("bain", "sn", "shared")
+    c.height = max(plat.y + plat.h, sn.y + sn.h) + 70
     return c
 
 
 def target_chart(name: str, title: str, pods: list[tuple[Group, list[tuple[str, str]]]],
-                 services: list[tuple[str, str, str]], dotted: list[tuple[str, str]],
-                 legend: list[str]) -> Chart:
+                 services: list[tuple[str, str]], legend: list[str], dashed_pods: tuple[str, ...] = ()) -> Chart:
     c = Chart(name, title, 1060, 0)
     lead, ln = leadership_row(60, [Node("stew", "Content steward\nbusiness, 0.2", 0, 0)])
     lead.x = (c.width - lead.w) / 2
@@ -208,63 +210,53 @@ def target_chart(name: str, title: str, pods: list[tuple[Group, list[tuple[str, 
         g.y = top
         nodes += column(g, items, g.party)
         groups.append(g)
-        edges.append(Edge("le", g.id))
-    sg = Group("g_svc", "Bain shared services", 0, top, 230, 0, "tsg")
+        edges.append(Edge("le", g.id, dashed=g.id in dashed_pods))
+    sg = Group("g_svc", "Bain shared services", 0, top, 230, 0, "shared")
     sg.x = c.width - sg.w - 40
-    nodes += column(sg, [(i, l) for i, l, _ in services], "tsg")
+    nodes += column(sg, services, "shared")
     groups.append(sg)
     edges.append(Edge("le", "g_svc", dashed=True))
-    edges += [Edge(s, t, dashed=True) for s, t in dotted]
     c.groups, c.nodes, c.edges = groups, nodes, edges
     c.legend = legend_for(*legend)
     c.height = max(g.y + g.h for g in groups) + 70
     return c
 
 
-SERVICES = [("tsg", "TSG / Andromeda\ninfra, CI/CD 0.3", ""), ("desk", "Bain service desk\nL1 support 0.2", "")]
+SERVICES = [("plat", "Andromeda platform\ninfra, CI/CD 0.3"), ("desk", "Bain service desk\nL1 support 0.2")]
+
+APP = ("app", "Application engineers\nfrontend, backend\nL3 fixes 0.8 + feature build")
+AI = ("ai", "AI / agent engineer\nmodel and prompt changes 0.4")
+DATA = ("de", "Data engineer\ndata maintenance 0.6")
+ANALYST = ("an", "Domain analyst\ngolden data, output review 0.3")
+CONTENT = ("cc", "Content changes\n0.5 to 0.1")
+RUN = ("run", "Release and L2 run\non-call")
 
 
 def chart_a() -> Chart:
-    pod = Group("g_bcn", "BCN pod: build and run", 40, 0, 560, 0, "bcn")
-    items = [("a1", "App engineers: frontend, backend\nL3 fixes 0.8 + feature build"),
-             ("a2", "Calc engine and agents engineer(s)\nmodel and prompt changes 0.4"),
-             ("a3", "Data engineer\ndata maintenance 0.6"),
-             ("a4", "Analysts\ngolden data, output review 0.3\ncontent changes 0.5 to 0.1"),
-             ("a5", "L2 run and release")]
-    return target_chart("02-option-a-bcn", "Option A: BCN owns build and run", [(pod, items)], SERVICES, [],
-                        ["bain", "new", "bcn", "tsg"])
+    pod = Group("g_team", "One OpCat product team", 40, 0, 560, 0, "team")
+    items = [APP, AI, DATA, ("an", "Domain analyst\ngolden data, output review 0.3\ncontent changes 0.5 to 0.1"), RUN]
+    return target_chart("02-option-a-integrated", "Option A: one integrated product team", [(pod, items)],
+                        SERVICES, ["bain", "new", "team", "shared"])
 
 
-def chart_b() -> Chart:
-    pod = Group("g_ngss", "NGSS pod: build and run", 40, 0, 460, 0, "ngss")
-    items = [("b1", "App engineers: frontend, backend\nL3 fixes 0.8 + feature build"),
-             ("b2", "Calc engine and agents engineer(s)\nmodel and prompt changes 0.4"),
-             ("b3", "Data engineer\ndata maintenance 0.6"),
-             ("b4", "QA and eval harness"),
-             ("b5", "L2 run, release, on-call")]
-    bcn = Group("g_bcnf", "BCN, fractional", 520, 0, 230, 0, "bcn")
-    bitems = [("bf", "Analysts\ngolden data, output\nreview 0.3")]
-    return target_chart("03-option-b-ngss", "Option B: NGSS owns build and run",
-                        [(pod, items), (bcn, bitems)], SERVICES, [], ["bain", "new", "ngss", "bcn", "tsg"])
+def chart_b(name: str = "03-option-b-two-track",
+            title: str = "Option B (recommended): two tracks under one owner") -> Chart:
+    eng = Group("g_eng", "Engineering and run", 40, 0, 360, 0, "eng")
+    data = Group("g_data", "Data and content", 430, 0, 330, 0, "data")
+    return target_chart(name, title, [(eng, [APP, AI, RUN]), (data, [DATA, ANALYST, CONTENT])],
+                        SERVICES, ["bain", "new", "eng", "data", "shared"])
 
 
-def chart_c(name: str = "04-option-c-split",
-            title: str = "Option C (recommended): NGSS engineers, BCN owns data and content") -> Chart:
-    ngss = Group("g_ngss", "NGSS: engineering and run", 40, 0, 360, 0, "ngss")
-    nitems = [("c1", "App engineers: frontend, backend\nL3 fixes 0.8 + feature build"),
-              ("c2", "Calc engine and agents\nengineer(s), model and\nprompt changes 0.4"),
-              ("c3", "L2 run, release, on-call")]
-    bcn = Group("g_bcn", "BCN: data and content", 430, 0, 330, 0, "bcn")
-    bitems = [("c4", "Data engineer\ndata maintenance 0.6"),
-              ("c5", "Analysts\ngolden data, output review 0.3"),
-              ("c6", "Content changes\n0.5 to 0.1")]
-    return target_chart(name, title,
-                        [(ngss, nitems), (bcn, bitems)], SERVICES, [],
-                        ["bain", "new", "ngss", "bcn", "tsg"])
+def chart_c() -> Chart:
+    core = Group("g_core", "Dedicated core team", 40, 0, 360, 0, "team")
+    shared = Group("g_shared", "Drawn from Bain shared engineering", 430, 0, 330, 0, "shared")
+    return target_chart("04-option-c-core-shared", "Option C: small core team, shared capacity for the rest",
+                        [(core, [AI, DATA, ANALYST]), (shared, [APP, RUN])], SERVICES,
+                        ["bain", "new", "team", "shared"], dashed_pods=("g_shared",))
 
 
 def chart_transition() -> Chart:
-    c = Chart("05-transition-mid-january", "Transition in mid-January: Scenario 2 on Option C", 1060, 0)
+    c = Chart("05-transition-mid-january", "Transition in mid-January: Scenario 2 on Option B", 1060, 0)
     lead, ln = leadership_row(60, [Node("stew", "Content steward", 0, 0)])
     lead.x = (c.width - lead.w) / 2
     for n in ln:
@@ -273,23 +265,23 @@ def chart_transition() -> Chart:
     le.x = (c.width - le.w) / 2
     top = le.y + le.h + 50
     g1 = Group("g1", "Bain-led, StatusNeo shadows", 40, top, 320, 0, "bain")
-    n1 = column(g1, [("t1", "Frontend and BFF: NGSS"), ("t2", "QA, golden data: BCN"),
-                     ("t3", "Content changes: BCN")], "bain")
+    n1 = column(g1, [("t1", "Frontend and BFF"), ("t2", "QA and golden data"),
+                     ("t3", "Content changes")], "bain")
     g2 = Group("g2", "StatusNeo-led, Bain shadows", 380, top, 320, 0, "sn")
     n2 = column(g2, [("t4", "Backend services"), ("t5", "Calc engine and grammar"), ("t6", "Agents")], "sn")
-    g3 = Group("g3", "Handing over to TSG", 720, top, 300, 0, "tsg")
-    n3 = column(g3, [("t7", "Terraform, CI/CD")], "tsg")
+    g3 = Group("g3", "Handing over to shared platform", 720, top, 300, 0, "shared")
+    n3 = column(g3, [("t7", "Terraform, CI/CD")], "shared")
     c.groups = [lead, g1, g2, g3]
     c.nodes = ln + [le] + n1 + n2 + n3
     c.edges = [Edge("lead", "le"), Edge("le", "g1"), Edge("le", "g2"), Edge("le", "g3")]
-    c.legend = legend_for("bain", "new", "sn", "tsg")
+    c.legend = legend_for("bain", "new", "sn", "shared")
     c.height = max(g.y + g.h for g in c.groups) + 70
     return c
 
 
 def chart_timeline() -> Chart:
     start, end = dt.date(2026, 10, 19), dt.date(2027, 7, 5)
-    x0, x1, label_w = 230, 1180, 190
+    x0, x1 = 230, 1180
     scale = (x1 - x0) / (end - start).days
 
     def x(d: dt.date) -> float:
@@ -299,25 +291,26 @@ def chart_timeline() -> Chart:
     rows = [
         ("Milestones", [Bar(0, D(2026, 10, 26), None, "GLS 26 Oct", "bain"),
                         Bar(0, D(2026, 11, 30), D(2026, 12, 11), "50+ partner rollout", "bain")]),
-        ("Industrialisation SOW", [Bar(1, D(2026, 11, 23), D(2027, 2, 15), "~23 Nov to ~15 Feb", "neutral")]),
+        ("Industrialisation SOW", [Bar(1, D(2026, 11, 23), D(2027, 2, 15),
+                                       "proposed: ~23 Nov + ~12 weeks", "neutral")]),
         ("S1 Hard stop", [Bar(2, D(2027, 1, 4), D(2027, 1, 8), "W1", "sn"),
                           Bar(2, D(2027, 1, 25), D(2027, 1, 29), "W2", "sn"),
                           Bar(2, D(2027, 2, 8), D(2027, 2, 15), "W3", "sn")]),
         ("S2 Reverse shadow (rec.)", [Bar(3, D(2027, 1, 4), D(2027, 1, 15), "W1", "sn"),
                                       Bar(3, D(2027, 1, 18), D(2027, 2, 5), "W2", "sn"),
                                       Bar(3, D(2027, 2, 5), D(2027, 2, 15), "W3", "sn"),
-                                      Bar(3, D(2027, 2, 15), D(2027, 3, 15), "Advisory tail", "tsg")]),
+                                      Bar(3, D(2027, 2, 15), D(2027, 3, 15), "SOW end + 4 wks", "shared")]),
         ("S3 Capability-gated", [Bar(4, D(2027, 1, 4), D(2027, 2, 15), "Frontend, backend", "sn"),
                                  Bar(4, D(2027, 2, 15), D(2027, 4, 1), "Infra, run", "sn"),
                                  Bar(4, D(2027, 4, 1), D(2027, 6, 30), "Calc engine, agents", "sn")]),
-        ("S4 Platform first", [Bar(5, D(2026, 12, 1), D(2026, 12, 18), "Infra to TSG", "tsg"),
+        ("S4 Platform first", [Bar(5, D(2026, 12, 1), D(2026, 12, 18), "Infra", "shared"),
                                Bar(5, D(2027, 1, 11), D(2027, 1, 29), "W2", "sn"),
                                Bar(5, D(2027, 2, 1), D(2027, 2, 15), "W3", "sn"),
-                               Bar(5, D(2027, 2, 15), D(2027, 3, 15), "Tail", "tsg")]),
+                               Bar(5, D(2027, 2, 15), D(2027, 3, 15), "Tail", "shared")]),
     ]
-    c = Chart("06-roll-off-timeline", "StatusNeo roll-off by scenario (indicative)", x1 + 40, 0)
+    c = Chart("06-roll-off-timeline", "StatusNeo roll-off by scenario (indicative, anchored on the proposed SOW)",
+              x1 + 40, 0)
     row_h, top = 46, 100
-    # Month gridlines and labels.
     m = D(2026, 11, 1)
     while m < end:
         c.lines.append((x(m), top - 14, x(m), top + row_h * len(rows), True))
@@ -329,21 +322,19 @@ def chart_timeline() -> Chart:
         c.lines.append((40, y + row_h, x1, y + row_h, False))
         for j, b in enumerate(bars):
             if b.end is None:
-                n = Node(f"r{i}b{j}", b.label, x(b.start) - 4, y + 8, w=8, h=30, party="bain")
-                c.nodes.append(n)
+                c.nodes.append(Node(f"r{i}b{j}", b.label, x(b.start) - 4, y + 8, w=8, h=30, party="bain"))
                 continue
             w = max((b.end - b.start).days * scale, 26)
-            n = Node(f"r{i}b{j}", b.label, x(b.start), y + 8, w=w, h=30, party=b.party)
-            c.nodes.append(n)
-    c.legend = legend_for("bain", "sn", "tsg")
+            c.nodes.append(Node(f"r{i}b{j}", b.label, x(b.start), y + 8, w=w, h=30, party=b.party))
+    c.legend = legend_for("bain", "sn", "shared")
     c.height = top + row_h * len(rows) + 70
-    c.texts.append((40, c.height - 20, "W = wave. Late December counts as about two lost weeks. Dates are indicative.",
-                    "start"))
+    c.texts.append((40, c.height - 20, "W = wave. Only the SOW start and length are on record; every other date is "
+                    "an assumption and moves with the SOW.", "start"))
     return c
 
 
 def chart_to() -> Chart:
-    return chart_c("07-to-end-state", "To: end state from mid-March 2027 (recommended, Option C)")
+    return chart_b("07-to-end-state", "To: end state after StatusNeo exits (recommended, Option B)")
 
 
 CHARTS = [chart_today, chart_a, chart_b, chart_c, chart_transition, chart_timeline, chart_to]
