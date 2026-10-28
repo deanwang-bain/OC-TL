@@ -5,6 +5,10 @@
 ([Deployment Tracker](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd/oc-dev-staging-gls-deployment-tracker-19909279789.md),
 as summarised in [the brief](../context/oi30-brief.md)).
 
+**Goal post:** [standards-baseline.md](standards-baseline.md), proposed 2026-10-28. It names
+four gaps in this plan (code-quality gate, penetration test, test documentation standard,
+NFR checklist). They are folded in here once the baseline is signed off.
+
 **Audience:** the Tech Lead first. Once the decisions in §2 are signed off, this becomes the
 brief for the testing engineer, and §8 becomes their backlog.
 

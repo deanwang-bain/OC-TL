@@ -72,6 +72,7 @@ decks.
 
 | Question | Status |
 | -------- | ------ |
+| **Is there a Bain engineering or testing standard beyond ARC?** | Not in the mirror. ARC v2 says *that* things must be tested (CQ-01, CQ-05, AD-22, SD-06) but sets no levels, coverage numbers or method. It cites TSG Secure Design Principles, TSG API Security Guidance and Bain Data Classification Standards, none of them mirrored. Until Sage or TSG answers, [testing/standards-baseline.md](../testing/standards-baseline.md) proposes external standards as the goal post |
 | **Repository structure** — monorepo versus repo-per-service | No page in the space mentions it. Recommendation in `decisions/001` |
 | ~~What GLS actually is~~ | **Answered by the Tech Lead 2026-08-31:** the Global Leadership Summit, mid-to-late October, where OI 3.0 is demonstrated. The [GLS Feature Set](../confluence/oi30/gls-feature-set-19761725586.md) page carries `OI_3.0_Feature_Overview_1.pptx` but no prose — the date and demo scope should be written on the page itself |
 
