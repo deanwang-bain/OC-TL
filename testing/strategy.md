@@ -75,7 +75,7 @@ Recommended outcome first. Each can be signed off independently.
 | **D2** | Where the eval harness and corpora live | **A Bain-controlled repo**, separate from SN's two repos. SN's CI calls a published smoke-eval action or container; the held-out set never leaves Bain | A vendor that can see the test can tune to it. Keeps the role boundary in `CLAUDE.md` |
 | **D3** | How to square T14 with CQ-AI-PMT-02 | **Two eval tiers** (§7): a smoke eval blocks merge on changes to prompts, tools, agent config or model deployment; the full golden regression blocks release | Satisfies the MUST without letting a model provider's drift block unrelated merges, which was T14's concern |
 | **D4** | Thresholds for v0 | **Relative to an approved baseline, not absolute.** Structural invariants stay at 100%. Absolute targets are set after the first round calibrated against SME labels | An absolute threshold set before any data exists is invented policy, and the existing plan rightly refuses to invent it |
-| **D5** | Who curates the golden eval set | **A named BCN analyst with booked hours**, plus Oliver for peer-set references (S4-52 already involves both) | Technology Choices open item 8: *"nothing substitutes for that"* |
+| **D5** | Who curates the golden eval set | **A named BCN analyst with booked hours.** Oliver (S4-52) is listed as **(Vendor)** in [stakeholders](../context/stakeholders.md), so he can contribute to the dev set but not own held-out references | Technology Choices open item 8: *"nothing substitutes for that"* |
 | **D6** | Whether Foundry agent calls pass through the API Management gateway | **Ask SN to confirm, with a trace, before WP-10 starts** | Decides whether the Content Safety control exists on the path being tested |
 | **D7** | Autonomy level per agent (SD-AI-AGT-01) | Peer discovery **T0** (suggests; the partner confirms through OI3-221). Chat assistant **T1 or T2**, to confirm: it changes the peer set on request | Red-team intensity and human-in-the-loop requirements scale with the level |
 | **D8** | Whether the GLS golden data set may be used in test environments | **Check permitted use against the Data Source Catalogue** before it seeds evals | It is real company data from BCN documents. The test-data policy allows one pinned, licensed snapshot |
@@ -238,7 +238,7 @@ before partners do.
 
 | Agent | Measures |
 | ----- | -------- |
-| Peer discovery | Recall@10 and overlap against the BCN or Oliver reference peer set. `cap_id` resolution precision. **Null-correctness** (a company absent from the snapshot resolves to null). Fabricated-ID rate, which must be 0 because `resolve()` guarantees it. Stability of the peer set across k runs. Wall clock against the proof-of-concept baseline of 10–12 peers in 3.5–4 minutes |
+| Peer discovery | Recall@10 and overlap against the BCN reference peer set. `cap_id` resolution precision. **Null-correctness** (a company absent from the snapshot resolves to null). Fabricated-ID rate, which must be 0 because `resolve()` guarantees it. Stability of the peer set across k runs. Wall clock against the proof-of-concept baseline of 10–12 peers in 3.5–4 minutes |
 | Chat assistant | Tool selection and argument accuracy. Task completion, judged by the resulting case state, not by what the reply says. **Narration matches state**: the agent never claims an action the screen does not show (the ADR-005 failure). Citation validity. Correct refusal when a tool refuses |
 | Narrative | Numeric reconciliation (grader 2), faithfulness to the analysis, no conclusion the figures do not support |
 | Non-GAAP extraction, when it lands | Field-level precision and recall against analyst labels. The prior-art skill is at **70–80%** and degrades as sector conditions accumulate; that is the baseline to beat |
@@ -517,10 +517,16 @@ MUSTs.
 
 ---
 
-## 11. Sage — pending
+## 11. Sage — mostly answered
 
-Not run, because the Sage connector is not loaded in this session. Each query could change
-a decision:
+**Run by the Tech Lead on 2026-10-28; the results are in
+[standards-baseline.md §1](standards-baseline.md).** In short: TSG security standards and
+AIS build guidance exist. There is no firm-wide testing standard, no coverage threshold, no
+AI testing standard and no Andromeda guidance. The pen-test lead time (4–8 weeks, plus 10
+business days to the report) means the report cannot land before the rollout. Still open:
+the reviewer pool for D5 and WS6, plus the items in standards-baseline §5.
+
+The original queries:
 
 | Query | Could change |
 | ----- | ------------ |

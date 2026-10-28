@@ -1,187 +1,214 @@
 # OpCat code quality and testing — the standards baseline
 
-**Status:** Proposal for Tech Lead sign-off · **Prepared:** 2026-10-28
+**Status:** Proposal for Tech Lead sign-off · **Prepared:** 2026-10-28 · **Revised:**
+2026-10-28, after a Sage search run by the Tech Lead
 
 **Purpose:** fix the goal post that [strategy.md](strategy.md) aims at, before the testing
 engineer starts. "Good enough" should be judged against a named standard, not against
 whatever the vendor's pipeline happens to do.
 
-**Sage was not consulted.** The connector is connected for the org but not loaded in this
-session, for the third session running. Everything below on Bain's standards comes from
-what the OI30 mirror holds. §5 lists what Sage still needs to answer.
+**The rule:** where Bain has a source, it wins. External standards fill only the areas Bain
+leaves blank.
+
+**Where the Bain material came from.** The Tech Lead ran Sage and passed the results here,
+because the connector was not loaded in this workspace's sessions. Dates are Sage's
+*updated* dates. Owners are Sage's owner field unless stated otherwise. Links are
+Bain-internal.
 
 ---
 
-## 1. Is there a Bain guide? Partly — a review bar, not a testing standard
+## 1. Is there a Bain guide?
 
-**What exists in the mirror** is Bain's formal architecture governance gate, attached to
-the [Architecture Assessment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681)
-page as two workbooks:
+**Bain has security standards and build guidance, but no firm-wide engineering, QA or
+testing standard.** Sage found:
+- no firm-wide code-coverage threshold;
+- no Definition of Done for vendor-built software;
+- no AI/LLM testing standard;
+- no Andromeda guidance.
 
-| Workbook | Rows | What it covers on quality and testing |
-| -------- | ---- | ------------------------------------- |
-| [ARC v2](../confluence/_attachments/19853082681/OppCat_Architecture_Assessment_Tracker_Reviewed.xlsx) | 180, including **Code Quality (40)** and **Software Development Principles (47)** | Pipeline gates, secure coding, repository standards, security practice, test data |
-| [AI Architecture Requirements v2.1](../confluence/_attachments/19853082681/AI_Architecture_Requirements_v2.1.xlsx) | 133 | Prompt eval in CI, online evaluation, injection testing, agent trajectory evals, red teaming |
+What exists falls into four groups.
 
-The rows that bear directly on testing:
+### TSG security standards — mandatory
 
-| ID | Requirement, condensed | Priority after the 22 Sept review |
-| -- | ---------------------- | --------------------------------- |
-| CQ-01 | Quality metrics enforced in CI: **coverage thresholds**, code smells, style (*"e.g. SonarQube"*) | MUST |
-| CQ-02 | Security checks in the pipeline; **high and critical defects block delivery** | MUST |
-| CQ-03 | Licence and dependency scanning enforced | MUST |
-| CQ-04 | Static analysis enforced | MUST |
-| CQ-05 | **Unit and integration tests on every PR** | MUST |
-| CQ-06 | ZAP dynamic scan on every PR | MUST → SHOULD |
-| CQ-07 | Snyk or Wiz continuously (*"Bain is currently transitioning from Snyk to Wiz"*); SonarQube and CodeQL SHOULD | MUST (capability); tool to be decided |
-| CQ-09 | A defined promotion process across dev, QA, staging and production | MUST |
-| CQ-18 | A code review checklist | MUST |
-| AD-07 | Accessibility tested regularly; frequency and method documented | SHOULD |
-| AD-22 | **Unit and integration tests cover access-control scenarios** | MUST |
-| SD-06 | **Independent penetration test, at least annually, via Rapid 7** | MUST (external dependency) |
-| SD-15 | Client data used in test needs **consent, a contract and anonymisation** | MUST (external dependency) |
-| SD-41 | A defined bug triage and prioritisation process | MUST |
-| CQ-AI-PMT-02 | Prompt changes regression-tested against an eval set **before merge** | MUST |
-| CQ-AI-AGT-01 | End-to-end trajectory evals with **statistical pass rates over multiple seeds** | MUST |
-| CQ-AI-SEC-01 | Direct and indirect prompt-injection tests in the security pipeline | MUST |
-| SD-AI-RAI-03 | Red teaming before launch and periodically after | MUST |
+| Source | Updated · owner | What it requires for testing and code quality |
+| ------ | --------------- | --------------------------------------------- |
+| [Application Security](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Application--Security.aspx) | 2025-03-24 · signed David Wiggs | For public or client-facing apps: **SAST on each PR**, **SCA before merge to a production branch**, **DAST before any production release**. Remediation within **10 / 30 / 90 / 180 days** for Critical / High / Medium / Low. Annual third-party pen test for public or client-facing apps; names TrustedSec; Bain is not licensed for Rapid7 InsightAppSec |
+| [SDLC Guidance](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/SDLC-Guidance.aspx) | 2025-11-06 (footer says 5 Nov 2024) · Gordon Morrison | *"No product should enter into production with any critical vulnerabilities."* Scan with Snyk and CodeQL |
+| [Secure Design Principles](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Secure-Design-Principles.aspx) | 2025-09-24 · no owner field; contact secAE@bain.com | No testing rules. Dev, Test, Staging and Prod must be separated; incident response plans must be tested |
+| [API Security Guidance](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/API-Security-Guidance.aspx) | 2023-11-14 · signed Jeremiah Salamon | No testing section. Input validation, rate limiting, regular secret scans, OWASP API Top 10 alignment |
+| [Data Handling Matrix](https://baincoprod.service-now.com/hub?id=kb_article&sysparm_article=KB0019458), "SDLC & Vulnerability Mgmt" row | 2026-03-02 · Mark Waugh | Written as a **vendor** requirement. **Confidential and Prohibited:** SAST and DAST at minimum after major code changes, monthly vulnerability assessments, a UAT or pre-production environment, **semi-annual third-party penetration testing**. **Non-Public:** annual vulnerability assessment and pen test |
+| [Data Classification Standard v4.0](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SiteAssets/SitePages/Data-Classification(1)/2024-STANDARD--Data-Classification-Standard.pdf?web=1) | 13 Feb 2024 · Mark Waugh, CISO-approved | Four tiers: Public, Non-Public, Confidential, Prohibited/Regulatory. **The tier decides which Matrix row applies** |
+| [Penetration Testing Program](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Penetration-Testing-Program.aspx) | 2023-03-16 · John Clary, Security Risk & Compliance | Scoping questionnaire to SecRisk, who coordinate the third party. **Lead time 4–8 weeks** from questionnaire to test start; report **10 business days** after testing. The figure is from 2023, so confirm it with secrisk@bain.com |
+| [Security requirements for public endpoints](https://baincoprod.service-now.com/hub?id=kb_article&sysparm_article=KB0028388) | 2026-08-13 · Jordi Price | Remediate Wiz critical and high findings *"within 48 hours"* |
+| [Security Tools](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Security-Tools.aspx) and [Wiz CNAPP KB](https://baincoprod.service-now.com/hub?id=kb_article&sysparm_article=KB0018937) | 2025-03-24 and 2026-02-09 | Snyk, Wiz and GitHub Advanced Security are licensed. **Wiz is not currently used for code scanning** |
+| [Approved Tools 2024.08.15](https://bainandcompany.sharepoint.com/sites/EnterpriseArchitecture/_layouts/15/Doc.aspx?sourcedoc=%7B12131D0A-68C1-4B95-AB06-73775F7CB34A%7D&file=Approved+Tools+2024.08.15.pptx&action=edit&mobileredirect=true&web=1) | 2026-10-21 · Ed Moore. *Search snippets only; the deck was not opened* | Wiz *"Required"*; **SonarQube Enterprise *"Requires Approval"*** |
 
-**What it is not.** ARC says *that* things must be tested. It does not say:
-- which test levels;
-- what coverage number;
-- how an AI output is judged good;
-- how test evidence is documented.
+### Build practice guidance — Bain practice, not a standard
 
-CQ-01 requires "coverage thresholds" but sets none. The reviewer's own pass recorded that
-the framework *"mandates patterns rather than outcomes"*
-([brief](../context/oi30-brief.md), ARC section).
+| Source | What it sets |
+| ------ | ------------ |
+| [Guide to "Well Operated" Software Build Case](https://bainandcompany.sharepoint.com/sites/pubs/_layouts/15/Doc.aspx?sourcedoc=%7B924D0256-F1AC-4BBC-8549-412C2667043F%7D&file=Guide+to+%E2%80%9CWell+Operated%E2%80%9D+Software+Build+Case.pptx&action=edit&mobileredirect=true&web=1) (AIS, 2026-09-14; creator Jacob O'Farrell) | **Unit coverage of ~80–90%** on production builds. **PRs with at least 2 reviewers.** A Definition of Done: unit tests, a coverage report, pre-commit checks, static analysis with no high or critical issues, an approved PR, product-owner sign-off. Tasks must *"demonstrate automated security and functional tests"* |
+| SDLC Training deck (2024, pubs) | **More than 70% unit coverage, more than 80% on new code** |
 
-**Bain documents ARC cites but the mirror does not hold.** Sage should find these:
-- the TSG Secure Design Principles (SD-10, MUST);
-- the TSG API Security Guidance (SD-09);
-- the TSG Cyber Incident Management Policy (SD-47);
-- the Bain Data Classification Standards (SD-18, MUST).
+### Responsible AI governance — mandatory process, not test criteria
 
-These may be where Bain's real engineering standard lives.
+| Source | What it requires |
+| ------ | ---------------- |
+| [AI Responsible Use Policy](https://baincoprod.service-now.com/hub?id=policy_esc_kb_article_view&sysparm_article=KB0027990) (revised 14 May 2026; owner: Chair of the Responsible AI Council) | Internally built AI tools need **AI Data Governance Committee review** plus an **Information Security Architecture Review**. Prohibited or high-risk tools go to Bain Legal, which decides whether an AI Impact Assessment is needed |
+| [Hardening AI Applications](https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Hardening-AI-Applications.aspx) (2024-11-05, Gordon Morrison) | Guidance only: adversarial training, bias detection, output sanitising, model monitoring. No pass/fail criteria |
 
-**So: Bain sets the floor, and it is mandatory.** No Bain document in the mirror defines
-what "well tested" means above that floor. That needs a commonly established standard (§2).
+### Architecture requirement sets — mandatory review floor
+
+These are the closest thing to an AI testing standard.
+
+| Source | What it adds |
+| ------ | ------------ |
+| ARC v2 and [AI_Architecture_Requirements v2.1](https://bainandcompany.sharepoint.com/sites/GlobalOpportunityIndicator-OI3.0Development/_layouts/15/Doc.aspx?sourcedoc=%7BD341ABFA-8776-4DFA-9832-EAE269E15E93%7D&file=AI_Architecture_Requirements+v2.1.xlsx&action=default&mobileredirect=true&web=1) (file owner Sandeep Uppal; the governing owner is not established) | The rows in the first version of this document, unchanged: CQ-01, CQ-05, AD-22, SD-06, SD-15, CQ-AI-PMT-02, CQ-AI-AGT-01 and -03, CQ-AI-SEC-01, SD-AI-RAI-03. **The ARC framework's owner was not found** |
+| [fw-bain-app-ai-review-pack](https://bainandcompany.sharepoint.com/sites/EnterpriseArchitecture/Shared%20Documents/Architecture%20documentation/Signal%20Support%20Chatbot%20(AI-1884)/fw-bain-app-ai-review-pack%20(1).md?web=1) (Enterprise Architecture export of the "Bain Application Framework", 2026-07-29) | **The best guide found on how to evidence a row.** Each requirement has an owner and a *Verify* checklist, for example `REQ-INPUT-VALIDATION`: *"Automated tests cover prompt, SQL, and code-execution injection."* Also `REQ-PRELAUNCH-TESTING`, `REQ-AI-PREDEPLOY-EVAL` (advisory) and `REQ-AI-REVALIDATION` (advisory). Whether this is the same framework as ARC is not confirmed |
+| [Archie and the Innovation Enablement Process](https://baincoprod.service-now.com/hub?id=kb_article&sysparm_article=KB0028257) (2026-08-13, Jordi Price) | The review process around these requirement sets. It cites an "IEP Questions & Standards workbook v2026.05.15", which was not found |
+
+**One observation for the brief.** Sage found
+`OppCat_Architecture_Assessment_Tracker_Reviewed_filled.xlsx` in the Tech Lead's OneDrive.
+The mirror holds the unfilled version, which is where the brief's *"0 responses
+recorded"* comes from. If the filled copy carries responses, that line is stale.
 
 ---
 
-## 2. The proposed goal post
+## 2. The goal post, row by row
 
-**The rule:**
-- **ARC and the AI workbook are the floor.** They are Bain-mandated, so every MUST gets an
-  answer with evidence.
-- **The standards below define "good"** wherever ARC is silent or only names a pattern.
-- **Adopt each standard as a reference, not as a certification target.** Nothing here
-  needs auditing or buying a certificate. Each one supplies a structure, a checklist or a
-  number that would otherwise be invented.
+| # | Area | **Bain source (wins)** | External reference (only where Bain is silent) | What it means for OpCat |
+| - | ---- | ---------------------- | ---------------------------------------------- | ----------------------- |
+| 1 | Testing process and documentation | None found | **ISO/IEC/IEEE 29119** Parts 2–4 (2021; Part 1 2022) | Strategy, per-release test plan and completion report follow 29119-3 structure. The [Agent Validation Test Plan](../confluence/oi30/architecture/agent-validation-test-plan-19765133323.md) already broadly does |
+| 2 | Testing AI systems | AI workbook rows; framework pack `REQ-PRELAUNCH-TESTING`, `REQ-AI-PREDEPLOY-EVAL`, `REQ-AI-REVALIDATION` | **ISO/IEC TS 42119-2:2025** for the method | Bain says *what* must be evaluated; 42119-2 frames *how*, risk-based |
+| 3 | Quality characteristics (NFRs) | None found. The NFR page is blank | **ISO/IEC 25010:2023** | Nine characteristics become nine explicit rows in strategy WS5: each gets a threshold, "baseline first", or "not applicable" with a reason |
+| 4 | **Code quality and Definition of Done** | **AIS "Well Operated" guide**: ~80–90% unit coverage, at least 2 reviewers, DoD. **SDLC Training**: >80% on new code | Sonar way thresholds (80% new-code coverage, ≤3% duplication) as a tooling reference; ISO/IEC 5055 if a contract clause is ever needed | **≥80% coverage on new deterministic code**, which is the floor every Bain source agrees on. Calculation engine at the AIS upper bound, ~90%. Agent code is judged by evals, not coverage. AIS DoD becomes SN's story DoD, with an eval-delta for agent-affecting stories |
+| 5 | **Application security** | **TSG Application Security, SDLC Guidance, API Security Guidance, Data Handling Matrix, public-endpoints KB** | **OWASP ASVS 5.0 L2** as the requirement-level checklist TSG does not provide | Gates and SLAs come from TSG (§3). ASVS supplies the test cases. Cite requirements as `v5.0.0-x.y.z` |
+| 6 | AI security testing | AI workbook CQ-AI-SEC-01, CQ-AI-AGT-03, SD-AI-RAI-03; framework pack `REQ-INPUT-VALIDATION`; Hardening AI Applications (guidance) | **OWASP AI Testing Guide v1** (Nov 2025); OWASP Top 10 for LLM Apps 2025 and for Agentic Apps 2026 as the threat classes | Bain names the obligation, AITG supplies the test method |
+| 7 | Secure development lifecycle | **TSG SDLC Guidance; Secure Design Principles** (environment separation, tested incident-response plans) | **NIST SP 800-218A** for AI-specific practices only | — |
+| 8 | AI governance and risk | **AI Responsible Use Policy**: AI Data Governance Committee review and InfoSec Architecture Review | NIST AI 600-1, only as framing for what evals measure | The two reviews are **release prerequisites** (§3, gap G2) |
+| 9 | Accessibility | ARC AD-01, AD-07 | **WCAG 2.2 AA** | Unchanged |
+| 10 | **Penetration testing** | **Pen Testing Program, Application Security, Data Handling Matrix** | — | Cadence depends on row 11. Lead time drives decision S3 |
+| 11 | **Data classification** | **Data Classification Standard v4.0 + Data Handling Matrix** | — | OpCat must be classified. That fixes rows 5 and 10 and the test-data rule (SD-15) |
 
-| # | Area | Goal post | Version (verified 2026-10-28) | Why this one | How OpCat uses it |
-| - | ---- | --------- | ----------------------------- | ------------ | ----------------- |
-| 1 | **Testing process and documentation** | ISO/IEC/IEEE 29119: Part 2 processes, Part 3 documentation, Part 4 techniques | Part 1 2022; Parts 2–4 2021; Part 5 2024 | The international software testing standard; it superseded IEEE 829. The existing [Agent Validation Test Plan](../confluence/oi30/architecture/agent-validation-test-plan-19765133323.md) already follows its shape: strategy, techniques, entry and exit criteria, coverage | Structure the strategy, the per-release test plan and the completion report on 29119-3 templates. Use 29119-4 names for techniques, as the test plan's §4.1 already does |
-| 2 | **Testing AI systems** | ISO/IEC TS 42119-2, *Testing of AI — Overview of testing AI systems* | 2025 (published Nov 2025), a Technical Specification | Applies 29119 to AI systems on a risk basis: exactly the deterministic-plus-probabilistic split OpCat has | The frame for the probabilistic track: risk-based selection of eval practices, with 29119 processes carried over |
-| 3 | **Product quality model (NFRs)** | ISO/IEC 25010 | 2023, nine characteristics | The [NFR Design page](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/nfr-non-functional-design-choices-19704905798.md) is blank. 25010 gives the checklist of what needs a threshold, so a gap is visible rather than silent | Each characteristic gets a row in WS5: a threshold, "baseline first", or "not applicable" with a reason. Confirm the 2023 names against the standard |
-| 4 | **Code quality** | SonarQube **"Sonar way"** quality gate, backed by ISO/IEC 5055 for structural quality | Sonar way: current SonarSource docs. ISO/IEC 5055:2021 | ARC CQ-01 names SonarQube. Sonar way gates **new code** (80% coverage, 3% duplication, security hotspots reviewed), which is fair to an in-flight codebase. ISO 5055 exists to *"set quality targets for contractor code"*, which is exactly a vendor arrangement | The PR quality gate: Sonar way on new code. **Coverage applies to deterministic code only**, as the test plan §5.1 already says. ISO 5055 is the reference if a contractual quality clause is ever needed |
-| 5 | **Application security verification** | OWASP ASVS 5.0, **Level 2** | 5.0.0, May 2025 | L2 is the level for apps handling sensitive data; OpCat holds client-confidential data and possibly MNPI. L3 targets high-assurance systems such as financial ones; adopting it wholesale would be over-scoped | Security test cases are traced to ASVS requirement IDs, cited with the version (`v5.0.0-x.y.z`). Raise individual access-control and data-protection requirements to L3 where the case-isolation design needs it |
-| 6 | **AI security testing** | OWASP AI Testing Guide; threat classes from the OWASP Top 10 for LLM Applications 2025 and the Top 10 for Agentic Applications 2026 | AITG v1, 26 Nov 2025 | The only established *test methodology* for AI security; it extends the Web Security Testing Guide. The Top 10s give the named threat classes the test plan's adversarial-coverage formula needs | WS3 test cases traced to AITG test IDs; adversarial coverage measured against the two Top 10 lists |
-| 7 | **Secure development lifecycle** | NIST SSDF SP 800-218, plus the generative-AI profile SP 800-218A | 800-218 v1.1; 800-218A, July 2024, updated June 2025 | 800-218A has explicit tasks for an *AI system producer*, which is what SN is. It maps cleanly onto ARC's Software Development rows | The practice checklist the ARC SD and SD-AI answers are written against |
-| 8 | **AI risk measurement** | NIST AI RMF 1.0, plus the GenAI profile, NIST AI 600-1 | AI 600-1, July 2024 | Its **Measure** function is what the eval loops produce evidence for. Confabulation and information integrity are named risks there | The eval report maps metrics to the AI 600-1 risks they measure. Governance framing only; it is not a test method |
-| 9 | **Accessibility** | WCAG 2.2 **AA** | 2.2 | Already in Technology Choices §2 and ARC AD-01 and AD-07. The one non-functional target written anywhere | axe-core in Playwright, plus a documented manual pass (AD-07 asks for frequency and method) |
+**Tester competence:** ISTQB CT-AI v2.0, on top of Foundation Level. A skills marker for
+briefing the testing engineer, not a gate.
 
-**Tester competence.** **ISTQB CT-AI v2.0**, which covers testing ML and generative-AI
-systems, on top of the Foundation Level certificate. This is a reasonable profile to hire
-or brief the testing engineer against. It is a skills marker, not a gate.
-
-### Deliberately not adopted
-
-| Standard | Why not |
-| -------- | ------- |
-| ISO/IEC 42001 (AI management system) | Certifies an organisation's AI management system, not a product's testing. Bain-level if anything. Whether Bain holds it could not be confirmed publicly; a Sage question |
-| ISO/IEC 25010 measurement series (25023) | Too heavy for a project-level baseline; 25010's characteristics are enough |
-| ASVS Level 3 across the board | Disproportionate for an internal tool; selective L3 instead (row 5) |
-| EU AI Act conformity testing | OpCat informs client conversations; it does not make decisions. Whether any high-risk category applies is an ARC answer (SD-AI-RAI-05, SD-AI-DAT-06) to record, not assume |
-| IEEE 829 | Superseded by 29119-3 |
+**Not adopted:** ISO/IEC 42001 (an organisation-level certification); ASVS L3 across the
+board; EU AI Act conformity testing (an ARC answer to record, not assume); IEEE 829
+(superseded).
 
 ---
 
 ## 3. What this changes in the strategy
 
-Holding [strategy.md](strategy.md) against the baseline shows four gaps and two conflicts.
+### Gaps that now have a Bain source
 
-**Gaps:**
-1. **No code-quality gate.** Technology Choices §9.4 runs CodeQL but no SonarQube, and the
-   strategy's PR gate has no coverage, smell or duplication condition. ARC CQ-01 requires
-   one. **Add Sonar way on new code to the PR gate.**
-2. **No independent penetration test.** SD-06 requires one at least annually through
-   Rapid 7. It is an external dependency, so it needs **requesting now** if it is to land
-   before the partner rollout; the Sprint 3 lesson is that access and vendor lead times set
-   the pace.
-3. **No standard for test documentation.** Adopt 29119-3 for the per-release test plan and
-   completion report, which WS7's evidence page becomes.
-4. **No NFR checklist.** Row 3 turns the blank NFR page into nine explicit rows in WS5.
+**G1 — The pen test cannot report before the rollout.**
+- The process lead time is 4–8 weeks from questionnaire to test start, plus 10 business
+  days to the report.
+- A questionnaire sent this week puts the earliest test start in late November and the
+  earliest report in mid-December.
+- That is after the rollout window either way: test start lands around the rollout itself,
+  and the report after it.
+- The cadence may also be **semi-annual, not annual**. That is the rule if OpCat is
+  Confidential or Prohibited (row 11), and with uploads that may carry MNPI, it likely is.
 
-**Conflicts to raise with SN:**
-5. **Snyk / Wiz versus Dependabot, Trivy and Defender.** ARC CQ-07 says Bain is moving
-   from Snyk to Wiz. Technology Choices §9.4 names neither. A tool ruling is needed, or at
-   least confirmation that the chosen tools satisfy the capability.
-6. **Test data.** SD-15 requires consent, a contract and anonymisation for client data used
-   in test. This strengthens decision D8 (may the GLS golden data set seed the evals?) from
-   "check" to "must clear before use".
+So the question is no longer *when to book* but *what may go live before the report*.
+That is SecRisk's decision, not this workspace's (S3).
 
-**Re-framing, once signed off:**
-- Every test case in the strategy carries **one trace to a standard**: an ARC or AI-workbook
-  row ID, an ASVS requirement, an AITG test ID, or a 25010 characteristic.
-- The coverage report then answers two questions: *"which mandatory rows have evidence?"*
-  and *"how far are we from the goal post?"*
+**G2 — Two governance reviews may be missing from the plan.** The AI Responsible Use Policy
+requires AI Data Governance Committee review and an Information Security Architecture
+Review for internally built AI tools. ARC SD-05 asks for the same TSG Security review.
+Neither appears in the strategy's release gates, and no page in the mirror records either
+one happening. Add both to WS7 as release prerequisites, and confirm their status (S6).
+
+**G3 — DAST must block release.**
+- TSG Application Security requires **DAST before any production release**.
+- The strategy runs ZAP nightly, with *alerts, does not block* (Technology Choices §9.7).
+- Add a blocking DAST run at the pre-release gate.
+- The Matrix's *"after major code changes"*, for Confidential and above, points the same
+  way.
+
+**G4 — The code-quality gate.**
+- PR gate: ≥80% coverage on new deterministic code, static analysis with no high or critical
+  findings, and **at least 2 reviewers**.
+- The strategy's gate has none of the three.
+- WP-01 checks what SN enforces today.
+
+**G5 — Remediation SLAs.** Use TSG's 10 / 30 / 90 / 180 days in the triage policy (strategy
+WS7). Use 48 hours for Wiz critical and high findings on public endpoints.
+`stg.opcat-nonprod.bain.io` sits behind Front Door, so check whether it counts as a public
+endpoint (C5).
+
+**G6 — A pre-production environment.**
+- The Matrix requires UAT or pre-production for Confidential and above.
+- The only staging today is **GLS-only**: three apps, GLS mode, no case-service
+  ([Deployment Tracker](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd/oc-dev-staging-gls-deployment-tracker-19909279789.md)).
+- A rollout-grade pre-production environment is needed for the acceptance journeys and the
+  pen test to mean anything.
+
+### Conflicts between Bain sources, for TSG to rule
+
+| # | Conflict | Reading, pending a ruling |
+| - | -------- | ------------------------- |
+| C1 | **Pen-test cadence.** Annual: ARC SD-06, and App Security for public or client-facing apps. **Semi-annual:** Data Handling Matrix, for Confidential and Prohibited | The Matrix is more specific about data and newer. It applies once OpCat is classified Confidential or above |
+| C2 | **Pen-test vendor.** Rapid 7: ARC SD-06 and the 2019/2021 questionnaires. **TrustedSec:** App Security 2025, which also says Bain is not licensed for Rapid7 InsightAppSec | App Security is newer. ARC's "via Rapid 7" is probably stale. Confirm with secrisk@bain.com |
+| C3 | **Scanning tools.** SDLC Guidance: Snyk and CodeQL. App Security: GHAS and Snyk Open Source. ARC CQ-07: *"transitioning from Snyk to Wiz"*. Wiz KB: Wiz is not used for code scanning. Technology Choices: CodeQL, Dependabot, Trivy, Defender | **SAST** is met by CodeQL/GHAS in every source. **SCA:** TSG names Snyk Open Source, never Dependabot, so ask SN to adopt it or ask TSG to accept Dependabot. **Wiz** is for cloud posture, not code. CQ-07's wording is probably wrong on that point |
+| C4 | **SonarQube.** ARC CQ-01 gives it as the example; Approved Tools marks it *"Requires Approval"*; one 2026 Archie submission lists it in a scanner suite | Not required. G4's coverage and smell thresholds can be enforced by the test runners plus CodeQL. Request SonarQube approval only if SN or TSG wants it |
+| C5 | **Remediation SLAs.** App Security: 10 / 30 / 90 / 180 days. ARC SD-42: high and critical *"in the sprint following discovery"*. Public-endpoints KB: 48 hours for Wiz critical and high | The strictest applicable one wins, per finding source |
+| C6 | **Who owns ARC**, and whether it is the "Bain Application Framework" in the review pack | Unknown. Ask Enterprise Architecture, who exported the pack |
+
+### Corrections to strategy.md
+
+- **D5:** "Oliver" (S4-52) is listed as **(Vendor)** in
+  [stakeholders](../context/stakeholders.md). A vendor-side reviewer cannot own reference
+  answers for a held-out set. BCN owns the golden set; Oliver can contribute to the dev
+  set only.
+- **§11, Sage pending:** answered by this section, apart from the items still open in §5.
 
 ---
 
-## 4. Decision requested
+## 4. Decisions requested
 
 | # | Decision | Recommendation |
 | - | -------- | -------------- |
-| **S1** | Adopt the §2 baseline as OpCat's goal post: ARC as the mandatory floor, standards 1–9 as the reference for "good" | Adopt |
-| **S2** | ASVS level | L2, with selected L3 access-control and data-protection requirements |
-| **S3** | Code-quality gate | Sonar way on new code. Coverage applies to deterministic code only |
-| **S4** | Request the SD-06 penetration test now, targeting completion before the partner rollout | Request this week |
+| **S1** | Adopt §2: Bain sources win per row, external standards only where Bain is silent | Adopt |
+| **S2** | Classify OpCat under Data Classification Standard v4.0 | Propose **Confidential at minimum**, and ask whether MNPI in uploads makes it Prohibited/Regulatory. Mark Waugh's standard; secAE@bain.com to confirm |
+| **S3** | Pen test | **Send the SecRisk scoping questionnaire this week.** Ask SecRisk directly whether a 50-partner internal rollout may proceed on internal evidence, with the third-party test booked. That evidence is blocking DAST plus the ASVS L2 test pass. Their answer decides whether the rollout date holds |
+| **S4** | Code-quality gate | ≥80% coverage on new deterministic code, ~90% on the calculation engine, no high or critical static-analysis findings, at least 2 reviewers. Enforced with approved tools (C4) |
+| **S5** | SCA tool | Raise to TSG: Snyk Open Source as TSG names it, or a recorded acceptance of Dependabot. Log it as a request in `requests/` |
+| **S6** | Governance reviews | Confirm the status of the AI Data Governance Committee review and the InfoSec Architecture Review. Treat both as rollout prerequisites |
 
-Once S1 is signed off, strategy.md gets the §3 changes and the per-test-case trace column.
-
----
-
-## 5. Still needs Sage
-
-| Query | Could change |
-| ----- | ------------ |
-| The TSG Secure Design Principles, TSG API Security Guidance and Bain Data Classification Standards: their content and owners | Could replace rows 5 and 7 with a Bain standard, which should then win |
-| Any Bain or TSG engineering, testing or QA standard: test levels, coverage numbers, a definition of done for vendor-built software | Could replace rows 1, 3 and 4 |
-| Any Bain Responsible AI review process or AI testing standard (Andromeda, TSG) | Could replace rows 2, 6 and 8 |
-| The status of the Snyk-to-Wiz transition, and whether SonarQube is a Bain-provided service | Conflict 5; S3 tooling |
-| Who books the Rapid 7 penetration test, and the lead time | S4 |
-
-**Rule if Sage finds a Bain standard:** it replaces the external one in the same row. The
-external standards are the fallback, not a preference.
+Once S1 is signed off, strategy.md takes G1–G6 and the corrections, and every test case
+carries a trace to its Bain row or standard.
 
 ---
 
-## Sources
+## 5. Still open
 
-- ARC v2 and AI Architecture Requirements v2.1 workbooks, on the
-  [Architecture Assessment Tracker](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681)
-  page.
-- ISO/IEC/IEEE 29119 editions: <https://en.wikipedia.org/wiki/ISO/IEC_29119> ·
-  <https://www.evs.ee/en/iso-iec-ieee-29119-1-2022>
-- ISO/IEC TS 42119-2:2025: <https://committee.iso.org/standard/84127.html> ·
-  <https://www.evs.ee/en/iso-iec-ts-42119-2-2025>
+| Item | Why it matters |
+| ---- | -------------- |
+| **Secure Code Review Guidance** (not yet opened) | Probably answers ARC CQ-18. `checklists/code-review.md` should align with it |
+| **Information Security Architecture Review Process** (not yet opened) | S6 lead time. It may be as long as the pen test's |
+| **Application Vulnerability Management** (not yet opened) | C5, the definitive SLA |
+| Approved Tools deck, read in full | C3, C4 |
+| ARC owner; the IEP Questions & Standards workbook v2026.05.15 | C6, and the format ARC evidence must take |
+| Andromeda testing or eval guidance | Nothing indexed. The docs site is referenced in email but not in Sage. Ask the platform team directly |
+
+The first three are worth reading next. Between them they probably settle C5, the
+code-review checklist and the S6 lead time.
+
+---
+
+## External sources
+
+- ISO/IEC/IEEE 29119: <https://en.wikipedia.org/wiki/ISO/IEC_29119>
+- ISO/IEC TS 42119-2:2025: <https://committee.iso.org/standard/84127.html>
 - ISO/IEC 25010:2023: <https://committee.iso.org/standard/78176.html>
 - ISO/IEC 5055:2021 (CISQ): <https://www.it-cisq.org/standards/code-quality-standards/>
-- SonarQube quality gates, Sonar way:
+- SonarQube quality gates:
   <https://docs.sonarsource.com/sonarqube-server/2025.4/quality-standards-administration/managing-quality-gates/introduction-to-quality-gates>
-- OWASP ASVS 5.0: <https://owasp.org/projects/asvs> ·
-  <https://github.blesdmm.dns-dynamic.net/OWASP/ASVS/blob/master/CONTRIBUTING.md>
+- OWASP ASVS 5.0: <https://owasp.org/projects/asvs>
 - OWASP AI Testing Guide v1: <https://owasp.org/www-project-ai-testing-guide/>
 - NIST SP 800-218A: <https://csrc.nist.gov/pubs/sp/800/218/a/final>
 - NIST AI 600-1: <https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf>

@@ -50,6 +50,25 @@ session. Surname not recorded anywhere in the mirror.
 | Jon Allen | UI/UX | VCC |
 | Zach Haris | TSG Infrastructure | MCP |
 
+## Governance and security contacts
+
+From the Tech Lead's Sage search, 2026-10-28. These are document owners or signatories, not
+confirmed points of contact, so start with the team alias where one exists. Detail is in
+[testing/standards-baseline.md](../testing/standards-baseline.md).
+
+| Name or alias | Owns or signed | Use for |
+| ------------- | -------------- | ------- |
+| secAE@bain.com | TSG Security, Secure Design Principles contact | Security architecture questions, data classification confirmation |
+| secrisk@bain.com (programme: John Clary, Security Risk & Compliance) | Penetration Testing Program | Booking the third-party pen test: 4–8 weeks lead time |
+| Mark Waugh | Data Classification Standard v4.0, Data Handling Matrix | OpCat's classification tier |
+| David Wiggs | Application Security standard | SAST, SCA and DAST gates; remediation SLAs |
+| Gordon Morrison | SDLC Guidance, Hardening AI Applications | SDLC and scanning-tool questions |
+| Jordi Price | Archie and the Innovation Enablement Process; public-endpoint requirements | Review process; the IEP workbook |
+| Ed Moore | Approved Tools deck | Tool approvals, for example SonarQube |
+| Manuel Scholz | Responsible AI page (Global Risk) | AI Data Governance Committee review |
+| Ash Kanagat | Enterprise Architecture, Bain Application Framework review pack | Whether it is the same framework as ARC; the ARC owner |
+| Sandeep Uppal | File owner of `AI_Architecture_Requirements v2.1` on the OI 3.0 site | Workbook provenance (storage owner, not necessarily the governing owner) |
+
 ## Upstream data systems
 
 VCC, CapIQ, IRIS, LSEG, and Expert Search. Integration notes live under
