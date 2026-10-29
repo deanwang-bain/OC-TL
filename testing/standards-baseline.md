@@ -3,6 +3,8 @@
 **Status:** Proposal for Tech Lead sign-off · **Prepared:** 2026-10-28 · **Revised:**
 2026-10-28, after a Sage search run by the Tech Lead
 
+**Shareable version:** [opcat-testing-plan.html](opcat-testing-plan.html) (29 October) supersedes this file for discussion, and carries §2 as its standards table. It is rewritten against the system as built (28 October workshop) and adds the test types, gates, work plan and starter kit. This file remains the working record of how the plan was reasoned.
+
 **Purpose:** fix the goal post that [strategy.md](strategy.md) aims at, before the testing
 engineer starts. "Good enough" should be judged against a named standard, not against
 whatever the vendor's pipeline happens to do.

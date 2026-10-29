@@ -91,7 +91,7 @@ Delivery runs in **two-week Scrum cycles**.
 | `decisions/` | Tech Lead decision log for rulings made here, distinct from Confluence ADRs |
 | `checklists/` | Standards applied during reviews and triage |
 | `tools/` | Workspace tooling, including the Confluence sync |
-| `testing/` | Testing strategy — the scoping layer over the Agent Validation Test Plan, and the testing engineer's backlog |
+| `testing/` | Testing plan. `opcat-testing-plan.html` is the shareable version; `strategy.md` and `standards-baseline.md` are the working record behind it |
 
 ## Working method
 

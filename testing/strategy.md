@@ -5,6 +5,8 @@
 ([Deployment Tracker](../confluence/oi30/architecture/opportunity-catalyst-architecture-high-level/deployment-design-ai-compute-data-components-cicd/oc-dev-staging-gls-deployment-tracker-19909279789.md),
 as summarised in [the brief](../context/oi30-brief.md)).
 
+**Shareable version:** [opcat-testing-plan.html](opcat-testing-plan.html) (29 October) supersedes this file for discussion. It is rewritten against the system as built (28 October workshop) and adds the test types, gates, work plan and starter kit. This file remains the working record of how the plan was reasoned.
+
 **Goal post:** [standards-baseline.md](standards-baseline.md), proposed 2026-10-28. It names
 four gaps in this plan (code-quality gate, penetration test, test documentation standard,
 NFR checklist). They are folded in here once the baseline is signed off.
