@@ -168,7 +168,7 @@ Singapore time. The briefing leads with `context/standing-agenda.md` and is arch
 
 ### Known gaps in the source material
 
-Of 98 pages, **76 carry text, 15 hold only an attachment or diagram, and 7 are genuinely
+Of 99 pages, **77 carry text, 15 hold only an attachment or diagram, and 7 are genuinely
 empty**. Deployment Design was filled on 7 October — the first of the five high-level
 design pages to move. **Four still carry nothing**: Security Design, NFR Design Choices,
 Observability, and Endpoints & Interfaces Design. Reviews touching those areas rest on

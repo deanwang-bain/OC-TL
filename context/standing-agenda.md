@@ -9,7 +9,7 @@ matters is not. When an item is resolved, delete it and record the ruling in
 
 Format: `### N. Headline` — the finding, why it matters now, then **Ask:** in bold.
 
-*Last full review against the mirror: 2026-10-26.*
+*Last full review against the mirror: 2026-10-29.*
 
 ---
 

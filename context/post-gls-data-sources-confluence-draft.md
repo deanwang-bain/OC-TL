@@ -1,5 +1,7 @@
 # Post-GLS data sources: owners and approvals (DRAFT)
 
+**Published to Confluence on 26 October** as [Post-GLS data sources: owners and approvals (DRAFT)](../confluence/oi30/data-requirements/post-gls-data-sources-owners-and-approvals-draft-19973996610.md) (v4). The mirror copy is now authoritative; edit the page, not this file.
+
 *Draft for the OI30 space. Refreshed 26 Oct 2026 (GLS day) from the Confluence mirror as of the Sprint 3 refresh. Which sources count as post-GLS is inferred, not stated in Confluence. Please correct the tables where they are wrong.*
 
 ## Summary
