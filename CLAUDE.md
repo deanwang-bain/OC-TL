@@ -84,7 +84,8 @@ Delivery runs in **two-week Scrum cycles**.
 | Path | What it holds |
 | ---- | ------------- |
 | `confluence/` | Generated mirror of the OI30 space. **Read-only.** Start at `confluence/INDEX.md` |
-| `context/` | Distilled, hand-maintained understanding: project brief, stakeholders, open questions |
+| `context/` | Distilled, hand-maintained understanding: project brief, stakeholders, open questions, and `workshops/` notes |
+| `videos/` | Recordings and transcripts handed over directly, not from Confluence. **Gitignored** |
 | `reviews/` | Code review records, one file per review |
 | `requests/` | Technical requests and their recommendations, plus `REGISTER.md` |
 | `decisions/` | Tech Lead decision log for rulings made here, distinct from Confluence ADRs |
@@ -185,8 +186,10 @@ read them:
 | `python3 tools/attachment_text.py --list` | What is readable, by type |
 | `python3 tools/attachment_text.py <file>` | pptx, xlsx, xlsm, docx, html, csv |
 | `python3 tools/diagram_text.py` | Refreshes the SVG text extracts in `context/diagrams/` |
-| `python3 tools/video_frames.py --list` | The 13 meeting recordings, with durations |
+| `python3 tools/video_frames.py --list` | The 13 mirrored recordings plus anything in `videos/`, with durations |
 | `python3 tools/video_frames.py <file.mp4>` | Scene-change frames into `context/video-frames/` |
+| `python3 tools/video_frames.py <file.mp4> --at 04:40,1:31:58` | Full-resolution frames at given times |
+| `python3 tools/transcript_text.py <file.vtt>` | A Teams transcript as one timestamped line per utterance |
 
 The sprint retrospectives are decks, the ARC assessment is two workbooks, and the GLS
 output sample is an HTML file — none of that is in prose anywhere. Raster diagrams (PNG)
@@ -201,6 +204,16 @@ extracts scene-change frames, which is where the Sprint 4 backlog and its accept
 criteria turned out to be. It needs ffmpeg — `pip install imageio-ffmpeg` — which nothing
 else in `tools/` requires and the daily sync never runs. Extracted frames are gitignored
 because they are regenerable and large; put what you learn in `context/` instead.
+
+**Workshops arrive outside the space, with transcripts.** From Sprint 5, SN runs a workshop
+series, and the recordings are handed over directly, as an `.mp4` plus a Teams `.vtt`, into
+`videos/`. That folder is **gitignored**: the files are over GitHub's size limit, and they are
+meeting recordings rather than OI30 pages. Read the transcript with `transcript_text.py` first
+— it is auto-captioned with no speaker labels, so names come out garbled — then fetch the
+screen with `video_frames.py --at` at the moments the speech points to. Scene detection alone
+missed most of the code walkthrough in the first workshop. Distil each workshop into
+`context/workshops/`; the first, on system and data architecture (28 October), is there and
+is the most detailed account of the as-built system anywhere in this repo.
 
 Treat a genuinely empty page as **unknown, not as "no requirement"**, and flag it when a
 decision depends on one. The full breakdown is in

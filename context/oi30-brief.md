@@ -71,6 +71,10 @@ searchable:
 
 What they establish:
 
+*These three SVGs predate the Miro diagrams SN walked through on 28 October. For what is
+actually built — no swarm and no orchestrator — see
+[The system as built](#the-system-as-built--from-the-sprint-5-architecture-workshop).*
+
 **The system is an agent swarm, not a conventional web app.** A Claude SDK orchestrator
 plans agent calls and streams SSE to a chat-first UI. Named agents: Research,
 IP-Retrieval, Benchmark, SoP Composer, Skeptic, Persona, Slide Composer, VoiceApply,
@@ -319,7 +323,9 @@ comparability. Peers past the limit stay **unanalysed, not dropped**. HTTP 503 o
 **So "GenAI" is Azure AI Foundry**, which Technology Choices already records as *Adopt*.
 The provider conflict is closed. Two narrower questions replace it: which model Foundry
 serves, and whether these calls traverse the API Management GenAI gateway that §7 makes
-the single egress point.
+the single egress point. **Both were answered on 28 October**: `gpt-5.2`, plus
+`claude-opus-5-5` for writing the deck; calls go direct, with no gateway at MVP, and Portkey
+rather than APIM is the designed gateway.
 
 **Web search is `serpapi`** — stated outright on the Future Scope page. That one has no
 position anywhere, and it is how target-company names leave Bain.
@@ -823,8 +829,9 @@ other.
 **Embeddings run in-house because of geography.** Germany West Central cannot host Azure
 models, so the embedding model runs as a Container App, `embedding-service`, weights baked
 into the image at a pinned revision, pulled through `docker.bain.dev`, nothing downloaded
-at start-up. *"Document content never leaves Germany for embedding."* The model itself is
-**still to be chosen**, by top-n evaluation on the real document workload — which is the
+at start-up. *"Document content never leaves Germany for embedding."* (Contradicted on 28
+October: the current system overview draws `text-embedding-3-small` in Sweden Central,
+reached through Portkey.) The model itself is **still to be chosen**, by top-n evaluation on the real document workload — which is the
 measured-quality discipline §4.2 asked for, applied to the model rather than to the
 decision to have an index at all.
 
@@ -853,6 +860,71 @@ right call for both reasoning and authorisation.
 Worth holding against the still-blank NFR page: this is a streaming design with no written
 latency budget anywhere.
 
+## The system as built — from the Sprint 5 architecture workshop
+
+*Source: the recording of the 28 October workshop. It is not in Confluence; full notes, with
+timestamps, are in [workshops/2026-10-28-system-and-data-architecture.md](workshops/2026-10-28-system-and-data-architecture.md).
+Dipesh Bhardwaj (SN) presented; Sandeep Uppal, the Bain architect, questioned. Where this
+section and the Confluence pages above disagree, this section describes what is running, and
+the pages describe what was decided.*
+
+**The live architecture is no longer in the mirror.** It sits on a Miro board (*OI Architecture
+(HL)*), in SN's repo docs, and in an HTML journey portal. SN keeps its own ADR series, **SN
+ADR-0001 to ADR-0045**, whose numbers collide with Confluence's ADR-001–009.
+
+**Shape.**
+- Front Door Premium with WAF, then Private Link into a Container Apps environment in Germany
+  West Central.
+- Ten services: experience-bff, identity, case, compliance, audit, company-search, evidence,
+  peer-curation, realtime, and document (designed, not hosted).
+  - Each service owns its own Postgres schema.
+  - Each checks the caller's Entra token for audience and role.
+  - Browser tokens never leave the BFF.
+- Five agents in Foundry Agent Service, Sweden Central: peer-discovery, chat-assistant,
+  gls-narrative, deck-planner and deck-writer.
+  - They call **`gpt-5.2`** and **`claude-opus-5-5`** (which writes the output deck) directly,
+    with no gateway. **Portkey** is designed for that path.
+  - There is no agent orchestration: services call agents, and agents call back through Front
+    Door.
+- The calculation engine runs in-process in the data product and exposes **REST** (SN
+  ADR-0013); gRPC is reserved.
+
+**Where it departs from the ruling pages.**
+- **Postgres** instead of ADR-009's Azure SQL.
+- A **hand-rolled audit hash chain**, which ADR-009 and Technology Choices §10.3 both reject.
+- A self-hosted **Redis container**, plaintext with password auth.
+- **No model gateway**, where Technology Choices adopts APIM.
+- **Embeddings designed for Sweden Central**, against the Document Upload page's "never leaves
+  Germany".
+- **No use of Agent Framework's graph.**
+
+The full comparison is in the workshop notes and in [open-questions.md](open-questions.md).
+
+**The GLS build is a different codeline.** `stage` is 536 commits ahead of `main`. In GLS mode
+the BFF serves Redis copies of the golden data, runs a port of `calc.py`, and touches no domain
+service or Postgres table after sign-in. SN recorded this as **eleven exceptions, EX-0001 to
+EX-0011, expiring 2026-12-31**. They waive, among other rules:
+- no arithmetic in the BFF;
+- the hash-chained audit trail;
+- agents having no write tools.
+
+None of the eleven is machine-checked.
+
+**Contracts are the strongest part.** JSON Schema contracts are checked at CI, test, build and
+runtime, with dead-lettering. The audit envelope records an agent acting *on behalf of* a user,
+never *as* the user. Search artefacts carry SHA-256 fingerprints. The gaps SN named itself: agent
+budget and eval contracts are only checked for existence, and data classification does not
+change what the scaffolder generates.
+
+**Security posture in dev, as shown on screen.**
+- WAF in detection mode.
+- A "PostgreSQL to Public with selected IP" infra commit.
+- Secret and code scanning disabled, with 174 open Dependabot alerts.
+- CI secrets in GitHub rather than a vault.
+- Agent tool calls crossing the public internet.
+
+All of it is input to OI3-21 and the blank Security Design page.
+
 ## Delivery — how the work is run
 
 SN writes the application code; Bain holds product and architecture ownership. The
@@ -862,6 +934,9 @@ itself is still **to be signed off** — scope may move under active development
 ## What this brief cannot tell you
 
 Security design, NFR targets, observability standards, API contract standards, and
-CI/CD topology are **undocumented** — those pages are empty. See
+CI/CD topology are **undocumented** — those pages are empty. The 28 October workshop showed
+what is *practised* for observability (OpenTelemetry to Azure Monitor), contracts (JSON Schema
+in the repo) and CI/CD (GitHub Environments), but a practice shown in a meeting is not a written
+standard. See
 [open-questions.md](open-questions.md). Do not infer a standard that has not been
 written down; flag the gap instead.

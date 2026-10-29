@@ -8,10 +8,26 @@ Re-check against the mirror after a sync; this file is hand-maintained and drift
 
 ## Bain
 
+Roles are from the team table on the [space home page](../confluence/oi30-19588841975.md).
+Surnames are from the [VCC overview meeting](../confluence/oi30/meeting-summaries/vcc-overview-meeting-19696746551.md)
+attendee list, the GitHub contributor lists shown in the 28 October workshop, and — for
+Joanna — the photo filename on the home page.
+
 | Name | Role | Reach via |
 | ---- | ---- | --------- |
 | Dean Wang | Tech Lead — owns this workspace | Teams |
 | Kasia Mrowca | Product Manager | Teams |
+| **Sandeep Uppal** | **Architect.** The "Bain architect" whose review ADR-001–009 await. Contributes Terraform to the infra repo directly. Ran the questioning in the 28 October workshop and stated several positions there (see [workshop notes](workshops/2026-10-28-system-and-data-architecture.md)) | Teams |
+| Siva Vyra | Data Architect. Leads data structure "from day one", per the VCC meeting. Had no access to the core repo as of 28 October | Teams |
+| Anand Kirori | DevOps. Contributor to both the core and infra repos | Teams |
+| Angel | DevOps. Owner in the GLS deployment tracker. Surname not recorded anywhere | Teams |
+| Joanna Soh | Design lead | Teams |
+| Michelle Flood | Data Scientist | Teams |
+| Raema | UX Designer | Teams |
+
+**Sponsors:** Fritz, Stephanie and Noah. In the 28 October workshop, Stephanie and Noah were
+named as the people to decide whether peer selection should force a business-unit or company
+choice first.
 
 Kick-off and vision are Kasia's agenda; UX discovery review is Joanna's; data overview
 is Michelle's. See
@@ -41,6 +57,18 @@ vendor markers below are from the source rather than inferred.
 
 **Angel** appears in the deployment tracker as the DevOps owner but not in this
 session. Surname not recorded anywhere in the mirror.
+
+### Sprint 5 architecture workshop, 28 October
+
+From the Teams roster in the recording. Dipesh Bhardwaj presented and organised. Sandeep
+Uppal and Nikolozi Metreveli carry no vendor marker. **Abbas, Mohammed; Bereznickis,
+Aleksandrs; Grover, Lakshay; and Samadashvili, Giorgi are all marked (Vendor)**, as is
+Dipesh elsewhere in the same recording. The Sprint 4 table above lists three of them without
+the marker, probably because that roster was truncated. Siva Vyra joined late.
+
+The core repo has four contributors: Dipesh Bhardwaj, Anand Kirori, Aleksandrs Bereznickis and
+Lakshay Grover. Nikolozi ("Nico") was named as the person who will work out how the analysis
+steps differ by industry.
 
 ## System contacts
 
