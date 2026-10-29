@@ -13,3 +13,9 @@ context/video-frames/*.png
 # Sprint 5 workshop is 446 MB -- over GitHub's 100 MB file limit -- and its scope is
 # a meeting, not the OI30 space the mirror is cleared for. Distil into context/.
 videos/
+
+# macOS folder metadata.
+.DS_Store
+
+# Personal Claude Code permissions for this checkout; never shared.
+.claude/settings.local.json
