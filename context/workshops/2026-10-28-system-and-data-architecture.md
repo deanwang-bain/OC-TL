@@ -344,30 +344,73 @@ From the Teams share list at 00:05:
 
 The mirror holds only the Sprint 2 and Sprint 3 stakeholder updates.
 
-## Where to look in the recording
+## Frames — what was on screen
+
+All 46 frames are full resolution (1920×1080, JPEG) in
+[`../video-frames/2026-10-28-workshop/`](../video-frames/2026-10-28-workshop/), named
+`HHMMSS-what.jpg` by their time in the recording. Open them directly: the diagrams are legible.
 
 Scene detection (`tools/video_frames.py`, threshold 0.15) spent its whole cap on Miro zooms between
-22:00 and 34:30 and missed most of the code walkthrough. To get the frames below, pass the
-timestamps with `--at`.
+22:00 and 34:30 and missed most of the code walkthrough, so these were taken with `--at` at the
+moments the transcript pointed to. The 120 scene frames stay gitignored; their index is in
+`video-frames/`.
 
-| Time | On screen |
-| ---- | --------- |
-| 00:05 | Teams roster and share list |
-| 01:01–02:25 | Miro board lanes |
-| 04:40, 13:40, 20:10, 22:52 | *Opportunity Catalyst: system overview* |
-| 22:16–22:22 | Architecture journey portal |
-| 26:36, 27:41, 30:46, 31:35, 33:42 | *MVP Azure infrastructure reference* (dated 2 October) and its *Dev today* box |
-| 34:20 | *Dev and GLS staging on Azure* |
-| 35:30 | *Where data lives, from source files to screens* |
-| 46:20 | Repository root, `stage` |
-| 47:30 | `deploy/azure/settings/dev/experience-bff.json` |
-| 52:20, 54:10, 55:40, 57:00 | Contracts: folders, `case.created` schema, audit envelope, case-stream registry |
-| 1:03:40 | Search-artifact manifest |
-| 1:16:00, 1:16:45 | Agent contracts, `budget.contract.json` |
-| 1:18:05–1:20:55 | Service scaffolder |
-| 1:25:10 | Entity normaliser tests |
-| 1:28:30 | Journey portal, data and storage |
-| 1:30:40–1:31:05 | `docs/gls/overview.md`: architecture and invariant exceptions |
-| 1:31:58–1:32:16 | `docs/engineering/decisions.md` |
-| 1:37:45 | Security and quality overview |
-| 1:39:40 | Infra repo and its branches |
+**One frame is deliberately left out.** At 47:30, `.github/deploy/settings/dev/experience-bff.json`
+is on screen. It has no secret values — secrets are mounted as files under `/mnt/secrets/` — but it
+shows the Entra tenant ID, app and client IDs, managed-identity IDs and internal hostnames.
+Identifiers, not credentials, but nothing this workspace needs. What it adds to the notes:
+- **`OC_GLS_MODE` is `on` in the shared dev environment** (tier `development`). That is
+  consistent with the GLS doc ("local and development tiers only"), but it means dev serves the
+  same Redis-backed GLS path as staging. The domain services are only exercised after sign-in
+  where GLS mode is off.
+- **The OTel exporter is `console`**, so dev telemetry goes to container logs.
+- The chat agent endpoint sits on the POC Foundry project `poc-swc-oi-sweden-test`.
+
+| Time | Frame |
+| ---- | ----- |
+| 00:05 | [Teams roster and share list](../video-frames/2026-10-28-workshop/000005-teams-roster-and-share-list.jpg) |
+| 02:20 | [Miro board lanes](../video-frames/2026-10-28-workshop/000220-miro-board-lanes.jpg) |
+| 04:40 | [System overview, whole](../video-frames/2026-10-28-workshop/000440-system-overview.jpg) |
+| 13:40 | [System overview, services and agents](../video-frames/2026-10-28-workshop/001340-system-overview-services.jpg) |
+| 20:10 | [System overview, data platform and Portkey](../video-frames/2026-10-28-workshop/002010-system-overview-data-platform-and-portkey.jpg) |
+| 22:22 | [Journey portal, home](../video-frames/2026-10-28-workshop/002222-journey-portal-home.jpg) |
+| 22:24 | [Journey portal, database](../video-frames/2026-10-28-workshop/002224-journey-portal-database.jpg) |
+| 22:52 | [System overview, models (`claude-opus-5-5` writes the deck)](../video-frames/2026-10-28-workshop/002252-system-overview-models.jpg) |
+| 26:36 | [Infrastructure reference, edge and services](../video-frames/2026-10-28-workshop/002636-infra-reference-edge-and-services.jpg) |
+| 27:41 | [Infrastructure reference, Redis and data](../video-frames/2026-10-28-workshop/002741-infra-reference-redis-and-data.jpg) |
+| 30:46 | [Infrastructure reference, Foundry](../video-frames/2026-10-28-workshop/003046-infra-reference-foundry.jpg) |
+| 31:35 | [Infrastructure reference, subnets and *Dev today*](../video-frames/2026-10-28-workshop/003135-infra-reference-subnets-and-dev-today.jpg) |
+| 33:42 | [Infrastructure reference, title and legend](../video-frames/2026-10-28-workshop/003342-infra-reference-title-and-legend.jpg) |
+| 34:20 | [Dev and GLS staging on Azure](../video-frames/2026-10-28-workshop/003420-dev-and-gls-staging.jpg) |
+| 35:30 | [Where data lives, from source files to screens](../video-frames/2026-10-28-workshop/003530-where-data-lives.jpg) |
+| 43:30 | [Roster and data platform panel](../video-frames/2026-10-28-workshop/004330-roster-and-data-platform-panel.jpg) |
+| 46:20 | [Core repo root, `stage`](../video-frames/2026-10-28-workshop/004620-core-repo-root-stage.jpg) |
+| 51:00 | [`agents/`](../video-frames/2026-10-28-workshop/005100-agents-folder.jpg) |
+| 52:20 | [`contracts/`](../video-frames/2026-10-28-workshop/005220-contracts-folder.jpg) |
+| 54:10 | [`case.created` schema](../video-frames/2026-10-28-workshop/005410-case-created-schema.jpg) |
+| 55:40 | [Audit event envelope](../video-frames/2026-10-28-workshop/005540-audit-event-envelope.jpg) |
+| 57:00 | [Case-stream registry](../video-frames/2026-10-28-workshop/005700-case-stream-registry.jpg) |
+| 1:04:50 | [Search-artifact manifest](../video-frames/2026-10-28-workshop/010450-search-artifact-manifest.jpg) |
+| 1:16:00 | [Agent contracts](../video-frames/2026-10-28-workshop/011600-agent-contracts.jpg) |
+| 1:16:45 | [`budget.contract.json`](../video-frames/2026-10-28-workshop/011645-budget-contract.jpg) |
+| 1:18:05 | [Scaffolder, profile](../video-frames/2026-10-28-workshop/011805-scaffolder-profile.jpg) |
+| 1:19:15 | [Scaffolder, details and data classes](../video-frames/2026-10-28-workshop/011915-scaffolder-details.jpg) |
+| 1:20:00 | [Scaffolder, plan](../video-frames/2026-10-28-workshop/012000-scaffolder-plan.jpg) |
+| 1:20:55 | [Scaffolder, files to create](../video-frames/2026-10-28-workshop/012055-scaffolder-plan-files.jpg) |
+| 1:25:10 | [Entity normaliser tests](../video-frames/2026-10-28-workshop/012510-entity-normaliser-tests.jpg) |
+| 1:26:40 | [`utilities/`](../video-frames/2026-10-28-workshop/012640-utilities-folder.jpg) |
+| 1:28:30 | [Journey portal, data and storage](../video-frames/2026-10-28-workshop/012830-journey-portal-data-and-storage.jpg) |
+| 1:29:55 | [`docs/`](../video-frames/2026-10-28-workshop/012955-docs-folder.jpg) |
+| 1:30:40 | [GLS overview, architecture](../video-frames/2026-10-28-workshop/013040-gls-overview-architecture.jpg) |
+| 1:30:45 | [GLS invariant exceptions, EX-0001 to 0008](../video-frames/2026-10-28-workshop/013045-gls-invariant-exceptions-1.jpg) |
+| 1:31:00 | [GLS invariant exceptions, to EX-0011](../video-frames/2026-10-28-workshop/013100-gls-invariant-exceptions-2.jpg) |
+| 1:31:40 | [GLS docs index](../video-frames/2026-10-28-workshop/013140-gls-docs-index.jpg) |
+| 1:31:58 | [Engineering decisions, index](../video-frames/2026-10-28-workshop/013158-engineering-decisions-index.jpg) |
+| 1:32:04 | [Engineering decisions, sign-in and case records](../video-frames/2026-10-28-workshop/013204-engineering-decisions-sign-in-and-case-records.jpg) |
+| 1:32:09 | [Engineering decisions, search, agents and deck](../video-frames/2026-10-28-workshop/013209-engineering-decisions-search-agents-deck.jpg) |
+| 1:32:20 | [`docs/engineering/`](../video-frames/2026-10-28-workshop/013220-engineering-folder.jpg) |
+| 1:33:45 | [`docs/engineering/decisions/`](../video-frames/2026-10-28-workshop/013345-decisions-folder.jpg) |
+| 1:36:30 | [Core repo root, with the late roster](../video-frames/2026-10-28-workshop/013630-core-repo-root-and-late-roster.jpg) |
+| 1:37:45 | [Security and quality](../video-frames/2026-10-28-workshop/013745-security-and-quality.jpg) |
+| 1:38:58 | [Core repo, `main`](../video-frames/2026-10-28-workshop/013858-core-repo-main.jpg) |
+| 1:39:40 | [Infra repo and its branches](../video-frames/2026-10-28-workshop/013940-infra-repo-branches.jpg) |

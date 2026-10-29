@@ -215,6 +215,12 @@ missed most of the code walkthrough in the first workshop. Distil each workshop 
 `context/workshops/`; the first, on system and data architecture (28 October), is there and
 is the most detailed account of the as-built system anywhere in this repo.
 
+**Unlike scene frames, a workshop's cited frames are committed**, in
+`context/video-frames/<date>-workshop/`, full resolution as JPEG and named `HHMMSS-what.jpg`,
+with each one linked from the notes. Check every frame before adding it. Leave out anything
+showing secrets, and anything that only shows identifiers (tenant, client or app IDs,
+internal hostnames) — record what such a frame teaches as text instead.
+
 Treat a genuinely empty page as **unknown, not as "no requirement"**, and flag it when a
 decision depends on one. The full breakdown is in
 [context/open-questions.md](context/open-questions.md).
