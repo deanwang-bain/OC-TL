@@ -364,6 +364,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
     <span class="nav-title">OpCat testing plan</span>
     <ul>
       <li><a href="#summary">Summary</a></li>
+      <li><a href="#built">Already built</a></li>
       <li><a href="#standards">Standards</a></li>
       <li><a href="#types">Test types</a></li>
       <li><a href="#guardrails">Guardrails</a></li>
@@ -383,9 +384,9 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
     <h1>OpCat testing plan</h1>
     <p class="lead" style="margin-top: var(--ds-space-05);">What we test, against which standard, to what goal. It also gives the work plan and starter kit a testing engineer needs to begin on day one.</p>
     <div class="meta">
-      <div><span>Version</span>0.1 &middot; 29 October 2026</div>
+      <div><span>Version</span>0.2 &middot; 29 October 2026</div>
       <div><span>Owner</span>Dean Wang, Tech Lead</div>
-      <div><span>Status</span>Draft. Decisions in &sect;8 need sign-off</div>
+      <div><span>Status</span>Draft. Decisions in &sect;9 need sign-off</div>
       <div><span>Target</span>50+ partner rollout, late Nov &ndash; early Dec 2026</div>
     </div>
   </div>
@@ -415,10 +416,10 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
       <div>
         <h3>What this plan decides</h3>
         <ol>
-          <li><strong>Eleven test types</strong>, each tied to a named standard and a measurable goal (&sect;3).</li>
-          <li><strong>Internal standards are the floor and win wherever they exist.</strong> Public standards define "good" only where the internal ones are silent (&sect;2).</li>
+          <li><strong>Eleven test types</strong>, each tied to a named standard and a measurable goal (&sect;4).</li>
+          <li><strong>Internal standards are the floor and win wherever they exist.</strong> Public standards define "good" only where the internal ones are silent (&sect;3).</li>
           <li><strong>Numbers are checked exactly, never judged.</strong> Every figure on screen, in narrative and in the deck must match a calculation output.</li>
-          <li><strong>SN keeps its in-repo tests as part of its definition of done.</strong> An in-house testing engineer owns an independent layer: the golden eval set, a held-out set, the guardrail suite, acceptance journeys and the release evidence.</li>
+          <li><strong>Build on what SN already has; do not rebuild it.</strong> SN has a governance checker, service test suites, contract validation, per-agent tests and eval contracts, and adversarial review passes (&sect;2). SN keeps those. An in-house testing engineer adds the independent layer: the golden eval set, a held-out set, the guardrail suite, acceptance journeys and the release evidence.</li>
           <li><strong>Three actions cannot wait for the engineer:</strong> send the pen-test questionnaire, classify OpCat's data, and book BCN analyst time.</li>
         </ol>
       </div>
@@ -434,6 +435,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
               <tr><td>Agents only read</td><td>Chat may write through reversible tools, decided in the user's own turn (repo ADR-0045, 17 Oct)</td></tr>
               <tr><td>One calculation engine</td><td>GLS runs a port of <code>calc.py</code> inside the TypeScript BFF (waiver EX-0002)</td></tr>
               <tr><td>Azure SQL</td><td>Postgres, one schema per service</td></tr>
+              <tr><td>Most tests still to be written</td><td>A real SN test base exists. Its gaps are evals, guardrails, end-to-end and non-functional tests (&sect;2)</td></tr>
             </tbody>
           </table>
         </div>
@@ -442,10 +444,44 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
   </div>
 </section>
 
+<!-- ================= 2. ALREADY BUILT ================= -->
+<section id="built">
+  <div class="page">
+    <span class="eyebrow">2 &middot; Already built</span>
+    <h2>What SN has already built</h2>
+    <div class="section-intro">
+      <p>SN's core repository already carries more test machinery than the original plan assumed. The engineer's first job is to <strong>verify and extend it, not to duplicate it</strong>. The evidence comes from a review of a 17 September snapshot of <code>main</code>, the 28 October workshop screen share of the <code>stage</code> branch, and the Sprint 3 retrospective. Read access to the repository was not available when this was written, so every row needs confirming against the current <code>stage</code> head (WP-01).</p>
+    </div>
+    <div class="table-wrap">
+      <table class="ds-table">
+        <thead><tr><th>Asset</th><th>What it does</th><th>Evidence</th><th>Covers</th><th>The plan</th></tr></thead>
+        <tbody>
+          <tr><td class="id">Governance checker</td><td><code>tools/service-standards</code> (<code>oc-standards check</code>). It runs 25 mechanical checks: layering, contract and descriptor schemas, secret canaries, migration ownership, toolchain pinning and CI supply-chain rules</td><td>Run on 17 Sep: 0 errors, 0 warnings</td><td>TT-02, TT-07</td><td><strong>Extend.</strong> The waiver exit tests (WP-12) become checker controls</td></tr>
+          <tr><td class="id">Service test suites</td><td>pytest suites in the Python services (for example <code>test_adjustments.py</code>, <code>test_ports.py</code>); <code>*.test.ts</code> in the BFF on a test runner SN hardened (2 weeks before 28 Oct); JUnit <code>test-results.xml</code> output</td><td>17 Sep review; repo history on screen</td><td>TT-02, TT-03</td><td><strong>Verify</strong> coverage and enforcement</td></tr>
+          <tr><td class="id">Contract validation</td><td>JSON Schemas in <code>contracts/</code>, checked at CI, in tests, at build and at runtime; non-conforming events go to the dead-letter queue</td><td>Workshop, 52:20&ndash;1:16:45</td><td>TT-02</td><td><strong>Reuse</strong></td></tr>
+          <tr><td class="id">GLS calculation tests</td><td>The BFF's port of <code>calc.py</code> is tested against BCN's golden reference outputs</td><td>Workshop, <code>docs/gls/overview.md</code></td><td>TT-03</td><td><strong>Extend</strong> with parity against the engine</td></tr>
+          <tr><td class="id">Per-agent tests</td><td>Test commits under <code>agents/</code>, for example <code>test(chat-assistant): a lever at 0 keeps its figure refs (OI3-322)</code>. Sprint 3 reports "peer selection agents tested"</td><td>Workshop frame; Sprint 3 deck</td><td>TT-05</td><td><strong>Verify</strong>; these are unit tests, not statistical evals</td></tr>
+          <tr><td class="id">Agent contracts</td><td><code>eval.contract.json</code>, <code>budget.contract.json</code>, <code>control-coverage.json</code>, <code>delegation.contract.json</code>, <code>policy-catalog.json</code> 1.3.0. A descriptor missing any of the nine budget bounds is refused at admission, and <code>max_child_agents</code> is pinned to 0</td><td>Workshop frames</td><td>TT-05, TT-06</td><td><strong>Reuse</strong> the eval contract as the harness format. Runtime enforcement is the gap: today only file existence is checked</td></tr>
+          <tr><td class="id">Adversarial passes</td><td>SN's own adversarial review passes with numbered findings (for example <code>experience-bff/adversarial/passes/P02-2026-09-11.md</code>, finding N08). There is also a whole-repo security review skill and an HTML scan report under <code>security-review/</code></td><td>17 Sep review; repo root on screen</td><td>TT-06, TT-07</td><td><strong>Reuse</strong> the findings as seeds for the injection corpus</td></tr>
+          <tr><td class="id">Supply chain</td><td>Dependabot on; images scanned before push in the deploy workflow; image advisories fixed. Wiz is attached, but the team cannot see its dashboard</td><td>Workshop; repo history</td><td>TT-07</td><td><strong>Extend</strong>: turn on code and secret scanning; clear the 174 alerts</td></tr>
+          <tr><td class="id">Domain tests named in sprints</td><td>Frontend contract and network-boundary tests; audit service, BFF and case service tested; QA tickets OI3-227 (peer selection screen) and OI3-230 (peer service)</td><td><a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19933790220">Sprint 3 retrospective</a></td><td>TT-01, TT-02, TT-08</td><td><strong>Verify</strong></td></tr>
+          <tr><td class="id">Manual NFR checks</td><td>SSE through Front Door, resume, stream limits, chat-agent streaming</td><td><a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19899842692">4 Oct checks</a></td><td>TT-10</td><td><strong>Automate</strong></td></tr>
+          <tr><td class="id">SN's testing docs</td><td><code>docs/engineering/testing.md</code>; a <code>QA_Defect_Register</code> workbook; the Agent Validation Test Plan</td><td>Workshop frames and share list</td><td>All</td><td><strong>Read first</strong>; reconcile with this plan</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="ds-notification ds-notification--warning" role="note">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l9 16H1z" style="fill: var(--ds-warning);"/><rect x="9.1" y="7" width="1.8" height="5.5" style="fill: var(--ds-text-black);"/><rect x="9.1" y="13.6" width="1.8" height="1.8" style="fill: var(--ds-text-black);"/></svg>
+      <div><p><strong>Not seen anywhere:</strong> Playwright or other end-to-end tests, an accessibility suite, statistical agent evals over repeated trials, a held-out set, an injection corpus or red-team run, DAST, load tests, or deck-output checks. Those are where the in-house work goes.</p>
+      <p>Two findings from the 17 September review also need re-checking, because both bear directly on trust in the numbers. <strong>B1:</strong> a failed EBIT reconciliation did not lower a value's confidence, and no test covered it. <strong>S1:</strong> the MCP path called the calculation resolver directly, bypassing the port.</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= 2. STANDARDS ================= -->
 <section id="standards">
   <div class="page">
-    <span class="eyebrow">2 &middot; Standards</span>
+    <span class="eyebrow">3 &middot; Standards</span>
     <h2>Goal posts</h2>
     <div class="section-intro">
       <p><strong>The rule:</strong> internal standards are mandatory and win wherever they exist. Public standards are used as references, not certification targets, and only where the internal ones are silent.</p>
@@ -474,7 +510,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
 <!-- ================= 3. TEST TYPES ================= -->
 <section id="types">
   <div class="page">
-    <span class="eyebrow">3 &middot; Test types</span>
+    <span class="eyebrow">4 &middot; Test types</span>
     <h2>Eleven test types, by system part</h2>
     <div class="section-intro">
       <p>Two tracks, as the existing plan sets out. <strong>Deterministic parts get exact assertions:</strong> a mismatch is a defect. <strong>Probabilistic parts</strong> (the five agents) get invariants, distributions and baselines, never exact strings. The overview comes first; open any row below for scope, method, goal and today's known gaps.</p>
@@ -535,8 +571,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
             <li>First partial result within 30 s of run start (Technology Choices &sect;9.5).</li>
           </ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">The 4 October dev checks found UI handling of the 429 untested, a silent start before the first progress step, and answers arriving as a single block. Each becomes a test case.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> frontend contract and network-boundary tests (Sprint 3); OI3-227 QA on the peer selection screen. <strong>Not seen:</strong> end-to-end or accessibility automation. The 4 October dev checks found UI handling of the 429 untested, a silent start before the first progress step, and answers arriving as a single block. Each becomes a test case.</p>
         <ul class="refs">
           <li><a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> &middot; <a href="https://playwright.dev/docs/accessibility-testing">Playwright accessibility testing</a> &middot; <a href="https://playwright.dev/docs/mock">Playwright mocking</a> &middot; <a href="https://www.ag-grid.com/react-data-grid/testing/">AG Grid testing</a></li>
           <li>Internal: <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19899842692">Dev streaming and chat-agent checks</a> &middot; <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19617939629">Vision</a> (hard and soft gates)</li>
@@ -575,8 +611,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
             <li>100% of contract schemas validated at all four points.</li>
           </ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">Agent contracts (<code>budget</code>, <code>eval</code>, <code>tool-catalog</code> and others) are checked at runtime only for file existence, which SN called "the gap we need to fulfil". Coverage thresholds and reviewer counts are not known; WP-01 finds out.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> the governance checker (25 checks, clean on 17 Sep); service suites in pytest and on the BFF's own test runner; JSON Schema contracts validated at four points. <strong>Gaps:</strong> agent contracts (<code>budget</code>, <code>eval</code>, <code>tool-catalog</code> and others) are checked at runtime only for file existence, which SN called "the gap we need to fulfil". Coverage thresholds and reviewer counts are not known; WP-01 finds out.</p>
         <ul class="refs">
           <li><a href="https://mswjs.io/docs/sse/">MSW sse()</a> &middot; <a href="https://schemathesis.readthedocs.io/en/stable/guides/python-apps/">Schemathesis</a> &middot; <a href="https://docs.sonarsource.com/sonarqube-server/2025.4/quality-standards-administration/managing-quality-gates/introduction-to-quality-gates">Sonar way</a></li>
           <li>Internal: <a href="https://bainandcompany.sharepoint.com/sites/pubs/_layouts/15/Doc.aspx?sourcedoc=%7B924D0256-F1AC-4BBC-8549-412C2667043F%7D&amp;file=Guide+to+%E2%80%9CWell+Operated%E2%80%9D+Software+Build+Case.pptx&amp;action=edit&amp;mobileredirect=true&amp;web=1">AIS "Well Operated" build guide</a> &middot; <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681">ARC assessment tracker</a></li>
@@ -615,8 +651,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
             <li>~90% branch coverage on the engine, the upper end of the AIS range, because this is the one place exhaustive testing is possible.</li>
           </ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">The BFF port is tested against BCN reference outputs. Parity with <code>services/calculation-engine/</code> is not known to be tested, and the engine itself is untouched by GLS.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> engine unit tests (<code>test_adjustments.py</code>, <code>test_ports.py</code>); the grammar has no dynamic execution, verified on 17 Sep. The BFF port is tested against BCN reference outputs. Parity with <code>services/calculation-engine/</code> is not known to be tested, and the engine itself is untouched by GLS. Re-check 17 Sep findings B1 (a failed reconciliation does not lower confidence, and is untested) and S1 (the MCP path bypasses the calculation port).</p>
         <ul class="refs">
           <li><a href="https://en.wikipedia.org/wiki/ISO/IEC_29119">ISO/IEC/IEEE 29119-4</a> (equivalence, boundary, decision-table techniques)</li>
           <li>Internal: <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017">Technology Choices &sect;9.2</a> &middot; <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323">Agent Validation Test Plan &sect;7.5</a></li>
@@ -653,8 +689,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
             <li>No company with incomplete data can be proposed as a peer.</li>
           </ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">The alias index has <strong>0 rows</strong>, so a company cannot be found by another name. Parent and subsidiary use is undecided. Both are business questions, for Stephanie and Noah, that the suite's expected answers depend on.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> the normaliser carries a version and a fingerprint, and has a known-answer demo across six rule families; search artefacts carry per-segment SHA-256 fingerprints; company-search sizing is measured and budgeted. <strong>Gaps:</strong> the alias index has <strong>0 rows</strong>, so a company cannot be found by another name. Parent and subsidiary use is undecided. Both are business questions, for Stephanie and Noah, that the suite's expected answers depend on.</p>
       </div>
     </details>
 
@@ -662,6 +698,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
     <details class="tt" id="tt-05" open>
       <summary><span class="tt-id">TT-05</span><span><span class="tt-title">GenAI content evaluation</span><span class="tt-sub">peer-discovery &middot; chat-assistant &middot; gls-narrative &middot; deck-planner &middot; deck-writer (Foundry Agent Service, Sweden Central)</span></span><svg class="chev" aria-hidden="true"><use href="#i-chev"/></svg></summary>
       <div class="tt-body">
+        <p class="small"><strong>Built:</strong> per-agent unit tests under <code>agents/</code>, and an <code>eval.contract.json</code> per agent, which is declared but not yet enforced at runtime. <strong>Not built:</strong> statistical evals over repeated trials, a golden eval set or a held-out set. The harness should read SN's eval contract rather than introduce a second format.</p>
         <p class="small">A black-box harness drives each agent through the same BFF endpoints the UI uses, with a test identity. It records full trajectories and tags every result with an <strong>agent version manifest</strong>: prompt hash, tool-catalog version, model deployment and Foundry agent version. Without the manifest, a regression cannot be traced to a change.</p>
         <h4>Graders, cheapest first</h4>
         <ol class="small">
@@ -714,7 +751,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
           <div>
             <h4>What we test</h4>
             <ul class="small">
-              <li><strong>Every control in the guardrail register (&sect;4)</strong> has at least one test proving it blocks what it should.</li>
+              <li><strong>Every control in the guardrail register (&sect;5)</strong> has at least one test proving it blocks what it should.</li>
               <li><strong>An injection corpus</strong> built around the two shapes the architecture names, uploaded documents and retrieved web pages, plus tool responses carrying instructions:
                 <ul>
                   <li>white text in a PDF;</li>
@@ -744,7 +781,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
         </div>
         <div class="ds-notification ds-notification--error" role="note">
           <svg viewBox="0 0 16 16" aria-hidden="true" style="fill: var(--ds-error);"><use href="#i-no"/></svg>
-          <p><strong>Known gap: the injection control does not exist yet.</strong> Technology Choices names Content Safety at the gateway as <em>the</em> control; no gateway is deployed. Until Portkey and Content Safety are built, this suite measures what gets through rather than proving a control. Findings are expected and should be logged as security findings, not test failures.</p>
+          <p><strong>Built:</strong> SN's adversarial review passes, a whole-repo security review procedure, <code>control-coverage.json</code>, and a delegation contract limiting writes to reversible actions in the user's turn. <strong>Known gap: the injection control does not exist yet.</strong> Technology Choices names Content Safety at the gateway as <em>the</em> control; no gateway is deployed. Until Portkey and Content Safety are built, this suite measures what gets through rather than proving a control. Findings are expected and should be logged as security findings, not test failures.</p>
         </div>
         <ul class="refs">
           <li><a href="https://owasp.org/www-project-ai-testing-guide/">OWASP AI Testing Guide v1</a> &middot; <a href="https://genai.owasp.org/llm-top-10/">OWASP LLM Top 10 2025</a> &middot; <a href="https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/">OWASP Agentic Top 10 2026</a> &middot; <a href="https://learn.microsoft.com/en-my/Azure/foundry/openai/concepts/content-filter-prompt-shields">Prompt Shields</a> &middot; <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">The lethal trifecta</a></li>
@@ -784,8 +821,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
             <li>A third-party pen test before production; semi-annual if OpCat is classed Confidential or above.</li>
           </ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">Code scanning, secret scanning, code quality and the security policy are all <strong>disabled</strong>, with 174 open Dependabot alerts.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> Dependabot; image scanning before push; secret canaries in the governance checker; an on-demand security scan framework. <strong>Gaps:</strong> code scanning, secret scanning, code quality and the security policy are all <strong>disabled</strong>, with 174 open Dependabot alerts.</p>
         <p class="small">The dev posture has the WAF in detection mode, a Postgres "public with selected IP" commit, Service Bus with no private endpoint, a plaintext Redis container, and CI secrets in GitHub rather than a vault.</p>
         <ul class="refs">
           <li><a href="https://owasp.org/projects/asvs">OWASP ASVS 5.0</a> &middot; <a href="https://csrc.nist.gov/pubs/sp/800/218/final">NIST SSDF SP 800-218</a> &middot; <a href="https://csrc.nist.gov/pubs/sp/800/218/a/final">SP 800-218A</a></li>
@@ -821,8 +858,8 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
           <h4>Goal and pass criteria</h4>
           <ul class="small"><li>100% of critical actions carry the right actor and initiating user; 0 chain breaks; 0 orphan claims.</li></ul>
         </div>
-        <h4>Known gaps today</h4>
-        <p class="small">In GLS mode the BFF bypasses the hash-chained audit trail (waiver EX-0006). The chain itself is hand-rolled (repo ADR-0021), against ADR-009's ledger tables, so it needs proving rather than assuming.</p>
+        <h4>Already built, and gaps</h4>
+        <p class="small"><strong>Built:</strong> audit-service tested (Sprint 3). Append failures are abandoned for redelivery, never swallowed, and the outbox relay bounds its retries (17 Sep). <strong>Gaps:</strong> in GLS mode the BFF bypasses the hash-chained audit trail (waiver EX-0006). The chain itself is hand-rolled (repo ADR-0021), against ADR-009's ledger tables, so it needs proving rather than assuming.</p>
         <ul class="refs"><li>Internal: <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751960620">ADR-005, declared tools and actor attribution</a> &middot; ARC AD-24 &middot; <a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323">Agent Validation Test Plan &sect;7.9</a></li></ul>
       </div>
     </details>
@@ -923,7 +960,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
 <!-- ================= 4. GUARDRAILS ================= -->
 <section id="guardrails">
   <div class="page">
-    <span class="eyebrow">4 &middot; Guardrails</span>
+    <span class="eyebrow">5 &middot; Guardrails</span>
     <h2>Guardrail control register v0</h2>
     <div class="section-intro">
       <p>Every control gets a status, a test ID and an owner. The testing engineer maintains this register (WP-03). Status reflects what the documentation and the 28 October workshop show; WP-01 confirms each one.</p>
@@ -935,7 +972,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
           <tr><td class="id">G1</td><td><code>cap_id</code> must come from the offered shortlist</td><td>peer-discovery <code>resolve()</code></td><td><span class="status status--ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Built</span></td><td>An invented ID becomes <em>unresolved</em>; an absent company becomes null</td></tr>
           <tr><td class="id">G2</td><td>Citation check before an answer is shown</td><td>chat-assistant</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Over-blocks</span></td><td>Unsupported answers are withheld; once fixed, answers sourced from tools show</td></tr>
           <tr><td class="id">G3</td><td>Declared tools refuse with a stated reason</td><td>Chat and frontend tools</td><td><span class="status status--ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Built</span></td><td>No narration of an action that was not taken</td></tr>
-          <tr><td class="id">G4</td><td>Chat writes are reversible and decided in the user's own turn</td><td>Backend tools (ADR-0045)</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Decided, 17 Oct</span></td><td>Every write can be undone; no write happens outside the user's turn</td></tr>
+          <tr><td class="id">G4</td><td>Chat writes are reversible and decided in the user's own turn</td><td>Backend tools (ADR-0045); delegation contract</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Decided and scaffolded</span></td><td>Every write can be undone; no write happens outside the user's turn</td></tr>
           <tr><td class="id">G5</td><td>Services authorise from the signed case grant</td><td>Every service</td><td><span class="status status--ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Built</span></td><td>Cross-case and wrong-role calls are refused and audited, with no side effect</td></tr>
           <tr><td class="id">G6</td><td>An agent acts on behalf of a user, never as the user</td><td>Audit envelope</td><td><span class="status status--ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Built</span></td><td>The actor comes from the verified caller, never from input</td></tr>
           <tr><td class="id">G7</td><td>BFF re-checks access every 60 s; three streams per session</td><td>experience-bff</td><td><span class="status status--ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Built</span></td><td>Revoked access ends the stream within 60 s; the UI handles the 429</td></tr>
@@ -943,7 +980,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
           <tr><td class="id">G9</td><td>PII detection on prompts and responses</td><td>Model gateway</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Not deployed</span></td><td>Synthetic PII is caught in both directions (CQ-AI-OBS-02)</td></tr>
           <tr><td class="id">G10</td><td>Web data verified by a person before use</td><td>Research and chat flows</td><td><span class="status status--unknown"><svg aria-hidden="true"><use href="#i-unknown"/></svg>Unknown</span></td><td>No web-sourced claim reaches output unverified, even from a whitelisted URL</td></tr>
           <tr><td class="id">G11</td><td>Egress control on web search</td><td>Model built-in web search, serpapi</td><td><span class="status status--unknown"><svg aria-hidden="true"><use href="#i-unknown"/></svg>Unknown</span></td><td>No confidential content in outbound queries; model-generated URLs are not followed</td></tr>
-          <tr><td class="id">G12</td><td>Run budgets and termination</td><td><code>budget</code> contract</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>File only</span></td><td>A runaway loop stops on a machine-checkable condition, within a cost ceiling</td></tr>
+          <tr><td class="id">G12</td><td>Run budgets and termination: nine bounds per agent, child agents pinned to 0</td><td><code>budget</code> contract</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Checked at admission only</span></td><td>A runaway loop stops on a machine-checkable condition, within a cost ceiling</td></tr>
           <tr><td class="id">G13</td><td>Chat panel does not fetch model-generated image or link URLs</td><td>UI</td><td><span class="status status--unknown"><svg aria-hidden="true"><use href="#i-unknown"/></svg>Unknown</span></td><td>No exfiltration through rendered markdown</td></tr>
           <tr><td class="id">G14</td><td>Compliance gate: conflict of interest, blocked targets, residency</td><td>compliance-service</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Empty pass-through</span></td><td>Deterministic fixtures: aliases, misspellings, subsidiaries of blocked targets</td></tr>
           <tr><td class="id">G15</td><td>Search filtered to one case, failing closed</td><td>Retrieval tool</td><td><span class="status status--unknown"><svg aria-hidden="true"><use href="#i-unknown"/></svg>Designed</span></td><td>A cross-case retrieval attempt returns nothing</td></tr>
@@ -957,7 +994,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
 <!-- ================= 5. GATES ================= -->
 <section id="gates">
   <div class="page">
-    <span class="eyebrow">5 &middot; Gates</span>
+    <span class="eyebrow">6 &middot; Gates</span>
     <h2>Pipeline gates, and where they stand today</h2>
     <div class="section-intro">
       <p>This reconciles Technology Choices T14 (model regression blocks a release, not a merge) with CQ-AI-PMT-02, which requires prompt changes to be regression-tested <em>before</em> merge. A smoke eval that uses <strong>code graders only</strong> blocks merge, and only for agent-affecting changes. That keeps it cheap and deterministic, and means a model provider's drift cannot block unrelated work.</p>
@@ -966,14 +1003,14 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
       <table class="ds-table">
         <thead><tr><th>Stage</th><th>Runs</th><th>Effect</th><th>Today</th></tr></thead>
         <tbody>
-          <tr><td class="id">PR, any change</td><td>Unit, component, contract, lint; CodeQL; secret scanning; coverage &ge;80% on new code; &ge;2 reviewers</td><td>Blocks merge</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Scanning off</span></td></tr>
+          <tr><td class="id">PR, any change</td><td>Unit, component, contract, lint; CodeQL; secret scanning; coverage &ge;80% on new code; &ge;2 reviewers</td><td>Blocks merge</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Tests and checker run; scanning off</span></td></tr>
           <tr><td class="id">PR, agent-affecting</td><td>All of the above, plus the smoke eval: 20&ndash;30 dev cases, k=3, code graders and invariants, under about 10 min</td><td>Blocks merge</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Not in place</span></td></tr>
-          <tr><td class="id">Merge to main</td><td>Integration on Testcontainers Postgres; calculation golden fixtures and parity; property tests; SCA; image scan</td><td>Blocks merge</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>BFF port vs BCN only</span></td></tr>
+          <tr><td class="id">Merge to main</td><td>Integration on Testcontainers Postgres; calculation golden fixtures and parity; property tests; SCA; image scan</td><td>Blocks merge</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>BFF port vs BCN; image scan at deploy</span></td></tr>
           <tr><td class="id">Deploy to staging</td><td>Acceptance journeys; axe; numeric reconciliation; audit assertions; injection corpus</td><td>Blocks promotion</td><td><span class="status status--unknown"><svg aria-hidden="true"><use href="#i-unknown"/></svg>Unknown</span></td></tr>
           <tr><td class="id">Nightly</td><td>Full dev-set regression, k=5, with judges; ZAP; chain verification; load smoke; red-team scan</td><td>Alerts</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Not in place</span></td></tr>
           <tr><td class="id">Model or provider change</td><td>Full regression plus the held-out set, before switching in staging</td><td>Blocks the switch</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Not in place</span></td></tr>
           <tr><td class="id">Pre-release</td><td>Held-out set; SME panel; full red team; <strong>blocking DAST</strong>; performance scenario; resilience drills; governance reviews done</td><td>Blocks release</td><td><span class="status status--no"><svg aria-hidden="true"><use href="#i-no"/></svg>Not in place</span></td></tr>
-          <tr><td class="id">Production</td><td>Structural invariants on every run; sampled online evaluation</td><td>Fails the run</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Event schemas only</span></td></tr>
+          <tr><td class="id">Production</td><td>Structural invariants on every run; sampled online evaluation</td><td>Fails the run</td><td><span class="status status--partial"><svg aria-hidden="true"><use href="#i-partial"/></svg>Event schemas; budget admission</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -983,7 +1020,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
 <!-- ================= 6. WORK PLAN ================= -->
 <section id="workplan">
   <div class="page">
-    <span class="eyebrow">6 &middot; Work plan</span>
+    <span class="eyebrow">7 &middot; Work plan</span>
     <h2>Three sprints to rollout readiness</h2>
     <div class="section-intro">
       <p>This assumes the two-week cadence holds. SME time and the pen-test lead time are the binding constraints, not engineering. The critical path is in red.</p>
@@ -1027,20 +1064,20 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
         <thead><tr><th>WP</th><th>Deliverable</th><th>Done when</th><th>Owner</th><th class="nowrap">Test types</th></tr></thead>
         <tbody>
           <tr><td colspan="5"><strong>Phase 0 &middot; Sprint 5 &middot; Foundations</strong></td></tr>
-          <tr><td class="id">WP-00</td><td>Send the SecRisk pen-test questionnaire; classify OpCat's data; book BCN analyst hours; request the AI Data Governance Committee and InfoSec Architecture reviews</td><td>All four sent, with dates</td><td>Tech Lead</td><td>TT-07, TT-11</td></tr>
-          <tr><td class="id">WP-01</td><td>Test inventory: for each gate, whether it is specified, implemented and <strong>enforced</strong>. Includes SN's QA defect register</td><td>Table published; gaps raised to SN</td><td>Engineer</td><td>All</td></tr>
-          <tr><td class="id">WP-02</td><td>Agent version manifest specification: prompt hash, tool-catalog version, model deployment, Foundry agent version</td><td>SN has accepted it; it is visible in one trace</td><td>Engineer, SN builds</td><td>TT-05</td></tr>
-          <tr><td class="id">WP-03</td><td>Guardrail register (&sect;4), maintained</td><td>Every control has a status, a test ID and an owner</td><td>Engineer</td><td>TT-06</td></tr>
-          <tr><td class="id">WP-04</td><td>Harness repository from the starter kit (&sect;7)</td><td>One peer-discovery case runs k=3 end to end on staging</td><td>Engineer</td><td>TT-05</td></tr>
+          <tr><td class="id">WP-00</td><td>Send the SecRisk pen-test questionnaire; classify OpCat's data; book BCN analyst hours; request the AI Data Governance Committee and InfoSec Architecture reviews; get <strong>read access to SN's two repositories</strong> for the testing engineer</td><td>All five sent, with dates</td><td>Tech Lead</td><td>TT-07, TT-11</td></tr>
+          <tr><td class="id">WP-01</td><td>Test inventory, starting from &sect;2: confirm each asset on the current <code>stage</code> head; read <code>docs/engineering/testing.md</code>, the QA defect register and the adversarial passes; record for each gate whether it is specified, implemented and <strong>enforced</strong></td><td>&sect;2 confirmed or corrected; gaps raised to SN</td><td>Engineer</td><td>All</td></tr>
+          <tr><td class="id">WP-02</td><td>Agent version manifest: prompt hash, tool-catalog version, model deployment and Foundry agent version, plus the versions of SN's agent contracts already in use</td><td>SN has accepted it; it is visible in one trace</td><td>Engineer, SN builds</td><td>TT-05</td></tr>
+          <tr><td class="id">WP-03</td><td>Guardrail register (&sect;5), maintained</td><td>Every control has a status, a test ID and an owner</td><td>Engineer</td><td>TT-06</td></tr>
+          <tr><td class="id">WP-04</td><td>Harness repository from the starter kit (&sect;8)</td><td>One peer-discovery case, declared in SN's <code>eval.contract.json</code> format, runs k=3 end to end on staging</td><td>Engineer</td><td>TT-05</td></tr>
           <tr><td class="id">WP-05</td><td>Error analysis, round 0: 30&ndash;50 traces open-coded with an SME</td><td>Failure taxonomy written; each category has a seed case</td><td>Engineer with BCN</td><td>TT-05, TT-11</td></tr>
           <tr><td colspan="5"><strong>Phase 1 &middot; Sprint 6 &middot; First suites running</strong></td></tr>
           <tr><td class="id">WP-06</td><td>Golden eval set v0, split into dev and held-out, versioned</td><td>BCN signs off the reference sets; bucket coverage reported</td><td>BCN with the engineer</td><td>TT-05</td></tr>
           <tr><td class="id">WP-07</td><td>Smoke eval called from SN's CI on agent-affecting paths</td><td>A deliberately broken prompt PR is blocked in a dry run</td><td>Engineer with SN</td><td>TT-05</td></tr>
           <tr><td class="id">WP-08</td><td>Numeric reconciliation grader for screen, narrative and deck</td><td>0 unmatched figures on the GLS cases</td><td>Engineer</td><td>TT-05, TT-09</td></tr>
           <tr><td class="id">WP-09</td><td>Acceptance journeys in both stream modes, plus axe</td><td>Green on staging, with audit and provenance assertions</td><td>Engineer</td><td>TT-01, TT-08</td></tr>
-          <tr><td class="id">WP-10</td><td>Injection corpus v0 and a first red-team run</td><td>Findings triaged; threat-class coverage reported</td><td>Engineer</td><td>TT-06</td></tr>
+          <tr><td class="id">WP-10</td><td>Injection corpus v0, seeded from SN's adversarial-pass findings, and a first red-team run</td><td>Findings triaged; threat-class coverage reported</td><td>Engineer</td><td>TT-06</td></tr>
           <tr><td class="id">WP-11</td><td>Performance baseline</td><td>Baseline published; thresholds proposed</td><td>Engineer with SN</td><td>TT-10</td></tr>
-          <tr><td class="id">WP-12</td><td>Waiver exit tests: one test per EX-0001&ndash;0011, red today, green when the rule is restored</td><td>All 11 written and running; the SN rewrite tracks against them</td><td>Engineer, SN fixes</td><td>TT-02, TT-03, TT-08</td></tr>
+          <tr><td class="id">WP-12</td><td>Waiver exit tests: each of EX-0001&ndash;0011 becomes a control in SN's governance checker, so each waiver can be filed properly and expire mechanically. Red today, green when the rule is restored</td><td>All 11 controls written and running; the SN rewrite tracks against them</td><td>Engineer, SN fixes</td><td>TT-02, TT-03, TT-08</td></tr>
           <tr><td colspan="5"><strong>Phase 2 &middot; Sprint 7 &middot; Release readiness</strong></td></tr>
           <tr><td class="id">WP-13</td><td>Judge calibration on an SME-labelled sample</td><td>Agreement measured; judges approved to gate or kept advisory</td><td>Engineer with BCN</td><td>TT-05, TT-11</td></tr>
           <tr><td class="id">WP-14</td><td>Human review, round 1, on the held-out set</td><td>Rubric scores recorded; findings fed back as cases</td><td>SME panel</td><td>TT-11</td></tr>
@@ -1057,7 +1094,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
 <!-- ================= 7. SKELETON ================= -->
 <section id="skeleton">
   <div class="page">
-    <span class="eyebrow">7 &middot; Starter kit</span>
+    <span class="eyebrow">8 &middot; Starter kit</span>
     <h2>Skeleton for the testing engineer</h2>
     <div class="section-intro">
       <p>The independent layer lives in an <strong>in-house repository</strong>, separate from SN's two repositories. SN's CI calls its smoke eval, and the held-out set never leaves it. The skeletons below are starting points, not finished code. Every test carries a trace to a standard or requirement ID.</p>
@@ -1100,6 +1137,7 @@ footer { padding: var(--ds-space-07) 0 var(--ds-space-09); font-size: 15px; line
           <li><strong>Test data:</strong> no production documents in test, ever. Synthetic companies for functional tests; the pinned GLS set for evals, once its permitted use is cleared; recorded source responses for integration.</li>
           <li><strong>No secrets in the repository.</strong> Test identities and keys come from a vault at run time.</li>
           <li><strong>Every run is tagged</strong> with the agent version manifest and the dataset version.</li>
+          <li><strong>One format per thing:</strong> eval cases follow SN's <code>eval.contract.json</code> where it fits, and repository-level rules live in SN's governance checker. Don't fork either.</li>
         </ul>
       </div>
     </div>
@@ -1270,7 +1308,7 @@ TT07-SAST-001,TT-07,CQ-04,TSG Application Security,code vuln,P0,security,pr,fail
 <!-- ================= 8. DECISIONS ================= -->
 <section id="decisions">
   <div class="page">
-    <span class="eyebrow">8 &middot; Decisions</span>
+    <span class="eyebrow">9 &middot; Decisions</span>
     <h2>Decisions needed to start</h2>
     <div class="table-wrap">
       <table class="ds-table">
@@ -1287,6 +1325,7 @@ TT07-SAST-001,TT-07,CQ-04,TSG Application Security,code vuln,P0,security,pr,fail
           <tr><td class="id">9</td><td>Governance reviews</td><td>Confirm the status of the AI Data Governance Committee review and the InfoSec Architecture Review; treat both as rollout prerequisites</td><td>Tech Lead</td></tr>
           <tr><td class="id">10</td><td>Business rulings the eval set depends on</td><td>Business-unit versus company peers; parent and subsidiary handling</td><td>Stephanie and Noah</td></tr>
           <tr><td class="id">11</td><td>The architect's agentic standards</td><td>Share them with the testing engineer; any test requirement in them joins the mandatory floor</td><td>Sandeep Uppal</td></tr>
+          <tr><td class="id">12</td><td>Read access to SN's repositories</td><td>Read-only access to <code>nextgen-opportunity-catalyst-core</code> and <code>-ui</code> for the testing engineer and this workspace, so &sect;2 can be verified rather than read off a screen share</td><td>Tech Lead with SN</td></tr>
         </tbody>
       </table>
     </div>
@@ -1296,7 +1335,7 @@ TT07-SAST-001,TT-07,CQ-04,TSG Application Security,code vuln,P0,security,pr,fail
 <!-- ================= 9. SOURCES ================= -->
 <section id="sources">
   <div class="page">
-    <span class="eyebrow">9 &middot; Sources</span>
+    <span class="eyebrow">10 &middot; Sources</span>
     <h2>References</h2>
     <div class="grid-2">
       <div>
@@ -1310,6 +1349,8 @@ TT07-SAST-001,TT-07,CQ-04,TSG Application Security,code vuln,P0,security,pr,fail
           <li><a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19853082681">Architecture Assessment Tracker</a>: ARC v2 and AI Architecture Requirements v2.1</li>
           <li><a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19617939629">Vision</a></li>
           <li>Sprint 5 architecture workshop, 28 Oct: a recording, with notes in the Tech Lead workspace. Not in Confluence</li>
+          <li>Full-repo review of the core repository, 17 Sep snapshot of <code>main</code>: Tech Lead workspace</li>
+          <li><a href="https://bainco.atlassian.net/wiki/spaces/OI30/pages/19933790220">Sprint 3 retrospective</a> (deck)</li>
           <li><a href="https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Application--Security.aspx">TSG Application Security</a> &middot; <a href="https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/SDLC-Guidance.aspx">SDLC Guidance</a> &middot; <a href="https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Secure-Design-Principles.aspx">Secure Design Principles</a></li>
           <li><a href="https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Penetration-Testing-Program.aspx">Penetration Testing Program</a> &middot; <a href="https://baincoprod.service-now.com/hub?id=kb_article&amp;sysparm_article=KB0019458">Data Handling Matrix</a> &middot; <a href="https://baincoprod.service-now.com/hub?id=kb_article&amp;sysparm_article=KB0028388">Public endpoint requirements</a></li>
           <li><a href="https://baincoprod.service-now.com/hub?id=policy_esc_kb_article_view&amp;sysparm_article=KB0027990">AI Responsible Use Policy</a> &middot; <a href="https://bainandcompany.sharepoint.com/sites/GlobalTSGSecurity/SitePages/Hardening-AI-Applications.aspx">Hardening AI Applications</a></li>
@@ -1336,7 +1377,7 @@ TT07-SAST-001,TT-07,CQ-04,TSG Application Security,code vuln,P0,security,pr,fail
 
 <footer>
   <div class="page">
-    Draft 0.1, 29 October 2026. Prepared in the OpCat Tech Lead workspace from the OI30 Confluence mirror, the 28 October architecture workshop, and a search of internal standards on 28 October. Corrections are welcome: say which row is wrong and why.
+    Draft 0.2, 29 October 2026. Prepared in the OpCat Tech Lead workspace from the OI30 Confluence mirror, the 28 October architecture workshop, and a search of internal standards on 28 October. Corrections are welcome: say which row is wrong and why.
   </div>
 </footer>
 
