@@ -30,6 +30,64 @@ why. A gate with no recorded outcome is not a gate.
 it applied to, and the known gaps it accepted. Ten minutes now, and it is the only record
 that will exist.**
 
+*Lead, 28 October:* a deck titled `OC3_Stakeholder_Update_Sprint4_mid…` appears in Dipesh's
+Teams share list in the architecture workshop recording. It is not in the mirror, and a
+mid-Sprint 4 stakeholder update is where a go/no-go outcome would sit. **Ask Dipesh to attach
+it to the Sprint 4 page.**
+
+### 1a. The GLS build runs on eleven waived rules, and they expire on 31 December
+
+From the Sprint 5 architecture workshop on 28 October
+([notes](workshops/2026-10-28-system-and-data-architecture.md)). The GLS build lives on the
+`stage` branch, **536 commits ahead of `main`**. With GLS mode on, *"after [sign-in] no domain
+service and no Postgres table is touched."* The BFF answers from Redis copies of the golden
+data, and runs **a port of the calculation engine inside the BFF**.
+
+SN recorded this honestly, as eleven exceptions (EX-0001–EX-0011), each relaxing a core rule
+and each **expiring 2026-12-31**. Three bear directly on what OpCat promises:
+
+- **EX-0002**: financial arithmetic runs in the BFF. The numbers on screen come from a
+  **second implementation** of the methodology — a port of `calc.py`, tested against BCN's
+  golden outputs — and not from the governed calculation engine with its derivation trace. Two
+  implementations of one methodology can drift.
+- **EX-0006**: case edits bypass audit-service's hash-chained trail. Transparency is a product
+  requirement, and on this build the audit record of a partner's edits is a Redis mutation log.
+- **EX-0008**: agents have write tools, a rule lifted for every agent by repo ADR-0045 on
+  17 October.
+
+**None of the eleven is machine-checked.** They are deliberately kept out of the governance
+checker. **The 50+ partner rollout** (late November or early December, per the watch list)
+falls *before* the expiry. Nothing written says which codeline it runs on.
+
+**Ask: which build serves the partner rollout, `stage` or `main`? And put a date against
+retiring each exception. If the rollout runs on `stage`, EX-0006 needs an explicit decision,
+because it takes the audit trail out of the product's transparency promise.**
+
+### 1b. The design record has moved into SN's repository, and it reverses the ruling pages
+
+The live architecture is on a Miro board (*OI Architecture (HL)*), in SN's repo docs, and in an
+HTML journey portal. **None of it is in Confluence.** SN's own ADR series runs **ADR-0001 to
+ADR-0045** in `docs/engineering/decisions/`, with numbers that collide with Confluence's
+ADR-001–009. Several of those repo ADRs reverse what the ruling pages say:
+
+| Ruling page | As built |
+| ----------- | -------- |
+| ADR-009: Azure SQL Database | **PostgreSQL Flexible Server** |
+| ADR-009 and TC §10.3 reject a hand-rolled audit hash chain | Repo **ADR-0021**: *"the audit trail is hash chained on the queryable table"* |
+| TC: Azure Cache for Redis | Redis 7 **container**, plaintext with password auth, created outside Terraform (TD-033) |
+| TC: APIM GenAI gateway, with Content Safety at the gateway | **No gateway at MVP**; **Portkey** designed; Content Safety not deployed |
+| ADR-008: Microsoft Agent Framework for orchestration | No orchestration — *"agents are generated, governed and never services"* (ADR-0028) |
+| Document Upload: *"content never leaves Germany for embedding"* | `text-embedding-3-small` in **Sweden Central** (designed) |
+| TC: gRPC for the calculation hop | **REST** (ADR-0013) |
+
+Confluence ADR-001–009 are still *"Accepted, pending Bain architect review"*, and the Bain
+architect is Sandeep Uppal. In the workshop he asked for a session to review SN's ADRs against
+**Bain's agentic standards**, a document not in the mirror.
+
+**Ask: hold that session, and come out of it with one authoritative series. Either supersede
+the Confluence rows the repo ADRs overturn, or reject those repo ADRs. When citing, prefix SN's
+series ("SN ADR-0021") so the two cannot be confused.**
+
 ### 2. Sprint 3 held at 82%, and the burn profile has not changed in three sprints
 
 [Sprint 3 Retrospective](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19933790220),
@@ -71,6 +129,33 @@ OI3-27, architecture decision records, closed — the ADR review did its job.
 **Ask: nothing from the team. OI3-21 is mine and it is now the longest-running item on the
 board. Clear it or hand it to someone who can.**
 
+### 3a. The architecture workshop put the dev security gaps on screen
+
+These are concrete inputs to OI3-21 and to the blank Security Design page. Each one was visible
+in the recording, not inferred:
+
+- **WAF in detection mode, logs only**, on the shared Front Door profile.
+- **An infra commit titled "Updated PostgreSQL to Public with selected IP Listyes"**, against
+  the design's *"public network access disabled"*. Whether it is still in effect is not shown.
+- **Secret scanning, code scanning and a security policy are all disabled** on the core repo.
+  Dependabot is on, with **174 open vulnerabilities**, some critical. Technology Choices calls
+  for *"Dependabot with alerts as blocking"*.
+- **CI/CD secrets are GitHub Environment secrets**, not Key Vault or managed identity. Sandeep
+  logged moving them as a to-do.
+- **Agent tool calls cross the public internet**: Foundry in Sweden calls back in through Front
+  Door. Sandeep wants Foundry in-zone, behind a private endpoint, at UAT.
+- **Session Redis runs plaintext with password auth** in a container created outside Terraform.
+  Service Bus is Standard tier with no private endpoint.
+- **Infra `main` was pushed to directly and is untested**; dev deploys from a feature branch.
+- **Wiz is attached, but only Sandeep can see it**, and its Teams alerts are not arriving.
+
+Sprint 5 is "Support and Hardening" on the team's own plan, so this is the sprint for it.
+
+**Ask: before any partner traffic, (1) confirm Postgres public access is off, (2) switch the WAF
+to prevention, (3) enable secret scanning and push protection — on a private repo that may need
+a GitHub Advanced Security licence, so find out — and (4) triage the critical Dependabot alerts.
+The rest can be sequenced, but should be written into OI3-21.**
+
 ### 4. The demo runs on a golden data set, and that should be said out loud
 
 The golden data set, curated with BCN and delivered as JSON, is why Sprint 3 had no vendor
@@ -96,6 +181,13 @@ client?" Better one honest answer rehearsed than four improvised. And name the d
 data engineer arrives, because live sources are the gap between this demo and the
 product.**
 
+*Update, 28 October workshop:* after GLS, the golden data set **becomes the evaluation set**
+for live source connections, which is the right next use for it. It lives outside git and is
+loaded by hand (a SAS URL through Cloud Shell, then a script inside the BFF container). Siva
+Vyra said the data "[is] onboarded next week". That is either the data engineer starting or
+the data arriving — confirm which. Siva does not yet have access to the repo that documents
+the data product.
+
 ### 4a. Two artefacts exist only inside a video, and no recording of the product exists
 
 All 13 recordings in the space are **planning sessions** — Sprint 3 and Sprint 4, about
@@ -110,6 +202,12 @@ shown in Sprint 3 planning.
 **Ask: attach the Sprint 4 backlog workbook to Confluence, and record the GLS demo (or
 publish the walkthrough prototype as the canonical one). A three-hour video is not a
 record; the spreadsheet inside it is.**
+
+*28 October:* the same pattern repeats at a larger scale. The Sprint 5 architecture workshop
+(1 h 40 m, supplied locally, not in the space) walked through four current Miro diagrams, the
+repo ADRs and the GLS exceptions, and **none of them is in Confluence**. The share list in that
+recording also shows a QA defect register and the MVP and post-GLS scope decks, all missing from
+the mirror. **Add to the ask: export the four lane-4 Miro diagrams onto the Architecture pages.**
 
 ### 5. Sprint 4 committed 58 items against the first measured rate we have
 
@@ -152,6 +250,13 @@ dated 21 August**.
 is the natural place to cite. Leaving the decision record contradicting the running system
 makes it useless for the next decision.**
 
+*28 October — now three-way.* In the workshop Dipesh said *"for the time being we are not
+vectorising any data"*. The system overview marks AI Search, Document Intelligence and the
+embedding model as *designed*, and puts the embeddings on `text-embedding-3-small` in **Sweden
+Central**, contradicting the Document Upload page's *"content never leaves Germany"*. Sandeep
+said that if embeddings are needed, *"we should use pgvector"* on the existing Postgres. The
+ruling page, the authoritative design and the architect now name three different answers.
+
 ### 8. The backend runs on a search vendor nobody has approved
 
 Unchanged since 21 September. [Future Scope](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19849412714)
@@ -162,6 +267,14 @@ Data Source Catalogue.
 
 **Ask: rule on serpapi, or name what replaces it. Two independent paths now, still no
 position.**
+
+*28 October — a possible replacement.* A commit in SN's agent contracts, last month, is
+titled *"feat(peer-discovery): search the web through the Foundry model endpoint"*. That reads
+as moving web search onto the model's own search tool. If so, serpapi may be gone, but target
+names still leave Bain through whatever search Foundry uses. Separately, Sandeep stated a rule
+in the workshop: **web data must be verified by a person before use, even from whitelisted
+URLs.** Peer discovery feeds web results straight into proposals. **Confirm serpapi is out, and
+ask how the verification rule applies to peer discovery.**
 
 ### 9. Open-source and third-party positions still need a ruling
 
@@ -176,6 +289,16 @@ unchanged, and demonstrably behind the build. Assessment in
   as the chat tool catalogue. It was on the hold list; it shipped.
 - **Add to the register** — **serpapi**, **Azure AI Search**, **gpt-5.2**, **gpt-4.1**,
   the **embedding model**, **Andromeda**.
+- **New from the 28 October workshop**:
+  - **`claude-opus-5-5`, which writes the output deck.** An Anthropic model producing the
+    client-facing artefact, under an Azure-first rubric, with no position. This is the sharpest
+    of the new ones.
+  - **Portkey**, designed to sit on every model call, in place of the APIM GenAI gateway that
+    Technology Choices adopts.
+  - **`text-embedding-3-small`**.
+  - **A self-hosted Redis 7 container**, where Technology Choices adopts Azure Cache for Redis.
+  - **Textual**, a dev-only scaffolder UI that needs a position only if the block approval
+    covers dev tooling.
 - **think-cell** — the licence (OI3-54) was removed from Sprint 3 as *not a GLS
   dependency*. Still required post-GLS; still unruled.
 - **Apache ECharts is a contradiction** — rejected in §2.1 of the same page for breaking
@@ -197,16 +320,13 @@ OI3-27 closed, but the two findings did not.
 
 **Ask: rule on store ownership and fix the chat-turn contradiction.**
 
-### 11. The calculation hop is still specified two different ways
-
-Unchanged since 2026-09-01, now eight weeks old.
-[Technology Choices](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19751338017)
-specifies **gRPC with protobuf**; the
-[Agent Validation Test Plan](https://bainco.atlassian.net/wiki/spaces/OI30/pages/19765133323)
-specifies **plain REST** and excludes gRPC from MVP testing. Sprint 3 built the GLS
-calculation engine, so something was chosen in code.
-
-**Ask: which protocol did the GLS engine actually use, and who corrects the other page?**
+*28 October — both answered by the build, neither written down.*
+1. Each service owns its own Postgres schema; for example, peer-curation-service owns peer
+   sets, runs and versions (SN ADR-0031).
+2. Chat threads are in **neither** Redis nor the transactional store. Cosmos was dropped
+   because *"Foundry provides its own database"*, so threads live in Foundry-managed storage in
+   **Sweden Central**. The ask is now to record both, and to confirm that holding chat content
+   in Sweden is acceptable under the residency position.
 
 ---
 
@@ -217,6 +337,11 @@ calculation engine, so something was chosen in code.
 - **Estimates are in Jira** from Sprint 3 — ~450 hours committed, ~370 burned.
 - **No vendor blockers in Sprint 3**, the first sprint where that is true.
 - **OI3-27 architecture decision records** closed.
+- **The calculation hop is REST, not gRPC.** Settled in code by SN ADR-0013, *"the
+  calculation engine exposes REST for the MVP"*, with `python-grpc` reserved (SN ADR-0005).
+  Dipesh confirmed it in the 28 October workshop, and Sandeep endorsed it. The Agent Validation
+  Test Plan was right. Technology Choices still says gRPC and needs correcting; that is
+  tracked under 1b.
 - **`decisions/002` adopted** — Container Apps with Terraform and GitHub Environments.
 - **Deployment Design is written**, first of the five blank design pages to move.
 - **Analysis screen came in ahead of plan**, freeing Sprint 4 for the output screen.
@@ -234,7 +359,15 @@ calculation engine, so something was chosen in code.
 - **Zoom passcodes are in the mirror**, on the User Interviews page, and so in git history.
 - **Shared Postgres compute** is accepted only until the 50+ partner rollout, late
   November or early December.
-- **A technical debt register exists** and is still not in the mirror.
+- **A technical debt register exists** and is still not in the mirror. It has reached at least
+  TD-033, which the infrastructure diagram cites for the Redis sandbox exception.
 - **Six pages sit outside the OI3.0 tree**, including both engineering pages and two titled
   "to be delete" that hold real design rationale.
 - **ADR-001 to ADR-009** remain "Accepted, pending Bain architect review".
+- **A workshop series has started** (28 October: system and data architecture). Announced
+  next: database migrations, deployment, company search, agent demos, and SN's ADRs against
+  Bain's agentic standards. They arrive as local Teams recordings with `.vtt` transcripts, not
+  as Confluence pages — read them with `tools/transcript_text.py`.
+- **Business decisions handed to Stephanie and Noah**: whether to force a business-unit or
+  company choice before peer selection (peers can currently include the target's own
+  subsidiaries), and whether uploaded documents can be reused across cases.

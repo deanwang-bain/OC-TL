@@ -4,4 +4,18 @@ __pycache__/
 # Frames pulled out of meeting recordings by tools/video_frames.py. Regenerable
 # in one command, several MB per video, and only useful while being read -- the
 # findings belong in context/, not the stills. The .md index per video is kept.
+# Curated frames are the exception: a dated subfolder per workshop, full resolution
+# as JPEG, holding only the frames its notes cite. They live in subfolders, which
+# this pattern does not reach, and are committed so the notes' evidence travels.
 context/video-frames/*.png
+
+# Recordings handed over directly rather than attached to a Confluence page. The
+# Sprint 5 workshop is 446 MB -- over GitHub's 100 MB file limit -- and its scope is
+# a meeting, not the OI30 space the mirror is cleared for. Distil into context/.
+videos/
+
+# macOS folder metadata.
+.DS_Store
+
+# Personal Claude Code permissions for this checkout; never shared.
+.claude/settings.local.json

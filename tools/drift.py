@@ -55,6 +55,9 @@ SERVICES = [
     "Pinecone", "Weaviate", "Qdrant", "Chroma", "pgvector", "Cosmos DiskANN",
     "Kafka", "Istio", "Hystrix", "think-cell", "Andromeda", "Snowflake",
     "Databricks", "LangChain", "LlamaIndex", "Semantic Kernel",
+    # Drawn onto every model call in SN's 28 October system overview, in place of the
+    # APIM GenAI gateway Technology Choices adopts; found in a workshop, not on a page.
+    "Portkey",
 ]
 
 # Embedding and model identifiers carry a provider implicitly, so a bare model name in
