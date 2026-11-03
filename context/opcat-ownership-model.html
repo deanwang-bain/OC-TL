@@ -83,6 +83,10 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
 .split div { display: flex; flex-direction: column; gap: 4px; font-size: 14px; min-width: 0; }
 .split b { font-weight: 600; }
+.capbars { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.capbar { display: flex; flex-direction: column; gap: 6px; font-size: 14px; min-width: 0; }
+.capbar .bar { height: 22px; }
+.total td { font-weight: 600; background: var(--bg); }
 .split span { color: var(--muted); }
 
 .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
@@ -143,7 +147,8 @@ a { color: var(--accent); }
   <p class="lede">A small Bain team, the people it needs, and three ways to time the handover. It follows from the post-GLS roadmap and the architecture the product already commits to.</p>
   <div class="scope">
     <span class="chip">Small team</span>
-    <span class="chip">20% build, 80% sustain</span>
+    <span class="chip">20% build, 80% sustain as the working assumption</span>
+    <span class="chip">50/50 and 80/20 sized for comparison</span>
     <span class="chip">Structure and requirements only</span>
     <span class="chip">No budget</span>
     <span class="chip">No hiring timing</span>
@@ -155,7 +160,7 @@ a { color: var(--accent); }
   <div class="assume">
     <span class="tag">Operating assumption</span>
     <h2>The team sustains the product first and builds second</h2>
-    <p>A team of the size the roadmap alone would need is not realistic inside Bain. This model uses a small team and accepts the price: new development runs at about a fifth of the team's effort, so the roadmap moves more slowly. The rest keeps what exists reliable.</p>
+    <p>A team of the size the roadmap alone would need is not realistic inside Bain. This model uses a small team and accepts the price: new development runs at about a fifth of the team's effort, so the roadmap moves more slowly. The rest keeps what exists reliable. The next section sizes two other splits, 50/50 and 80/20 in favour of building, so the trade-off is visible.</p>
     <div class="bar" role="img" aria-label="About 80 percent of effort on sustaining the product, 20 percent on new development">
       <div class="sus">80% sustain and support</div>
       <div class="dev">20% build</div>
@@ -164,6 +169,67 @@ a { color: var(--accent); }
       <div><b>The 80% covers</b><span>Live data connections kept working and refreshed. Platform, access and security upkeep. AI quality: regression checks, evaluation sets and model changes. Partner support and issue triage. Corrections to calculations and methodology. Written decisions and runbooks.</span></div>
       <div><b>The 20% buys</b><span>One roadmap initiative at a time, chosen for partner value. The next section proposes the order. Anything that needs two areas of the team at once moves slowly or waits.</span></div>
     </div>
+  </div>
+</section>
+
+<section>
+  <h2>Three capacity scenarios</h2>
+  <p>The working assumption is the first. The other two show what a different split would take. All three are sized the same way, so the numbers can be compared.</p>
+
+  <div class="capbars">
+    <div class="capbar"><span><strong>Sustain-first:</strong> 20% build, 80% sustain</span>
+      <div class="bar" aria-hidden="true"><div class="sus" style="flex:80 1 0"></div><div class="dev" style="flex:20 1 0"></div></div></div>
+    <div class="capbar"><span><strong>Balanced:</strong> 50% build, 50% sustain</span>
+      <div class="bar" aria-hidden="true"><div class="sus" style="flex:50 1 0"></div><div class="dev" style="flex:50 1 0"></div></div></div>
+    <div class="capbar"><span><strong>Build-first:</strong> 80% build, 20% sustain</span>
+      <div class="bar" aria-hidden="true"><div class="sus" style="flex:20 1 0"></div><div class="dev" style="flex:80 1 0"></div></div></div>
+  </div>
+  <div class="legend"><span class="l-b">Sustain and support</span><span class="l-s">New development</span></div>
+
+  <h3>How the numbers are estimated</h3>
+  <ul class="plain">
+    <li><strong>Sustain floor.</strong> Keeping the product running needs a primary owner and a backup across six areas. At today's scope that is about 5.6 people's worth of effort, which is the 80% share of the seven-person team described below. This is a judgment, to be checked against the real support load.</li>
+    <li><strong>Fixed across scenarios.</strong> The product has to be kept running whatever is being built, so the floor does not change. Team size is the floor divided by the sustain share.</li>
+    <li><strong>Build pace yardstick.</strong> Sprint 3 burned about 370 logged hours in two weeks, roughly 4.6 people at 80 hours each. Build effort is compared with that to show how fast the roadmap could move.</li>
+  </ul>
+
+  <div class="scroll"><table>
+    <thead><tr><th>Scenario</th><th>Build / sustain</th><th>Sustain effort</th><th>Build effort</th><th>Team size</th><th>Build pace against Sprint 3</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sustain-first</strong></td><td class="num">20 / 80</td><td class="num">5.6 people</td><td class="num">1.4 people</td><td class="num"><strong>7</strong></td><td>About a third of the pace</td></tr>
+      <tr><td><strong>Balanced</strong></td><td class="num">50 / 50</td><td class="num">5.6 people</td><td class="num">5.6 people</td><td class="num"><strong>11</strong></td><td>About 1.2 times the pace</td></tr>
+      <tr><td><strong>Build-first</strong></td><td class="num">80 / 20</td><td class="num">5.6 people</td><td class="num">22.4 people</td><td class="num"><strong>28</strong></td><td>Nearly five times the pace</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Who is in each team</h3>
+  <div class="scroll"><table>
+    <thead><tr><th>Role</th><th>Sustain-first</th><th>Balanced</th><th>Build-first</th></tr></thead>
+    <tbody>
+      <tr><td>Product director</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+      <tr><td>Tech and architecture director</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+      <tr><td>Engineering lead</td><td class="num">1</td><td class="num">1</td><td class="num">2</td></tr>
+      <tr><td>Full-stack engineer</td><td class="num">0</td><td class="num">2</td><td class="num">8</td></tr>
+      <tr><td>Product designer</td><td class="num">0</td><td class="num">1</td><td class="num">2</td></tr>
+      <tr><td>Data and methodology lead</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+      <tr><td>Data engineer</td><td class="num">0</td><td class="num">1</td><td class="num">4</td></tr>
+      <tr><td>Quantitative engineer</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr>
+      <tr><td>AI and quality engineer</td><td class="num">1</td><td class="num">1</td><td class="num">3</td></tr>
+      <tr><td>Platform and security engineer</td><td class="num">1</td><td class="num">1</td><td class="num">2</td></tr>
+      <tr><td>Delivery and governance coordinator</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+      <tr class="total"><td>Total core team</td><td class="num">7</td><td class="num">11</td><td class="num">28</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>What each can reach on the roadmap</h3>
+  <div class="rules">
+    <div class="rule"><b>Sustain-first</b><span>Live data foundations first, then output editing. The rest is handled as support, slowed or deferred, as set out in the build order below.</span></div>
+    <div class="rule"><b>Balanced</b><span>Works through the first four or five initiatives in turn, adding lifecycle and versioning, then business-unit handling and data expansion. Collaboration and approval flows stay deferred.</span></div>
+    <div class="rule"><b>Build-first</b><span>All nine initiatives in parallel streams, including collaboration. It needs a second engineering lead to split the work into streams.</span></div>
+  </div>
+  <p class="note">The roadmap's effort has not been estimated, so these reaches are indicative. Build-first is a floor, not a forecast: more building means more to sustain and more coordination, so 28 understates it. A cheaper way to reach build-first pace is to keep the delivery partner building while a sustain-first Bain team owns the product. That is a different operating model and is not sized here.</p>
+  <div class="pick">
+    <p><strong>Reading the three.</strong> Sustain-first stays the working assumption. Balanced is the upper end of what I would call a small team. Build-first is shown to make the cost of faster delivery visible, not proposed. The sections below detail the sustain-first team, and the extra roles in the larger teams are profiled after the role requirements.</p>
   </div>
 </section>
 
@@ -184,7 +250,7 @@ a { color: var(--accent); }
 </section>
 
 <section>
-  <h2>Team structure</h2>
+  <h2>Team structure: sustain-first</h2>
   <p>Seven core people: two directors and five hands-on roles. A shared security reviewer joins for reviews and is not part of the core team. Everyone hands-on is senior, because a small team has no room to carry people who cannot work alone.</p>
 
   <div class="row-label">Directors</div>
@@ -239,6 +305,21 @@ a { color: var(--accent); }
 </section>
 
 <section>
+  <h2>Extra roles in the larger scenarios</h2>
+  <p>The balanced and build-first teams add these roles. They follow the same profiles as above, with one change: with senior colleagues to pair with, up to a third of the engineers can be mid-level.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Role</th><th>Experience</th><th>Signals of quality</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Full-stack engineer</strong></td><td>4+ years across the web stack and Python services</td><td>Ships small, tested changes. Writes clear pull request descriptions.</td></tr>
+      <tr><td><strong>Product designer</strong></td><td>6+ years in data-heavy or analytical products</td><td>Portfolio shows complex workflows made legible. Runs user tests with senior users.</td></tr>
+      <tr><td><strong>Data engineer</strong></td><td>4+ years in Python and a cloud data platform</td><td>Tests data, monitors freshness, documents lineage.</td></tr>
+      <tr><td><strong>Quantitative engineer</strong></td><td>5+ years building financial or analytical calculation systems</td><td>Writes deterministic, testable calculations. Insists on provenance for every figure.</td></tr>
+      <tr><td><strong>Second engineering lead</strong></td><td>10+ years, same profile as the first</td><td>Runs one stream end to end and can swap with the first lead.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
   <h2>Standards for the team as a whole</h2>
   <div class="rules">
     <div class="rule"><b>Capacity is ring-fenced</b><span>About 20% of effort goes to building and about 80% to sustaining, planned in each sprint. Support does not quietly absorb the build share, and building does not starve support.</span></div>
@@ -254,7 +335,7 @@ a { color: var(--accent); }
 
 <section>
   <h2>What the 20% builds first</h2>
-  <p>A proposed order for the nine post-GLS initiatives at this capacity. The Tech Lead and the product director would confirm it.</p>
+  <p>A proposed order for the nine post-GLS initiatives at sustain-first capacity. In the balanced team the slowed items move up the list, and in the build-first team all of them run together. The Tech Lead and the product director would confirm it.</p>
   <div class="scroll"><table>
     <thead><tr><th>Initiative</th><th>Treatment</th><th>Reasoning</th></tr></thead>
     <tbody>
@@ -286,7 +367,7 @@ a { color: var(--accent); }
     <header><h3>Scenario A: Early handover</h3></header>
     <p>The Bain team takes ownership at the end of hardening. The delivery partner supports while the Bain team leads.</p>
     <dl class="facts">
-      <div><dt>Fits when</dt><dd>All seven core people are in place at the end of hardening, and the codebase is stable.</dd></div>
+      <div><dt>Fits when</dt><dd>The full core team is in place at the end of hardening, and the codebase is stable.</dd></div>
       <div><dt>Main risk</dt><dd>The team learns the system and carries all support at once. One gap stalls both.</dd></div>
       <div><dt>Exit test</dt><dd>The Bain team ships a release end to end, with the partner only answering questions.</dd></div>
     </dl>
@@ -306,7 +387,7 @@ a { color: var(--accent); }
     <header><h3>Scenario B: Staged by capability</h3><span class="badge">Recommended</span></header>
     <p>Ownership moves in three steps, starting with the areas that carry judgment and least code: architecture, data and methodology. Engineering-heavy areas move last, once the team around them is proven.</p>
     <dl class="facts">
-      <div><dt>Fits when</dt><dd>The team arrives in stages, and a seven-person team cannot absorb every area at once.</dd></div>
+      <div><dt>Fits when</dt><dd>The team arrives in stages, and a small team cannot absorb every area at once.</dd></div>
       <div><dt>Main risk</dt><dd>Two operating models run side by side for a while, which needs clear boundaries and a single backlog.</dd></div>
       <div><dt>Exit test per step</dt><dd>The Bain owner for the area has made and documented a real decision, and covered the area through a sprint without the partner lead.</dd></div>
     </dl>
@@ -361,6 +442,8 @@ a { color: var(--accent); }
   <h2>Assumptions and gaps</h2>
   <ul class="plain">
     <li>The 20% build and 80% sustain split is the operating assumption for this model. It is a planning ratio and has not been measured against the team's real support load.</li>
+    <li>The sizing of all three scenarios rests on one judgment, a sustain floor of about 5.6 people. If the real floor is higher or lower, every team size moves with it.</li>
+    <li>The Sprint 3 yardstick assumes 80 logged hours per person per sprint. Logged hours were first recorded in that sprint and may understate the real effort, so the pace comparisons are rough.</li>
     <li>The roadmap pages do not describe an ownership model, so the areas, roles and handover steps above are derived from the post-GLS initiatives, the design requirements and the architecture.</li>
     <li>Security design, non-functional design and observability are still empty pages. The platform and security role scope is provisional until they are written.</li>
     <li>The engineering lead backs up four areas, and the platform engineer and data lead each own several. A smaller team means more key-person risk, which the backup table reduces and does not remove.</li>
