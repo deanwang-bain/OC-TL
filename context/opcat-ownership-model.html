@@ -97,6 +97,7 @@ td strong { font-weight: 600; }
 .pods { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
 .pod { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .pod.dir { background: var(--accent-soft); }
+.row-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
 .pod h3 { font-size: 17px; }
 .pod .owns { font-size: 13.5px; color: var(--muted); }
 .tag { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
@@ -186,9 +187,14 @@ a { color: var(--accent); }
   <h2>Team structure</h2>
   <p>Seven core people: two directors and five hands-on roles. A shared security reviewer joins for reviews and is not part of the core team. Everyone hands-on is senior, because a small team has no room to carry people who cannot work alone.</p>
 
+  <div class="row-label">Directors</div>
   <div class="pods">
     <div class="pod dir"><span class="tag">Director</span><h3>Product director</h3><p class="owns">Owns the roadmap, the partner relationship, Bain content integration and the quality gates. Decides what the 20% builds.</p></div>
     <div class="pod dir"><span class="tag">Director</span><h3>Tech and architecture director</h3><p class="owns">Owns architecture decisions, review standards and release readiness. Reviews and builds, not only directs.</p></div>
+  </div>
+
+  <div class="row-label">Core team</div>
+  <div class="pods">
     <div class="pod"><span class="tag">Hands-on</span><h3>Engineering lead</h3><p class="owns">Full-stack. Owns the partner-facing application and the services behind it, and the shape of the codebase.</p></div>
     <div class="pod"><span class="tag">Hands-on</span><h3>Data and methodology lead</h3><p class="owns">Owns live data connections, data quality, the calculation engine's rules and the curated data sets.</p></div>
     <div class="pod"><span class="tag">Hands-on</span><h3>AI and quality engineer</h3><p class="owns">Owns agents, evaluation sets, regression checks and the learning pipeline.</p></div>
