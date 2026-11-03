@@ -2,8 +2,9 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap">
 <style>
-/* Layout: single reading column, then wide tables and grids in their own scroll containers.
-   Ownership states are labelled in text and tinted, so colour is never the only signal. */
+/* Layout: single reading column. One slider in the assumption section sets data-scn on .page,
+   and every block tagged data-s shows only for the selected capacity scenario (1, 2 or 3).
+   Without script the page shows scenario 1. Ownership states are labelled in text and tinted. */
 :root {
   --bg: #fbfaf8;
   --surface: #ffffff;
@@ -60,6 +61,9 @@ body {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .page { max-width: 960px; margin-inline: auto; display: flex; flex-direction: column; gap: 56px; }
+.page[data-scn="1"] [data-s]:not([data-s~="1"]),
+.page[data-scn="2"] [data-s]:not([data-s~="2"]),
+.page[data-scn="3"] [data-s]:not([data-s~="3"]) { display: none !important; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; margin: 0; line-height: 1.2; }
 h1 { font-size: clamp(30px, 5vw, 42px); }
 h2 { font-size: 26px; }
@@ -70,23 +74,42 @@ p { margin: 0; max-width: 68ch; }
 .head { display: flex; flex-direction: column; gap: 14px; }
 .scope { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .chip { font-size: 12.5px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface); }
+.chip.on { border-color: var(--accent); color: var(--accent); font-weight: 600; }
 section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .note { font-size: 13.5px; color: var(--muted); max-width: 72ch; }
+.scn-tag { display: inline-block; vertical-align: middle; margin-left: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
 
-/* operating assumption */
-.assume { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+/* operating assumption and slider */
+.assume { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+.tag { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .assume .tag { color: var(--accent); }
+.picker { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.picker label { font-weight: 600; font-size: 14px; }
+.picker input[type="range"] { width: 100%; accent-color: var(--accent); margin: 4px 0; min-height: 28px; cursor: pointer; }
+.ticks { display: flex; justify-content: space-between; gap: 8px; }
+.ticks button { font: inherit; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 4px 2px; cursor: pointer; text-align: center; max-width: 33%; }
+.ticks button:first-child { text-align: left; }
+.ticks button:last-child { text-align: right; }
+.ticks button b { display: block; color: var(--fg); font-weight: 600; }
+.page[data-scn="1"] .ticks button[data-pick="1"] b,
+.page[data-scn="2"] .ticks button[data-pick="2"] b,
+.page[data-scn="3"] .ticks button[data-pick="3"] b { color: var(--accent); }
 .bar { display: flex; width: 100%; height: 40px; border-radius: 6px; overflow: hidden; font-size: 13px; font-weight: 600; }
 .bar div { display: flex; align-items: center; padding-inline: 12px; white-space: nowrap; overflow: hidden; }
-.bar .sus { flex: 80 1 0; background: var(--accent); color: var(--bg); }
-.bar .dev { flex: 20 1 0; background: var(--shared-soft); color: var(--shared); justify-content: center; padding-inline: 4px; }
+.bar .sus { background: var(--accent); color: var(--bg); }
+.bar .dev { background: var(--shared-soft); color: var(--shared); justify-content: center; padding-inline: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.legend .l-b::before { background: var(--accent); }
+.legend .l-s::before { background: var(--shared); }
+.legend .l-p::before { background: var(--partner); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 0; }
+.stats div { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.stats dt { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.stats dd { margin: 0; font-family: var(--font-display); font-size: 21px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
 .split div { display: flex; flex-direction: column; gap: 4px; font-size: 14px; min-width: 0; }
 .split b { font-weight: 600; }
-.capbars { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-.capbar { display: flex; flex-direction: column; gap: 6px; font-size: 14px; min-width: 0; }
-.capbar .bar { height: 22px; }
-.total td { font-weight: 600; background: var(--bg); }
 .split span { color: var(--muted); }
 
 .scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
@@ -96,15 +119,15 @@ th { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: 
 tr:last-child td { border-bottom: 0; }
 td strong { font-weight: 600; }
 .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.total td { font-weight: 600; background: var(--bg); }
 
 /* structure */
 .pods { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
 .pod { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .pod.dir { background: var(--accent-soft); }
-.row-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
 .pod h3 { font-size: 17px; }
 .pod .owns { font-size: 13.5px; color: var(--muted); }
-.tag { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.row-label { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
 
 /* requirements */
 .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
@@ -112,7 +135,7 @@ td strong { font-weight: 600; }
 .rule b { font-weight: 600; }
 .rule span { font-size: 14px; color: var(--muted); }
 
-/* scenarios */
+/* handover */
 .scen { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 .scen header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
 .scen .badge { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--accent); color: var(--bg); }
@@ -127,11 +150,6 @@ td strong { font-weight: 600; }
 .s-b { background: var(--accent-soft); color: var(--accent); }
 .s-s { background: var(--shared-soft); color: var(--shared); }
 .s-p { background: var(--partner-soft); color: var(--partner); }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--muted); }
-.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
-.legend .l-b::before { background: var(--accent); }
-.legend .l-s::before { background: var(--shared); }
-.legend .l-p::before { background: var(--partner); }
 .pick { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; max-width: 72ch; }
 ul.plain { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
 footer { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 18px; }
@@ -139,16 +157,16 @@ a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>
 
-<div class="page">
+<div class="page" data-scn="1">
 
 <header class="head">
   <div class="eyebrow">Opportunity Catalyst (OpCat) · Operating model</div>
   <h1>Who owns OpCat after the delivery partner steps back</h1>
-  <p class="lede">A small Bain team, the people it needs, and three ways to time the handover. It follows from the post-GLS roadmap and the architecture the product already commits to.</p>
+  <p class="lede">The team structure, the people it needs and three ways to time the handover. Move the slider in the first section to see the team for each split of effort between building and sustaining.</p>
   <div class="scope">
-    <span class="chip">Small team</span>
-    <span class="chip">20% build, 80% sustain as the working assumption</span>
-    <span class="chip">50/50 and 80/20 sized for comparison</span>
+    <span class="chip on" data-s="1">20% build, 80% sustain</span>
+    <span class="chip on" data-s="2">50% build, 50% sustain</span>
+    <span class="chip on" data-s="3">80% build, 20% sustain</span>
     <span class="chip">Structure and requirements only</span>
     <span class="chip">No budget</span>
     <span class="chip">No hiring timing</span>
@@ -159,83 +177,71 @@ a { color: var(--accent); }
 <section>
   <div class="assume">
     <span class="tag">Operating assumption</span>
-    <h2>The team sustains the product first and builds second</h2>
-    <p>A team of the size the roadmap alone would need is not realistic inside Bain. This model uses a small team and accepts the price: new development runs at about a fifth of the team's effort, so the roadmap moves more slowly. The rest keeps what exists reliable. The next section sizes two other splits, 50/50 and 80/20 in favour of building, so the trade-off is visible.</p>
-    <div class="bar" role="img" aria-label="About 80 percent of effort on sustaining the product, 20 percent on new development">
-      <div class="sus">80% sustain and support</div>
-      <div class="dev">20% build</div>
+
+    <div class="picker">
+      <label for="split">Share of the team's effort on new development</label>
+      <input type="range" id="split" min="1" max="3" step="1" value="1" aria-valuetext="20% build, 80% sustain">
+      <div class="ticks">
+        <button type="button" data-pick="1"><b>20% build</b>Sustain-first</button>
+        <button type="button" data-pick="2"><b>50% build</b>Balanced</button>
+        <button type="button" data-pick="3"><b>80% build</b>Build-first</button>
+      </div>
     </div>
+
+    <div data-s="1">
+      <h2>The team sustains the product first and builds second</h2>
+      <p style="margin-top:10px">A team of the size the roadmap alone would need is not realistic inside Bain. This model uses a small team and accepts the price: new development runs at about a fifth of the team's effort, so the roadmap moves more slowly. The rest keeps what exists reliable. This is the working assumption.</p>
+    </div>
+    <div data-s="2">
+      <h2>The team splits its effort evenly between building and sustaining</h2>
+      <p style="margin-top:10px">Half the effort keeps what exists reliable and half builds new capability. The roadmap moves at about the pace of Sprint 3, with a team of eleven. I would call this the upper end of what still reads as a small team, and that is a judgment you can overrule.</p>
+    </div>
+    <div data-s="3">
+      <h2>The team builds first and sustains second</h2>
+      <p style="margin-top:10px">Most of the effort goes to new development. The sustain effort is the same in absolute terms as in the other splits, so here it is a thin slice of a much larger team, and the first thing to be squeezed. This is the arithmetic result of building at nearly five times the Sprint 3 pace. It shows the cost of faster delivery and is not proposed. A team this size is unlikely to fit inside Bain.</p>
+    </div>
+
+    <div class="bar" role="img" aria-label="Split of effort between sustaining the product and new development">
+      <div class="sus" data-s="1" style="flex:80 1 0">80% sustain and support</div>
+      <div class="dev" data-s="1" style="flex:20 1 0">20% build</div>
+      <div class="sus" data-s="2" style="flex:50 1 0">50% sustain and support</div>
+      <div class="dev" data-s="2" style="flex:50 1 0">50% build</div>
+      <div class="sus" data-s="3" style="flex:20 1 0">20%</div>
+      <div class="dev" data-s="3" style="flex:80 1 0">80% build</div>
+    </div>
+
+    <dl class="stats">
+      <div><dt>Core team</dt><dd><span data-s="1">7 people</span><span data-s="2">11 people</span><span data-s="3">28 people</span></dd></div>
+      <div><dt>Sustain effort</dt><dd>5.6 people</dd></div>
+      <div><dt>Build effort</dt><dd><span data-s="1">1.4 people</span><span data-s="2">5.6 people</span><span data-s="3">22.4 people</span></dd></div>
+      <div><dt>Build pace against Sprint 3</dt><dd><span data-s="1">About a third</span><span data-s="2">About 1.2 times</span><span data-s="3">Nearly 5 times</span></dd></div>
+    </dl>
+
     <div class="split">
-      <div><b>The 80% covers</b><span>Live data connections kept working and refreshed. Platform, access and security upkeep. AI quality: regression checks, evaluation sets and model changes. Partner support and issue triage. Corrections to calculations and methodology. Written decisions and runbooks.</span></div>
-      <div><b>The 20% buys</b><span>One roadmap initiative at a time, chosen for partner value. The next section proposes the order. Anything that needs two areas of the team at once moves slowly or waits.</span></div>
+      <div><b>The sustain share covers</b><span>Live data connections kept working and refreshed. Platform, access and security upkeep. AI quality: regression checks, evaluation sets and model changes. Partner support and issue triage. Corrections to calculations and methodology. Written decisions and runbooks.</span></div>
+      <div data-s="1"><b>The build share buys</b><span>One roadmap initiative at a time, chosen for partner value. Anything that needs two areas of the team at once moves slowly or waits.</span></div>
+      <div data-s="2"><b>The build share buys</b><span>A planned run through the first four or five initiatives in turn, with a designer and extra engineers so that work is not waiting on the same few people.</span></div>
+      <div data-s="3"><b>The build share buys</b><span>All nine initiatives in parallel, in two streams under two engineering leads, with their own designers, data engineers and quantitative engineers.</span></div>
     </div>
-  </div>
-</section>
 
-<section>
-  <h2>Three capacity scenarios</h2>
-  <p>The working assumption is the first. The other two show what a different split would take. All three are sized the same way, so the numbers can be compared.</p>
-
-  <div class="capbars">
-    <div class="capbar"><span><strong>Sustain-first:</strong> 20% build, 80% sustain</span>
-      <div class="bar" aria-hidden="true"><div class="sus" style="flex:80 1 0"></div><div class="dev" style="flex:20 1 0"></div></div></div>
-    <div class="capbar"><span><strong>Balanced:</strong> 50% build, 50% sustain</span>
-      <div class="bar" aria-hidden="true"><div class="sus" style="flex:50 1 0"></div><div class="dev" style="flex:50 1 0"></div></div></div>
-    <div class="capbar"><span><strong>Build-first:</strong> 80% build, 20% sustain</span>
-      <div class="bar" aria-hidden="true"><div class="sus" style="flex:20 1 0"></div><div class="dev" style="flex:80 1 0"></div></div></div>
-  </div>
-  <div class="legend"><span class="l-b">Sustain and support</span><span class="l-s">New development</span></div>
-
-  <h3>How the numbers are estimated</h3>
-  <ul class="plain">
-    <li><strong>Sustain floor.</strong> Keeping the product running needs a primary owner and a backup across six areas. At today's scope that is about 5.6 people's worth of effort, which is the 80% share of the seven-person team described below. This is a judgment, to be checked against the real support load.</li>
-    <li><strong>Fixed across scenarios.</strong> The product has to be kept running whatever is being built, so the floor does not change. Team size is the floor divided by the sustain share.</li>
-    <li><strong>Build pace yardstick.</strong> Sprint 3 burned about 370 logged hours in two weeks, roughly 4.6 people at 80 hours each. Build effort is compared with that to show how fast the roadmap could move.</li>
-  </ul>
-
-  <div class="scroll"><table>
-    <thead><tr><th>Scenario</th><th>Build / sustain</th><th>Sustain effort</th><th>Build effort</th><th>Team size</th><th>Build pace against Sprint 3</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Sustain-first</strong></td><td class="num">20 / 80</td><td class="num">5.6 people</td><td class="num">1.4 people</td><td class="num"><strong>7</strong></td><td>About a third of the pace</td></tr>
-      <tr><td><strong>Balanced</strong></td><td class="num">50 / 50</td><td class="num">5.6 people</td><td class="num">5.6 people</td><td class="num"><strong>11</strong></td><td>About 1.2 times the pace</td></tr>
-      <tr><td><strong>Build-first</strong></td><td class="num">80 / 20</td><td class="num">5.6 people</td><td class="num">22.4 people</td><td class="num"><strong>28</strong></td><td>Nearly five times the pace</td></tr>
-    </tbody>
-  </table></div>
-
-  <h3>Who is in each team</h3>
-  <div class="scroll"><table>
-    <thead><tr><th>Role</th><th>Sustain-first</th><th>Balanced</th><th>Build-first</th></tr></thead>
-    <tbody>
-      <tr><td>Product director</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
-      <tr><td>Tech and architecture director</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
-      <tr><td>Engineering lead</td><td class="num">1</td><td class="num">1</td><td class="num">2</td></tr>
-      <tr><td>Full-stack engineer</td><td class="num">0</td><td class="num">2</td><td class="num">8</td></tr>
-      <tr><td>Product designer</td><td class="num">0</td><td class="num">1</td><td class="num">2</td></tr>
-      <tr><td>Data and methodology lead</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
-      <tr><td>Data engineer</td><td class="num">0</td><td class="num">1</td><td class="num">4</td></tr>
-      <tr><td>Quantitative engineer</td><td class="num">0</td><td class="num">0</td><td class="num">3</td></tr>
-      <tr><td>AI and quality engineer</td><td class="num">1</td><td class="num">1</td><td class="num">3</td></tr>
-      <tr><td>Platform and security engineer</td><td class="num">1</td><td class="num">1</td><td class="num">2</td></tr>
-      <tr><td>Delivery and governance coordinator</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
-      <tr class="total"><td>Total core team</td><td class="num">7</td><td class="num">11</td><td class="num">28</td></tr>
-    </tbody>
-  </table></div>
-
-  <h3>What each can reach on the roadmap</h3>
-  <div class="rules">
-    <div class="rule"><b>Sustain-first</b><span>Live data foundations first, then output editing. The rest is handled as support, slowed or deferred, as set out in the build order below.</span></div>
-    <div class="rule"><b>Balanced</b><span>Works through the first four or five initiatives in turn, adding lifecycle and versioning, then business-unit handling and data expansion. Collaboration and approval flows stay deferred.</span></div>
-    <div class="rule"><b>Build-first</b><span>All nine initiatives in parallel streams, including collaboration. It needs a second engineering lead to split the work into streams.</span></div>
-  </div>
-  <p class="note">The roadmap's effort has not been estimated, so these reaches are indicative. Build-first is a floor, not a forecast: more building means more to sustain and more coordination, so 28 understates it. A cheaper way to reach build-first pace is to keep the delivery partner building while a sustain-first Bain team owns the product. That is a different operating model and is not sized here.</p>
-  <div class="pick">
-    <p><strong>Reading the three.</strong> Sustain-first stays the working assumption. Balanced is the upper end of what I would call a small team. Build-first is shown to make the cost of faster delivery visible, not proposed. The sections below detail the sustain-first team, and the extra roles in the larger teams are profiled after the role requirements.</p>
+    <div>
+      <h3 style="margin-bottom:8px">How the numbers are estimated</h3>
+      <ul class="plain">
+        <li><strong>Sustain floor.</strong> Keeping the product running needs a primary owner and a backup across six areas. At today's scope that is about 5.6 people's worth of effort. This is a judgment, to be checked against the real support load.</li>
+        <li><strong>Fixed across splits.</strong> The product has to be kept running whatever is being built, so the floor does not change. Team size is the floor divided by the sustain share.</li>
+        <li><strong>Build pace yardstick.</strong> Sprint 3 burned about 370 logged hours in two weeks, roughly 4.6 people at 80 hours each. Build effort is compared with that to show how fast the roadmap could move.</li>
+      </ul>
+    </div>
+    <p class="note" data-s="3">Build-first is a floor, not a forecast: more building means more to sustain and more coordination, so 28 understates it. A cheaper way to reach build-first pace is to keep the delivery partner building while a sustain-first Bain team owns the product. That is a different operating model and is not sized here.</p>
   </div>
 </section>
 
 <section>
   <h2>What the team has to own</h2>
-  <p>The post-GLS roadmap lists nine initiatives. They fall into six areas of ownership. In a small team each person covers more than one area, so the structure below names a primary owner and a backup for each.</p>
+  <p>The post-GLS roadmap lists nine initiatives. They fall into six areas of ownership.
+    <span data-s="1">In a small team each person covers more than one area, so the structure below names a primary owner and a backup for each.</span>
+    <span data-s="2">With eleven people most areas have a clear owner, and the structure below names a backup for each.</span>
+    <span data-s="3">With twenty-eight people the larger areas become groups, and the structure below names who leads each and who backs it up.</span></p>
   <div class="scroll"><table>
     <thead><tr><th>Area</th><th>Roadmap items that land here</th><th>Why it needs a senior owner</th></tr></thead>
     <tbody>
@@ -250,27 +256,52 @@ a { color: var(--accent); }
 </section>
 
 <section>
-  <h2>Team structure: sustain-first</h2>
-  <p>Seven core people: two directors and five hands-on roles. A shared security reviewer joins for reviews and is not part of the core team. Everyone hands-on is senior, because a small team has no room to carry people who cannot work alone.</p>
+  <h2>Team structure <span class="scn-tag" data-s="1">Sustain-first · 7 people</span><span class="scn-tag" data-s="2">Balanced · 11 people</span><span class="scn-tag" data-s="3">Build-first · 28 people</span></h2>
+  <p data-s="1">Seven core people: two directors and five hands-on roles. A shared security reviewer joins for reviews and is not part of the core team. Everyone hands-on is senior, because a small team has no room to carry people who cannot work alone.</p>
+  <p data-s="2">Eleven core people: two directors and nine others. A shared security reviewer joins for reviews and is not part of the core team. Most hands-on roles are senior, and a few mid-level engineers pair with them.</p>
+  <p data-s="3">Twenty-eight core people: two directors and twenty-six others, in two streams. The application stream holds the first engineering lead, the full-stack engineers and the designers. The data and intelligence stream holds the second engineering lead, the data engineers, the quantitative engineers and the AI and quality engineers. Platform engineers serve both streams under the tech and architecture director. A shared security reviewer joins for reviews.</p>
 
   <div class="row-label">Directors</div>
   <div class="pods">
-    <div class="pod dir"><span class="tag">Director</span><h3>Product director</h3><p class="owns">Owns the roadmap, the partner relationship, Bain content integration and the quality gates. Decides what the 20% builds.</p></div>
+    <div class="pod dir"><span class="tag">Director</span><h3>Product director</h3><p class="owns">Owns the roadmap, the partner relationship, Bain content integration and the quality gates. Decides what the build share delivers.</p></div>
     <div class="pod dir"><span class="tag">Director</span><h3>Tech and architecture director</h3><p class="owns">Owns architecture decisions, review standards and release readiness. Reviews and builds, not only directs.</p></div>
   </div>
 
   <div class="row-label">Core team</div>
-  <div class="pods">
+  <div class="pods" data-s="1">
     <div class="pod"><span class="tag">Hands-on</span><h3>Engineering lead</h3><p class="owns">Full-stack. Owns the partner-facing application and the services behind it, and the shape of the codebase.</p></div>
     <div class="pod"><span class="tag">Hands-on</span><h3>Data and methodology lead</h3><p class="owns">Owns live data connections, data quality, the calculation engine's rules and the curated data sets.</p></div>
     <div class="pod"><span class="tag">Hands-on</span><h3>AI and quality engineer</h3><p class="owns">Owns agents, evaluation sets, regression checks and the learning pipeline.</p></div>
     <div class="pod"><span class="tag">Hands-on</span><h3>Platform and security engineer</h3><p class="owns">Owns environments, the release pipeline, access, monitoring and security upkeep.</p></div>
     <div class="pod"><span class="tag">Coordination</span><h3>Delivery and governance coordinator</h3><p class="owns">Owns cadence, data licences, access requests, vendor positions and the risk register.</p></div>
   </div>
+  <div class="pods" data-s="2">
+    <div class="pod"><span class="tag">Hands-on</span><h3>Engineering lead</h3><p class="owns">Owns the application, the services behind it and the shape of the codebase.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 2</span><h3>Full-stack engineers</h3><p class="owns">Build the partner-facing screens and services.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>Product designer</h3><p class="owns">Owns the design of analysis, output and onboarding, and runs user tests.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>Data and methodology lead</h3><p class="owns">Owns data quality, the calculation engine's rules and the curated data sets.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>Data engineer</h3><p class="owns">Builds and monitors the live data connections.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>AI and quality engineer</h3><p class="owns">Owns agents, evaluation sets, regression checks and the learning pipeline.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>Platform and security engineer</h3><p class="owns">Owns environments, the release pipeline, access, monitoring and security upkeep.</p></div>
+    <div class="pod"><span class="tag">Coordination</span><h3>Delivery and governance coordinator</h3><p class="owns">Owns cadence, data licences, access requests, vendor positions and the risk register.</p></div>
+  </div>
+  <div class="pods" data-s="3">
+    <div class="pod"><span class="tag">Hands-on · 2</span><h3>Engineering leads</h3><p class="owns">One per stream. Each runs the stream end to end, and each can cover for the other.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 8</span><h3>Full-stack engineers</h3><p class="owns">Build the partner-facing screens and services across both streams.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 2</span><h3>Product designers</h3><p class="owns">Own the design of analysis, output and onboarding, and run user tests.</p></div>
+    <div class="pod"><span class="tag">Hands-on</span><h3>Data and methodology lead</h3><p class="owns">Owns data quality, the calculation engine's rules and the curated data sets, and leads the data engineers and quantitative engineers.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 4</span><h3>Data engineers</h3><p class="owns">Build and monitor the live data connections and pipelines.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 3</span><h3>Quantitative engineers</h3><p class="owns">Build and test the calculation engine, adjustments and sector KPIs.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 3</span><h3>AI and quality engineers</h3><p class="owns">Own agents, evaluation sets, regression checks and the learning pipeline.</p></div>
+    <div class="pod"><span class="tag">Hands-on · 2</span><h3>Platform and security engineers</h3><p class="owns">Own environments, the release pipeline, access, monitoring and security upkeep.</p></div>
+    <div class="pod"><span class="tag">Coordination</span><h3>Delivery and governance coordinator</h3><p class="owns">Owns cadence, data licences, access requests, vendor positions and the risk register.</p></div>
+  </div>
 
   <h3>Primary owner and backup</h3>
-  <p>With seven people, a single absence can leave an area uncovered. Every area has a backup who can run it for a sprint.</p>
-  <div class="scroll"><table>
+  <p data-s="1">With seven people, a single absence can leave an area uncovered. Every area has a backup who can run it for a sprint.</p>
+  <p data-s="2">With eleven people most areas have a named second person. Every area has a backup who can run it for a sprint.</p>
+  <p data-s="3">With several people in most roles, backups sit inside the group. The roles held by one person still need a named deputy.</p>
+  <div class="scroll" data-s="1"><table>
     <thead><tr><th>Area</th><th>Primary</th><th>Backup</th></tr></thead>
     <tbody>
       <tr><td><strong>Product and partner experience</strong></td><td>Product director</td><td>Engineering lead</td></tr>
@@ -283,88 +314,131 @@ a { color: var(--accent); }
       <tr><td><strong>Bain content integration</strong></td><td>Product director</td><td>AI and quality engineer</td></tr>
     </tbody>
   </table></div>
-  <p class="note">The engineering lead is backup for four areas. That makes this role the most exposed one, and the first to protect.</p>
+  <div class="scroll" data-s="2"><table>
+    <thead><tr><th>Area</th><th>Primary</th><th>Backup</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Product and partner experience</strong></td><td>Product director</td><td>Product designer</td></tr>
+      <tr><td><strong>Architecture decisions and review</strong></td><td>Tech and architecture director</td><td>Engineering lead</td></tr>
+      <tr><td><strong>Calculation and methodology</strong></td><td>Data and methodology lead</td><td>Data engineer</td></tr>
+      <tr><td><strong>Data and coverage</strong></td><td>Data and methodology lead</td><td>Data engineer</td></tr>
+      <tr><td><strong>AI and agents</strong></td><td>AI and quality engineer</td><td>Engineering lead</td></tr>
+      <tr><td><strong>Platform and security</strong></td><td>Platform and security engineer</td><td>Tech and architecture director</td></tr>
+      <tr><td><strong>Governance: licences, access, vendor positions</strong></td><td>Delivery and governance coordinator</td><td>Product director</td></tr>
+      <tr><td><strong>Bain content integration</strong></td><td>Product director</td><td>AI and quality engineer</td></tr>
+    </tbody>
+  </table></div>
+  <div class="scroll" data-s="3"><table>
+    <thead><tr><th>Area</th><th>Primary</th><th>Backup</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Product and partner experience</strong></td><td>Product director</td><td>Product designers and the first engineering lead</td></tr>
+      <tr><td><strong>Architecture decisions and review</strong></td><td>Tech and architecture director</td><td>Both engineering leads</td></tr>
+      <tr><td><strong>Calculation and methodology</strong></td><td>Data and methodology lead</td><td>Quantitative engineers</td></tr>
+      <tr><td><strong>Data and coverage</strong></td><td>Data and methodology lead</td><td>Data engineers</td></tr>
+      <tr><td><strong>AI and agents</strong></td><td>AI and quality engineers</td><td>Second engineering lead</td></tr>
+      <tr><td><strong>Platform and security</strong></td><td>Platform and security engineers</td><td>Tech and architecture director</td></tr>
+      <tr><td><strong>Governance: licences, access, vendor positions</strong></td><td>Delivery and governance coordinator</td><td>Product director</td></tr>
+      <tr><td><strong>Bain content integration</strong></td><td>Product director</td><td>AI and quality engineers</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note" data-s="1">The engineering lead is backup for four areas. That makes this role the most exposed one, and the first to protect.</p>
+  <p class="note" data-s="2">The platform and AI areas each still rest on one engineer, so the director and engineering lead backups matter there.</p>
+  <p class="note" data-s="3">The data and methodology lead and the coordinator are still single holders of their roles. Name a deputy for each.</p>
 </section>
 
 <section>
-  <h2>Who we need: role requirements</h2>
-  <p>Years of experience are a floor, not the test. The signals column says what a strong candidate has actually done. Each hands-on role combines work that a larger team would split, so breadth matters as much as depth.</p>
+  <h2>Who we need: role requirements <span class="scn-tag" data-s="1">Sustain-first</span><span class="scn-tag" data-s="2">Balanced</span><span class="scn-tag" data-s="3">Build-first</span></h2>
+  <p>Years of experience are a floor, not the test. The signals column says what a strong candidate has actually done.
+    <span data-s="1">Each hands-on role combines work that a larger team would split, so breadth matters as much as depth.</span>
+    <span data-s="2 3">Where a role has several people, the first holds the stated seniority and up to a third of the engineers overall can be mid-level, because there are seniors to pair with.</span></p>
   <div class="scroll"><table>
     <thead><tr><th>Role</th><th>Number</th><th>Experience</th><th>Signals of quality</th></tr></thead>
     <tbody>
       <tr><td><strong>Product director</strong></td><td class="num">1</td><td>12+ years in consulting or in product roles for decision-support tools</td><td>Has shipped a tool that senior professionals rely on. Can say no to a feature. Partners return their calls.</td></tr>
       <tr><td><strong>Tech and architecture director</strong></td><td class="num">1</td><td>15+ years, with an AI-enabled, cloud-native system run in production</td><td>Has written and defended architecture decisions. Reviews code in more than one language. Has owned an incident.</td></tr>
-      <tr><td><strong>Engineering lead</strong></td><td class="num">1</td><td>10+ years across the web stack and Python services</td><td>Builds dense data screens and the services behind them. Ships small, tested changes. Can cover for three other roles.</td></tr>
+      <tr><td><strong>Engineering lead</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">2</span></td><td>10+ years across the web stack and Python services</td><td>Builds dense data screens and the services behind them. Ships small, tested changes. Can cover for adjacent roles.</td></tr>
+      <tr data-s="2 3"><td><strong>Full-stack engineer</strong></td><td class="num"><span data-s="2">2</span><span data-s="3">8</span></td><td>4+ years across the web stack and Python services</td><td>Ships small, tested changes. Writes clear pull request descriptions.</td></tr>
+      <tr data-s="2 3"><td><strong>Product designer</strong></td><td class="num"><span data-s="2">1</span><span data-s="3">2</span></td><td>6+ years in data-heavy or analytical products</td><td>Portfolio shows complex workflows made legible. Runs user tests with senior users.</td></tr>
       <tr><td><strong>Data and methodology lead</strong></td><td class="num">1</td><td>8+ years in data engineering with licensed external feeds, plus cost-structure or benchmarking work</td><td>Has built pipelines that survive vendor limits and schema changes. Can reconcile reported financials to an adjusted baseline and defend each adjustment to a partner.</td></tr>
-      <tr><td><strong>AI and quality engineer</strong></td><td class="num">1</td><td>6+ years in software, 2+ with language-model systems in production</td><td>Has built tool-using agents with guardrails. Designs evaluation sets and pass marks. Explains a failure from traces, not from guesswork.</td></tr>
-      <tr><td><strong>Platform and security engineer</strong></td><td class="num">1</td><td>8+ years in cloud infrastructure, delivery pipelines and application security</td><td>Infrastructure as code, least-privilege access, observability. Grants and revokes access quickly and safely.</td></tr>
+      <tr data-s="2 3"><td><strong>Data engineer</strong></td><td class="num"><span data-s="2">1</span><span data-s="3">4</span></td><td>4+ years in Python and a cloud data platform</td><td>Tests data, monitors freshness, documents lineage.</td></tr>
+      <tr data-s="3"><td><strong>Quantitative engineer</strong></td><td class="num">3</td><td>5+ years building financial or analytical calculation systems</td><td>Writes deterministic, testable calculations. Insists on provenance for every figure.</td></tr>
+      <tr><td><strong>AI and quality engineer</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">3</span></td><td>6+ years in software, 2+ with language-model systems in production</td><td>Has built tool-using agents with guardrails. Designs evaluation sets and pass marks. Explains a failure from traces, not from guesswork.</td></tr>
+      <tr><td><strong>Platform and security engineer</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">2</span></td><td>8+ years in cloud infrastructure, delivery pipelines and application security</td><td>Infrastructure as code, least-privilege access, observability. Grants and revokes access quickly and safely.</td></tr>
       <tr><td><strong>Delivery and governance coordinator</strong></td><td class="num">1</td><td>5+ years in delivery or programme roles with client-confidential data</td><td>Has negotiated data licences and access. Keeps a risk register that people read.</td></tr>
       <tr><td><strong>Security reviewer</strong></td><td class="num">Shared</td><td>8+ years in application and AI security</td><td>Has led threat modelling for systems that handle client data.</td></tr>
+      <tr class="total"><td>Total core team</td><td class="num"><span data-s="1">7</span><span data-s="2">11</span><span data-s="3">28</span></td><td colspan="2">Excludes the shared security reviewer</td></tr>
     </tbody>
   </table></div>
 </section>
 
 <section>
-  <h2>Extra roles in the larger scenarios</h2>
-  <p>The balanced and build-first teams add these roles. They follow the same profiles as above, with one change: with senior colleagues to pair with, up to a third of the engineers can be mid-level.</p>
-  <div class="scroll"><table>
-    <thead><tr><th>Role</th><th>Experience</th><th>Signals of quality</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Full-stack engineer</strong></td><td>4+ years across the web stack and Python services</td><td>Ships small, tested changes. Writes clear pull request descriptions.</td></tr>
-      <tr><td><strong>Product designer</strong></td><td>6+ years in data-heavy or analytical products</td><td>Portfolio shows complex workflows made legible. Runs user tests with senior users.</td></tr>
-      <tr><td><strong>Data engineer</strong></td><td>4+ years in Python and a cloud data platform</td><td>Tests data, monitors freshness, documents lineage.</td></tr>
-      <tr><td><strong>Quantitative engineer</strong></td><td>5+ years building financial or analytical calculation systems</td><td>Writes deterministic, testable calculations. Insists on provenance for every figure.</td></tr>
-      <tr><td><strong>Second engineering lead</strong></td><td>10+ years, same profile as the first</td><td>Runs one stream end to end and can swap with the first lead.</td></tr>
-    </tbody>
-  </table></div>
-</section>
-
-<section>
-  <h2>Standards for the team as a whole</h2>
+  <h2>Standards for the team as a whole <span class="scn-tag" data-s="1">Sustain-first</span><span class="scn-tag" data-s="2">Balanced</span><span class="scn-tag" data-s="3">Build-first</span></h2>
   <div class="rules">
-    <div class="rule"><b>Capacity is ring-fenced</b><span>About 20% of effort goes to building and about 80% to sustaining, planned in each sprint. Support does not quietly absorb the build share, and building does not starve support.</span></div>
+    <div class="rule"><b>Capacity is ring-fenced</b>
+      <span data-s="1">About 20% of effort goes to building and about 80% to sustaining, planned in each sprint. Support does not quietly absorb the build share, and building does not starve support.</span>
+      <span data-s="2">About half of effort goes to building and half to sustaining, planned in each sprint. Support does not quietly absorb the build share, and building does not starve support.</span>
+      <span data-s="3">About 80% of effort goes to building and 20% to sustaining, planned in each sprint. With building dominant, the sustain share is the one most likely to be squeezed, so it is protected in the sprint plan.</span></div>
     <div class="rule"><b>No single point of knowledge</b><span>Every area has a named backup. Each critical component, such as the calculation engine, the provenance and event store, and the release pipeline, can be explained and changed by two people.</span></div>
-    <div class="rule"><b>All senior, with a deep specialty</b><span>Every hands-on role is seven or more years of experience and covers adjacent work. Nobody works in isolation from review.</span></div>
+    <div class="rule"><b>Senior-weighted, with a deep specialty</b>
+      <span data-s="1">Every hands-on role is seven or more years of experience and covers adjacent work. Nobody works in isolation from review.</span>
+      <span data-s="2 3">At least two thirds of the hands-on roles have seven or more years of experience, and mid-level engineers are always paired. Nobody works in isolation from review.</span></div>
     <div class="rule"><b>Review has protected time</b><span>Code and design review are planned work. Delivery so far shows review queues, not build effort, holding items open for several sprints.</span></div>
     <div class="rule"><b>Data skill is in the core team</b><span>The build phase to GLS ran without a data engineer. Live data is not sustained by a team that has none.</span></div>
-    <div class="rule"><b>Evaluation can block a release</b><span>The evaluation sets belong to the AI and quality engineer and the data and methodology lead together. The tech and architecture director signs the release gate, so no one marks their own work.</span></div>
-    <div class="rule"><b>The team controls its own access</b><span>Platform access arrived mid-sprint in each of the last three sprints and set the pace of the work. The platform engineer owns provisioning, with a standing request in each sprint plan.</span></div>
+    <div class="rule"><b>Evaluation can block a release</b><span>The evaluation sets belong to the AI and quality engineers and the data and methodology lead together. The tech and architecture director signs the release gate, so no one marks their own work.</span></div>
+    <div class="rule"><b>The team controls its own access</b><span>Platform access arrived mid-sprint in each of the last three sprints and set the pace of the work. The platform engineers own provisioning, with a standing request in each sprint plan.</span></div>
     <div class="rule"><b>Decisions are written down</b><span>Architecture and data decisions have a record. Where policy pages are still empty, the team writes the standard before relying on it.</span></div>
+    <div class="rule" data-s="2 3"><b>Support is a rotation</b><span>A named engineer is on support each sprint, rotating across the team, so that support does not sit with the same few people and builders see what breaks.</span></div>
+    <div class="rule" data-s="3"><b>Two streams, one backlog and one release gate</b><span>Both streams work from one backlog and one definition of done, and release through the same gate, so the streams cannot drift apart.</span></div>
   </div>
 </section>
 
 <section>
-  <h2>What the 20% builds first</h2>
-  <p>A proposed order for the nine post-GLS initiatives at sustain-first capacity. In the balanced team the slowed items move up the list, and in the build-first team all of them run together. The Tech Lead and the product director would confirm it.</p>
+  <h2>What gets built first <span class="scn-tag" data-s="1">Sustain-first</span><span class="scn-tag" data-s="2">Balanced</span><span class="scn-tag" data-s="3">Build-first</span></h2>
+  <p data-s="1">A proposed order for the nine post-GLS initiatives at this capacity. The Tech Lead and the product director would confirm it.</p>
+  <p data-s="2">A proposed order for the nine post-GLS initiatives at this capacity. Items that wait in the sustain-first team now run in turn. The Tech Lead and the product director would confirm it.</p>
+  <p data-s="3">A proposed way to run the nine post-GLS initiatives at this capacity: in parallel across the two streams. The Tech Lead and the product director would confirm it.</p>
   <div class="scroll"><table>
     <thead><tr><th>Initiative</th><th>Treatment</th><th>Reasoning</th></tr></thead>
     <tbody>
-      <tr><td><strong>Technical foundations, including live data ingestion</strong></td><td><strong>Build first</strong></td><td>GLS runs on a curated data set. The product cannot serve a new client's company data without live connections.</td></tr>
-      <tr><td><strong>Output iteration and editing</strong></td><td><strong>Build next</strong></td><td>It is the part partners touch most, and partner edits feed the learning pipeline.</td></tr>
-      <tr><td><strong>UX feedback stream</strong></td><td>Handled as support</td><td>Small fixes triaged inside the 80%.</td></tr>
-      <tr><td><strong>Scaling and cost efficiency</strong></td><td>Handled as support</td><td>The team fixes what breaks or costs too much, and does not run a programme for it.</td></tr>
-      <tr><td><strong>OI lifecycle and versioning</strong></td><td>Slowed</td><td>Follows output editing, which it depends on.</td></tr>
-      <tr><td><strong>Business-unit handling, data and coverage expansion</strong></td><td>Slowed</td><td>Each needs methodology and data capacity at once, and both sit with one person.</td></tr>
-      <tr><td><strong>Collaboration and governance, including approval flows</strong></td><td>Deferred</td><td>Already listed after GLS. The current architecture does not need concurrent viewers.</td></tr>
+      <tr><td><strong>Technical foundations, including live data ingestion</strong></td>
+        <td><strong><span data-s="1 2">Build first</span><span data-s="3">Build now, data and intelligence stream</span></strong></td>
+        <td>GLS runs on a curated data set. The product cannot serve a new client's company data without live connections.</td></tr>
+      <tr><td><strong>Output iteration and editing</strong></td>
+        <td><strong><span data-s="1 2">Build next</span><span data-s="3">Build now, application stream</span></strong></td>
+        <td>It is the part partners touch most, and partner edits feed the learning pipeline.</td></tr>
+      <tr><td><strong>UX feedback stream</strong></td>
+        <td><span data-s="1 2">Handled as support</span><strong data-s="3">Build now, application stream</strong></td>
+        <td><span data-s="1 2">Small fixes triaged inside the sustain share.</span><span data-s="3">Runs as a standing workstream with the designers.</span></td></tr>
+      <tr><td><strong>Scaling and cost efficiency</strong></td>
+        <td><span data-s="1 2">Handled as support</span><strong data-s="3">Build now, platform engineers</strong></td>
+        <td><span data-s="1 2">The team fixes what breaks or costs too much, and does not run a programme for it.</span><span data-s="3">With two platform engineers it can run as a planned programme.</span></td></tr>
+      <tr><td><strong>OI lifecycle and versioning</strong></td>
+        <td><span data-s="1">Slowed</span><strong data-s="2">Build, third</strong><strong data-s="3">Build now, application stream</strong></td>
+        <td><span data-s="1 2">Follows output editing, which it depends on.</span><span data-s="3">Follows output editing inside the same stream.</span></td></tr>
+      <tr><td><strong>Business-unit handling, data and coverage expansion</strong></td>
+        <td><span data-s="1">Slowed</span><strong data-s="2">Build, fourth, one at a time</strong><strong data-s="3">Build now, data and intelligence stream</strong></td>
+        <td><span data-s="1">Each needs methodology and data capacity at once, and both sit with one person.</span><span data-s="2">Each needs methodology and data capacity together, so they run one after the other.</span><span data-s="3">The data and quantitative engineers give the capacity to run both together.</span></td></tr>
+      <tr><td><strong>Collaboration and governance, including approval flows</strong></td>
+        <td><span data-s="1 2">Deferred</span><strong data-s="3">Build last, both streams</strong></td>
+        <td><span data-s="1 2">Already listed after GLS. The current architecture does not need concurrent viewers.</span><span data-s="3">Already listed after GLS, so it goes last. It needs both streams and the release gate.</span></td></tr>
     </tbody>
   </table></div>
 </section>
 
 <section>
   <h2>Three ways to time the handover</h2>
-  <p>Timing is shown by handover step, not by date. The steps show who leads each area as ownership moves from the delivery partner to the Bain team. Roadmap work continues at the 20% rate throughout, so a step does not map to a roadmap item.</p>
+  <p>Timing is shown by handover step, not by date. The steps show who leads each area as ownership moves from the delivery partner to the Bain team. Roadmap work continues at the build rate you selected throughout, so a step does not map to a roadmap item.</p>
   <div class="scroll"><table style="min-width:620px">
     <thead><tr><th>Step</th><th>What it covers</th></tr></thead>
     <tbody>
       <tr><td><strong>Hardening</strong></td><td>The planned support and hardening period after GLS</td></tr>
-      <tr><td><strong>Steps 1 to 3</strong></td><td>The stretch in which ownership of each area moves to the Bain team, in the order each scenario sets</td></tr>
+      <tr><td><strong>Steps 1 to 3</strong></td><td>The stretch in which ownership of each area moves to the Bain team, in the order each handover option sets</td></tr>
       <tr><td><strong>Steady state</strong></td><td>The Bain team owns and evolves the product</td></tr>
     </tbody>
   </table></div>
   <div class="legend"><span class="l-b">Bain-led</span><span class="l-s">Shared, with the delivery partner</span><span class="l-p">Delivery partner-led</span></div>
 
   <article class="scen">
-    <header><h3>Scenario A: Early handover</h3></header>
+    <header><h3>Handover A: Early</h3></header>
     <p>The Bain team takes ownership at the end of hardening. The delivery partner supports while the Bain team leads.</p>
     <dl class="facts">
       <div><dt>Fits when</dt><dd>The full core team is in place at the end of hardening, and the codebase is stable.</dd></div>
@@ -384,10 +458,10 @@ a { color: var(--accent); }
   </article>
 
   <article class="scen">
-    <header><h3>Scenario B: Staged by capability</h3><span class="badge">Recommended</span></header>
+    <header><h3>Handover B: Staged by capability</h3><span class="badge">Recommended</span></header>
     <p>Ownership moves in three steps, starting with the areas that carry judgment and least code: architecture, data and methodology. Engineering-heavy areas move last, once the team around them is proven.</p>
     <dl class="facts">
-      <div><dt>Fits when</dt><dd>The team arrives in stages, and a small team cannot absorb every area at once.</dd></div>
+      <div><dt>Fits when</dt><dd>The team arrives in stages, and a team cannot absorb every area at once.</dd></div>
       <div><dt>Main risk</dt><dd>Two operating models run side by side for a while, which needs clear boundaries and a single backlog.</dd></div>
       <div><dt>Exit test per step</dt><dd>The Bain owner for the area has made and documented a real decision, and covered the area through a sprint without the partner lead.</dd></div>
     </dl>
@@ -404,7 +478,7 @@ a { color: var(--accent); }
   </article>
 
   <article class="scen">
-    <header><h3>Scenario C: Late, single cutover</h3></header>
+    <header><h3>Handover C: Late, single cutover</h3></header>
     <p>The delivery partner keeps running the product. The Bain team shadows, then takes over everything in one move after a shared rehearsal.</p>
     <dl class="facts">
       <div><dt>Fits when</dt><dd>The team cannot be ready until later, and the product has to stay stable until then.</dd></div>
@@ -424,7 +498,11 @@ a { color: var(--accent); }
   </article>
 
   <div class="pick">
-    <p><strong>Recommendation: Scenario B.</strong> A small team cannot take every area at once and also carry 80% of the effort on support. Staging puts judgment-heavy ownership with Bain first and proves the team on real decisions before it takes on the engineering load. Scenario A is faster but fails if the team is thin. Scenario C is simplest to plan but leaves Bain a reviewer for the longest time. The Tech Lead makes the final call.</p>
+    <p><strong>Recommendation: Handover B.</strong>
+      <span data-s="1">A small team cannot take every area at once and also carry 80% of the effort on support.</span>
+      <span data-s="2">A team of eleven can take areas faster than seven, but still not all at once while carrying half its effort on support.</span>
+      <span data-s="3">Even a team of twenty-eight cannot absorb every area at once, and a large team arriving together needs the most careful onboarding.</span>
+      Staging puts judgment-heavy ownership with Bain first and proves the team on real decisions before it takes on the engineering load. Handover A is faster but fails if the team is thin. Handover C is simplest to plan but leaves Bain a reviewer for the longest time. The Tech Lead makes the final call.</p>
   </div>
 
   <div>
@@ -441,12 +519,15 @@ a { color: var(--accent); }
 <section>
   <h2>Assumptions and gaps</h2>
   <ul class="plain">
-    <li>The 20% build and 80% sustain split is the operating assumption for this model. It is a planning ratio and has not been measured against the team's real support load.</li>
-    <li>The sizing of all three scenarios rests on one judgment, a sustain floor of about 5.6 people. If the real floor is higher or lower, every team size moves with it.</li>
+    <li data-s="1">The 20% build and 80% sustain split is the working assumption for this model. It is a planning ratio and has not been measured against the team's real support load.</li>
+    <li data-s="2">The 50/50 split is a planning ratio and has not been measured against the team's real support load. Calling eleven the upper end of a small team is my judgment.</li>
+    <li data-s="3">The 80/20 split is a reference point to show what faster delivery takes. It is a planning ratio and has not been measured against the real support load, and 28 is a floor.</li>
+    <li>The sizing rests on one judgment, a sustain floor of about 5.6 people. If the real floor is higher or lower, every team size moves with it.</li>
     <li>The Sprint 3 yardstick assumes 80 logged hours per person per sprint. Logged hours were first recorded in that sprint and may understate the real effort, so the pace comparisons are rough.</li>
+    <li>The roadmap's effort has not been estimated, so what each split can reach is indicative.</li>
     <li>The roadmap pages do not describe an ownership model, so the areas, roles and handover steps above are derived from the post-GLS initiatives, the design requirements and the architecture.</li>
     <li>Security design, non-functional design and observability are still empty pages. The platform and security role scope is provisional until they are written.</li>
-    <li>The engineering lead backs up four areas, and the platform engineer and data lead each own several. A smaller team means more key-person risk, which the backup table reduces and does not remove.</li>
+    <li data-s="1">The engineering lead backs up four areas, and the platform engineer and data lead each own several. A smaller team means more key-person risk, which the backup table reduces and does not remove.</li>
     <li>The vision describes an ongoing portfolio-monitoring capability, and where it lives is undecided. It is not staffed here.</li>
     <li>Serving Mainland China would need a separate instance of the platform, and is not staffed here.</li>
   </ul>
@@ -464,3 +545,34 @@ a { color: var(--accent); }
 </footer>
 
 </div>
+
+<script>
+(function () {
+  var page = document.querySelector('.page');
+  var slider = document.getElementById('split');
+  var names = { 1: 'sustain-first', 2: 'balanced', 3: 'build-first' };
+  var labels = { 1: '20% build, 80% sustain', 2: '50% build, 50% sustain', 3: '80% build, 20% sustain' };
+
+  function apply(n, fromHash) {
+    page.setAttribute('data-scn', n);
+    slider.value = n;
+    slider.setAttribute('aria-valuetext', labels[n]);
+    if (!fromHash) {
+      try { location.replace('#' + names[n]); } catch (e) {}
+    }
+  }
+  function readHash() {
+    var h = '';
+    try { h = location.hash.replace('#', ''); } catch (e) {}
+    for (var k in names) { if (names[k] === h) { apply(+k, true); return; } }
+  }
+
+  slider.addEventListener('input', function () { apply(+slider.value, false); });
+  var picks = document.querySelectorAll('[data-pick]');
+  for (var i = 0; i < picks.length; i++) {
+    picks[i].addEventListener('click', function () { apply(+this.getAttribute('data-pick'), false); });
+  }
+  window.addEventListener('hashchange', readHash);
+  readHash();
+})();
+</script>
