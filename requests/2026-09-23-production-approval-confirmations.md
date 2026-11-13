@@ -455,6 +455,35 @@ a genuine, unaddressed gap, now logged in `context/open-questions.md`. Personal 
 plausibly appear in Partner-uploaded documents and Iris/Sage case data, so this needs
 building before launch rather than answered with a placeholder.
 
+## Round 9 — access controls and privacy configuration (2026-11-13)
+
+**Access controls.** Who: end users are Partners, authenticated via Entra SSO; engineers
+are StatusNeo, under the Managed Access model proposed in Round 6 (named guest accounts,
+no standing infrastructure access); admins are Bain's platform team. What's in place:
+Role-Based Data Access (RBDA) is a stated architectural principle across every
+architecture page — access controlled independently of the consuming app or agent,
+enforced at the data/service boundary rather than only in the UI, with row-/column-level
+security, least-privilege authorization, and workload identity for agent-to-service
+calls. Documents carry role-based access control natively via SharePoint; the audit
+trail sits in Azure SQL ledger tables. **Genuinely open, not yet resolved**: Technology
+Choices' own list of undecided items names "role set per case and what each role gates"
+and "whether per-document/MNPI access control ships at MVP or later" as open decisions —
+so the principle is firm, the concrete role model isn't finalised yet.
+
+**Can users control how their data is used? (opt-outs).** No documented self-service
+opt-out exists for analytics, personalisation, AI features, or data sharing. The closest
+related mechanisms are policy-level defaults rather than user-configurable settings: no
+cross-Partner data flow by design, and no model training without affirmative opt-in
+(opt-in, not an opt-out toggle). Recommend answering that user-controlled opt-outs don't
+exist today, rather than implying a settings panel that isn't there.
+
+**Where are privacy controls configured?** There's no dedicated privacy-settings panel,
+for admins or end users — by default, this means everything is enforced centrally rather
+than left to individual Partners: entitlement logic at the BFF, Azure identity services,
+Key Vault, and SharePoint's native RBAC. So the honest framing is "centrally enforced by
+design, because no individual-level privacy toggle exists," not "centrally configured in
+a named admin console" — no such console is described anywhere in the mirror.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
