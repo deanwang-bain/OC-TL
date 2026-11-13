@@ -337,6 +337,54 @@ Technology Choices' API Management framing is what needs correcting, not what's 
 interim store, how long it remains, and when it's purged. Not yet defined; Engineering
 to supply.
 
+## Round 7 — AI & ML governance intake form (2026-11-13)
+
+A different form surfaced — the AI & ML section of what appears to be the formal GRC
+intake. Six fields, answered from what's already established across Rounds 1–6:
+
+**AI capabilities.** Agentic synthesis over retrieved data: entity resolution, peer
+discovery and benchmarking (deterministic CapIQ-based plus GenAI/web-search ranking),
+case-for-change narrative framing, lever prioritisation, cost-bar and NWC calculation
+(OI 3.0's own engine, not VCC's), RAG-grounded chat grounded in CapIQ/LSEG/10-K/Iris
+content with source citation, confidence scoring per data completeness, and
+format-neutral exhibit/deck generation.
+
+**AI model(s).** Routed through **Portkey**, Bain's approved AI gateway (per Round 2/6
+correction) — model selection is deferred to deployment per Technology Choices, not
+fixed in the architecture. Whether the named agent/model platform in the architecture
+docs (Azure AI Foundry) is itself on Bain's approved list is **still unresolved** — the
+VCC workshop's own action item to validate it was never closed out (`context/open-questions.md`).
+Not presenting this as settled.
+
+**User-provided input data in custom model.** No, by default — red/confidential Partner
+data is "never used for model training" per the VCC meeting ruling, matching Legal's
+no-training condition (item 3, Closed in Round 6). A later-stage, opt-in-gated learning
+capability is described in the architecture diagram but not implemented; it goes back
+through Archie for review before any activation. Partner-Private data is session-scoped
+and "evaporates on close."
+
+**Personal data in custom model.** No — follows from the no-training answer above, and
+from Technology Choices' explicit decision not to build a vector store or any persistent
+reusable retrieval index at MVP or north star "unless retrieval quality is measured to
+be insufficient." Retrieval is on-demand against existing systems (CapIQ, LSEG,
+Glean/Iris), not a persistent index OI 3.0 builds and reuses itself.
+
+**AI Transparency Mechanisms.** Transparency is a stated design requirement, not an
+add-on: every number must be drillable to source, reasoning, and confidence level.
+Mechanisms in the design: RAG-grounded responses citing sources rather than pure LLM
+inference, a per-datapoint confidence score driven by source completeness, a Log tab
+recording agent routing/classification decisions, a Sources tab showing retrieved and
+uploaded documents, and an audit log of inputs/outputs/metadata per deck generated
+(VCC meeting action item).
+
+**AI Human Oversight process.** "Partner retains judgment; agents do synthesis" is the
+stated operating principle — "AI as enabler, not decision-maker." Hard gates block
+progress on critical missing input (e.g., unresolved conflict-of-interest or
+data-residency checks, missing financials for a private target); soft gates proceed but
+flag lower confidence. The partner reviews and can override every agent proposal
+(peer set, framing, lever ranking) before it reaches a client-facing deck, and is
+accountable for what goes in front of the client.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
