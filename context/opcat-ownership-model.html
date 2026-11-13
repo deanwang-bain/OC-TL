@@ -77,6 +77,9 @@ p { margin: 0; max-width: 68ch; }
 .chip.on { border-color: var(--accent); color: var(--accent); font-weight: 600; }
 section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .note { font-size: 13.5px; color: var(--muted); max-width: 72ch; }
+.callout { border: 1px dashed var(--shared); border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; background: var(--surface); }
+.callout .tag { color: var(--shared); }
+.callout p { max-width: 78ch; }
 .scn-tag { display: inline-block; vertical-align: middle; margin-left: 10px; font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
 
 /* operating assumption and slider */
@@ -174,6 +177,13 @@ a { color: var(--accent); }
 </header>
 
 <section>
+  <div class="callout">
+    <span class="tag">What this page estimates</span>
+    <p><strong>Horizon.</strong> The team that owns OpCat in steady state, once the core build is done and the delivery partner steps back. It is not a month-by-month staffing plan for 2027.</p>
+    <p><strong>Scope.</strong> OpCat only. Functions shared with other PI products, such as security review, sit outside the core team.</p>
+    <p><strong>Timing anchor.</strong> On the current plan the delivery partner builds the roadmap through Q1 2027. The Bain team starts forming from Q2 2027 at the earliest, so nothing on this page changes the Q1 roadmap.</p>
+    <p><strong>Today's baseline.</strong> About four to five engineers work directly on the product today. The team sizes below describe the Bain team after handover, not today's team.</p>
+  </div>
   <div class="assume">
     <span class="tag">Operating assumption</span>
 
@@ -197,7 +207,7 @@ a { color: var(--accent); }
     </div>
     <div data-s="3">
       <h2>The team builds first and sustains second</h2>
-      <p style="margin-top:10px">Most of the effort goes to new development. The sustain effort is the same in absolute terms as in the other splits, so here it is a thin slice of a much larger team, and the first thing to be squeezed. This is the arithmetic result of building at nearly five times the Sprint 3 pace. It shows the cost of faster delivery and is not proposed. A team this size is unlikely to fit inside Bain.</p>
+      <p style="margin-top:10px">Most of the effort goes to new development. The sustain effort is the same in absolute terms as in the other splits, so here it is a thin slice of a much larger team, and the first thing to be squeezed. This is the arithmetic result of building at nearly five times the Sprint 3 pace. It shows the cost of faster delivery and is not proposed.</p>
     </div>
 
     <div class="bar" role="img" aria-label="Split of effort between sustaining the product and new development">
@@ -229,9 +239,15 @@ a { color: var(--accent); }
         <li><strong>Sustain floor.</strong> Keeping the product running needs a primary owner and a backup across six areas. At today's scope that is about 5.6 people's worth of effort. This is a judgment, to be checked against the real support load.</li>
         <li><strong>Fixed across splits.</strong> The product has to be kept running whatever is being built, so the floor does not change. Team size is the floor divided by the sustain share.</li>
         <li><strong>Build pace yardstick.</strong> Sprint 3 burned about 370 logged hours in two weeks, roughly 4.6 people at 80 hours each. Build effort is compared with that to show how fast the roadmap could move.</li>
+        <li><strong>Today's check.</strong> About four to five engineers build the product today, which matches the yardstick.</li>
       </ul>
     </div>
-    <p class="note" data-s="3">Build-first is a floor, not a forecast: more building means more to sustain and more coordination, so 28 understates it. A cheaper way to reach build-first pace is to keep the delivery partner building while a sustain-first Bain team owns the product. That is a different operating model and is not sized here.</p>
+    <div class="callout" data-s="3">
+      <span class="tag">Where the 28 comes from</span>
+      <p>Sustain effort stays at about 5.6 people in every split. At a 20% sustain share the team has to be 5.6 divided by 0.2, which is 28 people, of whom about 22 build. That is roughly five times the four to five engineers on the product today.</p>
+      <p>The extra people fill the two-stream structure below: full-stack, data, quantitative and AI engineers, a second engineering lead and a second designer. The role table lists what each does and how many.</p>
+      <p>It is a floor, not a forecast: more building means more to sustain and more coordination. Cost is outside this page. A cheaper way to reach this pace is to keep the delivery partner building while a sustain-first Bain team owns the product. That is a different operating model and is not sized here.</p>
+    </div>
   </div>
 </section>
 
@@ -262,7 +278,7 @@ a { color: var(--accent); }
 
   <div class="row-label">Directors</div>
   <div class="pods">
-    <div class="pod dir"><span class="tag">Director</span><h3>Product director</h3><p class="owns">Owns the roadmap, the partner relationship, Bain content integration and the quality gates. Decides what the build share delivers.</p></div>
+    <div class="pod dir"><span class="tag">Director</span><h3>Product director</h3><p class="owns">Owns the roadmap, the partner relationship, Bain content integration and the quality gates. Decides what the build share delivers, and works in the product hands-on.</p></div>
     <div class="pod dir"><span class="tag">Director</span><h3>Tech and architecture director</h3><p class="owns">Owns architecture decisions, review standards and release readiness. Reviews and builds, not only directs.</p></div>
   </div>
 
@@ -352,7 +368,7 @@ a { color: var(--accent); }
   <div class="scroll"><table>
     <thead><tr><th>Role</th><th>Number</th><th>Experience</th><th>Signals of quality</th></tr></thead>
     <tbody>
-      <tr><td><strong>Product director</strong></td><td class="num">1</td><td>12+ years in consulting or in product roles for decision-support tools</td><td>Has shipped a tool that senior professionals rely on. Can say no to a feature. Partners return their calls.</td></tr>
+      <tr><td><strong>Product director</strong></td><td class="num">1</td><td>12+ years in consulting or in product roles for decision-support tools</td><td>Has shipped a tool that senior professionals rely on. Can say no to a feature. Partners return their calls. Comfortable reading and auditing code and prompts.</td></tr>
       <tr><td><strong>Tech and architecture director</strong></td><td class="num">1</td><td>15+ years, with an AI-enabled, cloud-native system run in production</td><td>Has written and defended architecture decisions. Reviews code in more than one language. Has owned an incident.</td></tr>
       <tr><td><strong>Engineering lead</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">2</span></td><td>10+ years across the web stack and Python services</td><td>Builds dense data screens and the services behind them. Ships small, tested changes. Can cover for adjacent roles.</td></tr>
       <tr data-s="2 3"><td><strong>Full-stack engineer</strong></td><td class="num"><span data-s="2">2</span><span data-s="3">8</span></td><td>4+ years across the web stack and Python services</td><td>Ships small, tested changes. Writes clear pull request descriptions.</td></tr>
@@ -362,7 +378,7 @@ a { color: var(--accent); }
       <tr data-s="3"><td><strong>Quantitative engineer</strong></td><td class="num">3</td><td>5+ years building financial or analytical calculation systems</td><td>Writes deterministic, testable calculations. Insists on provenance for every figure.</td></tr>
       <tr><td><strong>AI and quality engineer</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">3</span></td><td>6+ years in software, 2+ with language-model systems in production</td><td>Has built tool-using agents with guardrails. Designs evaluation sets and pass marks. Explains a failure from traces, not from guesswork.</td></tr>
       <tr><td><strong>Platform and security engineer</strong></td><td class="num"><span data-s="1 2">1</span><span data-s="3">2</span></td><td>8+ years in cloud infrastructure, delivery pipelines and application security</td><td>Infrastructure as code, least-privilege access, observability. Grants and revokes access quickly and safely.</td></tr>
-      <tr><td><strong>Delivery and governance coordinator</strong></td><td class="num">1</td><td>5+ years in delivery or programme roles with client-confidential data</td><td>Has negotiated data licences and access. Keeps a risk register that people read.</td></tr>
+      <tr><td><strong>Delivery and governance coordinator</strong></td><td class="num">1</td><td>5+ years in delivery or programme roles with client-confidential data</td><td>Has negotiated data licences and access. Keeps a risk register that people read. Can read and audit changes in the codebase.</td></tr>
       <tr><td><strong>Security reviewer</strong></td><td class="num">Shared</td><td>8+ years in application and AI security</td><td>Has led threat modelling for systems that handle client data.</td></tr>
       <tr class="total"><td>Total core team</td><td class="num"><span data-s="1">7</span><span data-s="2">11</span><span data-s="3">28</span></td><td colspan="2">Excludes the shared security reviewer</td></tr>
     </tbody>
@@ -380,6 +396,7 @@ a { color: var(--accent); }
     <div class="rule"><b>Senior-weighted, with a deep specialty</b>
       <span data-s="1">Every hands-on role is seven or more years of experience and covers adjacent work. Nobody works in isolation from review.</span>
       <span data-s="2 3">At least two thirds of the hands-on roles have seven or more years of experience, and mid-level engineers are always paired. Nobody works in isolation from review.</span></div>
+    <div class="rule"><b>Everyone works in the codebase</b><span>Every member can write, edit or audit code, prompts, pipelines and evaluation sets, including the directors and the coordinator. This is a team of doers, not managers, hired for both expertise and hands-on ability.</span></div>
     <div class="rule"><b>Review has protected time</b><span>Code and design review are planned work. Delivery so far shows review queues, not build effort, holding items open for several sprints.</span></div>
     <div class="rule"><b>Data skill is in the core team</b><span>The build phase to GLS ran without a data engineer. Live data is not sustained by a team that has none.</span></div>
     <div class="rule"><b>Evaluation can block a release</b><span>The evaluation sets belong to the AI and quality engineers and the data and methodology lead together. The tech and architecture director signs the release gate, so no one marks their own work.</span></div>
@@ -391,7 +408,12 @@ a { color: var(--accent); }
 </section>
 
 <section>
-  <h2>What gets built first <span class="scn-tag" data-s="1">Sustain-first</span><span class="scn-tag" data-s="2">Balanced</span><span class="scn-tag" data-s="3">Build-first</span></h2>
+  <h2>Where the build share goes after handover <span class="scn-tag" data-s="1">Sustain-first</span><span class="scn-tag" data-s="2">Balanced</span><span class="scn-tag" data-s="3">Build-first</span></h2>
+  <div class="callout">
+    <span class="tag">Assumption</span>
+    <p>The delivery partner is working on all of these initiatives through Q1 2027, and the roadmap for that period does not change with this decision. The table applies to whatever is still open when the Bain team takes over, from Q2 at the earliest.</p>
+    <p>The list is the nine post-GLS initiatives recorded in Confluence. With more capacity the product would aim at more than this list, so the table shows priorities, not the full ambition.</p>
+  </div>
   <p data-s="1">A proposed order for the nine post-GLS initiatives at this capacity. The Tech Lead and the product director would confirm it.</p>
   <p data-s="2">A proposed order for the nine post-GLS initiatives at this capacity. Items that wait in the sustain-first team now run in turn. The Tech Lead and the product director would confirm it.</p>
   <p data-s="3">A proposed way to run the nine post-GLS initiatives at this capacity: in parallel across the two streams. The Tech Lead and the product director would confirm it.</p>
@@ -424,28 +446,31 @@ a { color: var(--accent); }
 </section>
 
 <section>
-  <h2>Three ways to time the handover</h2>
-  <p>Timing is shown by handover step, not by date. The steps show who leads each area as ownership moves from the delivery partner to the Bain team. Roadmap work continues at the build rate you selected throughout, so a step does not map to a roadmap item.</p>
+  <h2>Four ways to time the handover</h2>
+  <p>Timing is anchored on the current plan: the delivery partner builds through Q1 2027, and the Bain team forms from Q2 2027 at the earliest. After that, each step ends when its exit condition is met rather than on a date, because hiring timing is not yet known.</p>
   <div class="scroll"><table style="min-width:620px">
-    <thead><tr><th>Step</th><th>What it covers</th></tr></thead>
+    <thead><tr><th>Step</th><th>What it covers</th><th>Ends when</th></tr></thead>
     <tbody>
-      <tr><td><strong>Hardening</strong></td><td>The planned support and hardening period after GLS</td></tr>
-      <tr><td><strong>Steps 1 to 3</strong></td><td>The stretch in which ownership of each area moves to the Bain team, in the order each handover option sets</td></tr>
-      <tr><td><strong>Steady state</strong></td><td>The Bain team owns and evolves the product</td></tr>
+      <tr><td><strong>Build to Q1</strong></td><td>The delivery partner builds the current roadmap under its deadlines. Bain involvement is the Tech Lead review role. The earlier draft called this hardening, and the current plan has no separate hardening phase.</td><td>The first Bain roles are in seat, from Q2 2027 at the earliest</td></tr>
+      <tr><td><strong>Step 1</strong></td><td>The directors and the data and methodology lead are in seat. They learn the system and take part in decisions.</td><td>Each has documented one real decision in their area</td></tr>
+      <tr><td><strong>Step 2</strong></td><td>The remaining hands-on roles join and work live tickets alongside the partner.</td><td>Every area has a Bain owner and backup with working context</td></tr>
+      <tr><td><strong>Step 3</strong></td><td>The Bain team runs releases, with the partner on call.</td><td>The Bain team has run a release, an incident drill and a data refresh</td></tr>
+      <tr><td><strong>Steady state</strong></td><td>The Bain team owns and evolves the product</td><td>Ongoing</td></tr>
     </tbody>
   </table></div>
   <div class="legend"><span class="l-b">Bain-led</span><span class="l-s">Shared, with the delivery partner</span><span class="l-p">Delivery partner-led</span></div>
 
   <article class="scen">
     <header><h3>Handover A: Early</h3></header>
-    <p>The Bain team takes ownership at the end of hardening. The delivery partner supports while the Bain team leads.</p>
+    <p>The Bain team takes ownership at the end of the Q1 build. The delivery partner supports while the Bain team leads.</p>
     <dl class="facts">
-      <div><dt>Fits when</dt><dd>The full core team is in place at the end of hardening, and the codebase is stable.</dd></div>
+      <div><dt>Fits when</dt><dd>The full core team is hired and has context by the end of Q1, and the build has settled.</dd></div>
+      <div><dt>Feasibility</dt><dd>Low on the current plan. The team cannot start forming before Q2 and the product is still in a deadline-driven build, so moving off the partner this fast is unlikely.</dd></div>
       <div><dt>Main risk</dt><dd>The team learns the system and carries all support at once. One gap stalls both.</dd></div>
       <div><dt>Exit test</dt><dd>The Bain team ships a release end to end, with the partner only answering questions.</dd></div>
     </dl>
     <div class="scroll"><table class="grid">
-      <thead><tr><th>Area</th><th>Hardening</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
+      <thead><tr><th>Area</th><th>Build to Q1</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
       <tbody>
         <tr><td class="cap">Architecture and review</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td></tr>
         <tr><td class="cap">Data and methodology</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td></tr>
@@ -457,15 +482,16 @@ a { color: var(--accent); }
   </article>
 
   <article class="scen">
-    <header><h3>Handover B: Staged by capability</h3><span class="badge">Recommended</span></header>
+    <header><h3>Handover B: Staged by capability</h3></header>
     <p>Ownership moves in three steps, starting with the areas that carry judgment and least code: architecture, data and methodology. Engineering-heavy areas move last, once the team around them is proven.</p>
     <dl class="facts">
       <div><dt>Fits when</dt><dd>The team arrives in stages, and a team cannot absorb every area at once.</dd></div>
       <div><dt>Main risk</dt><dd>Two operating models run side by side for a while, which needs clear boundaries and a single backlog.</dd></div>
       <div><dt>Exit test per step</dt><dd>The Bain owner for the area has made and documented a real decision, and covered the area through a sprint without the partner lead.</dd></div>
+      <div><dt>Depends on</dt><dd>The right roles arriving in the right order: directors and the data and methodology lead first, then AI, platform and engineering. If a role is late, its area stays with the partner until it arrives.</dd></div>
     </dl>
     <div class="scroll"><table class="grid">
-      <thead><tr><th>Area</th><th>Hardening</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
+      <thead><tr><th>Area</th><th>Build to Q1</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
       <tbody>
         <tr><td class="cap">Architecture and review</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td></tr>
         <tr><td class="cap">Data and methodology</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td><td class="s s-b">Bain</td></tr>
@@ -485,7 +511,7 @@ a { color: var(--accent); }
       <div><dt>Exit test</dt><dd>A full rehearsal release led by the Bain team, with the partner observing.</dd></div>
     </dl>
     <div class="scroll"><table class="grid">
-      <thead><tr><th>Area</th><th>Hardening</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
+      <thead><tr><th>Area</th><th>Build to Q1</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
       <tbody>
         <tr><td class="cap">Architecture and review</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
         <tr><td class="cap">Data and methodology</td><td class="s s-p">Partner</td><td class="s s-p">Partner</td><td class="s s-p">Partner</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
@@ -496,12 +522,33 @@ a { color: var(--accent); }
     </table></div>
   </article>
 
+  <article class="scen">
+    <header><h3>Handover D: Extended overlap, then cutover</h3><span class="badge">Recommended</span></header>
+    <p>The Bain team joins alongside the delivery partner as roles are filled. It works in the same backlog and adds capacity instead of replacing it. Ownership moves in one planned cutover once everyone has joined and has working context. Unlike Handover C, the Bain team does the work during the overlap rather than observing it.</p>
+    <dl class="facts">
+      <div><dt>Fits when</dt><dd>Hiring timing is uncertain and the product is still in a deadline-driven build.</dd></div>
+      <div><dt>Main risk</dt><dd>The longest period of dual running. Decision rights must be explicit while both teams work in the same areas.</dd></div>
+      <div><dt>Depends on</dt><dd>The partner being retained through the overlap. It does not depend on roles arriving in a set order.</dd></div>
+      <div><dt>Exit test</dt><dd>Every area has a Bain owner and backup who have shipped work in it, then a rehearsal release led by the Bain team.</dd></div>
+    </dl>
+    <div class="scroll"><table class="grid">
+      <thead><tr><th>Area</th><th>Build to Q1</th><th>Step 1</th><th>Step 2</th><th>Step 3</th><th>Steady state</th></tr></thead>
+      <tbody>
+        <tr><td class="cap">Architecture and review</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
+        <tr><td class="cap">Data and methodology</td><td class="s s-p">Partner</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
+        <tr><td class="cap">AI and quality</td><td class="s s-p">Partner</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
+        <tr><td class="cap">Platform and security</td><td class="s s-p">Partner</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
+        <tr><td class="cap">Experience and engineering</td><td class="s s-p">Partner</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-s">Shared</td><td class="s s-b">Bain</td></tr>
+      </tbody>
+    </table></div>
+  </article>
+
   <div class="pick">
-    <p><strong>Recommendation: Handover B.</strong>
+    <p><strong>Recommendation: Handover D, using B's staging where an area is ready early.</strong>
       <span data-s="1">A small team cannot take every area at once and also carry 80% of the effort on support.</span>
       <span data-s="2">A team of eleven can take areas faster than seven, but still not all at once while carrying half its effort on support.</span>
       <span data-s="3">Even a team of twenty-eight cannot absorb every area at once, and a large team arriving together needs the most careful onboarding.</span>
-      Staging puts judgment-heavy ownership with Bain first and proves the team on real decisions before it takes on the engineering load. Handover A is faster but fails if the team is thin. Handover C is simplest to plan but leaves Bain a reviewer for the longest time. The Tech Lead makes the final call.</p>
+      The team cannot start forming before Q2, the order in which roles arrive is uncertain, and the product is still in a deadline-driven build. Overlapping adds capacity instead of removing it, and the Bain team builds context by doing the work. Where an area's roles arrive early and pass the exit test, that area can move to Bain ownership before the cutover, as in Handover B. Handover A is unlikely on the current plan. Handover C keeps knowledge with the partner for the longest time. The Tech Lead makes the final call.</p>
   </div>
 
   <div>
@@ -518,6 +565,9 @@ a { color: var(--accent); }
 <section>
   <h2>Assumptions and gaps</h2>
   <ul class="plain">
+    <li>Horizon is steady state after the core build, once the delivery partner steps back. Scope is OpCat only.</li>
+    <li>The delivery partner builds the current roadmap through Q1 2027, and the Bain team forms from Q2 2027 at the earliest.</li>
+    <li>About four to five engineers work directly on the product today. They are a baseline for the sizing, not part of the Bain team counts.</li>
     <li data-s="1">The 20% build and 80% sustain split is the working assumption for this model. It is a planning ratio and has not been measured against the team's real support load.</li>
     <li data-s="2">The 50/50 split is a planning ratio and has not been measured against the team's real support load. Calling eleven the upper end of a small team is my judgment.</li>
     <li data-s="3">The 80/20 split is a reference point to show what faster delivery takes. It is a planning ratio and has not been measured against the real support load, and 28 is a floor.</li>
