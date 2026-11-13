@@ -582,6 +582,26 @@ pattern makes "Yes" plausible for several of them by common framework default, b
 nothing states it explicitly — recommend getting an explicit Engineering confirmation
 for each rather than accepting the pre-filled "No" or guessing "Yes."
 
+## Round 12 — patching and maintenance plan (2026-11-13)
+
+Confirmed from Technology Choices §9.4's control table: **static analysis** — CodeQL via
+GitHub Advanced Security, every pull request; **dependency vulnerabilities** — Dependabot,
+with alerts treated as blocking rather than advisory, continuous; **container image
+scanning** — Microsoft Defender for Cloud plus Trivy in the pipeline, every build; **secret
+scanning** — GitHub secret scanning with push protection, every push. Infrastructure-level
+patching is handled by Microsoft as part of the managed Azure services in use (Container
+Apps, Azure SQL, etc.) rather than patched manually, with Microsoft Defender for Cloud
+providing continuous posture management across the environment (§7, Adopt).
+
+This also closes the one open piece from Round 11 — the container/image scanning tool
+is now confirmed as **Microsoft Defender for Cloud and Trivy**, not left as "unconfirmed."
+
+**Honest gap**: no explicit SLA is documented for how quickly a blocking Dependabot
+alert must be resolved once raised, or a stated cadence for non-blocking/low-severity
+findings. The model is continuous and gate-based (patch when a scan flags something,
+not on a calendar), but if the reviewer wants a specific time-to-remediate figure,
+that needs Engineering to supply it.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
