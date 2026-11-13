@@ -385,6 +385,22 @@ flag lower confidence. The partner reviews and can override every agent proposal
 (peer set, framing, lever ranking) before it reaches a client-facing deck, and is
 accountable for what goes in front of the client.
 
+**AI Ethical Considerations (Fairness + Bias).** No page in the mirror states a fairness/
+bias policy — this isn't covered by written governance, only by mitigations visible in
+the architecture and test plan. The tool doesn't process personal or demographic data
+about individuals (per the "no personal data in custom model" answer above), so
+classic fairness-in-decisions-about-people doesn't directly apply; the bias risks that
+do apply are analytical: skewed peer comparability, source bias, and LLM hallucination.
+Mitigations already in the design: the partner can always override an agent's peer
+proposal and sees the comparability rationale behind it rather than a black-box result;
+every recommendation requires source-level traceability specifically so hallucination is
+demonstrable, not assumed absent (per [UX workshop open questions](../confluence/oi30/roadmap-business-requirements/ux-workshops-open-questions-from-dev-team-19714244769.md),
+item 11); and the [agent validation test plan](../confluence/oi30/architecture/agent-validation-test-plan-19765133323.md)
+treats judge variability/bias in automated quality scoring as a named risk, mitigated by
+versioning judges/rubrics and calibrating against an analyst-reviewed sample. Not
+presenting this as a ratified ethics policy — it's the set of concrete mitigations the
+mirror actually supports.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
