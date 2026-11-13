@@ -401,6 +401,60 @@ versioning judges/rubrics and calibrating against an analyst-reviewed sample. No
 presenting this as a ratified ethics policy — it's the set of concrete mitigations the
 mirror actually supports.
 
+## Round 8 — GRC intake, data storage and processing (2026-11-13)
+
+Eight fields on data storage/processing. Two of the form's pre-filled defaults ("No
+integrations," "No — personal data is not processed by [a] 3rd party") are very likely
+wrong for this application and should not be submitted as-is.
+
+**Data Storage Systems.** Azure SQL Database (application/OI state, Serverless General
+Purpose) with Azure SQL ledger tables for the audit trail; Redis (application state);
+Azure Blob Storage (immutable, legal-hold policy, for audit); SharePoint (Parquet-format
+per-run analytical files, Partner-uploaded documents, native Foundry-agent retrieval);
+Azure Key Vault (source credentials). Snowflake is north-star only, not current.
+
+**Bain, Client or 3rd party integrations.** The "No integrations" default is wrong. Live
+integrations: CapIQ, SEC EDGAR, LSEG/Refinitiv, Glassdoor/Fishbowl, FRWD (3rd
+party/licensed data); AI model provider(s) behind Portkey; Pendo (product analytics);
+Datadog (optional monitoring) — plus Bain-internal: Aura, Iris/Glean (Sage), ARC Data,
+GitHub Actions. This needs correcting before submission.
+
+**Data storage, processing, and transmission locations.** "United States" is correct
+today — [Opportunity Catalyst in Greater China](../confluence/oi30/roadmap-business-requirements/opportunity-catalyst-in-greater-china-19853082640.md)
+confirms the platform "runs entirely from a single US region." It will need revisiting
+if Greater China offices are brought on, since mainland-China cases default to a
+different cloud entirely by Bain policy.
+
+**Data Residency Requirements.** "No — no residency requirements" is only correct if
+Greater China is out of scope for this launch. Per the same page: mainland-China-billed
+cases require written client consent and an SOW data-transfer clause before any work
+starts, and nothing in the product enforces this today — logged as its own entry in
+`context/open-questions.md`. Hong Kong cases carry no additional requirement.
+
+**Does any personal data leave Bain's infrastructure or get processed by a third
+party?** The "No" default is very likely wrong. Data is sent to multiple third parties —
+CapIQ, LSEG, SEC EDGAR, Glassdoor/Fishbowl, FRWD, and the AI model provider(s) reached
+via Portkey (OpenAI, Claude, and Azure AI are all named as "in the current design" per
+the Greater China assessment), plus Pendo and Datadog if enabled. Whether any of that
+specifically qualifies as *personal* data hasn't been assessed — recommend answering
+"Yes" and listing sub-processors rather than submitting "No."
+
+**Sub-processors.** Draft list, to be confirmed by Engineering rather than treated as
+final: CapIQ (financials), LSEG/Refinitiv (analyst reports), SEC EDGAR (public filings),
+Glassdoor/Fishbowl (workforce sentiment), FRWD (CPG benchmarks), the AI model provider(s)
+behind Portkey (prompt/context data for inference — provider still unconfirmed, see item
+7 above), Pendo (usage analytics), Datadog (telemetry, if adopted).
+
+**Retention and purge.** Mixed. Partner-Private session data is session-scoped and
+evaporates on close — not retained. The audit trail is immutable with a legal-hold
+policy — retained indefinitely by design. The SharePoint interim store's retention/purge
+policy is still undefined — the same open item carried since Round 2.
+
+**DSAR (Data Subject Access Request) process.** Not documented anywhere in the mirror —
+a genuine, unaddressed gap, now logged in `context/open-questions.md`. Personal data can
+plausibly appear in Partner-uploaded documents and Iris/Sage case data, so this needs
+building before launch rather than answered with a placeholder.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
