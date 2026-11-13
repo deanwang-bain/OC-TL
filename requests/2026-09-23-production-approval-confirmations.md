@@ -535,6 +535,53 @@ fuller pipeline (and a manual approval gate specifically) has since been built f
 MVP/production is unconfirmed — needs Engineering to confirm current state rather than
 assuming the GLS-era thin pipeline still describes it.
 
+## Round 11 — application security controls (2026-11-13)
+
+This section's toggles default to "No" across the board (HTTPS, security headers,
+injection/XSS, session management, cookies, CSRF) — that reads as an unanswered default,
+not a genuine negative assessment, and none should be submitted without checking first.
+
+**Input & Output Sanitization.** Confirmed from Technology Choices §9.4: "Content Safety
+at the gateway is the control" for prompt injection — select **"AI model inputs are
+validated and sanitized before processing."** Everything else in this multi-select
+(output sanitization before DB write, malware scanning on uploads, schema validation on
+uploads, parameterized queries/ORM) isn't explicitly confirmed in the mirror. Don't check
+"controls are documented and consistently applied across all input/output types" or "no
+formal controls are in place" — neither is accurate; the honest middle is "controls are
+in place but not consistently applied," pending Engineering confirming the rest.
+
+**Secrets Management Platform.** Confirmed: **Azure Key Vault** only — "Source
+credentials: Key Vault references, Adopt" (Technology Choices §7). Not plaintext env
+vars, not hard-coded.
+
+**Service authentication.** Confirmed: **Yes – Managed Identity.** Workload identity is
+named as a cross-cutting platform capability across every architecture page — this is
+the Azure Managed Identity pattern, not shared credentials.
+
+**Penetration testing vs. automated scanning — these are different questions.**
+Confirmed automated scanning: **GitHub Advanced Security** (CodeQL + secret scanning),
+per `decisions/002` and Technology Choices' testing sections. A named *container/image*
+scanner isn't confirmed (decisions/002 mentions "image scan on merge" without naming the
+tool — could be GHAS's own, Trivy, or Wiz). Whether an actual human-driven **penetration
+test engagement** has occurred is genuinely undocumented — don't conflate GHAS (static/
+secret scanning) with a pentest; flag the pentest-engagement status as needing the
+Security team to confirm directly.
+
+**HTTPS and certificates.** The "No" default is very likely wrong — Front Door
+terminates TLS and origins run on private endpoints with public access disabled, which
+requires HTTPS throughout. Recommend "Yes," confirmed by Engineering.
+
+**Sensitive data in client-side environments.** Here "No" is likely the *correct*
+answer, unlike the other toggles in this section — Technology Choices' rejection of
+Next.js specifically cites the BFF pattern holding tokens/secrets server-side rather than
+exposing them to the client ("blurs the boundary the BFF exists to hold").
+
+**Security headers, secure session management, secure cookie configuration, CSRF
+protections.** None of these four are confirmed either way in the mirror. The BFF/SSO
+pattern makes "Yes" plausible for several of them by common framework default, but
+nothing states it explicitly — recommend getting an explicit Engineering confirmation
+for each rather than accepting the pre-filled "No" or guessing "Yes."
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
