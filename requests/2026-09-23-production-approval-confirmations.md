@@ -602,6 +602,18 @@ findings. The model is continuous and gate-based (patch when a scan flags someth
 not on a calendar), but if the reviewer wants a specific time-to-remediate figure,
 that needs Engineering to supply it.
 
+## Round 13 — confirmed against a fresh sync, not stale cache (2026-11-13)
+
+Triggered a manual Confluence sync (`workflow_dispatch` on `confluence-sync.yml`) to rule
+out the three still-missing Round 10 fields (hosting subscription/tenant ID, env0
+template name+version, code repository URL) being a sync-lag artefact rather than a real
+gap. The sync succeeded and picked up one new page — [Testing an Quality](../confluence/oi30/architecture/testing-an-quality-20035436698.md)
+(QA strategy, added 2026-11-12). None of the three fields appear in it or anywhere else
+in the refreshed mirror. The new page's own "Open Decisions" list corroborates the
+gap directly: **"Official post-GLS QA environment and deployment cadence"** is listed as
+still needing team agreement, dated this week — consistent with Round 10's finding that
+post-GLS infrastructure specifics haven't been written down, not merely unmirrored.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
