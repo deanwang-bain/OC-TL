@@ -484,6 +484,57 @@ Key Vault, and SharePoint's native RBAC. So the honest framing is "centrally enf
 design, because no individual-level privacy toggle exists," not "centrally configured in
 a named admin console" — no such console is described anywhere in the mirror.
 
+## Round 10 — hosting, infrastructure provisioning, CI/CD (2026-11-13)
+
+Another section of the GRC intake. Two more pre-filled defaults are very likely wrong,
+on top of the two flagged in Round 8.
+
+**Hosting Type.** "Bain Managed Cloud" is correct; should be specified as **Azure**
+specifically, not left generic — Technology Choices is Azure-first throughout, no other
+provider is named anywhere in the mirror.
+
+**Hosting Cloud Environments** (list all cloud accounts/subscriptions). Not documented
+anywhere — genuine gap. Can't be filled from the mirror; needs the actual Azure
+subscription/tenant identifiers from Engineering.
+
+**Infrastructure Provisioning (env0 IaC) — flag the default.** "Yes, using a standard,
+unmodified env0 template" should not be submitted without checking first. Our own
+`decisions/002-deployment-target-for-gls.md` (2026-08-31) explicitly **deferred**
+infrastructure-as-code for the GLS deployment in favour of a manual, one-command deploy,
+and cites the Agent Validation Test Plan placing IaC validation outside MVP QA scope
+entirely, excluding Terraform, Bicep, PSRule and Checkov. Bain's own Architecture
+Assessment Tracker (September) still listed the IaC tool as "TOOL TBD." If IaC has since
+been adopted for MVP build-out post-GLS, that's news this request doesn't have — get
+current-state confirmation from Engineering before accepting the pre-filled "Yes."
+
+**Infrastructure Template** (exact name/version). Not documented — same gap flagged in
+Round 5, still open.
+
+**Has Public Endpoints? — flag the default.** "No" is very likely wrong. Technology
+Choices adopts Front Door Premium with WAF specifically because the application has an
+internet-facing endpoint for Partners to reach — a WAF has nothing to protect if there's
+no public endpoint. Recommend "Yes," described as WAF-protected via Front Door with
+private endpoints and public access disabled on the origin behind it.
+
+**Hybrid/Dedicated Connectivity.** "No" is plausible and not contradicted by anything in
+the mirror — no ExpressRoute/VWAN is named anywhere. Treating this as likely accurate,
+but on an absence of documentation rather than an explicit confirmed "No."
+
+**Code Repositories.** Out of reach from this workspace by design — this review
+workspace is explicitly separate from StatusNeo's product codebase (per `CLAUDE.md`), so
+the actual repository URLs aren't something to guess at. Needs StatusNeo/Engineering to
+supply directly.
+
+**CI/CD Pipeline level, and details.** Tool is confirmed as **GitHub Actions**. Per
+`decisions/002`, the GLS-era pipeline was deliberately thin: PR gates blocking merge
+(unit, contract, lint, CodeQL, secret scan, dbt compile), then on merge — integration
+tests, golden fixtures, property tests, image scan — followed by a one-command deploy to
+a single environment (`az containerapp up`). Multi-environment promotion, blue/green,
+and a manual production approval gate were not part of that GLS-era setup. Whether a
+fuller pipeline (and a manual approval gate specifically) has since been built for
+MVP/production is unconfirmed — needs Engineering to confirm current state rather than
+assuming the GLS-era thin pipeline still describes it.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
