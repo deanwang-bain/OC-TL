@@ -614,6 +614,35 @@ gap directly: **"Official post-GLS QA environment and deployment cadence"** is l
 still needing team agreement, dated this week — consistent with Round 10's finding that
 post-GLS infrastructure specifics haven't been written down, not merely unmirrored.
 
+## Round 14 — code-level review supersedes documentation (2026-11-23)
+
+A reviewer with direct access to StatusNeo's infrastructure/application repositories,
+Terraform state, and Portkey logs returned findings that contradict several answers
+this workspace gave from `confluence/` alone. This is a different kind of input than
+Rounds 1–13: it's ground truth from the actual system, not a documentation gap. Items
+5, 6, 7, 8, 11, 12, 13 are Engineering/StatusNeo's to answer with real evidence (a
+config, a log line, a merged PR) — **not answerable from this workspace**, which has no
+access to those repositories, and fabricating evidence here would be worse than useless
+in a security sign-off. Items 2 and 14 are Technical Lead-owned; the reviewer's own
+comment supplies enough ground truth to draft corrected answers now, recorded below and
+given to the user directly in-chat.
+
+**What this changes going forward**: `context/open-questions.md` now carries a standing
+entry that the mirror describes what was decided, not what's deployed, given the
+confirmed gaps (Cloudflare+Front Door live in Dev/UAT; PostgreSQL/Redis/Blob in place of
+Azure SQL/SharePoint; Dev running in Germany West Central / Sweden Central rather than
+US-only; Portkey specified in contracts but not wired into Dev/UAT agent calls; a
+personal OpenAI key still referenced for local dev). Any future answer to this
+questionnaire that touches deployed infrastructure should be flagged for Engineering
+verification against the live system rather than answered from Technology Choices alone.
+
+**Other reviews — recommendation given to the user directly, not drafted here**: a risk
+rating recommendation (Low → High), a Data Privacy relay of three findings (deferred PII
+redaction control, Pendo capturing full names, the form's internal contradiction on
+third-party personal-data processing), and corrected Security answers (headers and TLS
+confirmed present on live sites, contradicting the form's "No"). See chat for the
+delivered text — these are time-sensitive relays better sent now than re-derived later.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
