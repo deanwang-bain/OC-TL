@@ -643,6 +643,42 @@ third-party personal-data processing), and corrected Security answers (headers a
 confirmed present on live sites, contradicting the form's "No"). See chat for the
 delivered text — these are time-sensitive relays better sent now than re-derived later.
 
+## Round 15 — Engineering's full answer set, via Archie (2026-11-25)
+
+Engineering returned a complete, dated answer to every Round 14 item (`Archie_OC.xlsx`,
+24 Nov 2026) — real evidence, not documentation: hostnames, PR numbers, Terraform state,
+a WAF-mode fix already shipped, and a commit-history remediation already completed. This
+is distilled in full into `context/oc-deployed-architecture.md`, which now supersedes
+`confluence/` for deployment questions. Summary of resolution:
+
+**Closed**: item 2 (vendor access — system list, provisioning owner, and commit-history
+remediation all supplied, including a now-enforced `@bain.com`-only push ruleset), item 7
+(Portkey — live for Dev, migrating for UAT, full config given), item 11 (personal cloud
+accounts — corrected, PR #368), item 12 (Cloudflare lock — Prevention + Block live since
+20 Nov), item 14 (all four form corrections given with evidence), the Security section of
+Other Reviews (headers/TLS/sessions/cookies/CSRF all confirmed Yes against the live site,
+pentest honestly stated as not done), and the Data Governance condition (Beta is
+confirmed internal-data-only, no client documents).
+
+**Partially closed, something still outstanding**: item 5 (template/hostnames answered;
+CloudLaunch template version still unconfirmed), item 6 (tool question closed; Glean
+reference is a described sandbox, not yet a cited ticket/document), item 8 (stores and
+Pendo corrected; classification mapping and several retention/deletion dates still "to be
+confirmed"), item 13 (full picture given; several dates for merging to `main` and
+splitting the Terraform workspace still "to be given").
+
+**Not closed — this is a disclosure, not a fix**: the Data Privacy condition of 7 October
+(personal data removed/redacted before upload) is **not met** — PII/DLP detection and
+redaction don't exist and are now explicitly planned for January, after the Beta.
+Engineering is requesting interim acceptance (Beta-only internal data, Bain-only access,
+per-case visibility) rather than claiming the condition is satisfied. That acceptance is
+Data Privacy's call, not something this workspace or Engineering can self-grant.
+
+**Risk rating**: still explicitly "to be set" — Engineering supplied facts, not a
+rating. See `context/oc-deployed-architecture.md` for the updated reasoning: more
+reassuring on scope (Beta-only, no client documents, de-identified Pendo), unchanged on
+the PII-redaction gap Data Privacy's approval was conditioned on.
+
 ## Sign-off
 
 _Tech Lead decision and date — pending._
